@@ -1,8 +1,9 @@
 <!-- SPECKIT START -->
-Current plan: specs/003-auth-jwt-middleware/plan.md
-Data model: specs/003-auth-jwt-middleware/data-model.md
-Research: specs/003-auth-jwt-middleware/research.md
-Quickstart: specs/003-auth-jwt-middleware/quickstart.md
+Current plan: specs/004-user-profile-panel/plan.md
+Data model: specs/004-user-profile-panel/data-model.md
+Research: specs/004-user-profile-panel/research.md
+Quickstart: specs/004-user-profile-panel/quickstart.md
+Next spec: specs/004-user-profile-panel/spec.md
 <!-- SPECKIT END -->
 
 # AGENT.md
