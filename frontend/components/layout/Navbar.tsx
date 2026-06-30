@@ -12,9 +12,10 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { IconBrain, IconMenu2, IconX } from "@tabler/icons-react";
+import { IconBrain, IconMenu2, IconUser, IconX } from "@tabler/icons-react";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 const NAV_ITEMS = [
   { label: "Inicio", href: "/#hero" },
@@ -28,6 +29,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
   const isAuthPage = pathname === "/login" || pathname === "/registro";
+  const { user } = useAuth();
 
   useEffect(() => {
     function onScroll() {
@@ -81,20 +83,29 @@ export function Navbar() {
           </HStack>
 
           <HStack gap={3} hideBelow="md">
-            {!isAuthPage && (
-              <>
-                <Button asChild variant={scrolled ? "outline" : "solid"} size="sm" colorPalette={scrolled ? "teal" : "white"}>
-                  <NextLink href="/login">
-                    Iniciar sesión
-                  </NextLink>
-                </Button>
+            {user ? (
+              <Button asChild variant={scrolled ? "outline" : "solid"} size="sm" colorPalette={scrolled ? "teal" : "white"}>
+                <NextLink href="/mi-cuenta">
+                  <IconUser size={18} />
+                  Mi Perfil
+                </NextLink>
+              </Button>
+            ) : (
+              !isAuthPage && (
+                <>
+                  <Button asChild variant={scrolled ? "outline" : "solid"} size="sm" colorPalette={scrolled ? "teal" : "white"}>
+                    <NextLink href="/login">
+                      Iniciar sesión
+                    </NextLink>
+                  </Button>
 
-                <Button asChild size="sm" colorPalette="orange">
-                  <NextLink href="/registro">
-                    Registrarse
-                  </NextLink>
-                </Button>
-              </>
+                  <Button asChild size="sm" colorPalette="orange">
+                    <NextLink href="/registro">
+                      Registrarse
+                    </NextLink>
+                  </Button>
+                </>
+              )
             )}
           </HStack>
 
@@ -126,20 +137,29 @@ export function Navbar() {
                   </NextLink>
                 </ChakraLink>
               ))}
-              {!isAuthPage && (
-                <HStack gap={2} pt={2}>
-                  <Button asChild variant="outline" size="sm" w="full" colorPalette={scrolled ? "teal" : "white"}>
-                    <NextLink href="/login">
-                      Iniciar sesión
-                    </NextLink>
-                  </Button>
+              {user ? (
+                <Button asChild variant="outline" size="sm" w="full" colorPalette="teal" onClick={() => setOpen(false)}>
+                  <NextLink href="/mi-cuenta">
+                    <IconUser size={18} />
+                    Mi Perfil
+                  </NextLink>
+                </Button>
+              ) : (
+                !isAuthPage && (
+                  <HStack gap={2} pt={2}>
+                    <Button asChild variant="outline" size="sm" w="full" colorPalette={scrolled ? "teal" : "white"}>
+                      <NextLink href="/login">
+                        Iniciar sesión
+                      </NextLink>
+                    </Button>
 
-                  <Button asChild size="sm" w="full" colorPalette="orange">
-                    <NextLink href="/registro">
-                      Registrarse
-                    </NextLink>
-                  </Button>
-                </HStack>
+                    <Button asChild size="sm" w="full" colorPalette="orange">
+                      <NextLink href="/registro">
+                        Registrarse
+                      </NextLink>
+                    </Button>
+                  </HStack>
+                )
               )}
             </Stack>
           </Box>
