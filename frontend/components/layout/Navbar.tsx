@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -14,7 +15,6 @@ import {
 import { IconBrain, IconMenu2, IconX } from "@tabler/icons-react";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
 
 const NAV_ITEMS = [
   { label: "Inicio", href: "/#hero" },
@@ -25,8 +25,19 @@ const NAV_ITEMS = [
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
   const isAuthPage = pathname === "/login" || pathname === "/registro";
+
+  useEffect(() => {
+    function onScroll() {
+      setScrolled(window.scrollY > 60);
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const linkColor = scrolled ? "brand.dark" : "white";
 
   return (
     <Box
@@ -36,9 +47,10 @@ export function Navbar() {
       left={0}
       right={0}
       zIndex={1000}
-      bg="brand.light"
-      borderBottomWidth={1}
+      bg={scrolled ? "white" : "transparent"}
+      borderBottomWidth={scrolled ? 1 : 0}
       borderColor="gray.200"
+      transition="all 0.25s ease"
     >
       <Container maxW="1200px" px={4}>
         <Flex h={16} align="center" justify="space-between">
@@ -49,7 +61,7 @@ export function Navbar() {
                 <Text
                   fontSize="lg"
                   fontWeight="bold"
-                  color="brand.dark"
+                  color={linkColor}
                   hideBelow="sm"
                 >
                   Future Minds 2026
@@ -64,7 +76,7 @@ export function Navbar() {
                 <ChakraLink
                   fontSize="sm"
                   fontWeight="medium"
-                  color="brand.dark"
+                  color={linkColor}
                   _hover={{ color: "brand.teal" }}
                 >
                   {item.label}
@@ -78,11 +90,16 @@ export function Navbar() {
               <>
                 <NextLink href="/login" passHref>
                   <ChakraLink>
-                    <Button variant="outline" size="sm" colorPalette="teal">
+                    <Button
+                      variant={scrolled ? "outline" : "solid"}
+                      size="sm"
+                      colorPalette={scrolled ? "teal" : "white"}
+                    >
                       Iniciar sesión
                     </Button>
                   </ChakraLink>
                 </NextLink>
+
                 <NextLink href="/registro" passHref>
                   <ChakraLink>
                     <Button size="sm" colorPalette="orange">
@@ -99,6 +116,7 @@ export function Navbar() {
             variant="ghost"
             size="md"
             hideFrom="md"
+            color={linkColor}
             onClick={() => setOpen(!open)}
           >
             {open ? <IconX size={24} /> : <IconMenu2 size={24} />}
@@ -106,14 +124,20 @@ export function Navbar() {
         </Flex>
 
         {open && (
-          <Box pb={4} hideFrom="md">
+          <Box
+            pb={4}
+            hideFrom="md"
+            bg={scrolled ? "white" : "rgba(48,56,65,0.95)"}
+            borderRadius="xl"
+            p={4}
+          >
             <Stack gap={3}>
               {NAV_ITEMS.map((item) => (
                 <NextLink key={item.href} href={item.href} passHref>
                   <ChakraLink
                     fontSize="sm"
                     fontWeight="medium"
-                    color="brand.dark"
+                    color={scrolled ? "brand.dark" : "white"}
                     onClick={() => setOpen(false)}
                   >
                     {item.label}
@@ -128,12 +152,13 @@ export function Navbar() {
                         variant="outline"
                         size="sm"
                         w="full"
-                        colorPalette="teal"
+                        colorPalette={scrolled ? "teal" : "white"}
                       >
                         Iniciar sesión
                       </Button>
                     </ChakraLink>
                   </NextLink>
+
                   <NextLink href="/registro" passHref>
                     <ChakraLink>
                       <Button size="sm" w="full" colorPalette="orange">

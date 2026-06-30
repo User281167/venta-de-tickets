@@ -6,18 +6,29 @@ import {
   Box,
   Button,
   Field,
+  HStack,
   Input,
+  InputGroup,
   Stack,
   Text,
   Heading,
   VStack,
+  Separator,
+  IconButton,
 } from "@chakra-ui/react";
 import {
   registerSchema,
   type RegisterInput,
 } from "@/features/auth/schemas/auth.schema";
-import { signUp } from "@/features/auth/api/auth.client";
+import { signUp, signInWithGoogle } from "@/features/auth/api/auth.client";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import {
+  IconBrandGoogle,
+  IconEye,
+  IconEyeOff,
+  IconMail,
+  IconLock,
+} from "@tabler/icons-react";
 
 export function RegisterForm() {
   const router = useRouter();
@@ -25,6 +36,8 @@ export function RegisterForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<
     Partial<Record<keyof RegisterInput, string>>
   >({});
@@ -32,6 +45,7 @@ export function RegisterForm() {
   const [status, setStatus] = useState<
     "idle" | "submitting" | "error" | "success"
   >("idle");
+  const [googleStatus, setGoogleStatus] = useState<"idle" | "loading">("idle");
 
   if (user) {
     router.push("/");
@@ -73,53 +87,117 @@ export function RegisterForm() {
     router.push("/");
   }
 
+  async function handleGoogleSignIn() {
+    setGoogleStatus("loading");
+    await signInWithGoogle();
+  }
+
   return (
-    <Box maxW="md" mx="auto" mt={10} p={6}>
-      <VStack gap={6} align="stretch">
-        <Heading as="h1" size="xl" textAlign="center">
-          Crear cuenta
-        </Heading>
+    <Box mx="auto">
+      <VStack gap={5} align="stretch">
+        <Stack gap={1}>
+          <Heading as="h1" size="xl" textAlign="center" color="white">
+            Crear cuenta
+          </Heading>
+
+          <Text textAlign="center" fontSize="sm" color="white" opacity={0.7}>
+            Accede a Future Minds 2026
+          </Text>
+        </Stack>
 
         <form onSubmit={handleSubmit}>
           <Stack gap={4}>
             <Field.Root invalid={!!fieldErrors.email}>
-              <Field.Label>Correo electrónico</Field.Label>
-
-              <Input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="correo@ejemplo.com"
-              />
+              <Field.Label color="white">Correo electrónico</Field.Label>
+              <InputGroup
+                startElement={
+                  <IconMail size={18} color="rgba(255,255,255,0.6)" />
+                }
+              >
+                <Input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="correo@ejemplo.com"
+                  color="white"
+                  _placeholder={{ color: "rgba(255,255,255,0.5)" }}
+                />
+              </InputGroup>
               <Field.ErrorText>{fieldErrors.email}</Field.ErrorText>
             </Field.Root>
 
             <Field.Root invalid={!!fieldErrors.password}>
-              <Field.Label>Contraseña</Field.Label>
-              <Input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Mínimo 8 caracteres"
-              />
+              <Field.Label color="white">Contraseña</Field.Label>
+              <InputGroup
+                startElement={
+                  <IconLock size={18} color="rgba(255,255,255,0.6)" />
+                }
+                endElement={
+                  <IconButton
+                    aria-label={showPassword ? "Ocultar" : "Mostrar"}
+                    variant="ghost"
+                    size="xs"
+                    color="white"
+                    _hover={{ color: "brand.teal" }}
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <IconEyeOff size={18} />
+                    ) : (
+                      <IconEye size={18} />
+                    )}
+                  </IconButton>
+                }
+              >
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Mínimo 8 caracteres"
+                  color="white"
+                  _placeholder={{ color: "rgba(255,255,255,0.5)" }}
+                />
+              </InputGroup>
               <Field.ErrorText>{fieldErrors.password}</Field.ErrorText>
             </Field.Root>
 
             <Field.Root invalid={!!fieldErrors.confirmPassword}>
-              <Field.Label>Confirmar contraseña</Field.Label>
-
-              <Input
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Repite tu contraseña"
-              />
-
+              <Field.Label color="white">Confirmar contraseña</Field.Label>
+              <InputGroup
+                startElement={
+                  <IconLock size={18} color="rgba(255,255,255,0.6)" />
+                }
+                endElement={
+                  <IconButton
+                    aria-label={showConfirmPassword ? "Ocultar" : "Mostrar"}
+                    variant="ghost"
+                    size="xs"
+                    color="white"
+                    _hover={{ color: "brand.teal" }}
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    {showConfirmPassword ? (
+                      <IconEyeOff size={18} />
+                    ) : (
+                      <IconEye size={18} />
+                    )}
+                  </IconButton>
+                }
+              >
+                <Input
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Repite tu contraseña"
+                  color="white"
+                  _placeholder={{ color: "rgba(255,255,255,0.5)" }}
+                />
+              </InputGroup>
               <Field.ErrorText>{fieldErrors.confirmPassword}</Field.ErrorText>
             </Field.Root>
 
             {generalError && (
-              <Text color="brand.orange" fontSize="sm" textAlign="center">
+              <Text color="#FF5722" fontSize="sm" textAlign="center">
                 {generalError}
               </Text>
             )}
@@ -128,12 +206,37 @@ export function RegisterForm() {
               type="submit"
               loading={status === "submitting"}
               w="full"
+              size="lg"
               colorPalette="teal"
             >
               Registrarse
             </Button>
           </Stack>
         </form>
+
+        <HStack gap={4}>
+          <Separator flex={1} />
+
+          <Text fontSize="xs" color="gray.400" flexShrink={0}>
+            o regístrate con
+          </Text>
+
+          <Separator flex={1} />
+        </HStack>
+
+        <Button
+          variant="outline"
+          w="full"
+          size="lg"
+          loading={googleStatus === "loading"}
+          onClick={handleGoogleSignIn}
+          color="white"
+          borderColor="rgba(255,255,255,0.4)"
+          _hover={{ bg: "rgba(255,255,255,0.1)" }}
+        >
+          <IconBrandGoogle size={20} />
+          Google
+        </Button>
       </VStack>
     </Box>
   );

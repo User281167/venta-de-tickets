@@ -5,7 +5,6 @@ import {
   Button,
   Container,
   Flex,
-  Grid,
   Heading,
   HStack,
   Icon,
@@ -17,9 +16,9 @@ import {
 import {
   IconCheck,
   IconCrown,
+  IconShoppingCart,
   IconStar,
   IconTicket,
-  IconUsers,
 } from "@tabler/icons-react";
 import NextLink from "next/link";
 
@@ -28,14 +27,14 @@ const TIERS = [
     name: "General",
     price: "$15",
     icon: IconTicket,
-    color: "brand.teal",
+    iconBg: "brand.teal",
     features: ["Acceso a todas las charlas", "Certificado digital"],
   },
   {
     name: "Premium",
     price: "$35",
     icon: IconStar,
-    color: "brand.dark",
+    iconBg: "brand.dark",
     features: [
       "Asiento preferencial",
       "Acceso a networking VIP",
@@ -47,7 +46,7 @@ const TIERS = [
     name: "VIP Experience",
     price: "$75",
     icon: IconCrown,
-    color: "brand.orange",
+    iconBg: "brand.orange",
     features: [
       "Meet & Greet con speakers",
       "Acceso a zona exclusiva",
@@ -59,7 +58,7 @@ const TIERS = [
 
 export function TicketSection() {
   return (
-    <Box id="entradas" py={20}>
+    <Box id="entradas" py={20} bg="gray.50">
       <Container maxW="1200px" px={4}>
         <Stack gap={3} align="center" mb={12}>
           <Heading
@@ -76,102 +75,119 @@ export function TicketSection() {
           </Text>
         </Stack>
 
-        <Grid
-          templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }}
-          gap={6}
-          maxW="5xl"
-          mx="auto"
-        >
-          {TIERS.map((tier) => (
-            <Flex
-              key={tier.name}
-              direction="column"
-              bg="white"
-              borderRadius="xl"
-              borderWidth={tier.highlighted ? 2 : 1}
-              borderColor={tier.highlighted ? "brand.teal" : "gray.200"}
-              boxShadow={tier.highlighted ? "lg" : "sm"}
-              overflow="hidden"
-              _hover={{ transform: "translateY(-4px)", boxShadow: "lg" }}
-              transition="all 0.2s"
-            >
-              {tier.highlighted && (
-                <Box bg="brand.teal" py={1.5} textAlign="center">
-                  <Text
-                    fontSize="xs"
-                    fontWeight="bold"
-                    color="white"
-                    textTransform="uppercase"
-                    letterSpacing="wide"
-                  >
-                    Más popular
-                  </Text>
-                </Box>
-              )}
-
-              <Stack p={6} gap={4} flex={1}>
-                <Flex
-                  w={12}
-                  h={12}
-                  bg={`${tier.color}15`}
-                  borderRadius="lg"
-                  align="center"
-                  justify="center"
-                >
-                  <Icon as={tier.icon} boxSize={6} color={tier.color} />
-                </Flex>
-
-                <Text fontSize="xl" fontWeight="bold" color="brand.dark">
-                  {tier.name}
-                </Text>
-
-                <Text fontSize="3xl" fontWeight="bold" color={tier.color}>
-                  {tier.price}
-                  <Text
-                    as="span"
-                    fontSize="sm"
-                    fontWeight="normal"
-                    color="gray.500"
-                  >
-                    {" "}
-                    USD
-                  </Text>
-                </Text>
-
-                <VStack gap={2} align="start" pt={2}>
-                  {tier.features.map((feature) => (
-                    <HStack key={feature} gap={2}>
-                      <IconCheck size={16} color="#76ABAE" />
-                      <Text fontSize="sm" color="gray.600">
-                        {feature}
-                      </Text>
-                    </HStack>
-                  ))}
-                </VStack>
-              </Stack>
-
-              <Box p={6} pt={0}>
-                <NextLink href="/registro" passHref>
-                  <ChakraLink>
-                    <Button
-                      w="full"
-                      colorPalette={
-                        tier.color === "brand.orange"
-                          ? "orange"
-                          : tier.highlighted
-                            ? "teal"
-                            : "gray"
-                      }
-                      variant={tier.highlighted ? "solid" : "outline"}
+        <Flex justify="center" align="center" gap={8} wrap="wrap">
+          {TIERS.map((tier, i) => {
+            const isCenter = i === 1;
+            return (
+              <Flex
+                key={tier.name}
+                direction="column"
+                bg="white"
+                borderRadius="2xl"
+                borderWidth={tier.highlighted ? 2 : 1}
+                borderColor={tier.highlighted ? "brand.teal" : "gray.200"}
+                boxShadow={tier.highlighted ? "xl" : "md"}
+                overflow="hidden"
+                w={{ base: "full", md: "360px" }}
+                minH="480px"
+                mt={isCenter ? 0 : 10}
+                _hover={{ transform: "translateY(-8px)", boxShadow: "xl" }}
+                transition="all 0.25s"
+              >
+                {tier.highlighted && (
+                  <Box bg="brand.teal" py={2} textAlign="center">
+                    <Text
+                      fontSize="xs"
+                      fontWeight="bold"
+                      color="white"
+                      textTransform="uppercase"
+                      letterSpacing="wide"
                     >
-                      Compra tu boleta ahora – Cupos limitados
-                    </Button>
-                  </ChakraLink>
-                </NextLink>
-              </Box>
-            </Flex>
-          ))}
-        </Grid>
+                      Más popular
+                    </Text>
+                  </Box>
+                )}
+
+                <Box p={8} pb={0}>
+                  <HStack gap={4} mb={6}>
+                    <Flex
+                      w={14}
+                      h={14}
+                      bg={tier.iconBg}
+                      borderRadius="xl"
+                      align="center"
+                      justify="center"
+                      flexShrink={0}
+                    >
+                      <Icon as={tier.icon} boxSize={7} color="white" />
+                    </Flex>
+                    <Stack gap={0}>
+                      <Text fontSize="xl" fontWeight="bold" color="brand.dark">
+                        {tier.name}
+                      </Text>
+                      <Text
+                        fontSize="3xl"
+                        fontWeight="bold"
+                        color="brand.teal"
+                        lineHeight="1"
+                      >
+                        {tier.price}
+                        <Text
+                          as="span"
+                          fontSize="sm"
+                          fontWeight="normal"
+                          color="gray.400"
+                        >
+                          {" "}
+                          USD
+                        </Text>
+                      </Text>
+                    </Stack>
+                  </HStack>
+
+                  <VStack gap={3} align="start">
+                    {tier.features.map((feature) => (
+                      <HStack key={feature} gap={3}>
+                        <Flex
+                          w={6}
+                          h={6}
+                          bg="rgba(118,171,174,0.12)"
+                          borderRadius="full"
+                          align="center"
+                          justify="center"
+                          flexShrink={0}
+                        >
+                          <IconCheck size={14} color="#76ABAE" />
+                        </Flex>
+                        <Text fontSize="sm" color="gray.600">
+                          {feature}
+                        </Text>
+                      </HStack>
+                    ))}
+                  </VStack>
+                </Box>
+
+                <Box p={8} mt="auto">
+                  <NextLink href="/registro" passHref>
+                    <ChakraLink>
+                      <Button
+                        w="full"
+                        size="lg"
+                        colorPalette={tier.highlighted ? "teal" : "teal"}
+                        variant={tier.highlighted ? "solid" : "outline"}
+                        borderRadius="xl"
+                      >
+                        <IconShoppingCart size={18} />
+                        Comprar{" "}
+                        {tier.name === "VIP Experience" ? "VIP" : tier.name}
+                      </Button>
+                    </ChakraLink>
+                  </NextLink>
+                </Box>
+              </Flex>
+            );
+          })}
+        </Flex>
       </Container>
     </Box>
   );
