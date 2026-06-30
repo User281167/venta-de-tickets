@@ -1,13 +1,12 @@
 import type { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import { env } from '../config/env.js';
 import { UnauthorizedError } from '../errors/UnauthorizedError.js';
+import { verifyToken } from '../services/auth.service.js';
 
-export function authMiddleware(
+export async function authMiddleware(
   req: Request,
   _res: Response,
   next: NextFunction,
-): void {
+): Promise<void> {
   const header = req.headers.authorization;
 
   if (!header) {
@@ -21,32 +20,16 @@ export function authMiddleware(
 
   const token = parts[1];
 
-  try {
-    const payload = jwt.verify(token, env.SUPABASE_JWT_SECRET) as {
-      sub?: string;
-      email?: string;
-    };
-
-    if (!payload.sub || !payload.email) {
-      throw new UnauthorizedError('Token missing required claims');
-    }
-
-    req.user = {
-      id: payload.sub,
-      email: payload.email,
-    };
-
-    next();
-  } catch (err) {
-    if (err instanceof UnauthorizedError) {
-      throw err;
-    }
-    if (err instanceof jwt.TokenExpiredError) {
-      throw new UnauthorizedError('Token has expired');
-    }
-    if (err instanceof jwt.JsonWebTokenError) {
-      throw new UnauthorizedError('Invalid token');
-    }
-    throw new UnauthorizedError('Token verification failed');
+  if (!token) {
+    throw new UnauthorizedError('Token is empty');
   }
+
+  const user = await verifyToken(token);
+
+  req.user = {
+    id: user.id,
+    email: user.email,
+  };
+
+  next();
 }

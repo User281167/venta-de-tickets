@@ -94,7 +94,7 @@ export function ProfileForm() {
 
         {editing ? (
           <HStack gap={4}>
-            <Button colorScheme="blue" onClick={saveEdit} loading={isPending}>
+            <Button colorPalette="blue" onClick={saveEdit} loading={isPending}>
               Guardar
             </Button>
             <Button variant="outline" onClick={cancelEdit}>

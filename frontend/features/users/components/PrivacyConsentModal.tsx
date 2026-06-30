@@ -48,7 +48,7 @@ export function PrivacyConsentModal() {
       </Checkbox.Root>
 
       <Button
-        colorScheme="blue"
+        colorPalette="blue"
         disabled={!accepted}
         loading={isPending}
         onClick={handleAccept}
