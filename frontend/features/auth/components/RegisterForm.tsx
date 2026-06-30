@@ -83,9 +83,8 @@ export function RegisterForm() {
         <form onSubmit={handleSubmit}>
           <Stack gap={4}>
             <Field.Root invalid={!!fieldErrors.email}>
-              <Field.Label css={{ color: "#303841" }}>
-                Correo electrónico
-              </Field.Label>
+              <Field.Label>Correo electrónico</Field.Label>
+
               <Input
                 type="email"
                 value={email}
@@ -96,7 +95,7 @@ export function RegisterForm() {
             </Field.Root>
 
             <Field.Root invalid={!!fieldErrors.password}>
-              <Field.Label css={{ color: "#303841" }}>Contraseña</Field.Label>
+              <Field.Label>Contraseña</Field.Label>
               <Input
                 type="password"
                 value={password}
@@ -107,9 +106,7 @@ export function RegisterForm() {
             </Field.Root>
 
             <Field.Root invalid={!!fieldErrors.confirmPassword}>
-              <Field.Label css={{ color: "#303841" }}>
-                Confirmar contraseña
-              </Field.Label>
+              <Field.Label>Confirmar contraseña</Field.Label>
 
               <Input
                 type="password"
