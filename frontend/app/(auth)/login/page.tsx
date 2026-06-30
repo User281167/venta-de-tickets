@@ -11,9 +11,19 @@ import {
 } from "@chakra-ui/react";
 import { IconArrowLeft, IconBrain } from "@tabler/icons-react";
 import NextLink from "next/link";
+import { useRouter } from "next/navigation";
 import { LoginForm } from "@/features/auth/components/LoginForm";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 export default function LoginPage() {
+  const { user, isLoading } = useAuth();
+  const router = useRouter();
+
+  if (!isLoading && user) {
+    router.replace("/mi-cuenta");
+    return null;
+  }
+
   return (
     <Flex
       align="center"

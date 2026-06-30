@@ -7,6 +7,7 @@ import {
   Heading,
   HStack,
   Input,
+  Skeleton,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -26,7 +27,17 @@ export function ProfileForm() {
   const [error, setError] = useState<string | null>(null);
 
   if (isLoading || !data) {
-    return <Text textAlign="center" mt={10}>Cargando...</Text>;
+    return (
+      <Box maxW="md" mx="auto" mt={10} p={6}>
+        <VStack gap={6} align="stretch">
+          <Skeleton height="28px" width="120px" />
+          <Skeleton height="40px" width="full" />
+          <Skeleton height="40px" width="full" />
+          <Skeleton height="40px" width="full" />
+          <Skeleton height="36px" width="100px" />
+        </VStack>
+      </Box>
+    );
   }
 
   const { user, consentStatus } = data;

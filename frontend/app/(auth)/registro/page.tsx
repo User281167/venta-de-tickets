@@ -18,9 +18,19 @@ import {
   IconRocket,
 } from "@tabler/icons-react";
 import NextLink from "next/link";
+import { useRouter } from "next/navigation";
 import { RegisterForm } from "@/features/auth/components/RegisterForm";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 export default function RegisterPage() {
+  const { user, isLoading } = useAuth();
+  const router = useRouter();
+
+  if (!isLoading && user) {
+    router.replace("/mi-cuenta");
+    return null;
+  }
+
   return (
     <Flex
       align="center"

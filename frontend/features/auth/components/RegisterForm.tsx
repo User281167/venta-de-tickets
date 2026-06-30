@@ -52,7 +52,7 @@ export function RegisterForm() {
   const [googleStatus, setGoogleStatus] = useState<"idle" | "loading">("idle");
 
   if (user) {
-    router.push("/");
+    router.push("/mi-cuenta");
     return null;
   }
 

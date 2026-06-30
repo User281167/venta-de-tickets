@@ -28,8 +28,8 @@ const NAV_ITEMS = [
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-  const isProtectedPage = pathname.startsWith("/mi-cuenta");
-  const [scrolled, setScrolled] = useState(isProtectedPage);
+  const isHome = pathname === "/";
+  const [scrolled, setScrolled] = useState(!isHome);
   const isAuthPage = pathname === "/login" || pathname === "/registro";
   const { user } = useAuth();
   const router = useRouter();
@@ -40,13 +40,19 @@ export function Navbar() {
   };
 
   useEffect(() => {
+    if (!isHome) {
+      setScrolled(true);
+      return;
+    }
+
     function onScroll() {
       setScrolled(window.scrollY > 60);
     }
+
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [isHome]);
 
   const linkColor = scrolled ? "brand.dark" : "white";
 
