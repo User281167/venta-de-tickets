@@ -31,9 +31,13 @@ export async function signInWithPassword(email: string, password: string) {
 export async function signUp(email: string, password: string) {
   const supabase = createClient();
 
-  const { error } = await supabase.auth.signUp({ email, password });
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
+  });
 
   if (error) {
+    console.error("Supabase signUp error:", error);
     return { success: false as const, error: mapError(error) };
   }
 
