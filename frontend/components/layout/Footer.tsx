@@ -3,7 +3,6 @@ import {
   Container,
   Flex,
   HStack,
-  IconButton,
   Link as ChakraLink,
   Separator,
   Stack,
@@ -34,6 +33,7 @@ export function Footer() {
                 Future Minds 2026
               </Text>
             </HStack>
+
             <Text fontSize="sm" color="gray.300">
               Universidad Central – Eventos Académicos
             </Text>
@@ -49,42 +49,42 @@ export function Footer() {
             >
               Enlaces
             </Text>
-            <NextLink href="/#hero" passHref>
-              <ChakraLink
-                fontSize="sm"
-                color="gray.300"
-                _hover={{ color: "brand.teal" }}
-              >
-                Inicio
-              </ChakraLink>
-            </NextLink>
-            <NextLink href="/#agenda" passHref>
-              <ChakraLink
-                fontSize="sm"
-                color="gray.300"
-                _hover={{ color: "brand.teal" }}
-              >
-                Programa
-              </ChakraLink>
-            </NextLink>
-            <NextLink href="/#speakers" passHref>
-              <ChakraLink
-                fontSize="sm"
-                color="gray.300"
-                _hover={{ color: "brand.teal" }}
-              >
-                Speakers
-              </ChakraLink>
-            </NextLink>
-            <NextLink href="/#entradas" passHref>
-              <ChakraLink
-                fontSize="sm"
-                color="gray.300"
-                _hover={{ color: "brand.teal" }}
-              >
-                Entradas
-              </ChakraLink>
-            </NextLink>
+
+            <ChakraLink
+              asChild
+              fontSize="sm"
+              color="gray.300"
+              _hover={{ color: "brand.teal" }}
+            >
+              <NextLink href="/#hero">Inicio</NextLink>
+            </ChakraLink>
+
+            <ChakraLink
+              asChild
+              fontSize="sm"
+              color="gray.300"
+              _hover={{ color: "brand.teal" }}
+            >
+              <NextLink href="/#agenda">Programa</NextLink>
+            </ChakraLink>
+
+            <ChakraLink
+              asChild
+              fontSize="sm"
+              color="gray.300"
+              _hover={{ color: "brand.teal" }}
+            >
+              <NextLink href="/#speakers">Speakers</NextLink>
+            </ChakraLink>
+
+            <ChakraLink
+              asChild
+              fontSize="sm"
+              color="gray.300"
+              _hover={{ color: "brand.teal" }}
+            >
+              <NextLink href="/#entradas">Entradas</NextLink>
+            </ChakraLink>
           </Stack>
 
           <Stack gap={2}>
@@ -97,27 +97,41 @@ export function Footer() {
             >
               Contacto
             </Text>
+
             <HStack gap={2}>
               <IconMail size={16} />
+
               <Text fontSize="sm" color="gray.300">
                 eventos@universidadcentral.edu
               </Text>
             </HStack>
+
             <HStack gap={2} pt={2}>
-              <ChakraLink href="#" aria-label="Instagram">
-                <IconButton variant="ghost" colorPalette="teal" size="sm">
-                  <IconBrandInstagram size={18} />
-                </IconButton>
+              <ChakraLink
+                href="#"
+                aria-label="Instagram"
+                color="gray.300"
+                _hover={{ color: "brand.teal" }}
+              >
+                <IconBrandInstagram size={18} />
               </ChakraLink>
-              <ChakraLink href="#" aria-label="X">
-                <IconButton variant="ghost" colorPalette="teal" size="sm">
-                  <IconBrandX size={18} />
-                </IconButton>
+
+              <ChakraLink
+                href="#"
+                aria-label="X"
+                color="gray.300"
+                _hover={{ color: "brand.teal" }}
+              >
+                <IconBrandX size={18} />
               </ChakraLink>
-              <ChakraLink href="#" aria-label="LinkedIn">
-                <IconButton variant="ghost" colorPalette="teal" size="sm">
-                  <IconBrandLinkedin size={18} />
-                </IconButton>
+
+              <ChakraLink
+                href="#"
+                aria-label="LinkedIn"
+                color="gray.300"
+                _hover={{ color: "brand.teal" }}
+              >
+                <IconBrandLinkedin size={18} />
               </ChakraLink>
             </HStack>
           </Stack>
@@ -135,25 +149,25 @@ export function Footer() {
             &copy; {new Date().getFullYear()} Universidad Central – Eventos
             Académicos. Todos los derechos reservados.
           </Text>
+
           <HStack gap={4}>
-            <NextLink href="/terminos" passHref>
-              <ChakraLink
-                fontSize="xs"
-                color="gray.400"
-                _hover={{ color: "brand.teal" }}
-              >
-                Términos y condiciones
-              </ChakraLink>
-            </NextLink>
-            <NextLink href="/privacidad" passHref>
-              <ChakraLink
-                fontSize="xs"
-                color="gray.400"
-                _hover={{ color: "brand.teal" }}
-              >
-                Política de privacidad
-              </ChakraLink>
-            </NextLink>
+            <ChakraLink
+              asChild
+              fontSize="xs"
+              color="gray.400"
+              _hover={{ color: "brand.teal" }}
+            >
+              <NextLink href="/terminos">Términos y condiciones</NextLink>
+            </ChakraLink>
+
+            <ChakraLink
+              asChild
+              fontSize="xs"
+              color="gray.400"
+              _hover={{ color: "brand.teal" }}
+            >
+              <NextLink href="/privacidad">Política de privacidad</NextLink>
+            </ChakraLink>
           </HStack>
         </Flex>
       </Container>

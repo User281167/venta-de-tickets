@@ -58,10 +58,12 @@ export function BenefitsSection() {
     <Box
       py={20}
       position="relative"
-      bgImage="url(/campus.jpg)"
-      bgSize="cover"
-      bgPosition="center"
-      bgAttachment="fixed"
+      style={{
+        backgroundImage: "url(/campus.jpg)",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "fixed",
+      }}
       _before={{
         content: '""',
         position: "absolute",
@@ -79,6 +81,7 @@ export function BenefitsSection() {
           >
             ¿Por qué asistir?
           </Heading>
+
           <Text color="gray.300" textAlign="center" maxW="lg">
             Más que un evento, una experiencia que transforma tu perspectiva
             profesional
@@ -118,10 +121,12 @@ export function BenefitsSection() {
                 >
                   <Icon as={benefit.icon} boxSize={6} color="white" />
                 </Flex>
+
                 <Heading as="h3" size="sm" color="white" mb={2}>
                   {benefit.title}
                 </Heading>
               </Flex>
+
               <Text fontSize="sm" color="gray.300">
                 {benefit.desc}
               </Text>
@@ -135,6 +140,7 @@ export function BenefitsSection() {
               <Text fontSize="3xl" fontWeight="bold" color="brand.teal">
                 {stat.value}
               </Text>
+
               <Text fontSize="sm" color="gray.400">
                 {stat.label}
               </Text>

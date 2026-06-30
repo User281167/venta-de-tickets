@@ -5,7 +5,6 @@ import {
   Flex,
   HStack,
   Heading,
-  IconButton,
   Link as ChakraLink,
   Stack,
   Text,
@@ -35,6 +34,7 @@ export default function LoginPage() {
           <Stack maxW="md" px={8} gap={6}>
             <HStack gap={3}>
               <IconBrain size={40} color="#76ABAE" />
+
               <Text fontSize="2xl" fontWeight="bold" color="white">
                 Future Minds 2026
               </Text>
@@ -52,18 +52,23 @@ export default function LoginPage() {
             <Stack gap={4} pt={4}>
               <Flex gap={3} align="center">
                 <Box w={2} h={2} bg="brand.teal" borderRadius="full" />
+
                 <Text color="gray.300" fontSize="sm">
                   Charlas con líderes globales
                 </Text>
               </Flex>
+
               <Flex gap={3} align="center">
                 <Box w={2} h={2} bg="brand.teal" borderRadius="full" />
+
                 <Text color="gray.300" fontSize="sm">
                   Networking exclusivo
                 </Text>
               </Flex>
+
               <Flex gap={3} align="center">
                 <Box w={2} h={2} bg="brand.teal" borderRadius="full" />
+
                 <Text color="gray.300" fontSize="sm">
                   Certificado universitario
                 </Text>
@@ -73,21 +78,21 @@ export default function LoginPage() {
         </Flex>
 
         <Flex flex={1} align="center" justify="center" position="relative">
-          <NextLink href="/" passHref>
-            <ChakraLink position="absolute" top={4} right={4}>
-              <IconButton
-                aria-label="Cerrar"
-                variant="ghost"
-                size="md"
-                color="white"
-              >
-                <IconArrowLeft size={24} />
-              </IconButton>
-            </ChakraLink>
-          </NextLink>
+          <ChakraLink
+            asChild
+            position="absolute"
+            top={4}
+            right={4}
+            color="white"
+          >
+            <NextLink href="/" aria-label="Cerrar">
+              <IconArrowLeft size={24} />
+            </NextLink>
+          </ChakraLink>
 
           <Box w="full" maxW="500px" mx="auto" px={4} position="relative">
             <Box position="absolute" bg="rgba(118,171,174,0.15)" />
+
             <Box
               position="absolute"
               bottom="-30px"
@@ -99,6 +104,7 @@ export default function LoginPage() {
               filter="blur(50px)"
               pointerEvents="none"
             />
+
             <Box
               borderWidth={1}
               borderColor="rgba(255,255,255,0.2)"
@@ -113,11 +119,9 @@ export default function LoginPage() {
 
             <Text textAlign="center" fontSize="sm" color="white" mt={4}>
               ¿No tienes cuenta?{" "}
-              <NextLink href="/registro" passHref>
-                <ChakraLink color="brand.teal" fontWeight="medium">
-                  Crear cuenta
-                </ChakraLink>
-              </NextLink>
+              <ChakraLink asChild color="brand.teal" fontWeight="medium">
+                <NextLink href="/registro">Crear cuenta</NextLink>
+              </ChakraLink>
             </Text>
           </Box>
         </Flex>

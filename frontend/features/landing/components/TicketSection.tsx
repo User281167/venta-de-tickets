@@ -8,7 +8,6 @@ import {
   Heading,
   HStack,
   Icon,
-  Link as ChakraLink,
   Stack,
   Text,
   VStack,
@@ -25,14 +24,14 @@ import NextLink from "next/link";
 const TIERS = [
   {
     name: "General",
-    price: "$15",
+    price: "$15.000",
     icon: IconTicket,
     iconBg: "brand.teal",
     features: ["Acceso a todas las charlas", "Certificado digital"],
   },
   {
     name: "Premium",
-    price: "$35",
+    price: "$35.000",
     icon: IconStar,
     iconBg: "brand.dark",
     features: [
@@ -44,7 +43,7 @@ const TIERS = [
   },
   {
     name: "VIP Experience",
-    price: "$75",
+    price: "$75.000",
     icon: IconCrown,
     iconBg: "brand.orange",
     features: [
@@ -69,6 +68,7 @@ export function TicketSection() {
           >
             Elige tu entrada
           </Heading>
+
           <Text color="gray.600" textAlign="center" maxW="lg">
             Selecciona el plan que mejor se adapte a ti y asegura tu lugar en
             Future Minds 2026
@@ -121,10 +121,12 @@ export function TicketSection() {
                     >
                       <Icon as={tier.icon} boxSize={7} color="white" />
                     </Flex>
+
                     <Stack gap={0}>
                       <Text fontSize="xl" fontWeight="bold" color="brand.dark">
                         {tier.name}
                       </Text>
+
                       <Text
                         fontSize="3xl"
                         fontWeight="bold"
@@ -139,7 +141,7 @@ export function TicketSection() {
                           color="gray.400"
                         >
                           {" "}
-                          USD
+                          COP
                         </Text>
                       </Text>
                     </Stack>
@@ -159,6 +161,7 @@ export function TicketSection() {
                         >
                           <IconCheck size={14} color="#76ABAE" />
                         </Flex>
+
                         <Text fontSize="sm" color="gray.600">
                           {feature}
                         </Text>
@@ -168,21 +171,20 @@ export function TicketSection() {
                 </Box>
 
                 <Box p={8} mt="auto">
-                  <NextLink href="/registro" passHref>
-                    <ChakraLink>
-                      <Button
-                        w="full"
-                        size="lg"
-                        colorPalette={tier.highlighted ? "teal" : "teal"}
-                        variant={tier.highlighted ? "solid" : "outline"}
-                        borderRadius="xl"
-                      >
-                        <IconShoppingCart size={18} />
-                        Comprar{" "}
-                        {tier.name === "VIP Experience" ? "VIP" : tier.name}
-                      </Button>
-                    </ChakraLink>
-                  </NextLink>
+                  <Button
+                    asChild
+                    w="full"
+                    size="lg"
+                    colorPalette={tier.highlighted ? "teal" : "teal"}
+                    variant={tier.highlighted ? "solid" : "outline"}
+                    borderRadius="xl"
+                  >
+                    <NextLink href="/registro">
+                      <IconShoppingCart size={18} />
+                      Comprar{" "}
+                      {tier.name === "VIP Experience" ? "VIP" : tier.name}
+                    </NextLink>
+                  </Button>
                 </Box>
               </Flex>
             );

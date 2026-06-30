@@ -5,7 +5,6 @@ import {
   Flex,
   HStack,
   Heading,
-  IconButton,
   Link as ChakraLink,
   Stack,
   Text,
@@ -42,6 +41,7 @@ export default function RegisterPage() {
           <Stack maxW="md" px={8} gap={6}>
             <HStack gap={3}>
               <IconBrain size={40} color="#76ABAE" />
+
               <Text fontSize="2xl" fontWeight="bold" color="white">
                 Future Minds 2026
               </Text>
@@ -69,10 +69,12 @@ export default function RegisterPage() {
                 >
                   <IconRocket size={14} color="#76ABAE" />
                 </Flex>
+
                 <Text color="gray.300" fontSize="sm">
                   Acceso a todas las conferencias
                 </Text>
               </Flex>
+
               <Flex gap={3} align="center">
                 <Flex
                   w={6}
@@ -84,10 +86,12 @@ export default function RegisterPage() {
                 >
                   <IconCertificate size={14} color="#76ABAE" />
                 </Flex>
+
                 <Text color="gray.300" fontSize="sm">
                   Certificado universitario digital
                 </Text>
               </Flex>
+
               <Flex gap={3} align="center">
                 <Flex
                   w={6}
@@ -99,10 +103,12 @@ export default function RegisterPage() {
                 >
                   <IconHeartHandshake size={14} color="#76ABAE" />
                 </Flex>
+
                 <Text color="gray.300" fontSize="sm">
                   Networking con profesionales
                 </Text>
               </Flex>
+
               <Flex gap={3} align="center">
                 <Flex
                   w={6}
@@ -114,6 +120,7 @@ export default function RegisterPage() {
                 >
                   <IconGift size={14} color="#76ABAE" />
                 </Flex>
+
                 <Text color="gray.300" fontSize="sm">
                   Sorteos y material exclusivo
                 </Text>
@@ -123,18 +130,17 @@ export default function RegisterPage() {
         </Flex>
 
         <Flex flex={1} align="center" justify="center" position="relative">
-          <NextLink href="/" passHref>
-            <ChakraLink position="absolute" top={4} right={4}>
-              <IconButton
-                aria-label="Cerrar"
-                variant="ghost"
-                size="md"
-                color="white"
-              >
-                <IconArrowLeft size={24} />
-              </IconButton>
-            </ChakraLink>
-          </NextLink>
+          <ChakraLink
+            asChild
+            position="absolute"
+            top={4}
+            right={4}
+            color="white"
+          >
+            <NextLink href="/" aria-label="Cerrar">
+              <IconArrowLeft size={24} />
+            </NextLink>
+          </ChakraLink>
 
           <Box w="full" maxW="500px" mx="auto" px={4} position="relative">
             <Box
@@ -148,6 +154,7 @@ export default function RegisterPage() {
               filter="blur(60px)"
               pointerEvents="none"
             />
+
             <Box
               position="absolute"
               bottom="-30px"
@@ -159,6 +166,7 @@ export default function RegisterPage() {
               filter="blur(50px)"
               pointerEvents="none"
             />
+
             <Box
               borderWidth={1}
               borderColor="rgba(255,255,255,0.2)"
@@ -173,11 +181,9 @@ export default function RegisterPage() {
 
             <Text textAlign="center" fontSize="sm" color="white" mt={4}>
               ¿Ya tienes cuenta?{" "}
-              <NextLink href="/login" passHref>
-                <ChakraLink color="brand.teal" fontWeight="medium">
-                  Iniciar sesión
-                </ChakraLink>
-              </NextLink>
+              <ChakraLink asChild color="brand.teal" fontWeight="medium">
+                <NextLink href="/login">Iniciar sesión</NextLink>
+              </ChakraLink>
             </Text>
           </Box>
         </Flex>
