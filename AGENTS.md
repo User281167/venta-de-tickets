@@ -1,8 +1,8 @@
 <!-- SPECKIT START -->
-Current plan: specs/002-landing-login-ui/plan.md
-Data model: specs/002-landing-login-ui/data-model.md
-Research: specs/002-landing-login-ui/research.md
-Quickstart: specs/002-landing-login-ui/quickstart.md
+Current plan: specs/003-auth-jwt-middleware/plan.md
+Data model: specs/003-auth-jwt-middleware/data-model.md
+Research: specs/003-auth-jwt-middleware/research.md
+Quickstart: specs/003-auth-jwt-middleware/quickstart.md
 <!-- SPECKIT END -->
 
 # AGENT.md

@@ -1,3 +1,1 @@
-{
-  "feature_directory": "specs/002-landing-login-ui"
-}
+﻿{"feature_directory":"specs/003-auth-jwt-middleware"}
