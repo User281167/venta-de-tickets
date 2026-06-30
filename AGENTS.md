@@ -1,9 +1,9 @@
 <!-- SPECKIT START -->
-Current plan: specs/004-user-profile-panel/plan.md
-Data model: specs/004-user-profile-panel/data-model.md
-Research: specs/004-user-profile-panel/research.md
-Quickstart: specs/004-user-profile-panel/quickstart.md
-Next spec: specs/004-user-profile-panel/spec.md
+Current plan: specs/005-profile-signup-consent/plan.md
+Data model: specs/005-profile-signup-consent/data-model.md
+Research: specs/005-profile-signup-consent/research.md
+Quickstart: specs/005-profile-signup-consent/quickstart.md
+Tasks: specs/005-profile-signup-consent/tasks.md
 <!-- SPECKIT END -->
 
 # AGENT.md

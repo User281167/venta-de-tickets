@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   Box,
   Button,
+  Checkbox,
   Field,
   HStack,
   Input,
@@ -17,18 +19,19 @@ import {
   IconButton,
 } from "@chakra-ui/react";
 import {
-  registerSchema,
-  type RegisterInput,
-} from "@/features/auth/schemas/auth.schema";
-import { signUp, signInWithGoogle } from "@/features/auth/api/auth.client";
-import { useAuth } from "@/features/auth/hooks/useAuth";
-import {
   IconBrandGoogle,
   IconEye,
   IconEyeOff,
   IconMail,
   IconLock,
 } from "@tabler/icons-react";
+
+import {
+  registerSchema,
+  type RegisterInput,
+} from "@/features/auth/schemas/auth.schema";
+import { signUp, signInWithGoogle } from "@/features/auth/api/auth.client";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 export function RegisterForm() {
   const router = useRouter();
@@ -38,6 +41,7 @@ export function RegisterForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [consentGiven, setConsentGiven] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<
     Partial<Record<keyof RegisterInput, string>>
   >({});
@@ -61,14 +65,17 @@ export function RegisterForm() {
       email,
       password,
       confirmPassword,
+      consentGiven,
     });
 
     if (!result.success) {
       const fieldErrors: Partial<Record<keyof RegisterInput, string>> = {};
+
       for (const issue of result.error.issues) {
         const path = issue.path[0] as keyof RegisterInput;
         fieldErrors[path] = issue.message;
       }
+
       setFieldErrors(fieldErrors);
       return;
     }
@@ -84,12 +91,41 @@ export function RegisterForm() {
     }
 
     setStatus("success");
-    router.push("/");
   }
 
   async function handleGoogleSignIn() {
     setGoogleStatus("loading");
     await signInWithGoogle();
+  }
+
+  if (status === "success") {
+    return (
+      <VStack gap={5} align="center" py={10}>
+        <Heading as="h1" size="xl" textAlign="center" color="white">
+          Revisa tu correo
+        </Heading>
+
+        <Text textAlign="center" fontSize="sm" color="white" opacity={0.8} maxW="sm">
+          Te enviamos un enlace de confirmación a{" "}
+          <strong>{email}</strong>. Haz clic en el enlace para activar tu
+          cuenta y luego inicia sesión.
+        </Text>
+
+        <Button
+          variant="outline"
+          size="lg"
+          colorPalette="white"
+          color="white"
+          _hover={{
+            color: "transparent"
+          }}
+          onClick={() => router.push("/login")}
+          mt={4}
+        >
+          Ir a iniciar sesión
+        </Button>
+      </VStack>
+    );
   }
 
   return (
@@ -194,6 +230,43 @@ export function RegisterForm() {
                 />
               </InputGroup>
               <Field.ErrorText>{fieldErrors.confirmPassword}</Field.ErrorText>
+            </Field.Root>
+
+            <Field.Root invalid={!!fieldErrors.consentGiven}>
+              <HStack gap={3} align="flex-start">
+                <Checkbox.Root
+                  checked={consentGiven}
+                  onCheckedChange={(details) =>
+                    setConsentGiven(!!details.checked)
+                  }
+                >
+                  <Checkbox.HiddenInput />
+
+                  <Checkbox.Control
+                    borderColor="rgba(255,255,255,0.5)"
+                    _checked={{ bg: "teal.500", borderColor: "teal.500" }}
+                  />
+                </Checkbox.Root>
+
+                <Text as="span" color="white" fontSize="sm" lineHeight="1.5">
+                  Acepto los{" "}
+                  <Link
+                    href="/terminos"
+                    style={{ textDecoration: "underline", color: "#81E6D9" }}
+                  >
+                    términos y condiciones
+                  </Link>{" "}
+                  y la{" "}
+                  <Link
+                    href="/privacidad"
+                    style={{ textDecoration: "underline", color: "#81E6D9" }}
+                  >
+                    política de privacidad
+                  </Link>
+                </Text>
+              </HStack>
+
+              <Field.ErrorText>{fieldErrors.consentGiven}</Field.ErrorText>
             </Field.Root>
 
             {generalError && (

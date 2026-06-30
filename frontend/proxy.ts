@@ -37,7 +37,7 @@ export async function proxy(request: NextRequest) {
     pathname.startsWith("/mi-cuenta") || pathname.startsWith("/admin");
 
   if (user && isAuthPage) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/mi-cuenta", request.url));
   }
 
   if (!user && isProtectedPage) {

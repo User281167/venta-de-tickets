@@ -12,10 +12,11 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { IconBrain, IconMenu2, IconUser, IconX } from "@tabler/icons-react";
+import { IconBrain, IconLogout, IconMenu2, IconUser, IconX } from "@tabler/icons-react";
 import NextLink from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { signOut } from "@/features/auth/api/auth.client";
 
 const NAV_ITEMS = [
   { label: "Inicio", href: "/#hero" },
@@ -26,15 +27,23 @@ const NAV_ITEMS = [
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+  const isProtectedPage = pathname.startsWith("/mi-cuenta");
+  const [scrolled, setScrolled] = useState(isProtectedPage);
   const isAuthPage = pathname === "/login" || pathname === "/registro";
   const { user } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await signOut();
+    router.push("/");
+  };
 
   useEffect(() => {
     function onScroll() {
       setScrolled(window.scrollY > 60);
     }
+    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -84,12 +93,17 @@ export function Navbar() {
 
           <HStack gap={3} hideBelow="md">
             {user ? (
-              <Button asChild variant={scrolled ? "outline" : "solid"} size="sm" colorPalette={scrolled ? "teal" : "white"}>
-                <NextLink href="/mi-cuenta">
-                  <IconUser size={18} />
-                  Mi Perfil
-                </NextLink>
-              </Button>
+              <>
+                <Button asChild variant={scrolled ? "outline" : "solid"} size="sm" colorPalette={scrolled ? "teal" : "white"}>
+                  <NextLink href="/mi-cuenta">
+                    <IconUser size={18} />
+                    Mi Perfil
+                  </NextLink>
+                </Button>
+                <Button variant="ghost" size="sm" color={linkColor} onClick={handleLogout}>
+                  <IconLogout size={18} />
+                </Button>
+              </>
             ) : (
               !isAuthPage && (
                 <>
@@ -138,12 +152,18 @@ export function Navbar() {
                 </ChakraLink>
               ))}
               {user ? (
-                <Button asChild variant="outline" size="sm" w="full" colorPalette="teal" onClick={() => setOpen(false)}>
-                  <NextLink href="/mi-cuenta">
-                    <IconUser size={18} />
-                    Mi Perfil
-                  </NextLink>
-                </Button>
+                <>
+                  <Button asChild variant="outline" size="sm" w="full" colorPalette="teal" onClick={() => setOpen(false)}>
+                    <NextLink href="/mi-cuenta">
+                      <IconUser size={18} />
+                      Mi Perfil
+                    </NextLink>
+                  </Button>
+                  <Button variant="ghost" size="sm" w="full" color={scrolled ? "brand.dark" : "white"} onClick={() => { setOpen(false); handleLogout(); }}>
+                    <IconLogout size={18} />
+                    Cerrar sesión
+                  </Button>
+                </>
               ) : (
                 !isAuthPage && (
                   <HStack gap={2} pt={2}>
