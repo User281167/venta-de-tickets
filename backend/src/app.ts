@@ -1,3 +1,4 @@
+import cors from 'cors';
 import express from 'express';
 import { authMiddleware } from './shared/middlewares/auth.middleware.ts';
 import { adminMiddleware } from './shared/middlewares/admin.middleware.ts';
@@ -9,6 +10,10 @@ import { usersRouter } from './modules/users/index.ts';
 export const app = express();
 
 app.set('trust proxy', 1);
+const allowedOrigins = process.env['CORS_ORIGIN']
+  ? process.env['CORS_ORIGIN'].split(',')
+  : ['http://localhost:3000'];
+app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json());
 
 app.get('/api/me', authMiddleware, meHandler);
