@@ -1,8 +1,8 @@
 <!-- SPECKIT START -->
-Current plan: specs/001-prisma-schema-setup/plan.md
-Data model: specs/001-prisma-schema-setup/data-model.md
-Research: specs/001-prisma-schema-setup/research.md
-Quickstart: specs/001-prisma-schema-setup/quickstart.md
+Current plan: specs/002-landing-login-ui/plan.md
+Data model: specs/002-landing-login-ui/data-model.md
+Research: specs/002-landing-login-ui/research.md
+Quickstart: specs/002-landing-login-ui/quickstart.md
 <!-- SPECKIT END -->
 
 # AGENT.md
