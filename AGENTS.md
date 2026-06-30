@@ -1,9 +1,6 @@
 <!-- SPECKIT START -->
-Current plan: specs/005-profile-signup-consent/plan.md
-Data model: specs/005-profile-signup-consent/data-model.md
-Research: specs/005-profile-signup-consent/research.md
-Quickstart: specs/005-profile-signup-consent/quickstart.md
-Tasks: specs/005-profile-signup-consent/tasks.md
+For additional context about technologies to be used, project structure,
+shell commands, and other important information, read the current plan
 <!-- SPECKIT END -->
 
 # AGENT.md

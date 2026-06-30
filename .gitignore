@@ -1,6 +1,7 @@
 # spec kit
 .opencode
 /specs
+.vibe
 
 # Node
 node_modules/

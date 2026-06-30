@@ -1,0 +1,16 @@
+{
+  "integration": "vibe",
+  "version": "0.8.12",
+  "installed_at": "2026-06-30T20:27:53.246414+00:00",
+  "files": {
+    ".vibe/skills/speckit-analyze/SKILL.md": "cf0a4bbfc158857ef41df4a5cf8be411b9f6e6389ac5f771a913216e4f439fd6",
+    ".vibe/skills/speckit-checklist/SKILL.md": "7650d06149ce21306d664895f6298fdba733725be8f9702ab54ca3c0cd18404e",
+    ".vibe/skills/speckit-clarify/SKILL.md": "bcd2e9c077a4cc26e550bf76881312339d2264f0dd2466577892f46b4f2465ad",
+    ".vibe/skills/speckit-constitution/SKILL.md": "82f0d9a86440bf338cc32cfd853ae28f8282d3ca1802861a6bab1716a9a7025e",
+    ".vibe/skills/speckit-implement/SKILL.md": "a7ad19edee41bc8e60af63adf557959a5d5523141ac18e0b3860ba91326f2ceb",
+    ".vibe/skills/speckit-plan/SKILL.md": "cdaf4c7f6eb0c18112a4990cb14aec8aaa9d4f9b451d1c6679cec6ea08b48833",
+    ".vibe/skills/speckit-specify/SKILL.md": "e53fddddabc20f1ca429bcb0505d691bd6d307d6caa89c78bc6b0ae0015827ad",
+    ".vibe/skills/speckit-tasks/SKILL.md": "efe4a80eeeec4c6dcd10cabefb11e8405b0f45a8ce69f20b20332f8dc1aaca2e",
+    ".vibe/skills/speckit-taskstoissues/SKILL.md": "00d9ebb25aa4b6ed3eb5a3c16580674e2048fcff6a4ca54aa9b9ec01ff8c13cc"
+  }
+}

@@ -3,6 +3,7 @@ import {
   PRIVACY_POLICY_TYPE,
 } from '../../shared/config/constants.js';
 import { ForbiddenError } from '../../shared/errors/ForbiddenError.js';
+import * as surveysRepo from '../surveys/surveys.repository.js';
 import * as usersRepo from './users.repository.js';
 import type { UpdateUserInput } from './users.validators.js';
 
@@ -19,6 +20,8 @@ export async function getMe(id: string) {
     PRIVACY_POLICY_TYPE,
   );
 
+  const onboardingDone = await surveysRepo.existsByUserAndType(id, 'onboarding');
+
   return {
     user: {
       id: user.id,
@@ -31,6 +34,7 @@ export async function getMe(id: string) {
       acceptedAt: acceptance?.acceptedAt.toISOString() ?? null,
       policyVersion: PRIVACY_POLICY_VERSION,
     },
+    onboarding_survey_done: onboardingDone,
   };
 }
 

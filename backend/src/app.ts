@@ -6,6 +6,7 @@ import { errorHandler } from './shared/middlewares/error-handler.middleware.ts';
 import { meHandler } from './modules/me/me.controller.ts';
 import { adminPingHandler } from './modules/admins/admin-ping.controller.ts';
 import { usersRouter } from './modules/users/index.ts';
+import { surveysRouter } from './modules/surveys/surveys.routes.ts';
 
 export const app = express();
 
@@ -19,5 +20,6 @@ app.use(express.json());
 app.get('/api/me', authMiddleware, meHandler);
 app.get('/api/admin/ping', authMiddleware, adminMiddleware, adminPingHandler);
 app.use('/api/users', usersRouter);
+app.use('/api/surveys', surveysRouter);
 
 app.use(errorHandler);
