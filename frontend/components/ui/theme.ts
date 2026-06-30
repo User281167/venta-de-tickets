@@ -3,8 +3,8 @@ import { createSystem, defaultConfig, defineConfig } from "@chakra-ui/react";
 const config = defineConfig({
   globalCss: {
     body: {
-      bg: "#F5F5F5",
-      color: "#303841",
+      bg: "brand.light",
+      color: "brand.dark",
     },
   },
   theme: {
@@ -20,8 +20,10 @@ const config = defineConfig({
     },
     semanticTokens: {
       colors: {
-        "accent.default": { value: "#76ABAE" },
-        "cta.default": { value: "#FF5722" },
+        "brand.light": { value: "{colors.brand.light}" },
+        "brand.teal": { value: "{colors.brand.teal}" },
+        "brand.dark": { value: "{colors.brand.dark}" },
+        "brand.orange": { value: "{colors.brand.orange}" },
       },
     },
   },

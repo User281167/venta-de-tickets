@@ -86,7 +86,7 @@ export function LoginForm() {
         <form onSubmit={handleSubmit}>
           <Stack gap={4}>
             <Field.Root invalid={!!fieldErrors.email}>
-              <Field.Label css={{ color: "#303841" }}>
+              <Field.Label color="brand.dark">
                 Correo electrónico
               </Field.Label>
               <Input
@@ -99,7 +99,7 @@ export function LoginForm() {
             </Field.Root>
 
             <Field.Root invalid={!!fieldErrors.password}>
-              <Field.Label css={{ color: "#303841" }}>Contraseña</Field.Label>
+              <Field.Label color="brand.dark">Contraseña</Field.Label>
               <Input
                 type="password"
                 value={password}
@@ -110,12 +110,12 @@ export function LoginForm() {
             </Field.Root>
 
             {generalError && (
-              <Text color="#FF5722" fontSize="sm" textAlign="center">
+              <Text color="brand.orange" fontSize="sm" textAlign="center">
                 {generalError}
               </Text>
             )}
 
-            <Button type="submit" loading={status === "submitting"} w="full">
+            <Button type="submit" loading={status === "submitting"} w="full" colorPalette="teal">
               Iniciar sesión
             </Button>
           </Stack>

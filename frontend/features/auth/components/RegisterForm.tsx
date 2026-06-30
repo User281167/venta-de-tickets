@@ -119,7 +119,7 @@ export function RegisterForm() {
             </Field.Root>
 
             {generalError && (
-              <Text color="#FF5722" fontSize="sm" textAlign="center">
+              <Text color="brand.orange" fontSize="sm" textAlign="center">
                 {generalError}
               </Text>
             )}
