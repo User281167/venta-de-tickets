@@ -1,12 +1,16 @@
 "use client";
 
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { Heading, Text, VStack, Box } from "@chakra-ui/react";
+import { PrivacyConsentModal } from "@/features/users/components/PrivacyConsentModal";
+import { ProfileForm } from "@/features/users/components/ProfileForm";
+import { useMe } from "@/features/users/hooks/useProfile";
+import { Text } from "@chakra-ui/react";
 
 export default function MiCuentaPage() {
-  const { user, isLoading } = useAuth();
+  const { isLoading: authLoading } = useAuth();
+  const { data, isLoading: profileLoading } = useMe();
 
-  if (isLoading) {
+  if (authLoading || profileLoading) {
     return (
       <Text textAlign="center" mt={10}>
         Cargando...
@@ -14,15 +18,12 @@ export default function MiCuentaPage() {
     );
   }
 
-  return (
-    <Box maxW="md" mx="auto" mt={10} p={6}>
-      <VStack gap={4} align="stretch">
-        <Heading as="h1" size="lg">
-          Mi cuenta
-        </Heading>
+  const needsConsent =
+    data?.consentStatus.required && !data?.consentStatus.acceptedAt;
 
-        <Text>Bienvenido, {user?.email ?? "usuario"}</Text>
-      </VStack>
-    </Box>
-  );
+  if (needsConsent) {
+    return <PrivacyConsentModal />;
+  }
+
+  return <ProfileForm />;
 }
