@@ -2,60 +2,26 @@
 
 import {
   Box,
-  Button,
   Container,
-  Flex,
   Heading,
-  HStack,
-  Icon,
+  SimpleGrid,
+  Spinner,
+  Center,
   Stack,
   Text,
   VStack,
 } from "@chakra-ui/react";
-import {
-  IconCheck,
-  IconCrown,
-  IconShoppingCart,
-  IconStar,
-  IconTicket,
-} from "@tabler/icons-react";
-import NextLink from "next/link";
-
-const TIERS = [
-  {
-    name: "General",
-    price: "$15.000",
-    icon: IconTicket,
-    iconBg: "brand.teal",
-    features: ["Acceso a todas las charlas", "Certificado digital"],
-  },
-  {
-    name: "Premium",
-    price: "$35.000",
-    icon: IconStar,
-    iconBg: "brand.dark",
-    features: [
-      "Asiento preferencial",
-      "Acceso a networking VIP",
-      "Kit del evento",
-    ],
-    highlighted: true,
-  },
-  {
-    name: "VIP Experience",
-    price: "$75.000",
-    icon: IconCrown,
-    iconBg: "brand.orange",
-    features: [
-      "Meet & Greet con speakers",
-      "Acceso a zona exclusiva",
-      "Grabaciones completas del evento",
-      "Certificado físico firmado",
-    ],
-  },
-];
+import { usePublishedEvents } from "@/features/events/api/events.queries";
+import { useEventWithTicketTypes } from "@/features/ticket-types/api/ticket-types.queries";
+import { TicketTypeCard } from "@/features/ticket-types/components/TicketTypeCard";
 
 export function TicketSection() {
+  const { data: events, isLoading: loadingEvents } = usePublishedEvents();
+  const firstEventId = events?.[0]?.id ?? "";
+  const { data: event, isLoading: loadingEvent } = useEventWithTicketTypes(firstEventId);
+
+  const isLoading = loadingEvents || (!!events?.length && loadingEvent);
+
   return (
     <Box id="entradas" py={20} bg="gray.50">
       <Container maxW="1200px" px={4}>
@@ -75,121 +41,23 @@ export function TicketSection() {
           </Text>
         </Stack>
 
-        <Flex justify="center" align="center" gap={8} wrap="wrap">
-          {TIERS.map((tier, i) => {
-            const isCenter = i === 1;
-            return (
-              <Flex
-                key={tier.name}
-                direction="column"
-                bg="white"
-                borderRadius="2xl"
-                borderWidth={tier.highlighted ? 2 : 1}
-                borderColor={tier.highlighted ? "brand.teal" : "gray.200"}
-                boxShadow={tier.highlighted ? "xl" : "md"}
-                overflow="hidden"
-                w={{ base: "full", md: "360px" }}
-                minH="480px"
-                mt={isCenter ? 0 : 10}
-                _hover={{ transform: "translateY(-8px)", boxShadow: "xl" }}
-                transition="all 0.25s"
-              >
-                {tier.highlighted && (
-                  <Box bg="brand.teal" py={2} textAlign="center">
-                    <Text
-                      fontSize="xs"
-                      fontWeight="bold"
-                      color="white"
-                      textTransform="uppercase"
-                      letterSpacing="wide"
-                    >
-                      Más popular
-                    </Text>
-                  </Box>
-                )}
-
-                <Box p={8} pb={0}>
-                  <HStack gap={4} mb={6}>
-                    <Flex
-                      w={14}
-                      h={14}
-                      bg={tier.iconBg}
-                      borderRadius="xl"
-                      align="center"
-                      justify="center"
-                      flexShrink={0}
-                    >
-                      <Icon as={tier.icon} boxSize={7} color="white" />
-                    </Flex>
-
-                    <Stack gap={0}>
-                      <Text fontSize="xl" fontWeight="bold" color="brand.dark">
-                        {tier.name}
-                      </Text>
-
-                      <Text
-                        fontSize="3xl"
-                        fontWeight="bold"
-                        color="brand.teal"
-                        lineHeight="1"
-                      >
-                        {tier.price}
-                        <Text
-                          as="span"
-                          fontSize="sm"
-                          fontWeight="normal"
-                          color="gray.400"
-                        >
-                          {" "}
-                          COP
-                        </Text>
-                      </Text>
-                    </Stack>
-                  </HStack>
-
-                  <VStack gap={3} align="start">
-                    {tier.features.map((feature) => (
-                      <HStack key={feature} gap={3}>
-                        <Flex
-                          w={6}
-                          h={6}
-                          bg="rgba(118,171,174,0.12)"
-                          borderRadius="full"
-                          align="center"
-                          justify="center"
-                          flexShrink={0}
-                        >
-                          <IconCheck size={14} color="#76ABAE" />
-                        </Flex>
-
-                        <Text fontSize="sm" color="gray.600">
-                          {feature}
-                        </Text>
-                      </HStack>
-                    ))}
-                  </VStack>
-                </Box>
-
-                <Box p={8} mt="auto">
-                  <Button
-                    asChild
-                    w="full"
-                    size="lg"
-                    colorPalette={tier.highlighted ? "teal" : "teal"}
-                    variant={tier.highlighted ? "solid" : "outline"}
-                    borderRadius="xl"
-                  >
-                    <NextLink href="/registro">
-                      <IconShoppingCart size={18} />
-                      Comprar{" "}
-                      {tier.name === "VIP Experience" ? "VIP" : tier.name}
-                    </NextLink>
-                  </Button>
-                </Box>
-              </Flex>
-            );
-          })}
-        </Flex>
+        {isLoading ? (
+          <Center py={10}>
+            <Spinner size="xl" color="#76ABAE" />
+          </Center>
+        ) : !event || event.ticketTypes.length === 0 ? (
+          <VStack gap={4} align="center" py={10}>
+            <Text color="gray.500">
+              No hay entradas disponibles en este momento.
+            </Text>
+          </VStack>
+        ) : (
+          <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={6} alignItems="stretch">
+            {event.ticketTypes.map((tt) => (
+              <TicketTypeCard key={tt.id} ticketType={tt} />
+            ))}
+          </SimpleGrid>
+        )}
       </Container>
     </Box>
   );

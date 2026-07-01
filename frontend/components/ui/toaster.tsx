@@ -19,9 +19,13 @@ export function Toaster() {
   return (
     <ChakraToaster toaster={toaster}>
       {(toast) => (
-        <ToastRoot>
+        <ToastRoot maxW="md" p={4}>
           <ToastTitle>{toast.title}</ToastTitle>
-          <ToastDescription>{toast.description}</ToastDescription>
+          {toast.description && (
+            <ToastDescription lineBreak="anywhere" wordBreak="break-word">
+              {toast.description}
+            </ToastDescription>
+          )}
           <ToastCloseTrigger />
         </ToastRoot>
       )}

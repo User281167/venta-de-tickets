@@ -37,6 +37,12 @@ type SidebarLink = {
 const ALL_LINKS: SidebarLink[] = [
   { href: "/admin", label: "Panel", icon: <IconDashboard size={20} /> },
   {
+    href: "/admin/ticket-types",
+    label: "Tipos de entrada",
+    icon: <IconTicket size={20} />,
+    roles: ["super_admin", "organizer"] as const,
+  },
+  {
     href: "/admin/usuarios",
     label: "Usuarios",
     icon: <IconUsers size={20} />,
@@ -51,7 +57,6 @@ const ALL_LINKS: SidebarLink[] = [
 ];
 
 const FUTURE_LINKS = [
-  { label: "Tickets", disabled: true },
   { label: "Check-in", disabled: true },
 ] as const;
 
