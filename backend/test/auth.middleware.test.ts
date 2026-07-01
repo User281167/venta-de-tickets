@@ -7,9 +7,11 @@ vi.mock('../src/shared/services/auth.service.js', () => ({
   verifyToken: vi.fn(),
 }));
 
-const { verifyToken } = await import(
-  '../src/shared/services/auth.service.js'
-);
+vi.mock('../src/shared/services/role-resolver.js', () => ({
+  resolveRole: vi.fn(),
+}));
+
+const { verifyToken } = await import('../src/shared/services/auth.service.js');
 
 describe('Auth Middleware', () => {
   beforeEach(() => {
@@ -64,6 +66,7 @@ describe('Auth Middleware', () => {
     vi.mocked(verifyToken).mockResolvedValueOnce({
       id: 'user-123',
       email: 'test@example.com',
+      role: 'super_admin',
     });
 
     const res = await request(app)

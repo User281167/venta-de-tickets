@@ -6,6 +6,14 @@ vi.mock('../src/shared/services/auth.service.js', () => ({
   verifyToken: vi.fn(),
 }));
 
+vi.mock('../src/shared/services/role-resolver.js', () => ({
+  resolveRole: vi.fn(),
+}));
+
+vi.mock('../src/modules/surveys/surveys.repository.js', () => ({
+  existsByUserAndType: vi.fn(),
+}));
+
 vi.mock('../src/modules/users/users.repository.js', () => ({
   findById: vi.fn(),
   update: vi.fn(),
@@ -13,9 +21,8 @@ vi.mock('../src/modules/users/users.repository.js', () => ({
   createPrivacyAcceptance: vi.fn(),
 }));
 
-const { verifyToken } = await import(
-  '../src/shared/services/auth.service.js'
-);
+const { verifyToken } = await import('../src/shared/services/auth.service.js');
+const { resolveRole } = await import('../src/shared/services/role-resolver.js');
 
 const repo = await import('../src/modules/users/users.repository.js');
 
@@ -26,6 +33,7 @@ function authHeader(token = 'valid.jwt.token') {
 describe('GET /api/users/me', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(resolveRole).mockResolvedValue(null);
     vi.mocked(verifyToken).mockResolvedValue({
       id: 'user-123',
       email: 'test@example.com',
@@ -49,9 +57,7 @@ describe('GET /api/users/me', () => {
     });
     vi.mocked(repo.findPrivacyAcceptance).mockResolvedValue(null);
 
-    const res = await request(app)
-      .get('/api/users/me')
-      .set(authHeader());
+    const res = await request(app).get('/api/users/me').set(authHeader());
 
     expect(res.status).toBe(200);
     expect(res.body.user.email).toBe('test@example.com');
@@ -64,6 +70,7 @@ describe('GET /api/users/me', () => {
 describe('PATCH /api/users/me', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(resolveRole).mockResolvedValue(null);
     vi.mocked(verifyToken).mockResolvedValue({
       id: 'user-123',
       email: 'test@example.com',
@@ -131,6 +138,7 @@ describe('PATCH /api/users/me', () => {
 describe('POST /api/users/me/privacy-acceptance', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(resolveRole).mockResolvedValue(null);
     vi.mocked(verifyToken).mockResolvedValue({
       id: 'user-123',
       email: 'test@example.com',
@@ -181,6 +189,7 @@ describe('POST /api/users/me/privacy-acceptance', () => {
 describe('GET /api/users/me/privacy-status', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(resolveRole).mockResolvedValue(null);
     vi.mocked(verifyToken).mockResolvedValue({
       id: 'user-123',
       email: 'test@example.com',
