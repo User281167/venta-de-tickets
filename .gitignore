@@ -24,3 +24,7 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
+
+# Supabase CLI
+supabase/.branches
+supabase/.temp

@@ -19,5 +19,10 @@ adminsRouter.get(
   requireRole('super_admin', 'organizer'),
   adminsController.listOnboardingSurveys,
 );
+adminsRouter.patch(
+  '/users/:id/role',
+  requireRole('super_admin'),
+  adminsController.updateUserRole,
+);
 
 export { adminsRouter };
