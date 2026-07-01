@@ -1,4 +1,4 @@
-import { SurveyType } from '../../generated/prisma/client.js';
+import { SurveyType } from '@prisma/client';
 import * as surveysRepo from './surveys.repository.js';
 import type { OnboardingSurveyInput } from './surveys.validators.js';
 

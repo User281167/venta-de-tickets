@@ -1,5 +1,5 @@
 import { prisma } from '../../shared/database/prisma.client.js';
-import { PolicyType } from '../../generated/prisma/client.js';
+import { PolicyType } from '@prisma/client';
 import type { UpdateUserInput } from './users.validators.js';
 
 export function findById(id: string) {

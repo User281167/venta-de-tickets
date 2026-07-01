@@ -6,8 +6,10 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc",
+    "prisma:generate": "prisma generate",
+    "build": "pnpm prisma:generate && tsc",
     "start": "node dist/server.js",
+    "postinstall": "prisma generate",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint .",
