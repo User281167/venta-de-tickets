@@ -1,16 +1,16 @@
 import cors from 'cors';
 import express from 'express';
-import { authMiddleware } from './shared/middlewares/auth.middleware.ts';
-import { errorHandler } from './shared/middlewares/error-handler.middleware.ts';
-import { meHandler } from './modules/me/me.controller.ts';
-import { usersRouter } from './modules/users/index.ts';
-import { surveysRouter } from './modules/surveys/surveys.routes.ts';
-import { adminsRouter } from './modules/admins/admins.routes.ts';
-import { authRouter } from './modules/auth/index.ts';
+import { authMiddleware } from './shared/middlewares/auth.middleware.js';
+import { errorHandler } from './shared/middlewares/error-handler.middleware.js';
+import { meHandler } from './modules/me/me.controller.js';
+import { usersRouter } from './modules/users/index.js';
+import { surveysRouter } from './modules/surveys/surveys.routes.js';
+import { adminsRouter } from './modules/admins/admins.routes.js';
+import { authRouter } from './modules/auth/index.js';
 import {
   publicEventRouter,
   adminTicketTypesRouter,
-} from './modules/ticket-types/ticket-types.routes.ts';
+} from './modules/ticket-types/ticket-types.routes.js';
 
 export const app = express();
 
