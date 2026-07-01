@@ -5,6 +5,9 @@ export type UserRow = {
   id: string;
   fullName: string;
   email: string;
+  role: string | null;
+  createdAt: string;
+  onboardingSurveyDone: boolean;
 };
 
 export type UserListResponse = {

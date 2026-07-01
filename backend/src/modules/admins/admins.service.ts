@@ -3,10 +3,15 @@ import { supabaseAdmin } from '../../shared/supabase/admin-client.js';
 import * as adminsRepo from './admins.repository.js';
 
 export async function listUsers(page: number, limit: number, search?: string) {
-  const [data, total] = await Promise.all([
+  const [raw, total] = await Promise.all([
     adminsRepo.findAll(page, limit, search),
     adminsRepo.countAll(search),
   ]);
+
+  const data = raw.map(({ surveyResponses, ...rest }) => ({
+    ...rest,
+    onboardingSurveyDone: surveyResponses.length > 0,
+  }));
 
   return { data, total, page, limit };
 }

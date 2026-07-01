@@ -12,7 +12,18 @@ export function findAll(page: number, limit: number, search?: string) {
 
   return prisma.user.findMany({
     where,
-    select: { id: true, fullName: true, email: true, role: true },
+    select: {
+      id: true,
+      fullName: true,
+      email: true,
+      role: true,
+      createdAt: true,
+      surveyResponses: {
+        where: { surveyType: 'onboarding' },
+        select: { id: true },
+        take: 1,
+      },
+    },
     skip: (page - 1) * limit,
     take: limit,
   });
