@@ -36,7 +36,8 @@ import type { AdminTicketType } from "@/features/ticket-types/schemas/ticket-typ
 export default function AdminTicketTypesPage() {
   const { data: events, isLoading: loadingEvents } = usePublishedEvents();
   const eventId = events?.[0]?.id ?? "";
-  const { data: ticketTypes, isLoading: loadingTypes } = useAdminTicketTypes(eventId);
+  const { data: ticketTypes, isLoading: loadingTypes } =
+    useAdminTicketTypes(eventId);
   const createMutation = useCreateTicketType(eventId);
   const updateMutation = useUpdateTicketType(eventId);
   const deactivateMutation = useDeactivateTicketType(eventId);
@@ -78,22 +79,30 @@ export default function AdminTicketTypesPage() {
           Nuevo tipo
         </Button>
 
-        <DialogRoot open={showCreate} onOpenChange={(e) => setShowCreate(e.open)}>
+        <DialogRoot
+          open={showCreate}
+          onOpenChange={(e) => setShowCreate(e.open)}
+        >
           <DialogBackdrop />
+
           <DialogPositioner>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Crear tipo de entrada</DialogTitle>
-            </DialogHeader>
-            <DialogBody>
-              <TicketTypeForm
-                eventId={eventId}
-                onCreate={async (data) => { await createMutation.mutateAsync(data); }}
-                onCancel={() => setShowCreate(false)}
-              />
-            </DialogBody>
-            <DialogCloseTrigger />
-          </DialogContent>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Crear tipo de entrada</DialogTitle>
+              </DialogHeader>
+
+              <DialogBody>
+                <TicketTypeForm
+                  eventId={eventId}
+                  onCreate={async (data) => {
+                    await createMutation.mutateAsync(data);
+                  }}
+                  onCancel={() => setShowCreate(false)}
+                />
+              </DialogBody>
+
+              <DialogCloseTrigger />
+            </DialogContent>
           </DialogPositioner>
         </DialogRoot>
       </HStack>
@@ -113,29 +122,44 @@ export default function AdminTicketTypesPage() {
                 <Table.ColumnHeader w="120px">Acciones</Table.ColumnHeader>
               </Table.Row>
             </Table.Header>
+
             <Table.Body>
               {ticketTypesList.map((tt) => (
                 <Table.Row key={tt.id}>
                   <Table.Cell fontWeight="medium">{tt.name}</Table.Cell>
+
                   <Table.Cell>
                     ${Number(tt.price).toLocaleString("es-CO")}
                   </Table.Cell>
+
                   <Table.Cell>
                     {tt.quantityTotal - tt.quantitySold} / {tt.quantityTotal}
                   </Table.Cell>
+
                   <Table.Cell>{tt.maxPerUser ?? "—"}</Table.Cell>
                   <Table.Cell>
-                    <Badge colorPalette={tt.isActive ? "green" : "red"} size="sm">
+                    <Badge
+                      colorPalette={tt.isActive ? "green" : "red"}
+                      size="sm"
+                    >
                       {tt.isActive ? "Activo" : "Inactivo"}
                     </Badge>
                   </Table.Cell>
+
                   <Table.Cell>
                     <HStack gap={2}>
-                      <Button size="sm" variant="outline" onClick={() => setEditing(tt)}>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setEditing(tt)}
+                      >
                         <IconEdit size={16} />
                       </Button>
+
                       <Button
-                        size="sm" variant="outline" colorPalette="red"
+                        size="sm"
+                        variant="outline"
+                        colorPalette="red"
                         onClick={() => setDeletingId(tt.id)}
                         disabled={!tt.isActive}
                       >
@@ -150,65 +174,85 @@ export default function AdminTicketTypesPage() {
         </Box>
       )}
 
-      <DialogRoot open={!!editing} onOpenChange={(e) => { if (!e.open) setEditing(null); }}>
+      <DialogRoot
+        open={!!editing}
+        onOpenChange={(e) => {
+          if (!e.open) setEditing(null);
+        }}
+      >
         <DialogBackdrop />
         <DialogPositioner>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Editar: {editing?.name ?? ""}</DialogTitle>
-          </DialogHeader>
-          <DialogBody>
-            {editing && (
-              <TicketTypeForm
-                ticketType={editing}
-                eventId={eventId}
-                onCreate={async () => {}}
-                onUpdate={async (id, data) => {
-                  await updateMutation.mutateAsync({ id, data });
-                }}
-                onCancel={() => setEditing(null)}
-              />
-            )}
-          </DialogBody>
-          <DialogCloseTrigger />
-        </DialogContent>
-          </DialogPositioner>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Editar: {editing?.name ?? ""}</DialogTitle>
+            </DialogHeader>
+
+            <DialogBody>
+              {editing && (
+                <TicketTypeForm
+                  ticketType={editing}
+                  eventId={eventId}
+                  onCreate={async () => {}}
+                  onUpdate={async (id, data) => {
+                    await updateMutation.mutateAsync({ id, data });
+                  }}
+                  onCancel={() => setEditing(null)}
+                />
+              )}
+            </DialogBody>
+            <DialogCloseTrigger />
+          </DialogContent>
+        </DialogPositioner>
       </DialogRoot>
 
-      <DialogRoot open={!!deletingId} onOpenChange={(e) => { if (!e.open) setDeletingId(null); }}>
+      <DialogRoot
+        open={!!deletingId}
+        onOpenChange={(e) => {
+          if (!e.open) setDeletingId(null);
+        }}
+      >
         <DialogBackdrop />
+
         <DialogPositioner>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Desactivar tipo de entrada</DialogTitle>
-          </DialogHeader>
-          <DialogBody>
-            <Text>
-              ¿Desactivar <strong>{ticketTypesList.find((t) => t.id === deletingId)?.name ?? ""}</strong>?
-              Los tickets existentes no se verán afectados, pero el tipo no
-              estará disponible para nuevas compras.
-            </Text>
-          </DialogBody>
-          <DialogFooter>
-            <HStack gap={3}>
-              <Button variant="outline" onClick={() => setDeletingId(null)}>
-                Cancelar
-              </Button>
-              <Button
-                colorPalette="red"
-                loading={deactivateMutation.isPending}
-                onClick={async () => {
-                  if (deletingId) await deactivateMutation.mutateAsync(deletingId);
-                  setDeletingId(null);
-                }}
-              >
-                Desactivar
-              </Button>
-            </HStack>
-          </DialogFooter>
-          <DialogCloseTrigger />
-        </DialogContent>
-          </DialogPositioner>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Desactivar tipo de entrada</DialogTitle>
+            </DialogHeader>
+
+            <DialogBody>
+              <Text>
+                ¿Desactivar{" "}
+                <strong>
+                  {ticketTypesList.find((t) => t.id === deletingId)?.name ?? ""}
+                </strong>
+                ? Los tickets existentes no se verán afectados, pero el tipo no
+                estará disponible para nuevas compras.
+              </Text>
+            </DialogBody>
+
+            <DialogFooter>
+              <HStack gap={3}>
+                <Button variant="outline" onClick={() => setDeletingId(null)}>
+                  Cancelar
+                </Button>
+
+                <Button
+                  colorPalette="red"
+                  loading={deactivateMutation.isPending}
+                  onClick={async () => {
+                    if (deletingId)
+                      await deactivateMutation.mutateAsync(deletingId);
+                    setDeletingId(null);
+                  }}
+                >
+                  Desactivar
+                </Button>
+              </HStack>
+            </DialogFooter>
+
+            <DialogCloseTrigger />
+          </DialogContent>
+        </DialogPositioner>
       </DialogRoot>
     </Box>
   );

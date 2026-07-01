@@ -17,13 +17,17 @@ import {
   createTicketTypeSchema,
   updateTicketTypeSchema,
 } from "../schemas/ticket-types.schema";
-import type { AdminTicketType } from "../schemas/ticket-types.schema";
+import type {
+  AdminTicketType,
+  CreateTicketTypeInput,
+  UpdateTicketTypeInput,
+} from "../schemas/ticket-types.schema";
 
 interface TicketTypeFormProps {
   ticketType?: AdminTicketType | null;
   eventId: string;
-  onCreate?: (data: unknown) => Promise<void>;
-  onUpdate?: (id: string, data: unknown) => Promise<void>;
+  onCreate?: (data: CreateTicketTypeInput) => Promise<void>;
+  onUpdate?: (id: string, data: UpdateTicketTypeInput) => Promise<void>;
   onCancel: () => void;
 }
 
