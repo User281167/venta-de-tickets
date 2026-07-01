@@ -1,11 +1,11 @@
 import 'dotenv/config';
-import { prisma } from '../src/shared/database/prisma.client.js';
 import { createClient } from '@supabase/supabase-js';
+import { prisma } from '../src/shared/database/prisma.client.js';
 
-const supabaseAdmin = createClient(
-  process.env['SUPABASE_URL']!,
-  process.env['SUPABASE_SERVICE_ROLE_KEY']!,
-);
+const SUPABASE_URL = process.env['SUPABASE_URL']!;
+const SUPABASE_SERVICE_ROLE_KEY = process.env['SUPABASE_SERVICE_ROLE_KEY']!;
+
+const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
 async function main() {
   const id = process.env['SUPER_ADMIN_ID'];
@@ -16,44 +16,26 @@ async function main() {
     process.exit(1);
   }
 
-  // Verificar que existe en auth.users (creado via Supabase dashboard)
-  const { data: authUser, error } =
-    await supabaseAdmin.auth.admin.getUserById(id);
-  if (error || !authUser) {
-    console.error(
-      'User not found in Supabase Auth — create it in the dashboard first',
-    );
-    process.exit(1);
-  }
-
-  // Idempotencia ya es super_admin en ambos lados
   const existing = await prisma.user.findUnique({ where: { id } });
-  if (
-    existing?.role === 'super_admin' &&
-    authUser.user.app_metadata?.role === 'super_admin'
-  ) {
-    console.log(`Already super_admin: ${email}`);
+
+  // Sincronizar siempre app_metadata: las semillas anteriores pueden haber configurado public.users.role
+  await supabaseAdmin.auth.admin.updateUserById(id, {
+    app_metadata: { role: 'super_admin' },
+  });
+
+  if (existing && existing.role) {
+    console.log(
+      `Super admin already exists: ${existing.email} (role: ${existing.role})`,
+    );
     return;
   }
 
-  // Actualizar DB + app_metadata en una secuencia controlada
   await prisma.user.update({
     where: { id },
     data: { role: 'super_admin' },
   });
 
-  const { error: metaError } = await supabaseAdmin.auth.admin.updateUser(id, {
-    app_metadata: { role: 'super_admin' },
-  });
-
-  if (metaError) {
-    // Revertir DB si falla el sync
-    await prisma.user.update({ where: { id }, data: { role: null } });
-    console.error('Failed to sync app_metadata, rolled back DB');
-    process.exit(1);
-  }
-
-  console.log(`Super admin ready: ${email}`);
+  console.log(`Super admin created: ${email}`);
 }
 
 main()

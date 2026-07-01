@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useAdmin } from "@/features/admin-auth/hooks/useAdmin";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import { signOut } from "@/features/admin-auth/api/admin-auth.client";
 
 const ALL_LINKS = [
@@ -30,7 +30,7 @@ const ALL_LINKS = [
 export function AdminSidebar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { role } = useAdmin();
+  const { role } = useAuth();
 
   const visibleLinks = ALL_LINKS.filter(
     (link) => !link.roles || link.roles.includes(role ?? ""),

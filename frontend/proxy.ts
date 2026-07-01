@@ -1,6 +1,8 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+const ADMIN_ROLES = new Set(["super_admin", "organizer", "staff", "checker"]);
+
 export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
@@ -31,7 +33,10 @@ export async function proxy(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
 
-  if (user && (pathname.startsWith("/login") || pathname.startsWith("/registro"))) {
+  if (
+    user &&
+    (pathname.startsWith("/login") || pathname.startsWith("/registro"))
+  ) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
@@ -41,6 +46,14 @@ export async function proxy(request: NextRequest) {
 
   if (!user && pathname.startsWith("/mi-cuenta")) {
     return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  if (user && pathname.startsWith("/admin")) {
+    const role = user?.app_metadata?.role as string | null;
+
+    if (role && !ADMIN_ROLES.has(role)) {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
   }
 
   return supabaseResponse;

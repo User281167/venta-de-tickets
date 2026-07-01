@@ -17,16 +17,6 @@ import {
   IconButton,
   chakra,
 } from "@chakra-ui/react";
-import { loginSchema } from "@/features/auth/schemas/auth.schema";
-import {
-  signInWithPassword,
-  signInWithGoogle,
-} from "@/features/auth/api/auth.client";
-import { useAuth } from "@/features/auth/hooks/useAuth";
-import { createClient } from "@/shared/lib/supabase/client";
-import { submitOnboardingSurvey } from "@/features/surveys/api/endpoints/surveys.endpoints";
-import { toaster } from "@/components/ui/toaster";
-import { adminFetch } from "@/shared/api/admin-fetch";
 import {
   IconBrandGoogle,
   IconEye,
@@ -35,6 +25,19 @@ import {
   IconLock,
   IconPlayerSkipForward,
 } from "@tabler/icons-react";
+
+import { toaster } from "@/components/ui/toaster";
+
+import { loginSchema } from "@/features/auth/schemas/auth.schema";
+import {
+  signInWithPassword,
+  signInWithGoogle,
+} from "@/features/auth/api/auth.client";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import { submitOnboardingSurvey } from "@/features/surveys/api/endpoints/surveys.endpoints";
+
+import { createClient } from "@/shared/lib/supabase/client";
+import { adminFetch } from "@/shared/api/admin-fetch";
 
 export function LoginForm() {
   const router = useRouter();
@@ -82,11 +85,23 @@ export function LoginForm() {
 
     setStatus("success");
 
-    try {
-      const { role } = await adminFetch<{ role: string | null }>("/api/auth/session");
-      router.push(role ? "/admin" : "/eventos");
-    } catch {
-      router.push("/eventos");
+    const supabase = createClient();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    const role = session?.user?.app_metadata?.role as string | null;
+
+    if (role) {
+      router.push("/admin");
+    } else {
+      try {
+        const { role: r } = await adminFetch<{ role: string | null }>(
+          "/api/auth/session",
+        );
+        router.push(r ? "/admin" : "/mi-cuenta");
+      } catch {
+        router.push("/mi-cuenta");
+      }
     }
   }
 
@@ -148,6 +163,7 @@ export function LoginForm() {
           <Stack gap={4}>
             <Field.Root invalid={!!fieldErrors.email}>
               <Field.Label color="white">Correo electrónico</Field.Label>
+
               <InputGroup
                 startElement={
                   <IconMail size={18} color="rgba(255,255,255,0.6)" />
@@ -162,6 +178,7 @@ export function LoginForm() {
                   _placeholder={{ color: "rgba(255,255,255,0.5)" }}
                 />
               </InputGroup>
+
               <Field.ErrorText>{fieldErrors.email}</Field.ErrorText>
             </Field.Root>
 
@@ -197,6 +214,7 @@ export function LoginForm() {
                   _placeholder={{ color: "rgba(255,255,255,0.5)" }}
                 />
               </InputGroup>
+
               <Field.ErrorText>{fieldErrors.password}</Field.ErrorText>
             </Field.Root>
 

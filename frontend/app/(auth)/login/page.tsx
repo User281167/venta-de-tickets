@@ -23,9 +23,9 @@ export default function LoginPage() {
   if (!isLoading && user) {
     adminFetch<{ role: string | null }>("/api/auth/session")
       .then(({ role }) => {
-        router.replace(role ? "/admin" : "/eventos");
+        router.replace(role ? "/admin" : "/mi-cuenta");
       })
-      .catch(() => router.replace("/eventos"));
+      .catch(() => router.replace("/mi-cuenta"));
     return null;
   }
 

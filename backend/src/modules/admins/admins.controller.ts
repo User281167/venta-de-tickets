@@ -6,6 +6,7 @@ import { updateRoleSchema } from './admins.validators.js';
 
 export async function getMe(req: Request, res: Response): Promise<void> {
   const user = req.user!;
+
   res.json({
     id: user.id,
     email: user.email,
@@ -20,7 +21,6 @@ export async function listUsers(req: Request, res: Response): Promise<void> {
     Math.max(1, parseInt(req.query['limit'] as string) || 20),
   );
   const search = (req.query['search'] as string) || undefined;
-
   const result = await adminsService.listUsers(page, limit, search);
 
   res.json(result);
@@ -42,12 +42,14 @@ export async function updateUserRole(
   try {
     const { role } = updateRoleSchema.parse(req.body);
     const user = await adminsService.updateRole(String(req.params.id), role);
+
     res.json(user);
   } catch (err) {
     if (err instanceof ZodError) {
       res.status(400).json({ error: 'Invalid role', details: err.issues });
       return;
     }
+
     throw err;
   }
 }

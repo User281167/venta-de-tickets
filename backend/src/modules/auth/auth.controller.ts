@@ -1,6 +1,9 @@
 import type { Request, Response } from 'express';
 
-export function sessionHandler(req: Request, res: Response): void {
+export async function sessionHandler(
+  req: Request,
+  res: Response,
+): Promise<void> {
   const userId = req.user?.id;
 
   if (!userId) {

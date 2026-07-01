@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 import { UnauthorizedError } from '../errors/UnauthorizedError.js';
 import { verifyToken } from '../services/auth.service.js';
+import { resolveRole } from '../services/role-resolver.js';
 
 export async function authMiddleware(
   req: Request,
@@ -25,11 +26,12 @@ export async function authMiddleware(
   }
 
   const user = await verifyToken(token);
+  const role = await resolveRole(user.id, user.role);
 
   req.user = {
     id: user.id,
     email: user.email,
-    role: user.role,
+    role,
   };
 
   next();
