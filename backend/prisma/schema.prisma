@@ -27,6 +27,7 @@ enum TicketStatus {
   used
   cancelled
   expired
+  confirmed
 }
 
 enum PaymentStatus {
@@ -91,6 +92,9 @@ model PrivacyAcceptance {
 model Event {
   id          String      @id @default(uuid()) @db.Uuid
   title       String      @db.VarChar(200)
+  description String?     @db.Text
+  location    String?     @db.VarChar(255)
+  prefix      String?     @db.VarChar(10)
   eventDate   DateTime    @map("event_date") @db.Timestamptz
   doorsOpenAt DateTime?   @map("doors_open_at") @db.Timestamptz
   saleEndsAt  DateTime?   @map("sale_ends_at") @db.Timestamptz
@@ -154,6 +158,7 @@ model Ticket {
   discountCodeId   String?      @map("discount_code_id") @db.Uuid
   discountApplied  Decimal?     @map("discount_applied") @db.Decimal(10, 2)
   ticketCode       String       @unique @map("ticket_code") @db.VarChar(100)
+  qrToken          String?      @unique @map("qr_token") @db.Text
   status           TicketStatus
   reserveExpiresAt DateTime?    @map("reserve_expires_at") @db.Timestamptz
   purchasedAt      DateTime?    @map("purchased_at") @db.Timestamptz

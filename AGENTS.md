@@ -1,9 +1,9 @@
 <!-- SPECKIT START -->
-Current plan: specs/007-admin-core/plan.md
-Implementation details: specs/007-admin-core/quickstart.md
-Data model: specs/007-admin-core/data-model.md
-API contracts: specs/007-admin-core/contracts/
-Research: specs/007-admin-core/research.md
+Current plan: specs/008-ticketing/plan.md
+Implementation details: specs/008-ticketing/quickstart.md
+Data model: specs/008-ticketing/data-model.md
+API contracts: specs/008-ticketing/contracts/
+Research: specs/008-ticketing/research.md
 <!-- SPECKIT END -->
 
 # AGENT.md
