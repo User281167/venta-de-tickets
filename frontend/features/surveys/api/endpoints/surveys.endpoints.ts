@@ -1,5 +1,8 @@
 import { createClient } from "@/shared/lib/supabase/client";
-import type { UpdateUserInput } from "../schemas/users.schema";
+import type {
+  OnboardingSurveyInput,
+  SubmitOnboardingSurveyResponse,
+} from "../schemas/surveys.schema";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
@@ -35,42 +38,11 @@ async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
   return res.json();
 }
 
-export type GetMeResponse = {
-  user: {
-    id: string;
-    email: string;
-    fullName: string;
-    phone: string | null;
-  };
-  consentStatus: {
-    required: boolean;
-    acceptedAt: string | null;
-    policyVersion: string;
-  };
-  onboarding_survey_done: boolean;
-};
-
-export type AcceptPrivacyResponse = {
-  status: string;
-  acceptedAt: string;
-  policyVersion: string;
-};
-
-export function fetchMe(): Promise<GetMeResponse> {
-  return apiFetch<GetMeResponse>("/api/users/me");
-}
-
-export function updateMe(
-  data: UpdateUserInput,
-): Promise<{ user: GetMeResponse["user"] }> {
-  return apiFetch("/api/users/me", {
-    method: "PATCH",
-    body: JSON.stringify(data),
-  });
-}
-
-export function acceptPrivacy(): Promise<AcceptPrivacyResponse> {
-  return apiFetch("/api/users/me/privacy-acceptance", {
+export async function submitOnboardingSurvey(
+  data: OnboardingSurveyInput,
+): Promise<SubmitOnboardingSurveyResponse> {
+  return apiFetch<SubmitOnboardingSurveyResponse>("/api/surveys/onboarding", {
     method: "POST",
+    body: JSON.stringify(data),
   });
 }

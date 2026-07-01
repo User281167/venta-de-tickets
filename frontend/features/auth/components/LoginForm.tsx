@@ -15,7 +15,7 @@ import {
   VStack,
   Separator,
   IconButton,
-  Flex,
+  chakra,
 } from "@chakra-ui/react";
 import { loginSchema } from "@/features/auth/schemas/auth.schema";
 import {
@@ -23,12 +23,16 @@ import {
   signInWithGoogle,
 } from "@/features/auth/api/auth.client";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { createClient } from "@/shared/lib/supabase/client";
+import { submitOnboardingSurvey } from "@/features/surveys/api/endpoints/surveys.endpoints";
+import { toaster } from "@/components/ui/toaster";
 import {
   IconBrandGoogle,
   IconEye,
   IconEyeOff,
   IconMail,
   IconLock,
+  IconPlayerSkipForward,
 } from "@tabler/icons-react";
 
 export function LoginForm() {
@@ -46,6 +50,7 @@ export function LoginForm() {
     "idle" | "submitting" | "error" | "success"
   >("idle");
   const [googleStatus, setGoogleStatus] = useState<"idle" | "loading">("idle");
+  const [skipLoading, setSkipLoading] = useState(false);
 
   if (user) {
     router.push("/");
@@ -86,6 +91,40 @@ export function LoginForm() {
   async function handleGoogleSignIn() {
     setGoogleStatus("loading");
     await signInWithGoogle();
+  }
+
+  async function handleSkipSurvey() {
+    setSkipLoading(true);
+    const supabase = createClient();
+    const { data } = await supabase.auth.getSession();
+
+    if (!data.session) {
+      toaster.create({
+        title: "Inicia sesión primero",
+        description: "Debes iniciar sesión para omitir la encuesta.",
+        type: "info",
+      });
+      setSkipLoading(false);
+      return;
+    }
+
+    try {
+      await submitOnboardingSurvey({ responses: [] });
+      toaster.create({
+        title: "Encuesta omitida",
+        description: "Puedes completarla después desde tu perfil.",
+        type: "success",
+      });
+      router.push("/");
+    } catch {
+      toaster.create({
+        title: "Error",
+        description: "No se pudo omitir la encuesta. Intenta de nuevo.",
+        type: "error",
+      });
+    } finally {
+      setSkipLoading(false);
+    }
   }
 
   return (
@@ -192,6 +231,28 @@ export function LoginForm() {
           <IconBrandGoogle size={20} />
           Google
         </Button>
+
+        <Box textAlign="center" pt={1}>
+          <chakra.button
+            onClick={handleSkipSurvey}
+            disabled={skipLoading}
+            opacity={skipLoading ? 0.6 : 0.6}
+            _hover={{ opacity: 1, color: "white" }}
+            transition="all 0.2s"
+            fontSize="xs"
+            color="gray.400"
+            cursor="pointer"
+            bg="transparent"
+            border="none"
+            display="inline-flex"
+            alignItems="center"
+            gap={1}
+            type="button"
+          >
+            <IconPlayerSkipForward size={12} />
+            Omitir encuesta de bienvenida
+          </chakra.button>
+        </Box>
       </VStack>
     </Box>
   );

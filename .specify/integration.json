@@ -15,6 +15,6 @@
       "invoke_separator": "-"
     }
   },
-  "integration": "vibe",
-  "default_integration": "vibe"
+  "integration": "opencode",
+  "default_integration": "opencode"
 }
