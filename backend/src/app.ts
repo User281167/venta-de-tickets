@@ -7,6 +7,10 @@ import { usersRouter } from './modules/users/index.ts';
 import { surveysRouter } from './modules/surveys/surveys.routes.ts';
 import { adminsRouter } from './modules/admins/admins.routes.ts';
 import { authRouter } from './modules/auth/index.ts';
+import {
+  publicEventRouter,
+  adminTicketTypesRouter,
+} from './modules/ticket-types/ticket-types.routes.ts';
 
 export const app = express();
 
@@ -20,6 +24,8 @@ app.use(express.json());
 app.get('/api/me', authMiddleware, meHandler);
 app.use('/api/auth', authRouter);
 app.use('/api/admin', adminsRouter);
+app.use('/api/events', publicEventRouter);
+app.use('/api/admin', adminTicketTypesRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/surveys', surveysRouter);
 

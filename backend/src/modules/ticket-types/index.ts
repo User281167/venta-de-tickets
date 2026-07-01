@@ -1,1 +1,4 @@
-export { ticketTypesRouter } from './ticket-types.routes.js';
+export {
+  publicEventRouter,
+  adminTicketTypesRouter,
+} from './ticket-types.routes.js';
