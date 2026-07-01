@@ -9,6 +9,10 @@ vi.mock("@/features/auth/hooks/useAuth", () => ({
   useAuth: () => mockUseAuth(),
 }));
 
+vi.mock("@/features/tickets/components/TicketSelector", () => ({
+  TicketSelector: () => null,
+}));
+
 const { TicketTypeCard } = await import("../TicketTypeCard");
 
 const baseTicket: TicketType = {
@@ -53,7 +57,7 @@ describe("TicketTypeCard", () => {
     expect(screen.getByText("400 disponibles")).toBeInTheDocument();
   });
 
-  it("shows Agotado when sold out", () => {
+  it("shows Agotado badge and disabled button when sold out", () => {
     render(
       <TicketTypeCard
         ticketType={{ ...baseTicket, availableCount: 0, isSoldOut: true }}
@@ -61,7 +65,9 @@ describe("TicketTypeCard", () => {
       { wrapper: TestWrapper },
     );
 
-    expect(screen.getByText("Agotado")).toBeInTheDocument();
+    const agotados = screen.getAllByText("Agotado");
+    expect(agotados.length).toBe(2);
+    expect(agotados[0].tagName).toBe("SPAN");
   });
 
   it("shows maxPerUser when present", () => {
@@ -82,14 +88,30 @@ describe("TicketTypeCard", () => {
     expect(screen.getByText("Inicia sesión para comprar")).toBeInTheDocument();
   });
 
-  it("shows Próximamente button when authenticated", () => {
+  it("shows Comprar button when authenticated", () => {
     mockUseAuth.mockReturnValue({ user: { id: "u1", email: "test@test.com" } });
 
     render(<TicketTypeCard ticketType={baseTicket} />, {
       wrapper: TestWrapper,
     });
 
-    expect(screen.getByText("Próximamente")).toBeInTheDocument();
+    expect(screen.getByText("Comprar")).toBeInTheDocument();
+  });
+
+  it("shows disabled Agotado button when sold out and authenticated", () => {
+    mockUseAuth.mockReturnValue({ user: { id: "u1", email: "test@test.com" } });
+
+    render(
+      <TicketTypeCard
+        ticketType={{ ...baseTicket, availableCount: 0, isSoldOut: true }}
+      />,
+      { wrapper: TestWrapper },
+    );
+
+    const buttons = screen.getAllByRole("button");
+    const agotadoBtn = buttons.find((b) => b.textContent?.includes("Agotado"));
+    expect(agotadoBtn).toBeDefined();
+    expect(agotadoBtn).toBeDisabled();
   });
 
   it("does not render description when null", () => {

@@ -71,13 +71,28 @@ export function TicketTypeCard({ ticketType }: TicketTypeCardProps) {
         )}
       </Box>
 
-      {user ? (
+      {ticketType.isSoldOut ? (
         <Button disabled colorPalette="orange" size="lg" w="full" mt={4}>
           <HStack gap={2}>
             <IconTicket size={18} />
-            <Text>Próximamente</Text>
+            <Text>Agotado</Text>
           </HStack>
         </Button>
+      ) : user ? (
+        <>
+          <Button
+            colorPalette="orange"
+            size="lg"
+            w="full"
+            mt={4}
+            _hover={{ transform: "translateY(-1px)" }}
+          >
+            <HStack gap={2}>
+              <IconTicket size={18} />
+              <Text>Comprar</Text>
+            </HStack>
+          </Button>
+        </>
       ) : (
         <Button
           asChild

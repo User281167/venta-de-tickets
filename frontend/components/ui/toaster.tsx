@@ -17,7 +17,7 @@ export const toaster = createToaster({
 
 export function Toaster() {
   return (
-    <ChakraToaster toaster={toaster}>
+    <ChakraToaster toaster={toaster} zindex={9999}>
       {(toast) => (
         <ToastRoot maxW="md" p={4}>
           <ToastTitle>{toast.title}</ToastTitle>

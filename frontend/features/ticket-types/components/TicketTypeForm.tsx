@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import type { ZodError } from "zod";
 import {
   Box,
   Button,
@@ -12,15 +13,27 @@ import {
   Switch,
 } from "@chakra-ui/react";
 import { toaster } from "@/components/ui/toaster";
-import type { AdminTicketType, CreateTicketTypeInput, UpdateTicketTypeInput } from "../schemas/ticket-types.schema";
+import {
+  createTicketTypeSchema,
+  updateTicketTypeSchema,
+} from "../schemas/ticket-types.schema";
+import type { AdminTicketType } from "../schemas/ticket-types.schema";
 
 interface TicketTypeFormProps {
   ticketType?: AdminTicketType | null;
   eventId: string;
-  onCreate?: (data: CreateTicketTypeInput) => Promise<void>;
-  onUpdate?: (id: string, data: UpdateTicketTypeInput) => Promise<void>;
+  onCreate?: (data: unknown) => Promise<void>;
+  onUpdate?: (id: string, data: unknown) => Promise<void>;
   onCancel: () => void;
 }
+
+interface FieldErrors {
+  name?: string;
+  price?: string;
+  quantityTotal?: string;
+}
+
+const num = (v: unknown) => (v != null ? Number(v) : 0);
 
 export function TicketTypeForm({
   ticketType,
@@ -31,18 +44,19 @@ export function TicketTypeForm({
   const isEditing = !!ticketType;
   const [name, setName] = useState(ticketType?.name ?? "");
   const [description, setDescription] = useState(ticketType?.description ?? "");
-  const [price, setPrice] = useState(ticketType?.price ?? 0);
-  const [quantityTotal, setQuantityTotal] = useState(ticketType?.quantityTotal ?? 0);
+  const [price, setPrice] = useState<number>(num(ticketType?.price));
+  const [quantityTotal, setQuantityTotal] = useState<number>(num(ticketType?.quantityTotal));
   const [maxPerUser, setMaxPerUser] = useState(ticketType?.maxPerUser ?? null);
   const [isActive, setIsActive] = useState(ticketType?.isActive ?? true);
   const [saving, setSaving] = useState(false);
+  const [errors, setErrors] = useState<FieldErrors>({});
 
   useEffect(() => {
     if (ticketType) {
       setName(ticketType.name);
       setDescription(ticketType.description ?? "");
-      setPrice(ticketType.price);
-      setQuantityTotal(ticketType.quantityTotal);
+      setPrice(num(ticketType.price));
+      setQuantityTotal(num(ticketType.quantityTotal));
       setMaxPerUser(ticketType.maxPerUser);
       setIsActive(ticketType.isActive);
     }
@@ -50,48 +64,80 @@ export function TicketTypeForm({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSaving(true);
+    setErrors({});
 
-    try {
-      if (isEditing && ticketType && onUpdate) {
-        await onUpdate(ticketType.id, {
-          name: name || undefined,
-          description: description || undefined,
-          price: price || undefined,
-          quantityTotal: quantityTotal || undefined,
-          maxPerUser: maxPerUser ?? undefined,
-          isActive,
-        });
-        toaster.create({ title: "Tipo de entrada actualizado", type: "success" });
-      } else if (onCreate) {
-        await onCreate({
-          name,
-          description: description || undefined,
-          price,
-          quantityTotal,
-          maxPerUser: maxPerUser ?? undefined,
-        });
-        toaster.create({ title: "Tipo de entrada creado", type: "success" });
+    if (isEditing && ticketType && onUpdate) {
+      const payload = {
+        name: name || undefined,
+        description: description || undefined,
+        price: price || undefined,
+        quantityTotal: quantityTotal || undefined,
+        maxPerUser: maxPerUser ?? undefined,
+        isActive,
+      };
+      const parsed = updateTicketTypeSchema.safeParse(payload);
+
+      if (!parsed.success) {
+        setErrors(formatZodErrors(parsed.error));
+        return;
       }
 
-      onCancel();
-    } catch (err) {
-      toaster.create({
-        title: "Error al guardar",
-        description: (err as Error).message,
-        type: "error",
-      });
-    } finally {
-      setSaving(false);
+      setSaving(true);
+
+      try {
+        await onUpdate(ticketType.id, parsed.data);
+        toaster.create({ title: "Tipo de entrada actualizado", type: "success" });
+        onCancel();
+      } catch (err) {
+        toaster.create({
+          title: "Error al actualizar",
+          description: (err as Error).message,
+          type: "error",
+        });
+      } finally {
+        setSaving(false);
+      }
+    } else if (onCreate) {
+      const payload = {
+        name,
+        description: description || undefined,
+        price,
+        quantityTotal,
+        maxPerUser: maxPerUser ?? undefined,
+      };
+      const parsed = createTicketTypeSchema.safeParse(payload);
+
+      if (!parsed.success) {
+        setErrors(formatZodErrors(parsed.error));
+        return;
+      }
+
+      setSaving(true);
+
+      try {
+        await onCreate(parsed.data);
+        toaster.create({ title: "Tipo de entrada creado", type: "success" });
+        onCancel();
+      } catch (err) {
+        toaster.create({
+          title: "Error al crear",
+          description: (err as Error).message,
+          type: "error",
+        });
+      } finally {
+        setSaving(false);
+      }
     }
   }
 
   return (
-    <Box as="form" onSubmit={handleSubmit}>
+    <Box asChild>
+      <form onSubmit={handleSubmit} noValidate>
       <VStack gap={4} align="stretch">
-        <Field.Root required>
+        <Field.Root required invalid={!!errors.name}>
           <Field.Label>Nombre</Field.Label>
-          <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Ej: General" required />
+          <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Ej: General" />
+          {errors.name && <Field.ErrorText>{errors.name}</Field.ErrorText>}
         </Field.Root>
 
         <Field.Root>
@@ -103,28 +149,28 @@ export function TicketTypeForm({
           />
         </Field.Root>
 
-        <Field.Root required>
+        <Field.Root required invalid={!!errors.price}>
           <Field.Label>Precio (COP)</Field.Label>
           <Input
             type="number"
-            min={0}
+            min={1}
             step={100}
-            value={price}
-            onChange={(e) => setPrice(Number(e.target.value))}
-            required
+            value={price || ""}
+            onChange={(e) => setPrice(e.target.value ? Number(e.target.value) : 0)}
           />
+          {errors.price && <Field.ErrorText>{errors.price}</Field.ErrorText>}
         </Field.Root>
 
-        <Field.Root required>
+        <Field.Root required invalid={!!errors.quantityTotal}>
           <Field.Label>Cantidad total</Field.Label>
           <Input
             type="number"
             min={1}
             step={1}
-            value={quantityTotal}
-            onChange={(e) => setQuantityTotal(Number(e.target.value))}
-            required
+            value={quantityTotal || ""}
+            onChange={(e) => setQuantityTotal(e.target.value ? Number(e.target.value) : 0)}
           />
+          {errors.quantityTotal && <Field.ErrorText>{errors.quantityTotal}</Field.ErrorText>}
         </Field.Root>
 
         <Field.Root>
@@ -162,6 +208,23 @@ export function TicketTypeForm({
           </Button>
         </HStack>
       </VStack>
+      </form>
     </Box>
   );
+}
+
+function formatZodErrors(error: ZodError): FieldErrors {
+  const fieldErrors: FieldErrors = {};
+
+  for (const issue of error.issues) {
+    const field = issue.path[0] as keyof FieldErrors;
+
+    if (field && !fieldErrors[field]) {
+      if (field === "name") fieldErrors.name = "El nombre es obligatorio";
+      else if (field === "price") fieldErrors.price = "El precio debe ser mayor a 0";
+      else if (field === "quantityTotal") fieldErrors.quantityTotal = "La cantidad debe ser mayor a 0";
+    }
+  }
+
+  return fieldErrors;
 }
