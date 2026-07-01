@@ -12,7 +12,7 @@ import {
   HStack,
   Switch,
 } from "@chakra-ui/react";
-import { toaster } from "@/components/ui/toaster";
+import { toast } from "sonner";
 import {
   createTicketTypeSchema,
   updateTicketTypeSchema,
@@ -45,7 +45,9 @@ export function TicketTypeForm({
   const [name, setName] = useState(ticketType?.name ?? "");
   const [description, setDescription] = useState(ticketType?.description ?? "");
   const [price, setPrice] = useState<number>(num(ticketType?.price));
-  const [quantityTotal, setQuantityTotal] = useState<number>(num(ticketType?.quantityTotal));
+  const [quantityTotal, setQuantityTotal] = useState<number>(
+    num(ticketType?.quantityTotal),
+  );
   const [maxPerUser, setMaxPerUser] = useState(ticketType?.maxPerUser ?? null);
   const [isActive, setIsActive] = useState(ticketType?.isActive ?? true);
   const [saving, setSaving] = useState(false);
@@ -86,13 +88,11 @@ export function TicketTypeForm({
 
       try {
         await onUpdate(ticketType.id, parsed.data);
-        toaster.create({ title: "Tipo de entrada actualizado", type: "success" });
+        toast.success("Tipo de entrada actualizado");
         onCancel();
       } catch (err) {
-        toaster.create({
-          title: "Error al actualizar",
+        toast.error("Error al actualizar", {
           description: (err as Error).message,
-          type: "error",
         });
       } finally {
         setSaving(false);
@@ -116,13 +116,11 @@ export function TicketTypeForm({
 
       try {
         await onCreate(parsed.data);
-        toaster.create({ title: "Tipo de entrada creado", type: "success" });
+        toast.success("Tipo de entrada creado");
         onCancel();
       } catch (err) {
-        toaster.create({
-          title: "Error al crear",
+        toast.error("Error al crear", {
           description: (err as Error).message,
-          type: "error",
         });
       } finally {
         setSaving(false);
@@ -133,81 +131,96 @@ export function TicketTypeForm({
   return (
     <Box asChild>
       <form onSubmit={handleSubmit} noValidate>
-      <VStack gap={4} align="stretch">
-        <Field.Root required invalid={!!errors.name}>
-          <Field.Label>Nombre</Field.Label>
-          <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Ej: General" />
-          {errors.name && <Field.ErrorText>{errors.name}</Field.ErrorText>}
-        </Field.Root>
-
-        <Field.Root>
-          <Field.Label>Descripción</Field.Label>
-          <Textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Descripción opcional"
-          />
-        </Field.Root>
-
-        <Field.Root required invalid={!!errors.price}>
-          <Field.Label>Precio (COP)</Field.Label>
-          <Input
-            type="number"
-            min={1}
-            step={100}
-            value={price || ""}
-            onChange={(e) => setPrice(e.target.value ? Number(e.target.value) : 0)}
-          />
-          {errors.price && <Field.ErrorText>{errors.price}</Field.ErrorText>}
-        </Field.Root>
-
-        <Field.Root required invalid={!!errors.quantityTotal}>
-          <Field.Label>Cantidad total</Field.Label>
-          <Input
-            type="number"
-            min={1}
-            step={1}
-            value={quantityTotal || ""}
-            onChange={(e) => setQuantityTotal(e.target.value ? Number(e.target.value) : 0)}
-          />
-          {errors.quantityTotal && <Field.ErrorText>{errors.quantityTotal}</Field.ErrorText>}
-        </Field.Root>
-
-        <Field.Root>
-          <Field.Label>Máx. por persona</Field.Label>
-          <Input
-            type="number"
-            min={1}
-            step={1}
-            value={maxPerUser ?? ""}
-            onChange={(e) => setMaxPerUser(e.target.value ? Number(e.target.value) : null)}
-            placeholder="Sin límite"
-          />
-        </Field.Root>
-
-        {isEditing && (
-          <Field.Root>
-            <HStack justify="space-between">
-              <Field.Label>Activo</Field.Label>
-              <Switch.Root checked={isActive} onCheckedChange={(e) => setIsActive(e.checked)}>
-                <Switch.HiddenInput />
-                <Switch.Control>
-                  <Switch.Thumb />
-                </Switch.Control>
-              </Switch.Root>
-            </HStack>
+        <VStack gap={4} align="stretch">
+          <Field.Root required invalid={!!errors.name}>
+            <Field.Label>Nombre</Field.Label>
+            <Input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Ej: General"
+            />
+            {errors.name && <Field.ErrorText>{errors.name}</Field.ErrorText>}
           </Field.Root>
-        )}
 
-        <HStack gap={3} justify="flex-end" pt={2}>
-          <Button variant="outline" onClick={onCancel} disabled={saving}>
-            Cancelar
-          </Button>
-          <Button type="submit" colorPalette="teal" loading={saving}>
-            {isEditing ? "Actualizar" : "Crear"}
-          </Button>
-        </HStack>
-      </VStack>
+          <Field.Root>
+            <Field.Label>Descripción</Field.Label>
+            <Textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Descripción opcional"
+            />
+          </Field.Root>
+
+          <Field.Root required invalid={!!errors.price}>
+            <Field.Label>Precio (COP)</Field.Label>
+            <Input
+              type="number"
+              min={1}
+              step={100}
+              value={price || ""}
+              onChange={(e) =>
+                setPrice(e.target.value ? Number(e.target.value) : 0)
+              }
+            />
+            {errors.price && <Field.ErrorText>{errors.price}</Field.ErrorText>}
+          </Field.Root>
+
+          <Field.Root required invalid={!!errors.quantityTotal}>
+            <Field.Label>Cantidad total</Field.Label>
+            <Input
+              type="number"
+              min={1}
+              step={1}
+              value={quantityTotal || ""}
+              onChange={(e) =>
+                setQuantityTotal(e.target.value ? Number(e.target.value) : 0)
+              }
+            />
+            {errors.quantityTotal && (
+              <Field.ErrorText>{errors.quantityTotal}</Field.ErrorText>
+            )}
+          </Field.Root>
+
+          <Field.Root>
+            <Field.Label>Máx. por persona</Field.Label>
+            <Input
+              type="number"
+              min={1}
+              step={1}
+              value={maxPerUser ?? ""}
+              onChange={(e) =>
+                setMaxPerUser(e.target.value ? Number(e.target.value) : null)
+              }
+              placeholder="Sin límite"
+            />
+          </Field.Root>
+
+          {isEditing && (
+            <Field.Root>
+              <HStack justify="space-between">
+                <Field.Label>Activo</Field.Label>
+                <Switch.Root
+                  checked={isActive}
+                  onCheckedChange={(e) => setIsActive(e.checked)}
+                >
+                  <Switch.HiddenInput />
+                  <Switch.Control>
+                    <Switch.Thumb />
+                  </Switch.Control>
+                </Switch.Root>
+              </HStack>
+            </Field.Root>
+          )}
+
+          <HStack gap={3} justify="flex-end" pt={2}>
+            <Button variant="outline" onClick={onCancel} disabled={saving}>
+              Cancelar
+            </Button>
+            <Button type="submit" colorPalette="teal" loading={saving}>
+              {isEditing ? "Actualizar" : "Crear"}
+            </Button>
+          </HStack>
+        </VStack>
       </form>
     </Box>
   );
@@ -221,8 +234,10 @@ function formatZodErrors(error: ZodError): FieldErrors {
 
     if (field && !fieldErrors[field]) {
       if (field === "name") fieldErrors.name = "El nombre es obligatorio";
-      else if (field === "price") fieldErrors.price = "El precio debe ser mayor a 0";
-      else if (field === "quantityTotal") fieldErrors.quantityTotal = "La cantidad debe ser mayor a 0";
+      else if (field === "price")
+        fieldErrors.price = "El precio debe ser mayor a 0";
+      else if (field === "quantityTotal")
+        fieldErrors.quantityTotal = "La cantidad debe ser mayor a 0";
     }
   }
 

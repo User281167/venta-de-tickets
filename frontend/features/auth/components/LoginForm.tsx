@@ -26,7 +26,7 @@ import {
   IconPlayerSkipForward,
 } from "@tabler/icons-react";
 
-import { toaster } from "@/components/ui/toaster";
+import { toast } from "sonner";
 
 import { loginSchema } from "@/features/auth/schemas/auth.schema";
 import {
@@ -116,10 +116,8 @@ export function LoginForm() {
     const { data } = await supabase.auth.getSession();
 
     if (!data.session) {
-      toaster.create({
-        title: "Inicia sesión primero",
+      toast("Inicia sesión primero", {
         description: "Debes iniciar sesión para omitir la encuesta.",
-        type: "info",
       });
 
       setSkipLoading(false);
@@ -128,18 +126,14 @@ export function LoginForm() {
 
     try {
       await submitOnboardingSurvey({ responses: [] });
-      toaster.create({
-        title: "Encuesta omitida",
+      toast.success("Encuesta omitida", {
         description: "Puedes completarla después desde tu perfil.",
-        type: "success",
       });
 
       router.push("/");
     } catch {
-      toaster.create({
-        title: "Error",
+      toast.error("Error", {
         description: "No se pudo omitir la encuesta. Intenta de nuevo.",
-        type: "error",
       });
     } finally {
       setSkipLoading(false);

@@ -19,7 +19,7 @@ import {
   IconPlayerSkipForward,
   IconSparkles,
 } from "@tabler/icons-react";
-import { toaster } from "@/components/ui/toaster";
+import { toast } from "sonner";
 
 import { useSubmitOnboarding } from "../api/surveys.queries";
 
@@ -106,17 +106,13 @@ export function OnboardingSurvey() {
       await submitMutation.mutateAsync({ responses });
       setShowSuccess(true);
       setTimeout(() => {
-        toaster.create({
-          title: "¡Bienvenido!",
+        toast.success("¡Bienvenido!", {
           description: "Gracias por contarnos sobre ti.",
-          type: "success",
         });
       }, 400);
     } catch (error) {
-      toaster.create({
-        title: "Error al enviar",
+      toast.error("Error al enviar", {
         description: (error as Error).message,
-        type: "error",
       });
     }
   };
@@ -128,10 +124,8 @@ export function OnboardingSurvey() {
       await submitMutation.mutateAsync({ responses: [] });
       setShowSuccess(true);
     } catch (error) {
-      toaster.create({
-        title: "Error",
+      toast.error("Error", {
         description: (error as Error).message,
-        type: "error",
       });
     }
   };

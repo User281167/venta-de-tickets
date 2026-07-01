@@ -3,7 +3,7 @@
 import { Box, Button, HStack, Text } from "@chakra-ui/react";
 import { IconPlayerSkipForward } from "@tabler/icons-react";
 import { useSubmitOnboarding } from "../api/surveys.queries";
-import { toaster } from "@/components/ui/toaster";
+import { toast } from "sonner";
 
 type SurveySkipButtonProps = {
   onSuccess?: () => void;
@@ -21,10 +21,8 @@ export function SurveySkipButton({
   const handleSkip = async () => {
     try {
       await submitMutation.mutateAsync({ responses: [] });
-      toaster.create({
-        title: "Encuesta omitida",
+      toast.success("Encuesta omitida", {
         description: "Puedes completarla después desde tu perfil.",
-        type: "success",
       });
       onSuccess?.();
     } catch (error) {
