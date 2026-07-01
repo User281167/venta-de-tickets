@@ -1,6 +1,9 @@
 <!-- SPECKIT START -->
-For additional context about technologies to be used, project structure,
-shell commands, and other important information, read the current plan
+Current plan: specs/007-admin-core/plan.md
+Implementation details: specs/007-admin-core/quickstart.md
+Data model: specs/007-admin-core/data-model.md
+API contracts: specs/007-admin-core/contracts/
+Research: specs/007-admin-core/research.md
 <!-- SPECKIT END -->
 
 # AGENT.md
