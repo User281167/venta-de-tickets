@@ -20,7 +20,12 @@ export default function LoginPage() {
   const router = useRouter();
 
   if (!isLoading && user) {
-    router.replace("/mi-cuenta");
+    fetch("/api/auth/session", { credentials: "include" })
+      .then((res) => res.json())
+      .then(({ role }) => {
+        router.replace(role ? "/admin" : "/mi-cuenta");
+      })
+      .catch(() => router.replace("/mi-cuenta"));
     return null;
   }
 

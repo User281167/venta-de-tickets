@@ -30,3 +30,26 @@ export async function create(
     },
   });
 }
+
+export async function findAllOnboarding() {
+  const rows = await prisma.surveyResponse.findMany({
+    where: { surveyType: 'onboarding' as SurveyType },
+    select: {
+      userId: true,
+      responses: true,
+      submittedAt: true,
+      user: {
+        select: { fullName: true, email: true },
+      },
+    },
+    orderBy: { submittedAt: 'desc' },
+  });
+
+  return rows.map((r) => ({
+    userId: r.userId,
+    userName: r.user?.fullName ?? null,
+    userEmail: r.user?.email ?? null,
+    answers: r.responses,
+    submittedAt: r.submittedAt,
+  }));
+}

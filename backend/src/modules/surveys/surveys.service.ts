@@ -7,10 +7,17 @@ import type { OnboardingSurveyInput } from './surveys.validators.js';
 export async function submitOnboardingSurvey(
   userId: string,
   input: OnboardingSurveyInput,
-): Promise<{ status: 'ok' | 'duplicate'; surveyType: SurveyType; responseCount: number }> {
+): Promise<{
+  status: 'ok' | 'duplicate';
+  surveyType: SurveyType;
+  responseCount: number;
+}> {
   const surveyType: SurveyType = 'onboarding';
 
-  const alreadyExists = await surveysRepo.existsByUserAndType(userId, surveyType);
+  const alreadyExists = await surveysRepo.existsByUserAndType(
+    userId,
+    surveyType,
+  );
 
   if (alreadyExists) {
     return {
@@ -33,4 +40,8 @@ export async function submitOnboardingSurvey(
 
 export async function isOnboardingDone(userId: string): Promise<boolean> {
   return surveysRepo.existsByUserAndType(userId, 'onboarding');
+}
+
+export async function adminGetOnboarding() {
+  return surveysRepo.findAllOnboarding();
 }

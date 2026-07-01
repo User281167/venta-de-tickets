@@ -31,16 +31,15 @@ export async function proxy(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
 
-  const isAuthPage =
-    pathname.startsWith("/login") || pathname.startsWith("/registro");
-  const isProtectedPage =
-    pathname.startsWith("/mi-cuenta") || pathname.startsWith("/admin");
-
-  if (user && isAuthPage) {
-    return NextResponse.redirect(new URL("/mi-cuenta", request.url));
+  if (user && (pathname.startsWith("/login") || pathname.startsWith("/registro"))) {
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
-  if (!user && isProtectedPage) {
+  if (!user && pathname.startsWith("/admin")) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  if (!user && pathname.startsWith("/mi-cuenta")) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 

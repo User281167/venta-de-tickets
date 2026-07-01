@@ -52,11 +52,6 @@ export function LoginForm() {
   const [googleStatus, setGoogleStatus] = useState<"idle" | "loading">("idle");
   const [skipLoading, setSkipLoading] = useState(false);
 
-  if (user) {
-    router.push("/");
-    return null;
-  }
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setGeneralError("");
@@ -85,7 +80,18 @@ export function LoginForm() {
     }
 
     setStatus("success");
-    router.push("/");
+
+    const sessionRes = await fetch("/api/auth/session", {
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (sessionRes.ok) {
+      const { role } = await sessionRes.json();
+      router.push(role ? "/admin" : "/mi-cuenta");
+    } else {
+      router.push("/mi-cuenta");
+    }
   }
 
   async function handleGoogleSignIn() {
@@ -104,6 +110,7 @@ export function LoginForm() {
         description: "Debes iniciar sesión para omitir la encuesta.",
         type: "info",
       });
+
       setSkipLoading(false);
       return;
     }
@@ -115,6 +122,7 @@ export function LoginForm() {
         description: "Puedes completarla después desde tu perfil.",
         type: "success",
       });
+
       router.push("/");
     } catch {
       toaster.create({
@@ -144,7 +152,11 @@ export function LoginForm() {
           <Stack gap={4}>
             <Field.Root invalid={!!fieldErrors.email}>
               <Field.Label color="white">Correo electrónico</Field.Label>
-              <InputGroup startElement={<IconMail size={18} color="rgba(255,255,255,0.6)" />}>
+              <InputGroup
+                startElement={
+                  <IconMail size={18} color="rgba(255,255,255,0.6)" />
+                }
+              >
                 <Input
                   type="email"
                   value={email}
@@ -160,7 +172,9 @@ export function LoginForm() {
             <Field.Root invalid={!!fieldErrors.password}>
               <Field.Label color="white">Contraseña</Field.Label>
               <InputGroup
-                startElement={<IconLock size={18} color="rgba(255,255,255,0.6)" />}
+                startElement={
+                  <IconLock size={18} color="rgba(255,255,255,0.6)" />
+                }
                 endElement={
                   <IconButton
                     aria-label={showPassword ? "Ocultar" : "Mostrar"}
