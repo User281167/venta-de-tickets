@@ -1,7 +1,6 @@
 import type { Request, Response } from 'express';
-import * as adminsRepo from '../admins/admins.repository.js';
 
-export async function sessionHandler(req: Request, res: Response): Promise<void> {
+export function sessionHandler(req: Request, res: Response): void {
   const userId = req.user?.id;
 
   if (!userId) {
@@ -9,7 +8,5 @@ export async function sessionHandler(req: Request, res: Response): Promise<void>
     return;
   }
 
-  const admin = await adminsRepo.findById(userId);
-
-  res.json({ role: admin?.role ?? null });
+  res.json({ role: req.user!.role ?? null });
 }

@@ -1,14 +1,13 @@
 import type { Request, Response, NextFunction } from 'express';
-import type { AdminRole } from '../../modules/admins/admins.types.js';
 import { ForbiddenError } from '../errors/ForbiddenError.js';
 
-export function requireRole(...roles: AdminRole[]) {
+export function requireRole(...roles: string[]) {
   return (req: Request, _res: Response, next: NextFunction): void => {
-    if (!req.admin) {
+    if (!req.user?.role) {
       throw new ForbiddenError('Admin access required');
     }
 
-    if (!roles.includes(req.admin.role)) {
+    if (!roles.includes(req.user.role)) {
       throw new ForbiddenError('Insufficient permissions');
     }
 

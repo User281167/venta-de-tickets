@@ -14,18 +14,18 @@ import NextLink from "next/link";
 import { useRouter } from "next/navigation";
 import { LoginForm } from "@/features/auth/components/LoginForm";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { adminFetch } from "@/shared/api/admin-fetch";
 
 export default function LoginPage() {
   const { user, isLoading } = useAuth();
   const router = useRouter();
 
   if (!isLoading && user) {
-    fetch("/api/auth/session", { credentials: "include" })
-      .then((res) => res.json())
+    adminFetch<{ role: string | null }>("/api/auth/session")
       .then(({ role }) => {
-        router.replace(role ? "/admin" : "/mi-cuenta");
+        router.replace(role ? "/admin" : "/eventos");
       })
-      .catch(() => router.replace("/mi-cuenta"));
+      .catch(() => router.replace("/eventos"));
     return null;
   }
 

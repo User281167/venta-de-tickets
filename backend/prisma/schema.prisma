@@ -7,7 +7,7 @@ datasource db {
   provider = "postgresql"
 }
 
-enum AdminRole {
+enum UserRole {
   super_admin
   organizer
   staff
@@ -52,13 +52,14 @@ enum SurveyType {
 }
 
 model User {
-  id        String   @id @default(uuid()) @db.Uuid
-  fullName  String   @map("full_name") @db.VarChar(150)
-  email     String   @unique @db.VarChar(255)
-  phone     String?  @db.VarChar(20)
-  isActive  Boolean  @default(true) @map("is_active")
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  id        String    @id @default(uuid()) @db.Uuid
+  fullName  String    @map("full_name") @db.VarChar(150)
+  email     String    @unique @db.VarChar(255)
+  phone     String?   @db.VarChar(20)
+  role      UserRole?
+  isActive  Boolean   @default(true) @map("is_active")
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz
 
   // Auth gestionada por Supabase Auth (incluye proveedores sociales).
   // Este id debe coincidir con el id del usuario en auth.users (trigger de sincronización).
@@ -67,24 +68,9 @@ model User {
   tickets            Ticket[]
   payments           Payment[]
   surveyResponses    SurveyResponse[]
+  checkedInTickets   Ticket[]          @relation("CheckedInBy")
 
   @@map("users")
-}
-
-model Admin {
-  id       String    @id @default(uuid()) @db.Uuid
-  fullName String    @map("full_name") @db.VarChar(150)
-  email    String    @unique @db.VarChar(255)
-  role     AdminRole
-  isActive Boolean   @default(true) @map("is_active")
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  // Auth gestionada por Supabase Auth, igual que User.
-
-  checkedInTickets Ticket[] @relation("CheckedInBy")
-
-  @@map("admins")
 }
 
 model PrivacyAcceptance {
@@ -180,7 +166,7 @@ model Ticket {
   event        Event         @relation(fields: [eventId], references: [id])
   user         User          @relation(fields: [userId], references: [id])
   discountCode DiscountCode? @relation(fields: [discountCodeId], references: [id])
-  checker      Admin?        @relation("CheckedInBy", fields: [checkedInBy], references: [id])
+  checker      User?         @relation("CheckedInBy", fields: [checkedInBy], references: [id])
   payment      Payment?
 
   @@index([eventId])

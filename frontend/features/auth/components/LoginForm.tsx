@@ -26,6 +26,7 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 import { createClient } from "@/shared/lib/supabase/client";
 import { submitOnboardingSurvey } from "@/features/surveys/api/endpoints/surveys.endpoints";
 import { toaster } from "@/components/ui/toaster";
+import { adminFetch } from "@/shared/api/admin-fetch";
 import {
   IconBrandGoogle,
   IconEye,
@@ -81,16 +82,11 @@ export function LoginForm() {
 
     setStatus("success");
 
-    const sessionRes = await fetch("/api/auth/session", {
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-    });
-
-    if (sessionRes.ok) {
-      const { role } = await sessionRes.json();
-      router.push(role ? "/admin" : "/mi-cuenta");
-    } else {
-      router.push("/mi-cuenta");
+    try {
+      const { role } = await adminFetch<{ role: string | null }>("/api/auth/session");
+      router.push(role ? "/admin" : "/eventos");
+    } catch {
+      router.push("/eventos");
     }
   }
 

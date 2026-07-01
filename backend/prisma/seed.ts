@@ -1,5 +1,11 @@
 import 'dotenv/config';
 import { prisma } from '../src/shared/database/prisma.client.js';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseAdmin = createClient(
+  process.env['SUPABASE_URL']!,
+  process.env['SUPABASE_SERVICE_ROLE_KEY']!,
+);
 
 async function main() {
   const id = process.env['SUPER_ADMIN_ID'];
@@ -10,23 +16,44 @@ async function main() {
     process.exit(1);
   }
 
-  const existing = await prisma.admin.findUnique({ where: { id } });
+  // Verificar que existe en auth.users (creado via Supabase dashboard)
+  const { data: authUser, error } =
+    await supabaseAdmin.auth.admin.getUserById(id);
+  if (error || !authUser) {
+    console.error(
+      'User not found in Supabase Auth — create it in the dashboard first',
+    );
+    process.exit(1);
+  }
 
-  if (existing) {
-    console.log(`Super admin already exists: ${existing.email}`);
+  // Idempotencia ya es super_admin en ambos lados
+  const existing = await prisma.user.findUnique({ where: { id } });
+  if (
+    existing?.role === 'super_admin' &&
+    authUser.user.app_metadata?.role === 'super_admin'
+  ) {
+    console.log(`Already super_admin: ${email}`);
     return;
   }
 
-  await prisma.admin.create({
-    data: {
-      id,
-      email,
-      fullName: 'Super Admin',
-      role: 'super_admin',
-    },
+  // Actualizar DB + app_metadata en una secuencia controlada
+  await prisma.user.update({
+    where: { id },
+    data: { role: 'super_admin' },
   });
 
-  console.log(`Super admin created: ${email}`);
+  const { error: metaError } = await supabaseAdmin.auth.admin.updateUser(id, {
+    app_metadata: { role: 'super_admin' },
+  });
+
+  if (metaError) {
+    // Revertir DB si falla el sync
+    await prisma.user.update({ where: { id }, data: { role: null } });
+    console.error('Failed to sync app_metadata, rolled back DB');
+    process.exit(1);
+  }
+
+  console.log(`Super admin ready: ${email}`);
 }
 
 main()

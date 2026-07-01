@@ -17,7 +17,7 @@ export default function AdminDashboard() {
       </Heading>
 
       <Text color="gray.600">
-        Bienvenido{admin?.name ? `, ${admin.name}` : ""}. Rol:{" "}
+        Bienvenido{admin?.email ? `, ${admin.email}` : ""}. Rol:{" "}
         <strong>{admin?.role}</strong>
       </Text>
 

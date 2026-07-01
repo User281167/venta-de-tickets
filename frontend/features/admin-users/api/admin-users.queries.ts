@@ -1,4 +1,5 @@
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import { adminFetch } from "@/shared/api/admin-fetch";
 
 export type UserRow = {
   id: string;
@@ -27,19 +28,7 @@ async function fetchUsers(
     params.set("search", search);
   }
 
-  const res = await fetch(`/api/admin/users?${params}`, {
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
-  });
-
-  if (!res.ok) {
-    if (res.status === 403) {
-      throw new Error("forbidden");
-    }
-    throw new Error("Failed to fetch users");
-  }
-
-  return res.json();
+  return adminFetch<UserListResponse>(`/api/admin/users?${params}`);
 }
 
 export function useUsers(page: number, limit: number, search?: string) {
