@@ -27,12 +27,17 @@ export async function listUsers(req: Request, res: Response): Promise<void> {
 }
 
 export async function listOnboardingSurveys(
-  _req: Request,
+  req: Request,
   res: Response,
 ): Promise<void> {
-  const data = await surveysService.adminGetOnboarding();
+  const page = Math.max(1, parseInt(req.query['page'] as string) || 1);
+  const limit = Math.min(
+    100,
+    Math.max(1, parseInt(req.query['limit'] as string) || 20),
+  );
+  const result = await surveysService.adminQueryResponses(page, limit);
 
-  res.json({ data });
+  res.json(result);
 }
 
 export async function updateUserRole(

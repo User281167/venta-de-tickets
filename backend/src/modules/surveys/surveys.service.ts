@@ -42,6 +42,6 @@ export async function isOnboardingDone(userId: string): Promise<boolean> {
   return surveysRepo.existsByUserAndType(userId, 'onboarding');
 }
 
-export async function adminGetOnboarding() {
-  return surveysRepo.findAllOnboarding();
+export async function adminQueryResponses(page: number, limit: number) {
+  return surveysRepo.findAllOnboarding(page, limit);
 }

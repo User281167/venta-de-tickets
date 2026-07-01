@@ -1,7 +1,7 @@
 "use client";
 
-import { SurveyResponsesTable } from "@/features/admin-surveys/components/SurveyResponsesTable";
+import { SurveyResponsesViewer } from "@/features/admin-surveys/components/SurveyResponsesViewer";
 
 export default function AdminSurveysPage() {
-  return <SurveyResponsesTable />;
+  return <SurveyResponsesViewer />;
 }

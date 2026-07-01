@@ -31,25 +31,39 @@ export async function create(
   });
 }
 
-export async function findAllOnboarding() {
-  const rows = await prisma.surveyResponse.findMany({
-    where: { surveyType: 'onboarding' as SurveyType },
-    select: {
-      userId: true,
-      responses: true,
-      submittedAt: true,
-      user: {
-        select: { fullName: true, email: true },
-      },
-    },
-    orderBy: { submittedAt: 'desc' },
-  });
+export async function findAllOnboarding(page: number, limit: number) {
+  const skip = (page - 1) * limit;
 
-  return rows.map((r) => ({
-    userId: r.userId,
-    userName: r.user?.fullName ?? null,
-    userEmail: r.user?.email ?? null,
-    answers: r.responses,
-    submittedAt: r.submittedAt,
+  const [users, total] = await Promise.all([
+    prisma.user.findMany({
+      select: {
+        id: true,
+        fullName: true,
+        email: true,
+        surveyResponses: {
+          where: { surveyType: 'onboarding' as SurveyType },
+          select: { responses: true, submittedAt: true },
+          take: 1,
+        },
+      },
+      skip,
+      take: limit,
+      orderBy: { createdAt: 'desc' },
+    }),
+    prisma.user.count(),
+  ]);
+
+  const data = users.map((u) => ({
+    userId: u.id,
+    name: u.fullName,
+    email: u.email,
+    answers: (u.surveyResponses[0]?.responses ?? []) as Array<{
+      question_id: string;
+      answer: string | string[];
+    }>,
+    created_at:
+      (u.surveyResponses[0]?.submittedAt ?? null)?.toISOString() ?? null,
   }));
+
+  return { data, total, page, limit };
 }

@@ -1,21 +1,44 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { adminFetch } from "@/shared/api/admin-fetch";
 
-export type SurveyResponse = {
+export type SurveyAnswer = {
+  question_id: string;
+  answer: string | string[];
+};
+
+export type SurveyRow = {
   userId: string;
-  userName: string | null;
-  userEmail: string | null;
-  answers: Record<string, unknown>;
-  submittedAt: string;
+  name: string | null;
+  email: string | null;
+  answers: SurveyAnswer[];
+  created_at: string | null;
 };
 
 export type SurveyListResponse = {
-  data: SurveyResponse[];
+  data: SurveyRow[];
+  total: number;
+  page: number;
+  limit: number;
 };
 
-export function useSurveys() {
+async function fetchResponses(
+  page: number,
+  limit: number,
+): Promise<SurveyListResponse> {
+  const params = new URLSearchParams({
+    page: String(page),
+    limit: String(limit),
+  });
+
+  return adminFetch<SurveyListResponse>(
+    `/api/admin/surveys/onboarding?${params}`,
+  );
+}
+
+export function useOnboardingResponses(page: number, limit: number) {
   return useQuery({
-    queryKey: ["admin", "surveys", "onboarding"],
-    queryFn: () => adminFetch<SurveyListResponse>("/api/admin/surveys/onboarding"),
+    queryKey: ["admin", "surveys", "onboarding", page, limit],
+    queryFn: () => fetchResponses(page, limit),
+    placeholderData: keepPreviousData,
   });
 }
