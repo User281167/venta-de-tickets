@@ -84,6 +84,16 @@ export function TicketTypeForm({
         return;
       }
 
+      if (
+        parsed.data.quantityTotal != null &&
+        parsed.data.quantityTotal < ticketType.quantitySold
+      ) {
+        setErrors({
+          quantityTotal: `No puede ser menor a las vendidas (${ticketType.quantitySold})`,
+        });
+        return;
+      }
+
       setSaving(true);
 
       try {

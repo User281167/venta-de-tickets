@@ -94,6 +94,15 @@ export async function updateTicketType(
     throw new NotFoundError('Tipo de entrada no encontrado');
   }
 
+  if (
+    data.quantityTotal != null &&
+    data.quantityTotal < existing.quantitySold
+  ) {
+    throw new Error(
+      `La cantidad total (${data.quantityTotal}) no puede ser menor a las entradas ya vendidas (${existing.quantitySold}).`,
+    );
+  }
+
   return repo.update(id, {
     ...data,
     saleEndsAt:

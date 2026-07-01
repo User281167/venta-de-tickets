@@ -86,6 +86,11 @@ export async function updateTicketType(
       return;
     }
 
+    if (err instanceof Error) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+
     throw err;
   }
 }
