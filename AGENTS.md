@@ -1,9 +1,6 @@
 <!-- SPECKIT START -->
-Current plan: specs/008-ticketing/plan.md
-Implementation details: specs/008-ticketing/quickstart.md
-Data model: specs/008-ticketing/data-model.md
-API contracts: specs/008-ticketing/contracts/
-Research: specs/008-ticketing/research.md
+Implementation plan at `specs/009-payment-system/plan.md`.
+Read for current feature context: build order, file layout, technical decisions.
 <!-- SPECKIT END -->
 
 # AGENT.md

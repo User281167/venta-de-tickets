@@ -2,17 +2,12 @@
   "version": "0.8.12",
   "integration_state_schema": 1,
   "installed_integrations": [
-    "opencode",
-    "vibe"
+    "opencode"
   ],
   "integration_settings": {
     "opencode": {
       "script": "ps",
       "invoke_separator": "."
-    },
-    "vibe": {
-      "script": "ps",
-      "invoke_separator": "-"
     }
   },
   "integration": "opencode",
