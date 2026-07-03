@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Box,
   Button,
@@ -8,12 +8,12 @@ import {
   Flex,
   HStack,
   IconButton,
+  Image,
   Link as ChakraLink,
   Stack,
-  Text,
+  VStack,
 } from "@chakra-ui/react";
 import {
-  IconBrain,
   IconLogout,
   IconMenu2,
   IconShield,
@@ -22,21 +22,22 @@ import {
 } from "@tabler/icons-react";
 import NextLink from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useAuth } from "@/features/auth/hooks/useAuth";
 import { signOut } from "@/features/auth/api/auth.client";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 const NAV_ITEMS = [
-  { label: "Inicio", href: "/#hero" },
-  { label: "Programa", href: "/#agenda" },
-  { label: "Speakers", href: "/#speakers" },
-  { label: "Entradas", href: "/#entradas" },
+  { label: "INICIO", href: "/#hero" },
+  { label: "LA CONVENCIÓN", href: "/#convencion" },
+  { label: "AGENDA", href: "/#agenda" },
+  { label: "ACTIVIDADES", href: "/#actividades" },
+  { label: "PONENTES", href: "/#speakers" },
+  { label: "ENTRADAS", href: "/#entradas" },
+  { label: "CONTACTO", href: "/#contacto" },
 ];
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-  const isHome = pathname === "/";
-  const [scrolled, setScrolled] = useState(!isHome);
   const isAuthPage = pathname === "/login" || pathname === "/registro";
   const { user, role } = useAuth();
   const router = useRouter();
@@ -46,23 +47,6 @@ export function Navbar() {
     router.push("/");
   };
 
-  useEffect(() => {
-    if (!isHome) {
-      setScrolled(true);
-      return;
-    }
-
-    function onScroll() {
-      setScrolled(window.scrollY > 60);
-    }
-
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [isHome]);
-
-  const linkColor = scrolled ? "brand.dark" : "white";
-
   return (
     <Box
       as="nav"
@@ -71,49 +55,49 @@ export function Navbar() {
       left={0}
       right={0}
       zIndex={1000}
-      bg={scrolled ? "white" : "transparent"}
-      borderBottomWidth={scrolled ? 1 : 0}
-      borderColor="gray.200"
+      bg="rgba(2, 4, 20, 0.76)"
+      color="brand.light"
+      borderBottomWidth="1px"
+      borderColor="rgba(255,255,255,0.08)"
+      backdropFilter="blur(18px)"
       transition="all 0.25s ease"
     >
-      <Container maxW="1200px" px={4}>
+      <Container maxW="1280px" px={{ base: 4, md: 6 }}>
         <Flex h={16} align="center" justify="space-between">
           <ChakraLink asChild _hover={{ textDecoration: "none" }}>
             <NextLink href="/">
-              <HStack gap={2}>
-                <IconBrain size={28} color="#76ABAE" />
-                <Text
-                  fontSize="lg"
-                  fontWeight="bold"
-                  color={linkColor}
-                  hideBelow="sm"
-                >
-                  Future Minds 2026
-                </Text>
-              </HStack>
+              <Image src="/utp-logo.png" alt="UTP" h="42px" w="auto" />
             </NextLink>
           </ChakraLink>
 
-          <HStack gap={8} hideBelow="md">
+          <HStack gap={7} hideBelow="xl">
             {NAV_ITEMS.map((item) => (
               <ChakraLink
                 asChild
-                key={item.href}
-                fontSize="sm"
-                fontWeight="medium"
-                color={linkColor}
-                _hover={{ color: "brand.teal" }}
+                key={item.href + item.label}
+                textDecoration="none"
+                color="brand.light"
+                fontSize="xs"
+                fontWeight="bold"
+                borderBottom="2px solid"
+                borderColor="transparent"
+                transition="all 0.2s ease"
+                _hover={{
+                  borderColor: "brand.pink",
+                  transform: "translateY(-2px)",
+                  boxShadow: "0 0 42px rgba(0,229,255,0.42)",
+                }}
               >
                 <NextLink href={item.href}>{item.label}</NextLink>
               </ChakraLink>
             ))}
           </HStack>
 
-          <HStack gap={3} hideBelow="md">
+          <HStack gap={3}>
             {user ? (
               <>
                 {role && (
-                  <Button asChild variant="ghost" size="sm" color={linkColor}>
+                  <Button asChild variant="ghost">
                     <NextLink href="/admin">
                       <IconShield size={18} />
                       Admin
@@ -122,9 +106,9 @@ export function Navbar() {
                 )}
                 <Button
                   asChild
-                  variant={scrolled ? "outline" : "solid"}
-                  size="sm"
-                  colorPalette={scrolled ? "teal" : "white"}
+                  variant="outline"
+                  color="white"
+                  borderColor="brand.cyan"
                 >
                   <NextLink href="/mi-cuenta">
                     <IconUser size={18} />
@@ -132,78 +116,70 @@ export function Navbar() {
                   </NextLink>
                 </Button>
 
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  color={linkColor}
-                  onClick={handleLogout}
-                >
+                <Button variant="ghost" onClick={handleLogout}>
                   <IconLogout size={18} />
                 </Button>
               </>
             ) : (
               !isAuthPage && (
-                <>
-                  <Button
-                    asChild
-                    variant={scrolled ? "outline" : "solid"}
-                    size="sm"
-                    colorPalette={scrolled ? "teal" : "white"}
-                  >
-                    <NextLink href="/login">Iniciar sesión</NextLink>
-                  </Button>
-
-                  <Button asChild size="sm" colorPalette="orange">
-                    <NextLink href="/registro">Registrarse</NextLink>
-                  </Button>
-                </>
+                <Button
+                  asChild
+                  border="1px solid transparent"
+                  hideBelow="sm"
+                  size="md"
+                  bg={`
+                    linear-gradient(#020414, #020414) padding-box,
+                    linear-gradient(90deg, #ff0f7b, #00e5ff) border-box
+                  `}
+                  _hover={{
+                    borderColor: "brand.pink",
+                    transform: "translateY(-2px)",
+                    boxShadow: "0 0 42px rgba(0,229,255,0.42)",
+                  }}
+                  color="white"
+                  fontWeight="bold"
+                >
+                  <NextLink href="/registro">INSCRÍBETE</NextLink>
+                </Button>
               )
             )}
-          </HStack>
 
-          <IconButton
-            aria-label="Menú"
-            variant="ghost"
-            size="md"
-            hideFrom="md"
-            color={linkColor}
-            onClick={() => setOpen(!open)}
-          >
-            {open ? <IconX size={24} /> : <IconMenu2 size={24} />}
-          </IconButton>
+            <IconButton
+              aria-label="Menu"
+              color="white"
+              size="md"
+              hideFrom="xl"
+              onClick={() => setOpen(!open)}
+              variant="ghost"
+            >
+              {open ? <IconX size={24} /> : <IconMenu2 size={24} />}
+            </IconButton>
+          </HStack>
         </Flex>
 
         {open && (
-          <Box
-            pb={4}
-            hideFrom="md"
-            bg={scrolled ? "white" : "rgba(48,56,65,0.95)"}
-            borderRadius="xl"
-            p={4}
-          >
+          <Box hideFrom="xl" py="4">
             <Stack gap={3}>
               {NAV_ITEMS.map((item) => (
                 <ChakraLink
                   asChild
-                  key={item.href}
-                  fontSize="sm"
-                  fontWeight="medium"
-                  color={scrolled ? "brand.dark" : "white"}
+                  key={item.href + item.label}
+                  fontWeight="bold"
+                  color="white"
                 >
                   <NextLink href={item.href} onClick={() => setOpen(false)}>
                     {item.label}
                   </NextLink>
                 </ChakraLink>
               ))}
+
               {user ? (
                 <>
                   {role && (
                     <Button
                       asChild
                       variant="ghost"
-                      size="sm"
                       w="full"
-                      color={scrolled ? "brand.dark" : "white"}
                       onClick={() => setOpen(false)}
                     >
                       <NextLink href="/admin">
@@ -212,12 +188,12 @@ export function Navbar() {
                       </NextLink>
                     </Button>
                   )}
+
                   <Button
                     asChild
                     variant="outline"
-                    size="sm"
                     w="full"
-                    colorPalette="teal"
+                    color="white"
                     onClick={() => setOpen(false)}
                   >
                     <NextLink href="/mi-cuenta">
@@ -228,35 +204,37 @@ export function Navbar() {
 
                   <Button
                     variant="ghost"
-                    size="sm"
                     w="full"
-                    color={scrolled ? "brand.dark" : "white"}
                     onClick={() => {
                       setOpen(false);
                       handleLogout();
                     }}
                   >
                     <IconLogout size={18} />
-                    Cerrar sesión
+                    Cerrar sesion
                   </Button>
                 </>
               ) : (
                 !isAuthPage && (
-                  <HStack gap={2} pt={2}>
-                    <Button
-                      asChild
-                      variant="outline"
-                      size="sm"
-                      w="full"
-                      colorPalette={scrolled ? "teal" : "white"}
-                    >
-                      <NextLink href="/login">Iniciar sesión</NextLink>
+                  <VStack gap={2} pt={2}>
+                    <Button asChild variant="outline" w="full" color="white">
+                      <NextLink href="/login">Iniciar sesion</NextLink>
                     </Button>
 
-                    <Button asChild size="sm" w="full" colorPalette="orange">
+                    <Button
+                      asChild
+                      w="full"
+                      hideFrom="sm"
+                      border="1px solid transparent"
+                      bg={`
+                        linear-gradient(#020414, #020414) padding-box,
+                        linear-gradient(90deg, #ff0f7b, #00e5ff) border-box
+                      `}
+                      color="white"
+                    >
                       <NextLink href="/registro">Registrarse</NextLink>
                     </Button>
-                  </HStack>
+                  </VStack>
                 )
               )}
             </Stack>

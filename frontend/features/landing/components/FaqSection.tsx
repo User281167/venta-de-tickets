@@ -1,54 +1,82 @@
-"use client";
+﻿"use client";
 
-import { Accordion, Box, Container, Heading, Stack, Text } from "@chakra-ui/react";
+import {
+  Accordion,
+  Box,
+  Container,
+  Heading,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 
 const FAQ_ITEMS = [
   {
-    value: "estudiante",
-    question: "¿Necesito ser estudiante para asistir?",
-    answer: "No, el evento está abierto a público general. Estudiantes, profesionales y cualquier persona interesada en tecnología, innovación y emprendimiento puede asistir.",
+    value: "publico",
+    question: "Quien puede asistir?",
+    answer:
+      "Egresados, estudiantes, docentes, aliados, empresas y comunidad interesada en innovación, cultura y futuro profesional.",
+  },
+  {
+    value: "fechas",
+    question: "Cuando sera La U del Futuro?",
+    answer:
+      "La convención se realizara el 22, 23 y 24 de octubre de 2026 en la Universidad Tecnológica de Pereira.",
   },
   {
     value: "certificado",
-    question: "¿Recibiré certificado?",
-    answer: "Sí, todos los asistentes reciben certificado digital de participación.",
+    question: "Recibire certificado?",
+    answer:
+      "Las actividades académicas con registro habilitado podran entregar certificado digital segun modalidad y asistencia.",
   },
   {
-    value: "transferencia",
-    question: "¿Puedo transferir mi ticket?",
-    answer: "Sí, hasta 48 horas antes del evento. Solo debes enviar un correo a eventos@universidadcentral.edu con los datos del nuevo asistente.",
-  },
-  {
-    value: "reembolso",
-    question: "¿Hay reembolso?",
-    answer: "Reembolsos disponibles hasta 7 días antes del evento. Después de esa fecha, puedes transferir tu entrada a otra persona.",
+    value: "entradas",
+    question: "Como aseguro mi cupo?",
+    answer:
+      "Selecciona una entrada disponible, inicia sesion y completa el proceso de compra o inscripción desde la plataforma.",
   },
 ];
 
 export function FaqSection() {
   return (
-    <Box py={20}>
-      <Container maxW="800px" px={4}>
-        <Stack gap={3} align="center" mb={10}>
-          <Heading as="h2" size={{ base: "2xl", md: "3xl" }} color="brand.dark" textAlign="center">
+    <Box
+      py={{ base: 14, md: 20 }}
+      bg="linear-gradient(180deg, #020414 0%, #050719 48%, #020414 100%)"
+    >
+      <Container maxW="860px" px={{ base: 4, md: 6 }}>
+        <Stack gap={3} align="center" textAlign="center" mb={10}>
+          <Text
+            color="brand.pink"
+            fontSize="xs"
+            fontWeight="black"
+            textTransform="uppercase"
+          >
+            Información clave
+          </Text>
+          <Heading color="white" fontSize={{ base: "3xl", md: "4xl" }}>
             Preguntas frecuentes
           </Heading>
         </Stack>
 
         <Accordion.Root defaultValue={[]} collapsible>
           {FAQ_ITEMS.map((item) => (
-            <Accordion.Item key={item.value} value={item.value} borderBottomWidth={1} borderColor="gray.200" py={2}>
+            <Accordion.Item
+              key={item.value}
+              value={item.value}
+              borderBottomWidth={1}
+              borderColor="rgba(255,255,255,0.1)"
+              py={2}
+            >
               <Accordion.ItemTrigger cursor="pointer" py={3}>
                 <Box flex={1} textAlign="start">
-                  <Text fontWeight="medium" color="brand.dark">
+                  <Text fontWeight="black" color="white">
                     {item.question}
                   </Text>
                 </Box>
-                <Accordion.ItemIndicator />
+                <Accordion.ItemIndicator color="brand.cyan" />
               </Accordion.ItemTrigger>
               <Accordion.ItemContent pb={4}>
                 <Accordion.ItemBody>
-                  <Text color="gray.600" lineHeight="1.7">
+                  <Text color="brand.muted" lineHeight="1.7">
                     {item.answer}
                   </Text>
                 </Accordion.ItemBody>

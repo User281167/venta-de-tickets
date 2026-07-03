@@ -1,33 +1,79 @@
-import { Box, Button, Container, Heading, Stack, Text } from "@chakra-ui/react";
-import { IconTicket } from "@tabler/icons-react";
+﻿import {
+  Box,
+  Button,
+  Container,
+  Flex,
+  Heading,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
+import { IconArrowRight, IconChevronRight } from "@tabler/icons-react";
 import NextLink from "next/link";
 
 export function CtaSection() {
   return (
-    <Box py={20} bg="brand.dark">
-      <Container maxW="800px" px={4}>
-        <Stack gap={5} align="center" textAlign="center">
-          <Heading as="h2" size={{ base: "2xl", md: "3xl" }} color="white">
-            No te quedes fuera del futuro
+    <Box
+      py={{ base: 12, md: 16 }}
+      bg="linear-gradient(100deg, #ff0f7b 0%, #4116a8 60%, #00d5b8 100%)"
+      position="relative"
+      overflow="hidden"
+    >
+      <Container
+        maxW="8xl"
+        px={{ base: 4, md: 6 }}
+        position="relative"
+        zIndex={1}
+      >
+        <Flex
+          direction={{ base: "column", md: "row" }}
+          align="center"
+          justify="space-between"
+          gap={8}
+        >
+          <Heading
+            color="white"
+            fontSize={{ base: "3xl", md: "5xl" }}
+            lineHeight="1.05"
+            textTransform="uppercase"
+          >
+            Sé parte del futuro,
+            <br />
+            sé parte de la{" "}
+            <Text className="inline" color="brand.blue">
+              U.
+            </Text>
           </Heading>
 
-          <Text fontSize="lg" color="gray.300" maxW="lg">
-            Las mejores oportunidades no esperan. Asegura tu lugar en una de las
-            experiencias académicas más importantes del año.
+          <Text color="white" maxW="sm">
+            Inscríbete hoy y asegura tu cupo en el evento más ispirador del año.
           </Text>
 
-          <Button
-            asChild
-            size="lg"
-            colorPalette="orange"
-            _hover={{ transform: "translateY(-2px)" }}
-          >
-            <NextLink href="/#entradas">
-              <IconTicket size={20} />
-              Quiero mi entrada ahora
-            </NextLink>
-          </Button>
-        </Stack>
+          <Stack gap={3} align={{ base: "stretch", md: "center" }}>
+            <Button
+              asChild
+              size={{ base: "md", md: "lg" }}
+              px={{ base: 6, md: 8 }}
+              minH="54px"
+              bg="white"
+              color="#12162b"
+              borderRadius="10px"
+              fontWeight="bold"
+              boxShadow="0 0 30px rgba(255,255,255,0.22)"
+              _hover={{
+                transform: "translateY(-2px)",
+                boxShadow: "0 0 42px rgba(0,229,255,0.42)",
+              }}
+            >
+              <NextLink href="/#entradas">
+                INSCRÍBETE AHORA <IconArrowRight size={22} />
+              </NextLink>
+            </Button>
+
+            <Text color="white" fontSize="sm" textAlign="center">
+              Cupos limitados
+            </Text>
+          </Stack>
+        </Flex>
       </Container>
     </Box>
   );

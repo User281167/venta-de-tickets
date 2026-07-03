@@ -1,152 +1,131 @@
-"use client";
+﻿"use client";
 
 import {
   Box,
+  Button,
+  Center,
   Container,
-  Flex,
-  Grid,
   Heading,
-  Icon,
+  SimpleGrid,
   Stack,
   Text,
 } from "@chakra-ui/react";
 import {
-  IconAward,
-  IconCertificate,
-  IconGift,
-  IconHeartHandshake,
-  IconPresentation,
+  IconArrowRight,
+  IconBriefcase,
+  IconChevronRight,
+  IconHeart,
+  IconMicrophone,
+  IconSchool,
+  IconSparkles,
+  IconUsers,
 } from "@tabler/icons-react";
+import NextLink from "next/link";
 
-const BENEFITS = [
+const ACTIVITIES = [
   {
-    icon: IconPresentation,
-    title: "Acceso a conferencias exclusivas",
-    desc: "Charlas con líderes globales de tecnología, emprendimiento e innovación.",
+    icon: IconMicrophone,
+    title: "Conferencias y Ponencias",
+    text: "Líderes nacionales e internacionales en IA, innovación y transformación digital.",
   },
   {
-    icon: IconCertificate,
-    title: "Certificado de participación universitario",
-    desc: "Recibe un certificado digital que avala tu participación en el evento.",
+    icon: IconSchool,
+    title: "Talleres y Masterclass",
+    text: "Aprende, actualiza y potencia tus habilidades del futuro.",
   },
   {
-    icon: IconHeartHandshake,
-    title: "Networking con estudiantes y profesionales",
-    desc: "Conéctate con reclutadores, mentores y otros estudiantes apasionados.",
+    icon: IconUsers,
+    title: "Networking",
+    text: "Conecta con egresados, empresas e instituciones que están transformando el mundo.",
   },
   {
-    icon: IconAward,
-    title: "Acceso a material exclusivo post-evento",
-    desc: "Llévate contenido digital, grabaciones y recursos preparados por los speakers.",
+    icon: IconBriefcase,
+    title: "Feria de Empleo",
+    text: "Oportunidades laborales, ruedas de negocio y vitrina de emprendimientos.",
   },
   {
-    icon: IconGift,
-    title: "Participación en sorteos de mentorías y becas",
-    desc: "Gana mentorías personalizadas y becas para cursos y programas especializados.",
+    icon: IconSparkles,
+    title: "Experiencias y Cultura",
+    text: "Conciertos, arte, deportes y actividades para disfrutar y reconectar.",
   },
-];
-
-const STATS = [
-  { value: "500+", label: "Asistentes" },
-  { value: "15+", label: "Speakers" },
-  { value: "8 horas", label: "Contenido" },
-  { value: "3", label: "Tracks" },
+  {
+    icon: IconHeart,
+    title: "Reencuentro UTP",
+    text: "Revive momentos, comparte historias y fortalece el sentido de pertenencia.",
+  },
 ];
 
 export function BenefitsSection() {
   return (
-    <Box
-      py={20}
-      position="relative"
-      style={{
-        backgroundImage: "url(/campus.jpg)",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundAttachment: "fixed",
-      }}
-      _before={{
-        content: '""',
-        position: "absolute",
-        inset: 0,
-        bg: "rgba(48, 56, 65, 0.85)",
-      }}
-    >
-      <Container maxW="1200px" px={4} position="relative" zIndex={1}>
-        <Stack gap={3} align="center" mb={12}>
-          <Heading
-            as="h2"
-            size={{ base: "2xl", md: "3xl" }}
-            color="white"
-            textAlign="center"
-          >
-            ¿Por qué asistir?
-          </Heading>
-
-          <Text color="gray.300" textAlign="center" maxW="lg">
-            Más que un evento, una experiencia que transforma tu perspectiva
-            profesional
+    <Box id="actividades" py={{ base: 14, md: 20 }} bg="#020414">
+      <Container maxW="8xl" px={{ base: 4, md: 6 }}>
+        <Stack gap={3} align="center" textAlign="center" mb={12}>
+          <Text color="brand.muted" fontSize="xl" textTransform="uppercase">
+            ¿Qué vas a vivir?
           </Text>
+
+          <Heading color="white" fontSize={{ base: "3xl", md: "4xl" }}>
+            Una agenda para inspirarte y transformar
+          </Heading>
         </Stack>
 
-        <Grid
-          templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }}
-          gap={5}
-          mb={12}
-        >
-          {BENEFITS.map((benefit) => (
-            <Flex
-              key={benefit.title}
-              direction="column"
-              p={6}
-              bg="rgba(255,255,255,0.08)"
-              backdropFilter="blur(12px)"
-              borderRadius="xl"
-              borderWidth={1}
-              borderColor="rgba(255,255,255,0.12)"
-              _hover={{
-                bg: "rgba(255,255,255,0.14)",
-                transform: "translateY(-4px)",
-              }}
-              transition="all 0.2s"
-            >
-              <Flex align="center" spaceX="2">
-                <Flex
-                  w={12}
-                  h={12}
-                  bg="brand.teal"
-                  borderRadius="lg"
-                  align="center"
-                  justify="center"
-                  mb={4}
-                >
-                  <Icon as={benefit.icon} boxSize={6} color="white" />
-                </Flex>
+        <SimpleGrid columns={{ base: 1, sm: 2, lg: 6 }} gap={5}>
+          {ACTIVITIES.map((activity, index) => {
+            const ActivityIcon = activity.icon;
+            return (
+              <Stack
+                key={activity.title}
+                align="center"
+                textAlign="center"
+                gap={3}
+                p={4}
+                borderRightWidth={{
+                  base: 0,
+                  lg: index === ACTIVITIES.length - 1 ? 0 : "1px",
+                }}
+                borderColor="rgba(255,255,255,0.1)"
+              >
+                <ActivityIcon
+                  size={64}
+                  stroke={1}
+                  color={index % 2 === 0 ? "#ff0f7b" : "#00e5ff"}
+                />
 
-                <Heading as="h3" size="sm" color="white" mb={2}>
-                  {benefit.title}
-                </Heading>
-              </Flex>
+                <Text color="white" fontWeight="bold" minH="48px">
+                  {activity.title}
+                </Text>
 
-              <Text fontSize="sm" color="gray.300">
-                {benefit.desc}
-              </Text>
-            </Flex>
-          ))}
-        </Grid>
+                <Text color="brand.muted" fontSize="xs" lineHeight="1.7">
+                  {activity.text}
+                </Text>
+              </Stack>
+            );
+          })}
+        </SimpleGrid>
 
-        <Flex justify="center" wrap="wrap" gap={8}>
-          {STATS.map((stat) => (
-            <Stack key={stat.label} align="center" gap={0}>
-              <Text fontSize="3xl" fontWeight="bold" color="brand.teal">
-                {stat.value}
-              </Text>
-
-              <Text fontSize="sm" color="gray.400">
-                {stat.label}
-              </Text>
-            </Stack>
-          ))}
-        </Flex>
+        <Center mt={10}>
+          <Button
+            asChild
+            size="xl"
+            w="full"
+            maxW="xl"
+            border="2px solid transparent"
+            bg={`
+              linear-gradient(#020414, #020414) padding-box,
+              linear-gradient(90deg, #ff0f7b, #00e5ff) border-box
+            `}
+            _hover={{
+              borderColor: "brand.pink",
+              transform: "translateY(-2px)",
+              boxShadow: "0 0 42px rgba(0,229,255,0.42)",
+            }}
+            color="white"
+          >
+            <NextLink href="/#agenda">
+              VER AGENDA COMPLETA <IconArrowRight size={22} />
+            </NextLink>
+          </Button>
+        </Center>
       </Container>
     </Box>
   );

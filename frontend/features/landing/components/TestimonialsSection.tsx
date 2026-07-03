@@ -1,45 +1,34 @@
-"use client";
+﻿"use client";
 
-import { Box, Container, Flex, Grid, Heading, Icon, Stack, Text } from "@chakra-ui/react";
-import { IconQuote } from "@tabler/icons-react";
+import { Box, Container, Grid, Heading, Stack, Text } from "@chakra-ui/react";
+import { IconQuote, IconUsers, IconWorld } from "@tabler/icons-react";
 
 const TESTIMONIALS = [
-  {
-    quote: "Una experiencia que cambió mi forma de ver mi carrera.",
-    author: "Estudiante de Ingeniería",
-  },
-  {
-    quote: "El networking fue increíble, conocí a mi futuro socio.",
-    author: "Participante edición 2025",
-  },
-  {
-    quote: "Contenido real, aplicable y motivador.",
-    author: "Alumna de Administración",
-  },
+  { icon: IconQuote, quote: "Volver a la U con esta energia cambia la forma de imaginar el futuro.", author: "Egresada UTP" },
+  { icon: IconUsers, quote: "El networking conecto generaciones, empresas y proyectos reales.", author: "Participante 2025" },
+  { icon: IconWorld, quote: "Una convencion con mirada global y raiz universitaria.", author: "Aliado institucional" },
 ];
 
 export function TestimonialsSection() {
   return (
-    <Box py={20} bg="gray.50">
-      <Container maxW="1200px" px={4}>
-        <Stack gap={3} align="center" mb={12}>
-          <Heading as="h2" size={{ base: "2xl", md: "3xl" }} color="brand.dark" textAlign="center">
-            Lo que dicen eventos anteriores
-          </Heading>
+    <Box py={{ base: 14, md: 20 }} bg="#020414">
+      <Container maxW="1200px" px={{ base: 4, md: 6 }}>
+        <Stack gap={3} align="center" textAlign="center" mb={10}>
+          <Text color="brand.muted" fontSize="xs" fontWeight="black" textTransform="uppercase">Voces de la comunidad</Text>
+          <Heading color="white" fontSize={{ base: "3xl", md: "4xl" }}>Historias que vuelven a encontrarse</Heading>
         </Stack>
 
         <Grid templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }} gap={6}>
-          {TESTIMONIALS.map((t) => (
-            <Flex key={t.author} direction="column" bg="white" p={6} borderRadius="xl" borderWidth={1} borderColor="gray.100" boxShadow="sm">
-              <Icon as={IconQuote} boxSize={8} color="brand.teal" opacity={0.4} mb={3} />
-              <Text fontSize="md" color="gray.600" lineHeight="1.7" fontStyle="italic" flex={1}>
-                &ldquo;{t.quote}&rdquo;
-              </Text>
-              <Text fontSize="sm" fontWeight="bold" color="brand.dark" mt={4}>
-                — {t.author}
-              </Text>
-            </Flex>
-          ))}
+          {TESTIMONIALS.map((item, index) => {
+            const TestimonialIcon = item.icon;
+            return (
+              <Stack key={item.author} gap={4} p={6} bg="rgba(255,255,255,0.035)" borderWidth="1px" borderColor="rgba(255,255,255,0.08)" borderRadius="8px">
+                <TestimonialIcon size={36} color={index % 2 === 0 ? "#ff0f7b" : "#00e5ff"} />
+                <Text color="brand.light" lineHeight="1.8">&ldquo;{item.quote}&rdquo;</Text>
+                <Text color="brand.muted" fontSize="sm" fontWeight="bold">{item.author}</Text>
+              </Stack>
+            );
+          })}
         </Grid>
       </Container>
     </Box>

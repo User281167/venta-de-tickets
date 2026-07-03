@@ -1,4 +1,4 @@
-import { Navbar } from "@/components/layout/Navbar";
+﻿import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { HeroSection } from "@/features/landing/components/HeroSection";
 import { AboutSection } from "@/features/landing/components/AboutSection";
@@ -21,10 +21,12 @@ export default function LandingPage() {
         <AboutSection />
         <BenefitsSection />
         <SpeakersSection />
-        <AgendaSection />
+
+        {/*<AgendaSection />
         <TicketSection />
         <TestimonialsSection />
-        <FaqSection />
+        <FaqSection />*/}
+
         <CtaSection />
       </main>
       <Footer />
