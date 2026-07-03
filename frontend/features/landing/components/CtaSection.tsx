@@ -7,7 +7,7 @@
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { IconArrowRight, IconChevronRight } from "@tabler/icons-react";
+import { IconArrowRight } from "@tabler/icons-react";
 import NextLink from "next/link";
 
 export function CtaSection() {
@@ -64,7 +64,7 @@ export function CtaSection() {
                 boxShadow: "0 0 42px rgba(0,229,255,0.42)",
               }}
             >
-              <NextLink href="/#entradas">
+              <NextLink href="/registro">
                 INSCRÍBETE AHORA <IconArrowRight size={22} />
               </NextLink>
             </Button>

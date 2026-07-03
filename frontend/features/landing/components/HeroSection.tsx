@@ -126,7 +126,7 @@ export function HeroSection() {
                 boxShadow: "0 0 42px rgba(0,229,255,0.42)",
               }}
             >
-              <NextLink href="/#entradas">
+              <NextLink href="/registro">
                 INSCRÍETE AHORA <IconArrowRight size={24} />
               </NextLink>
             </Button>

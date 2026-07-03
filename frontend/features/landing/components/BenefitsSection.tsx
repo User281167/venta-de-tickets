@@ -120,7 +120,7 @@ export function BenefitsSection() {
             }}
             color="white"
           >
-            <NextLink href="/#agenda">
+            <NextLink href="/agenda">
               VER AGENDA COMPLETA <IconArrowRight size={22} />
             </NextLink>
           </Button>

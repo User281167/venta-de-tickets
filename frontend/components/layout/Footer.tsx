@@ -30,12 +30,12 @@ import {
 import NextLink from "next/link";
 
 const QUICK_LINKS = [
-  "La Convención",
-  "Agenda",
-  "Actividades",
-  "Ponentes",
-  "Entradas",
-  "Contacto",
+  { label: "La Convención", href: "/#convencion" },
+  { label: "Agenda", href: "/agenda" },
+  { label: "Actividades", href: "/#actividades" },
+  { label: "Ponentes", href: "/#speakers" },
+  { label: "Entradas", href: "/#entradas" },
+  { label: "Contacto", href: "/#contacto" },
 ];
 
 export function Footer() {
@@ -132,15 +132,13 @@ export function Footer() {
 
             {QUICK_LINKS.map((link) => (
               <ChakraLink
-                key={link}
+                key={link.href}
                 asChild
                 fontSize="sm"
                 color="brand.muted"
                 _hover={{ color: "brand.pink" }}
               >
-                <NextLink href={`/#${link.toLowerCase().replace(" ", "-")}`}>
-                  {link}
-                </NextLink>
+                <NextLink href={link.href}>{link.label}</NextLink>
               </ChakraLink>
             ))}
           </Stack>
