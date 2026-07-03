@@ -10,12 +10,7 @@
   Stack,
   Text,
 } from "@chakra-ui/react";
-import {
-  IconArrowRight,
-  IconCalendar,
-  IconChevronRight,
-  IconMapPin,
-} from "@tabler/icons-react";
+import { IconArrowRight, IconCalendar, IconMapPin } from "@tabler/icons-react";
 import NextLink from "next/link";
 
 export function HeroSection() {
@@ -41,9 +36,8 @@ export function HeroSection() {
       }}
     >
       <Container
-        maxW="1280px"
+        maxW="7xl"
         px={{ base: 4, md: 6 }}
-        pt={24}
         position="relative"
         zIndex={1}
       >

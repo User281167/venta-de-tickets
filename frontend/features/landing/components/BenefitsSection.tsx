@@ -13,7 +13,6 @@ import {
 import {
   IconArrowRight,
   IconBriefcase,
-  IconChevronRight,
   IconHeart,
   IconMicrophone,
   IconSchool,

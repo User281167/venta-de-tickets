@@ -28,7 +28,7 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 const NAV_ITEMS = [
   { label: "INICIO", href: "/#hero" },
   { label: "LA CONVENCIÓN", href: "/#convencion" },
-  { label: "AGENDA", href: "/#agenda" },
+  { label: "AGENDA", href: "/agenda" },
   { label: "ACTIVIDADES", href: "/#actividades" },
   { label: "PONENTES", href: "/#speakers" },
   { label: "ENTRADAS", href: "/#entradas" },
@@ -50,7 +50,7 @@ export function Navbar() {
   return (
     <Box
       as="nav"
-      position="fixed"
+      position="sticky"
       top={0}
       left={0}
       right={0}
@@ -62,7 +62,7 @@ export function Navbar() {
       backdropFilter="blur(18px)"
       transition="all 0.25s ease"
     >
-      <Container maxW="1280px" px={{ base: 4, md: 6 }}>
+      <Container maxW="8xl" px={{ base: 4, md: 6 }}>
         <Flex h={16} align="center" justify="space-between">
           <ChakraLink asChild _hover={{ textDecoration: "none" }}>
             <NextLink href="/">
