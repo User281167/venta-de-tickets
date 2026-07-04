@@ -8,7 +8,10 @@ import {
   updateAdminTicketType,
   deactivateAdminTicketType,
 } from "./ticket-types.endpoints";
-import type { CreateTicketTypeInput, UpdateTicketTypeInput } from "../schemas/ticket-types.schema";
+import type {
+  CreateTicketTypeInput,
+  UpdateTicketTypeInput,
+} from "../schemas/ticket-types.schema";
 
 export function useEventWithTicketTypes(eventId: string) {
   return useQuery({
@@ -33,7 +36,9 @@ export function useCreateTicketType(eventId: string) {
     mutationFn: (data: CreateTicketTypeInput) =>
       createAdminTicketType(eventId, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin", "ticket-types", eventId] });
+      queryClient.invalidateQueries({
+        queryKey: ["admin", "ticket-types", eventId],
+      });
     },
   });
 }
@@ -45,7 +50,9 @@ export function useUpdateTicketType(eventId: string) {
     mutationFn: ({ id, data }: { id: string; data: UpdateTicketTypeInput }) =>
       updateAdminTicketType(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin", "ticket-types", eventId] });
+      queryClient.invalidateQueries({
+        queryKey: ["admin", "ticket-types", eventId],
+      });
     },
   });
 }
@@ -56,7 +63,9 @@ export function useDeactivateTicketType(eventId: string) {
   return useMutation({
     mutationFn: (id: string) => deactivateAdminTicketType(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin", "ticket-types", eventId] });
+      queryClient.invalidateQueries({
+        queryKey: ["admin", "ticket-types", eventId],
+      });
     },
   });
 }

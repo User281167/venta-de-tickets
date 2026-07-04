@@ -16,8 +16,10 @@ import {
 
 import { useUsers } from "@/features/admin-users/api/admin-users.queries";
 
+import { TableSkeleton } from "./UserTableSkeleton";
+import { tableCss } from "@/shared/components/tablecss";
+
 const LIMIT = 20;
-const SKELETON_ROWS = 5;
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("es-CO", {
@@ -25,57 +27,6 @@ function formatDate(iso: string): string {
     month: "short",
     day: "numeric",
   });
-}
-
-function SkeletonCell({ width }: { width: string }) {
-  return <Box h="5" w={width} borderRadius="md" className="skeleton-pulse" />;
-}
-
-function TableSkeleton() {
-  return (
-    <>
-      <style>{`
-        @keyframes skeletonPulse {
-          0%, 100% { opacity: 0.4; }
-          50% { opacity: 0.8; }
-        }
-        .skeleton-pulse {
-          animation: skeletonPulse 1.5s ease-in-out infinite;
-        }
-      `}</style>
-      <Table.Root w="full">
-        <Table.Header>
-          <Table.Row>
-            <Table.ColumnHeader>Nombre</Table.ColumnHeader>
-            <Table.ColumnHeader>Correo</Table.ColumnHeader>
-            <Table.ColumnHeader>Registro</Table.ColumnHeader>
-            <Table.ColumnHeader textAlign="center">Encuesta</Table.ColumnHeader>
-          </Table.Row>
-        </Table.Header>
-
-        <Table.Body>
-          {Array.from({ length: SKELETON_ROWS }).map((_, i) => (
-            <Table.Row key={i}>
-              <Table.Cell>
-                <SkeletonCell width="40%" />
-              </Table.Cell>
-              <Table.Cell>
-                <SkeletonCell width="60%" />
-              </Table.Cell>
-              <Table.Cell>
-                <SkeletonCell width="35%" />
-              </Table.Cell>
-              <Table.Cell textAlign="center">
-                <Flex justify="center">
-                  <SkeletonCell width="30%" />
-                </Flex>
-              </Table.Cell>
-            </Table.Row>
-          ))}
-        </Table.Body>
-      </Table.Root>
-    </>
-  );
 }
 
 function ErrorBanner({ children }: { children: ReactNode }) {
@@ -114,8 +65,8 @@ export function UserTable() {
   const totalPages = data ? Math.ceil(data.total / LIMIT) : 0;
 
   return (
-    <VStack align="stretch" gap={4} w="full">
-      <Heading as="h1" size="lg">
+    <VStack align="stretch" w="full">
+      <Heading as="h1" size="lg" color="brand.light">
         Usuarios
       </Heading>
 
@@ -136,9 +87,9 @@ export function UserTable() {
       {isLoading && <TableSkeleton />}
 
       {data && (
-        <>
-          <Box w="full" overflowX="auto">
-            <Table.Root w="full">
+        <Box mt="4" spaceY="2">
+          <Box w="12/12" overflow="auto">
+            <Table.Root css={tableCss}>
               <Table.Header>
                 <Table.Row>
                   <Table.ColumnHeader w="30%">Nombre</Table.ColumnHeader>
@@ -182,7 +133,7 @@ export function UserTable() {
           </Box>
 
           <HStack justify="space-between">
-            <Text fontSize="sm" color="gray.500">
+            <Text fontSize="sm" color="brand.muted">
               {data.total} usuario(s) — Página {page} de {totalPages}
             </Text>
 
@@ -203,7 +154,7 @@ export function UserTable() {
               </Button>
             </HStack>
           </HStack>
-        </>
+        </Box>
       )}
     </VStack>
   );

@@ -169,10 +169,12 @@ export function AdminSidebar() {
         size="md"
         hideFrom="md"
         position="fixed"
+        border="1px solid"
+        borderColor="white"
         top={4}
-        left={4}
+        right={4}
         zIndex={1100}
-        color="gray.700"
+        bg="white"
         onClick={() => setMobileOpen(!mobileOpen)}
       >
         {mobileOpen ? <IconX size={24} /> : <IconMenu2 size={24} />}
@@ -201,6 +203,7 @@ export function AdminSidebar() {
         w="72"
         borderRight="1px"
         borderColor="gray.200"
+        bg="brand.dark"
         p={4}
         zIndex={1050}
         boxShadow="lg"

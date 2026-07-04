@@ -227,7 +227,13 @@ export function TicketTypeForm({
           )}
 
           <HStack gap={3} justify="flex-end" pt={2}>
-            <Button variant="outline" onClick={onCancel} disabled={saving}>
+            <Button
+              variant="outline"
+              color="white"
+              _hover={{ color: "black" }}
+              onClick={onCancel}
+              disabled={saving}
+            >
               Cancelar
             </Button>
             <Button type="submit" colorPalette="teal" loading={saving}>

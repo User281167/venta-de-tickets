@@ -113,28 +113,29 @@ export function SurveyResponsesViewer() {
                       <IconUserCircle size={22} color="gray" />
 
                       <VStack align="start" gap={0} flex={1}>
-                        <Text fontWeight="semibold" color="gray.800">
+                        <Text fontWeight="semibold" color="gray.100">
                           {row.name ?? "—"}
                         </Text>
 
-                        <HStack gap={1} color="gray.500" fontSize="sm">
+                        <HStack gap={1} color="gray.300" fontSize="sm">
                           <IconMail size={14} />
                           <Text>{row.email ?? "—"}</Text>
                         </HStack>
+
+                        {dateStr ? (
+                          <Text
+                            fontSize="sm"
+                            color="gray.400"
+                            whiteSpace="nowrap"
+                          >
+                            {dateStr}
+                          </Text>
+                        ) : (
+                          <Badge colorPalette="yellow" size="sm">
+                            Sin encuesta
+                          </Badge>
+                        )}
                       </VStack>
-                      {dateStr ? (
-                        <Text
-                          fontSize="sm"
-                          color="gray.400"
-                          whiteSpace="nowrap"
-                        >
-                          {dateStr}
-                        </Text>
-                      ) : (
-                        <Badge colorPalette="yellow" size="sm">
-                          Sin encuesta
-                        </Badge>
-                      )}
 
                       <Accordion.ItemIndicator>
                         <IconChevronDown size={18} />
@@ -158,7 +159,8 @@ export function SurveyResponsesViewer() {
                             <Flex
                               key={a.question_id}
                               direction="column"
-                              bg="gray.50"
+                              border="1px solid"
+                              borderColor="gray.500"
                               borderRadius="md"
                               p={3}
                               gap={1}
@@ -166,16 +168,13 @@ export function SurveyResponsesViewer() {
                               <Text
                                 fontSize="xs"
                                 fontWeight="medium"
-                                color="gray.500"
                                 textTransform="uppercase"
                                 letterSpacing="wide"
                               >
                                 {questionLabel(a.question_id)}
                               </Text>
 
-                              <Text fontSize="md" color="gray.800">
-                                {answerValue(a.answer)}
-                              </Text>
+                              <Text fontSize="md">{answerValue(a.answer)}</Text>
                             </Flex>
                           ))}
                         </Grid>
