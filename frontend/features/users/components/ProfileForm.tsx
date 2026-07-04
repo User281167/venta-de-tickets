@@ -93,7 +93,9 @@ export function ProfileForm() {
           <Input
             value={editing ? (form.phone ?? "") : (user.phone ?? "")}
             disabled={!editing}
-            onChange={(e) => setForm({ ...form, phone: e.target.value || null })}
+            onChange={(e) =>
+              setForm({ ...form, phone: e.target.value || null })
+            }
           />
         </Field.Root>
 
@@ -105,15 +107,18 @@ export function ProfileForm() {
 
         {editing ? (
           <HStack gap={4}>
-            <Button colorPalette="blue" onClick={saveEdit} loading={isPending}>
+            <Button bg="brand.violet" onClick={saveEdit} loading={isPending}>
               Guardar
             </Button>
-            <Button variant="outline" onClick={cancelEdit}>
+
+            <Button variant="outline" color="white" onClick={cancelEdit}>
               Cancelar
             </Button>
           </HStack>
         ) : (
-          <Button onClick={startEdit}>Editar</Button>
+          <Button bg="brand.violet" onClick={startEdit}>
+            Editar
+          </Button>
         )}
 
         {consentStatus.acceptedAt && (
@@ -122,6 +127,7 @@ export function ProfileForm() {
               Consentimiento de privacidad aceptado el{" "}
               {new Date(consentStatus.acceptedAt).toLocaleDateString("es-CO")}
             </Text>
+
             <Text fontSize="xs" color="gray.400">
               Versión: {consentStatus.policyVersion}
             </Text>
