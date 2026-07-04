@@ -97,7 +97,13 @@ export function Navbar() {
             {user ? (
               <>
                 {role && (
-                  <Button asChild variant="ghost">
+                  <Button
+                    asChild
+                    variant="ghost"
+                    color="white"
+                    _hover={{ bg: "rgba(255,255,255,0.2)" }}
+                    hideBelow="md"
+                  >
                     <NextLink href="/admin">
                       <IconShield size={18} />
                       Admin
@@ -108,7 +114,9 @@ export function Navbar() {
                   asChild
                   variant="outline"
                   color="white"
+                  _hover={{ bg: "rgba(255,255,255,0.2)" }}
                   borderColor="brand.cyan"
+                  hideBelow="md"
                 >
                   <NextLink href="/mi-cuenta">
                     <IconUser size={18} />
@@ -116,7 +124,14 @@ export function Navbar() {
                   </NextLink>
                 </Button>
 
-                <Button variant="ghost" onClick={handleLogout}>
+                <Button
+                  variant="ghost"
+                  color="white"
+                  _hover={{ bg: "rgba(255,255,255,0.2)" }}
+                  hideBelow="md"
+
+                  onClick={handleLogout}
+                >
                   <IconLogout size={18} />
                 </Button>
               </>
@@ -179,6 +194,7 @@ export function Navbar() {
                     <Button
                       asChild
                       variant="ghost"
+                      color="white"
                       w="full"
                       onClick={() => setOpen(false)}
                     >
@@ -204,6 +220,7 @@ export function Navbar() {
 
                   <Button
                     variant="ghost"
+                    color="white"
                     w="full"
                     onClick={() => {
                       setOpen(false);

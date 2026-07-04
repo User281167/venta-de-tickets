@@ -188,7 +188,7 @@ export function LoginForm() {
                     variant="ghost"
                     size="xs"
                     color="white"
-                    _hover={{ color: "brand.teal" }}
+                    _hover={{ color: "brand.violet" }}
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
@@ -223,7 +223,7 @@ export function LoginForm() {
               loading={status === "submitting"}
               w="full"
               size="lg"
-              colorPalette="teal"
+              bg="brand.violet"
             >
               Iniciar sesión
             </Button>

@@ -105,10 +105,15 @@ export function RegisterForm() {
           Revisa tu correo
         </Heading>
 
-        <Text textAlign="center" fontSize="sm" color="white" opacity={0.8} maxW="sm">
-          Te enviamos un enlace de confirmación a{" "}
-          <strong>{email}</strong>. Haz clic en el enlace para activar tu
-          cuenta y luego inicia sesión.
+        <Text
+          textAlign="center"
+          fontSize="sm"
+          color="white"
+          opacity={0.8}
+          maxW="sm"
+        >
+          Te enviamos un enlace de confirmación a <strong>{email}</strong>. Haz
+          clic en el enlace para activar tu cuenta y luego inicia sesión.
         </Text>
 
         <Button
@@ -117,7 +122,7 @@ export function RegisterForm() {
           colorPalette="white"
           color="white"
           _hover={{
-            color: "transparent"
+            bg: "rgba(255,255,255,0.2)",
           }}
           onClick={() => router.push("/login")}
           mt={4}
@@ -137,7 +142,7 @@ export function RegisterForm() {
           </Heading>
 
           <Text textAlign="center" fontSize="sm" color="white" opacity={0.7}>
-            Accede a Future Minds 2026
+            Accede a La Convención
           </Text>
         </Stack>
 
@@ -174,7 +179,7 @@ export function RegisterForm() {
                     variant="ghost"
                     size="xs"
                     color="white"
-                    _hover={{ color: "brand.teal" }}
+                    _hover={{ color: "brand.violet" }}
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
@@ -209,7 +214,7 @@ export function RegisterForm() {
                     variant="ghost"
                     size="xs"
                     color="white"
-                    _hover={{ color: "brand.teal" }}
+                    _hover={{ color: "brand.violet" }}
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   >
                     {showConfirmPassword ? (
@@ -280,7 +285,7 @@ export function RegisterForm() {
               loading={status === "submitting"}
               w="full"
               size="lg"
-              colorPalette="teal"
+              bg="brand.violet"
             >
               Registrarse
             </Button>
