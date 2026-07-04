@@ -5,7 +5,7 @@ import { AuthProvider } from "@/providers/AuthProvider";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Future Minds 2026",
+  title: "La Convención 2026",
   description:
     "Una experiencia única con expertos en tecnología, emprendimiento e innovación dentro del campus universitario.",
 };

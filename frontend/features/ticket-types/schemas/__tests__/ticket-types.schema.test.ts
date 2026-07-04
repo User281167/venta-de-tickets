@@ -60,7 +60,7 @@ describe("eventWithTicketTypesSchema", () => {
   it("accepts valid event with ticket types", () => {
     const result = eventWithTicketTypesSchema.safeParse({
       id: "550e8400-e29b-41d4-a716-446655440000",
-      title: "Future Minds 2026",
+      title: "La Convención 2026",
       description: "El evento del año",
       eventDate: "2026-07-15T20:00:00.000Z",
       doorsOpenAt: "2026-07-15T18:00:00.000Z",
@@ -75,7 +75,7 @@ describe("eventWithTicketTypesSchema", () => {
   it("accepts event with empty ticket types", () => {
     const result = eventWithTicketTypesSchema.safeParse({
       id: "550e8400-e29b-41d4-a716-446655440000",
-      title: "Future Minds 2026",
+      title: "La Convención 2026",
       description: null,
       eventDate: "2026-07-15T20:00:00.000Z",
       doorsOpenAt: null,

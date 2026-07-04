@@ -56,9 +56,7 @@ const ALL_LINKS: SidebarLink[] = [
   },
 ];
 
-const FUTURE_LINKS = [
-  { label: "Check-in", disabled: true },
-] as const;
+const FUTURE_LINKS = [{ label: "Check-in", disabled: true }] as const;
 
 export function AdminSidebar() {
   const pathname = usePathname();
@@ -88,7 +86,7 @@ export function AdminSidebar() {
     <>
       <HStack gap={3} mb={8} px={2}>
         <IconDashboard size={24} color="teal" />
-        <Text fontSize="xl" fontWeight="bold" color="gray.800">
+        <Text fontSize="xl" fontWeight="bold">
           Admin
         </Text>
       </HStack>
@@ -106,7 +104,7 @@ export function AdminSidebar() {
               py={2.5}
               borderRadius="md"
               bg={isActive ? "teal.50" : "transparent"}
-              color={isActive ? "teal.700" : "gray.600"}
+              color={isActive ? "teal.700" : "white"}
               fontWeight={isActive ? "semibold" : "medium"}
               _hover={{
                 bg: isActive ? "teal.50" : "gray.100",
@@ -201,7 +199,6 @@ export function AdminSidebar() {
         left={0}
         bottom={0}
         w="72"
-        bg="white"
         borderRight="1px"
         borderColor="gray.200"
         p={4}
@@ -219,9 +216,8 @@ export function AdminSidebar() {
         direction="column"
         w="64"
         minH="100vh"
-        bg="gray.50"
-        borderRight="1px"
-        borderColor="gray.200"
+        borderRight="1px solid"
+        borderColor="rgba(255,255,255,0.2)"
         p={4}
         flexShrink={0}
       >

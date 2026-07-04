@@ -38,7 +38,13 @@ export default function PrivacidadPage() {
               <strong>Última actualización:</strong> Junio 2026
             </Text>
 
-            <VStack gap={5} align="stretch" color="gray.600" fontSize="sm" lineHeight="1.7">
+            <VStack
+              gap={5}
+              align="stretch"
+              color="gray.600"
+              fontSize="sm"
+              lineHeight="1.7"
+            >
               <Text>
                 En cumplimiento de la Ley 1581 de 2012 de Protección de Datos
                 Personales en Colombia y sus decretos reglamentarios,
@@ -51,7 +57,7 @@ export default function PrivacidadPage() {
                   1. Responsable del Tratamiento
                 </Heading>
                 <Text>
-                  Future Minds 2026 es el responsable del tratamiento de tus
+                  La Convención 2026 es el responsable del tratamiento de tus
                   datos personales. Al registrarte, autorizas el tratamiento de
                   tu información conforme a lo descrito en esta política.
                 </Text>
@@ -122,8 +128,8 @@ export default function PrivacidadPage() {
                   utilizando medidas técnicas y organizativas adecuadas para
                   protegerlos contra accesos no autorizados, pérdida o
                   alteración. Los datos se conservarán durante el tiempo
-                  necesario para cumplir con las finalidades descritas y
-                  durante los plazos legales aplicables.
+                  necesario para cumplir con las finalidades descritas y durante
+                  los plazos legales aplicables.
                 </Text>
               </Box>
 
@@ -133,8 +139,8 @@ export default function PrivacidadPage() {
                 </Heading>
                 <Text>
                   No compartiremos tus datos personales con terceros sin tu
-                  consentimiento explícito, salvo cuando sea requerido por ley
-                  o para proveedores de servicios esenciales para el evento
+                  consentimiento explícito, salvo cuando sea requerido por ley o
+                  para proveedores de servicios esenciales para el evento
                   (procesamiento de pagos, envío de correos electrónicos),
                   quienes están sujetos a acuerdos de confidencialidad.
                 </Text>
@@ -146,9 +152,9 @@ export default function PrivacidadPage() {
                 </Heading>
                 <Text>
                   Para ejercer tus derechos ARCO, puedes contactarnos a través
-                  de nuestro correo electrónico. Responderemos a tu solicitud
-                  en un plazo máximo de 15 días hábiles, conforme a la
-                  normativa colombiana.
+                  de nuestro correo electrónico. Responderemos a tu solicitud en
+                  un plazo máximo de 15 días hábiles, conforme a la normativa
+                  colombiana.
                 </Text>
               </Box>
 

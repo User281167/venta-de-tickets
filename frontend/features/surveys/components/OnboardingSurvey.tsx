@@ -177,7 +177,7 @@ export function OnboardingSurvey() {
 
               <Text fontSize="xs" color="gray.400">
                 {isWelcomeStep
-                  ? "Future Minds 2026"
+                  ? "La Convención 2026"
                   : `Paso ${currentStep} de ${totalSteps - 1}`}
               </Text>
             </VStack>
@@ -217,8 +217,8 @@ export function OnboardingSurvey() {
                   lineHeight="tall"
                   maxW="sm"
                 >
-                  Responde estas preguntas rápidas para ayudarnos a adaptar
-                  Future Minds 2026 a tus intereses. Solo te tomará un minuto.
+                  Responde estas preguntas rápidas para ayudarnos a adaptar La
+                  Convención 2026 a tus intereses. Solo te tomará un minuto.
                 </Text>
               </VStack>
 

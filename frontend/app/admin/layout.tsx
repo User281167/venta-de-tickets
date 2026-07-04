@@ -42,9 +42,8 @@ function AdminLayoutInner({ children }: { children: ReactNode }) {
   const requiredRoles = ROLE_RESTRICTED_PATHS[pathname];
   if (requiredRoles && !requiredRoles.includes(role)) {
     return (
-      <Flex>
-        <AdminSidebar />
-        <Flex flex={1} p={8} bg="gray.50" minH="100vh">
+      <Flex bg="brand.dark">
+        <Flex flex={1} p={8} minH="100vh">
           <AccessDenied />
         </Flex>
       </Flex>
@@ -52,9 +51,9 @@ function AdminLayoutInner({ children }: { children: ReactNode }) {
   }
 
   return (
-    <Flex>
+    <Flex bg="brand.dark">
       <AdminSidebar />
-      <Flex flex={1} p={8} bg="gray.50" minH="100vh">
+      <Flex flex={1} p={8} minH="100vh">
         {children}
       </Flex>
     </Flex>

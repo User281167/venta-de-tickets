@@ -38,9 +38,15 @@ export default function TerminosPage() {
               <strong>Última actualización:</strong> Junio 2026
             </Text>
 
-            <VStack gap={5} align="stretch" color="gray.600" fontSize="sm" lineHeight="1.7">
+            <VStack
+              gap={5}
+              align="stretch"
+              color="gray.600"
+              fontSize="sm"
+              lineHeight="1.7"
+            >
               <Text>
-                Bienvenido a Future Minds 2026. Al registrarte y utilizar
+                Bienvenido a La Convención 2026. Al registrarte y utilizar
                 nuestros servicios, aceptas los siguientes términos y
                 condiciones. Te recomendamos leerlos detenidamente antes de
                 completar tu registro.
@@ -51,7 +57,7 @@ export default function TerminosPage() {
                   1. Descripción del Servicio
                 </Heading>
                 <Text>
-                  Future Minds 2026 es un evento de innovación y tecnología.
+                  La Convención 2026 es un evento de innovación y tecnología.
                   Nuestra plataforma permite a los asistentes registrarse,
                   adquirir entradas, gestionar su agenda personal y recibir
                   comunicaciones relacionadas con el evento.
@@ -65,8 +71,9 @@ export default function TerminosPage() {
                 <Text>
                   Para acceder a los servicios, debes crear una cuenta
                   proporcionando tu correo electrónico y una contraseña. Eres
-                  responsable de mantener la confidencialidad de tus credenciales
-                  y de todas las actividades realizadas desde tu cuenta.
+                  responsable de mantener la confidencialidad de tus
+                  credenciales y de todas las actividades realizadas desde tu
+                  cuenta.
                 </Text>
               </Box>
 
@@ -95,7 +102,7 @@ export default function TerminosPage() {
                 </Heading>
                 <Text>
                   Todo el contenido disponible en la plataforma (marcas, logos,
-                  textos, imágenes) es propiedad de Future Minds 2026 o de sus
+                  textos, imágenes) es propiedad de La Convención 2026 o de sus
                   licenciantes. No está permitida su reproducción sin
                   autorización.
                 </Text>

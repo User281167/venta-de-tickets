@@ -55,7 +55,7 @@ export function SurveySkipModal({
 
             <Text fontSize="sm" color="gray.500" lineHeight="tall">
               Puedes completar la encuesta después desde tu perfil. Tus datos
-              nos ayudan a mejorar tu experiencia en Future Minds 2026.
+              nos ayudan a mejorar tu experiencia en La Convención 2026.
             </Text>
           </VStack>
         </Box>

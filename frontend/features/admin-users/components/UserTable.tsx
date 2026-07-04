@@ -28,15 +28,7 @@ function formatDate(iso: string): string {
 }
 
 function SkeletonCell({ width }: { width: string }) {
-  return (
-    <Box
-      h="5"
-      w={width}
-      borderRadius="md"
-      bg="gray.200"
-      className="skeleton-pulse"
-    />
-  );
+  return <Box h="5" w={width} borderRadius="md" className="skeleton-pulse" />;
 }
 
 function TableSkeleton() {
@@ -57,11 +49,10 @@ function TableSkeleton() {
             <Table.ColumnHeader>Nombre</Table.ColumnHeader>
             <Table.ColumnHeader>Correo</Table.ColumnHeader>
             <Table.ColumnHeader>Registro</Table.ColumnHeader>
-            <Table.ColumnHeader textAlign="center">
-              Encuesta
-            </Table.ColumnHeader>
+            <Table.ColumnHeader textAlign="center">Encuesta</Table.ColumnHeader>
           </Table.Row>
         </Table.Header>
+
         <Table.Body>
           {Array.from({ length: SKELETON_ROWS }).map((_, i) => (
             <Table.Row key={i}>
@@ -158,6 +149,7 @@ export function UserTable() {
                   </Table.ColumnHeader>
                 </Table.Row>
               </Table.Header>
+
               <Table.Body>
                 {data.data.length === 0 ? (
                   <Table.Row>
@@ -171,6 +163,7 @@ export function UserTable() {
                       <Table.Cell>{user.fullName}</Table.Cell>
                       <Table.Cell>{user.email}</Table.Cell>
                       <Table.Cell>{formatDate(user.createdAt)}</Table.Cell>
+
                       <Table.Cell textAlign="center">
                         <Badge
                           colorPalette={
@@ -178,9 +171,7 @@ export function UserTable() {
                           }
                           size="sm"
                         >
-                          {user.onboardingSurveyDone
-                            ? "Completa"
-                            : "Pendiente"}
+                          {user.onboardingSurveyDone ? "Completa" : "Pendiente"}
                         </Badge>
                       </Table.Cell>
                     </Table.Row>
