@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -26,77 +25,29 @@ import {
   IconLock,
 } from "@tabler/icons-react";
 
-import {
-  registerSchema,
-  type RegisterInput,
-} from "@/features/auth/schemas/auth.schema";
-import { signUp, signInWithGoogle } from "@/features/auth/api/auth.client";
-import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useRegister } from "../hooks/useRegister";
 
 export function RegisterForm() {
   const router = useRouter();
-  const { user } = useAuth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [consentGiven, setConsentGiven] = useState(false);
-  const [fieldErrors, setFieldErrors] = useState<
-    Partial<Record<keyof RegisterInput, string>>
-  >({});
-  const [generalError, setGeneralError] = useState("");
-  const [status, setStatus] = useState<
-    "idle" | "submitting" | "error" | "success"
-  >("idle");
-  const [googleStatus, setGoogleStatus] = useState<"idle" | "loading">("idle");
 
-  if (user) {
-    router.push("/mi-cuenta");
-    return null;
-  }
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setGeneralError("");
-    setFieldErrors({});
-
-    const result = registerSchema.safeParse({
-      email,
-      password,
-      confirmPassword,
-      consentGiven,
-    });
-
-    if (!result.success) {
-      const fieldErrors: Partial<Record<keyof RegisterInput, string>> = {};
-
-      for (const issue of result.error.issues) {
-        const path = issue.path[0] as keyof RegisterInput;
-        fieldErrors[path] = issue.message;
-      }
-
-      setFieldErrors(fieldErrors);
-      return;
-    }
-
-    setStatus("submitting");
-
-    const { success, error } = await signUp(email, password);
-
-    if (!success) {
-      setGeneralError(error);
-      setStatus("error");
-      return;
-    }
-
-    setStatus("success");
-  }
-
-  async function handleGoogleSignIn() {
-    setGoogleStatus("loading");
-    await signInWithGoogle();
-  }
+  const {
+    status,
+    email,
+    setEmail,
+    handleSubmit,
+    fieldErrors,
+    password,
+    confirmPassword,
+    setConfirmPassword,
+    setPassword,
+    showPassword,
+    setShowPassword,
+    consentGiven,
+    setConsentGiven,
+    generalError,
+    googleStatus,
+    handleGoogleSignIn,
+  } = useRegister();
 
   if (status === "success") {
     return (
@@ -210,14 +161,14 @@ export function RegisterForm() {
                 }
                 endElement={
                   <IconButton
-                    aria-label={showConfirmPassword ? "Ocultar" : "Mostrar"}
+                    aria-label={showPassword ? "Ocultar" : "Mostrar"}
                     variant="ghost"
                     size="xs"
                     color="white"
                     _hover={{ color: "brand.violet" }}
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    onClick={() => setShowPassword(!showPassword)}
                   >
-                    {showConfirmPassword ? (
+                    {showPassword ? (
                       <IconEyeOff size={18} />
                     ) : (
                       <IconEye size={18} />
@@ -226,7 +177,7 @@ export function RegisterForm() {
                 }
               >
                 <Input
-                  type={showConfirmPassword ? "text" : "password"}
+                  type={showPassword ? "text" : "password"}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Repite tu contraseña"
