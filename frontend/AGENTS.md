@@ -26,8 +26,9 @@ Supabase (`@supabase/ssr`).
 - Use TanStack Query for server state; no manual `useEffect` fetching.
 - Follow `frontend-design` skill for visual decisions — avoid generic/default
   styling.
+- Never run cli or script for prisma or supabase for modify BD.
 
 ## Conventions
-- Code/identifiers/comments: English. UI copy: Spanish.
+- Code/identifiers: English. comments and UI copy: Spanish.
 - Comments only where intent isn't obvious.
 - No new abstractions unless there's a concrete current need.
