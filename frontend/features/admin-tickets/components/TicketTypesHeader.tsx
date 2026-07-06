@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Button,
   DialogBackdrop,
@@ -16,6 +14,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { IconPlus } from "@tabler/icons-react";
+import React from "react";
 
 import { TicketTypeForm } from "@/features/ticket-types/components/TicketTypeForm";
 import { EventSummary } from "@/features/events/api/events.endpoints";
@@ -28,7 +27,7 @@ interface Props {
   createMutation: any;
 }
 
-export function TicketTypesHeader({
+export const TicketTypesHeader = React.memo(function TicketTypesHeader({
   events,
   showCreate,
   setShowCreate,
@@ -83,4 +82,4 @@ export function TicketTypesHeader({
       </DialogRoot>
     </HStack>
   );
-}
+});

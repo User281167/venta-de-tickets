@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { usePublishedEvents } from "@/features/events/api/events.queries";
 import {

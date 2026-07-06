@@ -1,11 +1,9 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState } from "react";
 import {
-  Badge,
   Box,
   Button,
-  Flex,
   HStack,
   Heading,
   Input,
@@ -15,38 +13,13 @@ import {
 } from "@chakra-ui/react";
 
 import { useUsers } from "@/features/admin-users/api/admin-users.queries";
-
-import { TableSkeleton } from "./UserTableSkeleton";
 import { tableCss } from "@/shared/components/tablecss";
 
+import { TableSkeleton } from "./UserTableSkeleton";
+import { ErrorBanner } from "./UserError";
+import { UserTableItem } from "./UserTableItem";
+
 const LIMIT = 20;
-
-function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString("es-CO", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-}
-
-function ErrorBanner({ children }: { children: ReactNode }) {
-  return (
-    <Flex
-      bg="red.50"
-      border="1px"
-      borderColor="red.200"
-      borderRadius="md"
-      p={4}
-      gap={3}
-      align="center"
-    >
-      <Box w="3" h="3" borderRadius="full" bg="red.400" flexShrink={0} />
-      <Text color="red.700" fontSize="sm">
-        {children}
-      </Text>
-    </Flex>
-  );
-}
 
 export function UserTable() {
   const [page, setPage] = useState(1);
@@ -110,22 +83,7 @@ export function UserTable() {
                   </Table.Row>
                 ) : (
                   data.data.map((user) => (
-                    <Table.Row key={user.id}>
-                      <Table.Cell>{user.fullName}</Table.Cell>
-                      <Table.Cell>{user.email}</Table.Cell>
-                      <Table.Cell>{formatDate(user.createdAt)}</Table.Cell>
-
-                      <Table.Cell textAlign="center">
-                        <Badge
-                          colorPalette={
-                            user.onboardingSurveyDone ? "green" : "yellow"
-                          }
-                          size="sm"
-                        >
-                          {user.onboardingSurveyDone ? "Completa" : "Pendiente"}
-                        </Badge>
-                      </Table.Cell>
-                    </Table.Row>
+                    <UserTableItem key={user.id} user={user} />
                   ))
                 )}
               </Table.Body>

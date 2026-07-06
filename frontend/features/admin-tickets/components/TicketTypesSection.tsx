@@ -4,7 +4,7 @@ import { Center, Spinner, Text, VStack } from "@chakra-ui/react";
 import { TicketTypesHeader } from "./TicketTypesHeader";
 import { TicketTypesTable } from "./TicketTypesTable";
 import { TicketTypesDialogs } from "./TicketTypesDialogs";
-import { useTicketTable } from "./TicketTypesState";
+import { useTicketTable } from "../hook/useTicketTypes";
 
 export function TicketTypesSection() {
   const {

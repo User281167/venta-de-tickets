@@ -1,7 +1,6 @@
-"use client";
-
 import { Badge, Box, Button, HStack, Table, Text } from "@chakra-ui/react";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
+import React from "react";
 
 import { tableCss } from "@/shared/components/tablecss";
 import { AdminTicketType } from "@/features/ticket-types/schemas/ticket-types.schema";
@@ -12,7 +11,7 @@ interface Props {
   ticketTypesList: AdminTicketType[];
 }
 
-export function TicketTypesTable({
+export const TicketTypesTable = React.memo(function TicketTypesTable({
   setEditing,
   setDeletingId,
   ticketTypesList,
@@ -91,4 +90,4 @@ export function TicketTypesTable({
       )}
     </>
   );
-}
+});

@@ -14,6 +14,7 @@ import {
   HStack,
   Text,
 } from "@chakra-ui/react";
+import React from "react";
 
 import { TicketTypeForm } from "@/features/ticket-types/components/TicketTypeForm";
 import { AdminTicketType } from "@/features/ticket-types/schemas/ticket-types.schema";
@@ -36,7 +37,7 @@ interface Props {
   ticketTypesList: AdminTicketType[];
 }
 
-export function TicketTypesDialogs({
+export const TicketTypesDialogs = React.memo(function TicketTypesDialogs({
   eventId,
   updateMutation,
   deactivateMutation,
@@ -143,4 +144,4 @@ export function TicketTypesDialogs({
       </DialogRoot>
     </>
   );
-}
+});
