@@ -10,7 +10,7 @@ import {
   Text,
   Image,
 } from "@chakra-ui/react";
-import { IconArrowLeft, IconBrain } from "@tabler/icons-react";
+import { IconArrowLeft } from "@tabler/icons-react";
 import NextLink from "next/link";
 import { useRouter } from "next/navigation";
 import { LoginForm } from "@/features/auth/components/LoginForm";

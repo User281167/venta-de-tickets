@@ -1,5 +1,3 @@
-"use client";
-
 import { Box, Container, Heading, Text, VStack } from "@chakra-ui/react";
 import { Footer } from "@/components/layout/Footer";
 import { AgendaTimeline } from "@/features/agenda/components/AgendaTimeline";

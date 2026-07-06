@@ -1,6 +1,4 @@
-﻿"use client";
-
-import {
+﻿import {
   Box,
   Container,
   Grid,
