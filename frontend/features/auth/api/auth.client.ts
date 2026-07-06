@@ -7,6 +7,11 @@ const ERROR_MESSAGES: Record<string, string> = {
   "Email not confirmed": "Debes confirmar tu correo electrónico",
 };
 
+const redirectTo =
+  typeof window !== "undefined"
+    ? `${window.location.origin}/auth/callback`
+    : undefined;
+
 function mapError(error: unknown): string {
   const message =
     typeof error === "object" && error !== null && "message" in error
@@ -19,7 +24,10 @@ function mapError(error: unknown): string {
 export async function signInWithPassword(email: string, password: string) {
   const supabase = createClient();
 
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
 
   if (error) {
     return { success: false as const, error: mapError(error) };
@@ -31,7 +39,13 @@ export async function signInWithPassword(email: string, password: string) {
 export async function signUp(email: string, password: string) {
   const supabase = createClient();
 
-  const { error } = await supabase.auth.signUp({ email, password });
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      emailRedirectTo: redirectTo,
+    },
+  });
 
   if (error) {
     console.error("Supabase signUp error:", error);
@@ -47,7 +61,7 @@ export async function signInWithGoogle() {
   const { error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: `${window.location.origin}/auth/callback`,
+      redirectTo,
     },
   });
 
