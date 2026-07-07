@@ -14,6 +14,15 @@ const envSchema = z.object({
   QR_JWT_SECRET: z
     .string()
     .min(32, 'QR_JWT_SECRET must be at least 32 characters'),
+  PAYMENT_PROVIDER: z.enum(['mercadopago']).default('mercadopago'),
+  FRONTEND_URL: z.string().url('FRONTEND_URL must be a valid URL'),
+  API_URL: z.string().url('API_URL must be a valid URL'),
+  MERCADOPAGO_ACCESS_TOKEN: z
+    .string()
+    .min(1, 'MERCADOPAGO_ACCESS_TOKEN is required'),
+  MERCADOPAGO_WEBHOOK_SECRET: z
+    .string()
+    .min(1, 'MERCADOPAGO_WEBHOOK_SECRET is required'),
 });
 
 const parsed = envSchema.safeParse(process.env);

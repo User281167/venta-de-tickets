@@ -7,10 +7,16 @@ export type PaymentStatus = PrismaPaymentStatus;
 
 export type PaymentWebhookStatus = 'approved' | 'declined' | 'pending';
 
+export interface CheckoutItem {
+  ticketTypeId: string;
+  name: string;
+  quantity: number;
+  unitPriceCents: number;
+}
+
 export interface CheckoutInput {
   externalReference: string;
-  amountCents: number;
-  title: string;
+  items: CheckoutItem[];
   backUrl: string;
   expiresAt: string;
   payerEmail?: string;
@@ -32,8 +38,8 @@ export interface NormalizedWebhookEvent {
 export interface PaymentProvider {
   getProviderName(): string;
   createCheckout(input: CheckoutInput): Promise<CheckoutResult>;
-  verifySignature(payload: unknown, signature: string): boolean;
-  parseWebhook(payload: unknown): NormalizedWebhookEvent;
+  verifySignature(payload: unknown, headers: Record<string, string>): boolean;
+  parseWebhook(payload: unknown): Promise<NormalizedWebhookEvent>;
 }
 
 export type PaymentRecord = PaymentModel;

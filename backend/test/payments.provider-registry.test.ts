@@ -29,8 +29,13 @@ describe('provider.registry', () => {
   });
 
   it('throws a clean error for unknown providers', () => {
-    expect(() => getProvider('mercadopago')).toThrow(
-      'Payment provider "mercadopago" is not registered.',
+    expect(() => getProvider('nonexistent')).toThrow(
+      'Payment provider "nonexistent" is not registered.',
     );
+  });
+
+  it('resolves auto-registered mercadopago provider', () => {
+    const provider = getProvider('mercadopago');
+    expect(provider.getProviderName()).toBe('mercadopago');
   });
 });

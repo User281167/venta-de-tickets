@@ -50,15 +50,15 @@
 
 ### Mercado Pago Provider (014c)
 
-- [ ] T012 Run `npm install mercadopago` in `backend/`
-- [ ] T013 Create `backend/src/modules/payments/providers/mercadopago.provider.ts` implementing `PaymentProvider` — initialize MP client with `MERCADOPAGO_ACCESS_TOKEN` from env
-- [ ] T014 [P] [US1] Implement `createCheckout(input)` in `mercadopago.provider.ts` — build MP Preference object (items, external_reference = payment.id, back_urls → FRONTEND_URL/mi-cuenta/tiquetes?payment={id}, auto_return: 'approved', notification_url: API_URL/api/payments/webhook, payer.email); call `Preference.create()`; return `{ checkoutUrl: preference.init_point, externalId: preference.id }`
-- [ ] T015 [P] [US1] Implement `verifySignature(payload, headers)` in `mercadopago.provider.ts` — extract `x-signature` header, reconstruct HMAC-SHA256 with `MERCADOPAGO_WEBHOOK_SECRET`, return boolean
-- [ ] T016 [P] [US1] Implement `parseWebhook(payload)` in `mercadopago.provider.ts` — handle `{ type: 'payment', data: { id } }`, fetch full MP payment details, map status (approved→'approved', rejected/cancelled→'declined', else→'pending'), return `NormalizedWebhookEvent`
-- [ ] T017 [US1] Register `MercadoPagoProvider` in `provider.registry.ts`
-- [ ] T018 [P] [US1] Unit test: mock MP SDK, verify `createCheckout` builds correct Preference shape in `backend/src/modules/payments/providers/__tests__/mercadopago.provider.test.ts`
-- [ ] T019 [P] [US1] Unit test: `parseWebhook` maps MP statuses correctly
-- [ ] T020 [P] [US1] Unit test: `verifySignature` accepts valid HMAC, rejects tampered payload
+- [X] T012 Run `npm install mercadopago` in `backend/`
+- [X] T013 Create `backend/src/modules/payments/providers/mercadopago.provider.ts` implementing `PaymentProvider` — initialize MP client with `MERCADOPAGO_ACCESS_TOKEN` from env
+- [X] T014 [P] [US1] Implement `createCheckout(input)` in `mercadopago.provider.ts` — build MP Preference object (items, external_reference = payment.id, back_urls → FRONTEND_URL/mi-cuenta/tiquetes?payment={id}, auto_return: 'approved', notification_url: API_URL/api/payments/webhook, payer.email); call `Preference.create()`; return `{ checkoutUrl: preference.init_point, externalId: preference.id }`
+- [X] T015 [P] [US1] Implement `verifySignature(payload, headers)` in `mercadopago.provider.ts` — extract `x-signature` header, reconstruct HMAC-SHA256 with `MERCADOPAGO_WEBHOOK_SECRET`, return boolean
+- [X] T016 [P] [US1] Implement `parseWebhook(payload)` in `mercadopago.provider.ts` — handle `{ type: 'payment', data: { id } }`, fetch full MP payment details, map status (approved→'approved', rejected/cancelled→'declined', else→'pending'), return `NormalizedWebhookEvent`
+- [X] T017 [US1] Register `MercadoPagoProvider` in `provider.registry.ts`
+- [X] T018 [P] [US1] Unit test: mock MP SDK, verify `createCheckout` builds correct Preference shape in `test/mercadopago.provider.test.ts`
+- [X] T019 [P] [US1] Unit test: `parseWebhook` maps MP statuses correctly
+- [X] T020 [P] [US1] Unit test: `verifySignature` accepts valid HMAC, rejects tampered payload
 
 ### Service, Controller & Routes (014d)
 
