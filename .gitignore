@@ -1,6 +1,7 @@
 # spec kit
 .opencode
 .vibe
+/.agents/
 
 # Node
 node_modules/

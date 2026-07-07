@@ -1,6 +1,6 @@
 <!-- SPECKIT START -->
-Implementation plan at `specs/009-payment-system/plan.md`.
-Read for current feature context: build order, file layout, technical decisions.
+For additional context about technologies to be used, project structure,
+shell commands, and other important information, read the current plan
 <!-- SPECKIT END -->
 
 # AGENT.md
