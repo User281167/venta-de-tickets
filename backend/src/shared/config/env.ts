@@ -23,6 +23,7 @@ const envSchema = z.object({
   MERCADOPAGO_WEBHOOK_SECRET: z
     .string()
     .min(1, 'MERCADOPAGO_WEBHOOK_SECRET is required'),
+  CORS_ORIGIN: z.string().default('http://localhost:3000'),
 });
 
 const parsed = envSchema.safeParse(process.env);

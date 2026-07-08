@@ -1,5 +1,6 @@
 import cors from 'cors';
 import express from 'express';
+import { env } from './shared/config/env.js';
 import { authMiddleware } from './shared/middlewares/auth.middleware.js';
 import { errorHandler } from './shared/middlewares/error-handler.middleware.js';
 import { meHandler } from './modules/me/me.controller.js';
@@ -16,9 +17,7 @@ import {
 export const app = express();
 
 app.set('trust proxy', 1);
-const allowedOrigins = process.env['CORS_ORIGIN']
-  ? process.env['CORS_ORIGIN'].split(',')
-  : ['http://localhost:3000'];
+const allowedOrigins = env.CORS_ORIGIN.split(',');
 app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json());
 
