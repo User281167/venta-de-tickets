@@ -16,6 +16,7 @@ CREATE TYPE "PolicyType" AS ENUM ('privacy_policy', 'terms_of_service');
 -- CreateTable
 CREATE TABLE "users" (
     "id" UUID NOT NULL,
+    "cedula" VARCHAR(20),
     "full_name" VARCHAR(150) NOT NULL,
     "email" VARCHAR(255) NOT NULL,
     "phone" VARCHAR(20),
@@ -23,6 +24,7 @@ CREATE TABLE "users" (
     "is_active" BOOLEAN NOT NULL DEFAULT true,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ NOT NULL,
+    "egresado" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
@@ -109,6 +111,9 @@ CREATE TABLE "payments" (
 
     CONSTRAINT "payments_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_cedula_key" ON "users"("cedula");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
