@@ -1,5 +1,13 @@
 import { prisma } from '../../shared/database/prisma.client.js';
 
+export function findFirstPublishedEvent() {
+  return prisma.event.findFirst({
+    where: { status: 'published' },
+    select: { id: true },
+    orderBy: { eventDate: 'asc' },
+  });
+}
+
 export function findAllPublishedEvents() {
   return prisma.event.findMany({
     where: { status: 'published' },

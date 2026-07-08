@@ -7,6 +7,15 @@ import {
   updateTicketTypeSchema,
 } from './ticket-types.validators.js';
 
+export async function listActiveTicketTypes(
+  _req: Request,
+  res: Response,
+): Promise<void> {
+  const types = await ticketTypesService.getActiveTicketTypes();
+
+  res.json({ data: types });
+}
+
 export async function listPublishedEvents(
   _req: Request,
   res: Response,

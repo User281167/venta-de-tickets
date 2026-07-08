@@ -1,6 +1,31 @@
 import { NotFoundError } from '../../shared/errors/NotFoundError.js';
 import * as repo from './ticket-types.repository.js';
 
+export async function getActiveTicketTypes() {
+  const event = await repo.findFirstPublishedEvent();
+
+  if (!event) {
+    throw new NotFoundError('No hay eventos publicados');
+  }
+
+  const ticketTypes = await repo.findAllActive(event.id);
+
+  return ticketTypes.map((t) => {
+    const availableCount = t.quantityTotal - t.quantitySold;
+
+    return {
+      id: t.id,
+      name: t.name,
+      description: t.description,
+      price: t.price,
+      availableCount: Math.max(0, availableCount),
+      maxPerUser: t.maxPerUser,
+      saleEndsAt: t.saleEndsAt,
+      isSoldOut: availableCount <= 0,
+    };
+  });
+}
+
 export async function listPublishedEvents() {
   return repo.findAllPublishedEvents();
 }

@@ -4,6 +4,10 @@ import { adminMiddleware } from '../../shared/middlewares/admin.middleware.js';
 import { requireRole } from '../../shared/middlewares/require-role.middleware.js';
 import * as ctrl from './ticket-types.controller.js';
 
+export const publicTicketTypesRouter = Router();
+
+publicTicketTypesRouter.get('/', ctrl.listActiveTicketTypes);
+
 export const publicEventRouter = Router();
 
 publicEventRouter.get('/', ctrl.listPublishedEvents);

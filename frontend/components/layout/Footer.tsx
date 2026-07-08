@@ -12,7 +12,6 @@
   Text,
   VStack,
   Field,
-  InputGroup,
   Input,
 } from "@chakra-ui/react";
 import {
@@ -182,20 +181,18 @@ export function Footer() {
                 Recibe novedades de La Convención.
               </Text>
 
-              <Field.Root>
-                <InputGroup
-                  startElement={
-                    <IconMail size={18} color="rgba(255,255,255,0.6)" />
-                  }
-                >
+              <Flex gap="2">
+                <IconMail size={18} color="rgba(255,255,255,0.6)" />
+
+                <Field.Root>
                   <Input
                     type="email"
                     placeholder="correo@ejemplo.com"
                     color="white"
                     _placeholder={{ color: "rgba(255,255,255,0.5)" }}
                   />
-                </InputGroup>
-              </Field.Root>
+                </Field.Root>
+              </Flex>
 
               <Button
                 type="submit"
