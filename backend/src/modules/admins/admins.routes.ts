@@ -9,20 +9,10 @@ const adminsRouter = Router();
 adminsRouter.use(authMiddleware, adminMiddleware);
 
 adminsRouter.get('/me', adminsController.getMe);
-adminsRouter.get(
-  '/users',
-  requireRole('super_admin', 'organizer'),
-  adminsController.listUsers,
-);
-adminsRouter.get(
-  '/surveys/onboarding',
-  requireRole('super_admin', 'organizer'),
-  adminsController.listOnboardingSurveys,
-);
-adminsRouter.patch(
-  '/users/:id/role',
-  requireRole('super_admin'),
-  adminsController.updateUserRole,
-);
+adminsRouter.get('/users', requireRole('admin'), adminsController.listUsers);
+adminsRouter.post('/users', requireRole('admin'), adminsController.createUser);
+adminsRouter.post('/users/batch', requireRole('admin'), adminsController.batchCreateUsers);
+adminsRouter.patch('/users/:id', requireRole('admin'), adminsController.updateUser);
+adminsRouter.get('/surveys/onboarding', adminsController.listOnboardingSurveys);
 
 export { adminsRouter };

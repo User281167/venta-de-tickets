@@ -2,7 +2,13 @@ import type { Request, Response } from 'express';
 import { ZodError } from 'zod';
 import * as adminsService from './admins.service.js';
 import * as surveysService from '../surveys/surveys.service.js';
-import { updateRoleSchema } from './admins.validators.js';
+import {
+  createUserSchema,
+  batchCreateUsersSchema,
+  updateUserSchema,
+  updateRoleSchema,
+  paginationSchema,
+} from './admins.validators.js';
 
 export async function getMe(req: Request, res: Response): Promise<void> {
   const user = req.user!;
@@ -15,12 +21,7 @@ export async function getMe(req: Request, res: Response): Promise<void> {
 }
 
 export async function listUsers(req: Request, res: Response): Promise<void> {
-  const page = Math.max(1, parseInt(req.query['page'] as string) || 1);
-  const limit = Math.min(
-    100,
-    Math.max(1, parseInt(req.query['limit'] as string) || 20),
-  );
-  const search = (req.query['search'] as string) || undefined;
+  const { page, limit, search } = paginationSchema.parse(req.query);
   const result = await adminsService.listUsers(page, limit, search);
 
   res.json(result);
@@ -38,6 +39,74 @@ export async function listOnboardingSurveys(
   const result = await surveysService.adminQueryResponses(page, limit);
 
   res.json(result);
+}
+
+export async function createUser(req: Request, res: Response): Promise<void> {
+  try {
+    const data = createUserSchema.parse(req.body);
+    const user = await adminsService.createUser(data);
+
+    res.status(201).json(user);
+  } catch (err) {
+    if (err instanceof ZodError) {
+      res.status(422).json({
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: err.issues.map((i) => i.message).join(', '),
+        },
+      });
+
+      return;
+    }
+
+    throw err;
+  }
+}
+
+export async function batchCreateUsers(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  try {
+    const dataArray = batchCreateUsersSchema.parse(req.body);
+    const users = await adminsService.batchCreateUsers(dataArray);
+
+    res.status(201).json(users);
+  } catch (err) {
+    if (err instanceof ZodError) {
+      res.status(422).json({
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: err.issues.map((i) => i.message).join(', '),
+        },
+      });
+      return;
+    }
+
+    throw err;
+  }
+}
+
+export async function updateUser(req: Request, res: Response): Promise<void> {
+  try {
+    const data = updateUserSchema.parse(req.body);
+    const user = await adminsService.updateUser(String(req.params.id), data);
+
+    res.json(user);
+  } catch (err) {
+    if (err instanceof ZodError) {
+      res.status(422).json({
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: err.issues.map((i) => i.message).join(', '),
+        },
+      });
+
+      return;
+    }
+
+    throw err;
+  }
 }
 
 export async function updateUserRole(

@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 import { ForbiddenError } from '../errors/ForbiddenError.js';
 
-const ADMIN_ROLES = ['super_admin', 'organizer', 'staff', 'checker'];
+const ADMIN_ROLES = ['admin'];
 
 export function adminMiddleware(
   req: Request,
