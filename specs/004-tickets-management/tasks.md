@@ -100,10 +100,10 @@
 
 **Purpose**: Unit tests for every if condition, success path, and error code. Mock data. Do not fix or modify existing tests from other modules.
 
-- [ ] T024 [P] Create `backend/tests/unit/tickets/tickets.validators.test.ts` — test Zod schemas: valid create input passes, price <= 0 fails, quantity <= 0 fails, empty name fails, valid update with partial fields passes, invalid status fails, pagination with negative page fails
-- [ ] T025 [P] Create `backend/tests/unit/tickets/tickets.service.test.ts` — test service: createTicketType success, createTicketType validation delegation, getTicketTypeById returns ticket, getTicketTypeById throws NotFound, listTicketTypes filters blocked, listTicketTypes pagination, updateTicketType quantity >= sold passes, updateTicketType quantity < sold throws
-- [ ] T026 [P] Create `backend/tests/unit/tickets/tickets.controller.test.ts` — test controller: list returns 200 with data, getById returns 200, getById missing returns 404, create returns 201, create validation error returns 422, update returns 200, update quantity < sold returns 422
-- [ ] T027 [P] Create `backend/tests/integration/tickets/tickets.api.test.ts` — test endpoints via supertest: unauthenticated list returns 200, unauthenticated get by ID returns 200, unauthenticated create returns 403, admin create returns 201, admin update returns 200, admin update quantity < sold returns 422, admin set status via PATCH returns 200
+- [X] T024 Create `backend/test/tickets.validators.test.ts` — 24 tests: createSchema (valid, missing fields, zero/negative price, zero/negative qty, strict mode), updateSchema (partial, nullable, status, invalid status, empty body), paginationSchema (defaults, bounds), paramsSchema (UUID, non-UUID), statusSchema
+- [X] T025 Create `backend/test/tickets.service.test.ts` — 10 tests: listTicketTypes (paginated, empty), getTicketTypeById (found, NotFound), listAllTicketTypes (incl blocked), createTicketType (status enabled), updateTicketType (success, NotFound, status change, qty < sold rejected, qty >= sold accepted)
+- [X] T026 Create `backend/test/tickets.controller.test.ts` — 9 tests: list (200, 422), getById (200, 422), adminList (200), create (201, 422 missing, 422 invalid), update (200, 422 invalid UUID, 422 invalid body, 422 empty body)
+- [X] T027 Create `backend/test/tickets.api.test.ts` — 23 integration tests via supertest: public list (200, empty, no-auth, 422 bad params), public getById (200, 404, 422, blocked by ID), admin create (201, 401, 403, 422 missing, 422 negative price, 422 zero qty), admin update (200, 404, 401, 403, 422 UUID, 422 empty, 422 qty < sold, status via PATCH, invalid status), admin list (200 incl blocked, 401, 403)
 
 **Checkpoint**: All endpoint scenarios tested. All if conditions covered. All error codes verified.
 
