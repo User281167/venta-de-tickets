@@ -36,10 +36,10 @@
 
 **Purpose**: Shared types, response DTOs, module config that all endpoints depend on
 
-- [ ] T008 [P] Create `backend/src/modules/tickets/tickets.types.ts` — define TicketTypeDTO (response shape), PaginatedResponse<T>, CreateTicketInput, UpdateTicketInput, StatusChangeInput
-- [ ] T009 [P] Create `backend/src/modules/tickets/tickets.config.ts` — module constants: DEFAULT_PAGE_LIMIT=20, MAX_PAGE_LIMIT=100
-- [ ] T010 [P] Create `backend/src/modules/tickets/tickets.validators.ts` — Zod schemas: createTicketSchema, updateTicketSchema, statusSchema, paginationSchema, paramsSchema (uuid id)
-- [ ] T011 [P] Create `backend/src/modules/tickets/index.ts` — barrel re-exporting ticketsRouter (public + admin), types
+- [X] T008 Create `backend/src/modules/tickets/tickets.types.ts` — TicketTypeDTO, PaginatedResponse, CreateTicketInput, UpdateTicketInput, TicketTypeStatus
+- [X] T009 Create `backend/src/modules/tickets/tickets.config.ts` — DEFAULT_PAGE_LIMIT=20, MAX_PAGE_LIMIT=100
+- [X] T010 Create `backend/src/modules/tickets/tickets.validators.ts` — createTicketSchema, updateTicketSchema, paginationSchema, paramsSchema, ticketTypeStatusSchema
+- [X] T011 Create `backend/src/modules/tickets/index.ts` — barrel re-exporting ticketsRouter, types
 
 **Checkpoint**: Types, validators, config ready for endpoint implementation.
 
@@ -53,11 +53,11 @@
 
 **Independent Test**: Unauthenticated request to `GET /api/tickets` returns paginated list. `GET /api/tickets/:id` returns single ticket. Blocked tickets excluded from list but retrievable by ID.
 
-- [ ] T012 [P] [US2] Create `backend/src/modules/tickets/tickets.repository.ts` — Prisma queries: findAll (paginated, filter by status != blocked), findById, create, update, count (filtered)
-- [ ] T013 [P] [US2] Create `backend/src/modules/tickets/tickets.service.ts` — listTicketTypes (page, limit → paginated response, filters blocked), getTicketTypeById (throws NotFoundError if missing)
-- [ ] T014 [US2] Create `backend/src/modules/tickets/tickets.controller.ts` — list (parses query, calls service, returns JSON), getById (parses params, calls service, returns JSON), handle validation errors with 422
-- [ ] T015 [US2] Create `backend/src/modules/tickets/tickets.routes.ts` — public routes: GET / => list, GET /:id => getById. No auth middleware.
-- [ ] T016 [US2] Register `ticketsRouter` in `backend/src/app.ts`: `app.use('/api/tickets', ticketsRouter)`
+- [X] T012 [US2] Create `backend/src/modules/tickets/tickets.repository.ts` — findAllPublic (filters blocked), findById, create, update, countPublic
+- [X] T013 [US2] Create `backend/src/modules/tickets/tickets.service.ts` — listTicketTypes, getTicketTypeById (throws NotFoundError), createTicketType, updateTicketType (validates quantity >= sold)
+- [X] T014 [US2] Create `backend/src/modules/tickets/tickets.controller.ts` — list, getById with Zod error handling
+- [X] T015 [US2] Create `backend/src/modules/tickets/tickets.routes.ts` — public GET /, GET /:id. No auth.
+- [X] T016 [US2] Register `ticketsRouter` in `backend/src/app.ts`: `app.use('/api/tickets', ticketsRouter)`
 
 **Checkpoint**: GET /api/tickets and GET /api/tickets/:id work without authentication. Blocked tickets excluded from list.
 
@@ -71,10 +71,10 @@
 
 **Independent Test**: Authenticated admin creates ticket type (POST), modifies fields + status (PATCH). Non-admin gets 403. Validation errors for price <= 0, quantity <= 0, quantity < sold.
 
-- [ ] T017 [P] [US1] Add to `backend/src/modules/tickets/tickets.service.ts` — createTicketType (validates + creates with status=enabled), updateTicketType (validates quantity >= sold, updates fields + status), validateQuantityNotBelowSold helper
-- [ ] T018 [P] [US1] Add to `backend/src/modules/tickets/tickets.controller.ts` — create (201 + created object), update (200 + updated object), handle errors with proper status codes (422 validation, 403 forbidden, 404 not found)
-- [ ] T019 [US1] Add admin routes to `backend/src/modules/tickets/tickets.routes.ts` — adminTicketRouter with authMiddleware + adminMiddleware: POST / => create, PATCH /:id => update
-- [ ] T020 [US1] Register `adminTicketsRouter` in `backend/src/app.ts`: `app.use('/api/admin/tickets', adminTicketsRouter)`
+- [X] T017 [US1] Already built in Phase 3: `tickets.service.ts` — createTicketType, updateTicketType with quantity validation
+- [X] T018 [US1] Add to `backend/src/modules/tickets/tickets.controller.ts` — create (201), update (200), adminList handlers
+- [X] T019 [US1] Add admin routes to `backend/src/modules/tickets/tickets.routes.ts` — adminTicketsRouter with authMiddleware + adminMiddleware: GET /, POST /, PATCH /:id
+- [X] T020 [US1] Register `adminTicketsRouter` in `backend/src/app.ts`: `app.use('/api/admin/tickets', adminTicketsRouter)`
 
 **Checkpoint**: Admin CRUD fully functional. Create validates price/quantity. PATCH validates quantity >= sold. Status changes merged into PATCH.
 
@@ -88,9 +88,9 @@
 
 **Independent Test**: Authenticated admin calls admin list endpoint and sees blocked ticket types included.
 
-- [ ] T021 [US4] Add admin-only list to `backend/src/modules/tickets/tickets.service.ts` — listAllTicketTypes (no status filter, paginated)
-- [ ] T022 [US4] Add admin list handler to `backend/src/modules/tickets/tickets.controller.ts` — adminList (returns all statuses)
-- [ ] T023 [US4] Add admin list route to adminTicketRouter in `tickets.routes.ts`: GET / => adminList
+- [X] T021 [US4] Add findAllAdmin + countAll to `tickets.repository.ts` — no status filter, returns all ticket types including blocked
+- [X] T022 [US4] Add listAllTicketTypes to `tickets.service.ts` + adminList to `tickets.controller.ts`
+- [X] T023 [US4] Add GET / route to adminTicketsRouter in `tickets.routes.ts`
 
 **Checkpoint**: Admin list returns all statuses. Public list still filters blocked.
 

@@ -21,6 +21,15 @@ export async function getTicketTypeById(id: string) {
   return ticketType;
 }
 
+export async function listAllTicketTypes(page: number, limit: number) {
+  const [data, total] = await Promise.all([
+    ticketsRepo.findAllAdmin(page, limit),
+    ticketsRepo.countAll(),
+  ]);
+
+  return { data, total, page, limit };
+}
+
 export async function createTicketType(data: {
   name: string;
   description?: string;

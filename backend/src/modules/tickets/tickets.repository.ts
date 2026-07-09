@@ -58,6 +58,19 @@ export function create(data: {
   });
 }
 
+export function findAllAdmin(page: number, limit: number) {
+  return prisma.ticketType.findMany({
+    select: selectTicketType,
+    skip: (page - 1) * limit,
+    take: limit,
+    orderBy: { createdAt: 'asc' },
+  });
+}
+
+export function countAll() {
+  return prisma.ticketType.count();
+}
+
 export function update(id: string, data: Record<string, unknown>) {
   return prisma.ticketType.update({
     where: { id },
