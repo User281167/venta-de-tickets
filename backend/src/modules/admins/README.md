@@ -11,7 +11,6 @@ Solo rol `admin` (Prisma enum) puede acceder.
 | POST | `/api/admin/users` | Crear 1 cliente (Auth + Prisma) |
 | POST | `/api/admin/users/batch` | Crear N clientes desde JSON (máx 50) |
 | PATCH | `/api/admin/users/:id` | Modificar datos, cédula, rol, bloqueo |
-| GET | `/api/admin/surveys/onboarding` | Listar encuestas onboarding |
 
 ## Códigos de Error
 

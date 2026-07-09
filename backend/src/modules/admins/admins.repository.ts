@@ -1,4 +1,3 @@
-import { UserRole } from '@prisma/client';
 import { prisma } from '../../shared/database/prisma.client.js';
 
 const selectUserList = {
@@ -46,7 +45,15 @@ export function countAll(search?: string) {
 export function findById(id: string) {
   return prisma.user.findUnique({
     where: { id },
-    select: { id: true, email: true, role: true, cedula: true, phone: true, isActive: true, fullName: true },
+    select: {
+      id: true,
+      email: true,
+      role: true,
+      cedula: true,
+      phone: true,
+      isActive: true,
+      fullName: true,
+    },
   });
 }
 

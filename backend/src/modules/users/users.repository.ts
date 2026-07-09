@@ -1,36 +1,5 @@
 import { prisma } from '../../shared/database/prisma.client.js';
 import { PolicyType } from '@prisma/client';
-import type { UpdateUserInput } from './users.validators.js';
-
-export function findById(id: string) {
-  return prisma.user.findUnique({
-    where: { id },
-    select: {
-      id: true,
-      email: true,
-      fullName: true,
-      phone: true,
-      address: true,
-      dateOfBirth: true,
-      isActive: true,
-      createdAt: true,
-      updatedAt: true,
-    },
-  });
-}
-
-export function update(id: string, data: UpdateUserInput) {
-  return prisma.user.update({
-    where: { id },
-    data,
-    select: {
-      id: true,
-      email: true,
-      fullName: true,
-      phone: true,
-    },
-  });
-}
 
 export function createPrivacyAcceptance(
   userId: string,

@@ -6,8 +6,6 @@ const usersRouter = Router();
 
 usersRouter.use(authMiddleware);
 
-usersRouter.get('/me', usersController.getMe);
-usersRouter.patch('/me', usersController.updateMe);
 usersRouter.post('/me/privacy-acceptance', usersController.acceptPrivacy);
 usersRouter.get('/me/privacy-status', usersController.getPrivacyStatus);
 

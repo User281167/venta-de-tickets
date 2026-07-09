@@ -4,7 +4,7 @@ import { env } from './shared/config/env.js';
 import { errorHandler } from './shared/middlewares/error-handler.middleware.js';
 import { meRouter } from './modules/me/index.js';
 import { usersRouter } from './modules/users/index.js';
-import { surveysRouter } from './modules/surveys/surveys.routes.js';
+
 import { adminsRouter } from './modules/admins/admins.routes.js';
 import { authRouter } from './modules/auth/index.js';
 import {
@@ -27,6 +27,5 @@ app.use('/api/ticket-types', publicTicketTypesRouter);
 app.use('/api/events', publicEventRouter);
 app.use('/api/admin', adminTicketTypesRouter);
 app.use('/api/users', usersRouter);
-app.use('/api/surveys', surveysRouter);
 
 app.use(errorHandler);

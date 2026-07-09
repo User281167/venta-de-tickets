@@ -2,50 +2,21 @@ import {
   PRIVACY_POLICY_VERSION,
   PRIVACY_POLICY_TYPE,
 } from '../../shared/config/constants.js';
-import { ForbiddenError } from '../../shared/errors/ForbiddenError.js';
-import * as surveysRepo from '../surveys/surveys.repository.js';
 import * as usersRepo from './users.repository.js';
-import type { UpdateUserInput } from './users.validators.js';
 
-export async function getMe(id: string) {
-  const user = await usersRepo.findById(id);
-
-  if (!user) {
-    throw new ForbiddenError('User profile not found');
-  }
-
+export async function getPrivacyStatus(userId: string) {
   const acceptance = await usersRepo.findPrivacyAcceptance(
-    id,
+    userId,
     PRIVACY_POLICY_VERSION,
     PRIVACY_POLICY_TYPE,
   );
 
-  const onboardingDone = await surveysRepo.existsByUserAndType(id, 'onboarding');
-
   return {
-    user: {
-      id: user.id,
-      email: user.email,
-      fullName: user.fullName,
-      phone: user.phone,
-    },
     consentStatus: {
       required: true,
       acceptedAt: acceptance?.acceptedAt.toISOString() ?? null,
-      policyVersion: PRIVACY_POLICY_VERSION,
+      policyVersion: acceptance?.policyVersion ?? PRIVACY_POLICY_VERSION,
     },
-    onboarding_survey_done: onboardingDone,
-  };
-}
-
-export async function updateMe(id: string, data: UpdateUserInput) {
-  const user = await usersRepo.update(id, data);
-
-  return {
-    id: user.id,
-    email: user.email,
-    fullName: user.fullName,
-    phone: user.phone,
   };
 }
 

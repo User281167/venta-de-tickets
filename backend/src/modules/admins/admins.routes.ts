@@ -13,6 +13,6 @@ adminsRouter.get('/users', requireRole('admin'), adminsController.listUsers);
 adminsRouter.post('/users', requireRole('admin'), adminsController.createUser);
 adminsRouter.post('/users/batch', requireRole('admin'), adminsController.batchCreateUsers);
 adminsRouter.patch('/users/:id', requireRole('admin'), adminsController.updateUser);
-adminsRouter.get('/surveys/onboarding', adminsController.listOnboardingSurveys);
+
 
 export { adminsRouter };
