@@ -1,6 +1,11 @@
 <!-- SPECKIT START -->
-For additional context about technologies to be used, project structure,
-shell commands, and other important information, read the current plan
+Current feature: specs/004-tickets-management/
+- spec.md     — feature spec
+- plan.md     — implementation plan (tech context, structure, phases)
+- research.md — schema audit, patterns audit, migration strategy
+- data-model.md — entity, states, validation rules
+- contracts/api.md — endpoint contracts
+- quickstart.md — implementation steps
 <!-- SPECKIT END -->
 
 # AGENT.md

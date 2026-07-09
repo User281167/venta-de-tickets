@@ -39,6 +39,12 @@ enum PolicyType {
   terms_of_service
 }
 
+enum TicketTypeStatus {
+  enabled
+  disabled
+  blocked
+}
+
 model User {
   id        String    @id @default(uuid()) @db.Uuid
   cedula    String?    @unique @db.VarChar(20)
@@ -87,7 +93,7 @@ model TicketType {
   quantitySold  Int      @default(0) @map("quantity_sold")
   maxPerUser    Int?     @map("max_per_user")
   saleEndsAt    DateTime? @map("sale_ends_at") @db.Timestamptz
-  isActive      Boolean  @default(true) @map("is_active")
+  status        TicketTypeStatus  @default(enabled) @map("status")
   createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz
 

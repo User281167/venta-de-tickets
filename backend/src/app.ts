@@ -7,11 +7,6 @@ import { usersRouter } from './modules/users/index.js';
 
 import { adminsRouter } from './modules/admins/admins.routes.js';
 import { authRouter } from './modules/auth/index.js';
-import {
-  publicEventRouter,
-  publicTicketTypesRouter,
-  adminTicketTypesRouter,
-} from './modules/ticket-types/ticket-types.routes.js';
 
 export const app = express();
 
@@ -23,9 +18,6 @@ app.use(express.json());
 app.use('/api/me', meRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/admin', adminsRouter);
-app.use('/api/ticket-types', publicTicketTypesRouter);
-app.use('/api/events', publicEventRouter);
-app.use('/api/admin', adminTicketTypesRouter);
 app.use('/api/users', usersRouter);
 
 app.use(errorHandler);
