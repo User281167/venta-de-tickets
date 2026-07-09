@@ -1,9 +1,8 @@
 import cors from 'cors';
 import express from 'express';
 import { env } from './shared/config/env.js';
-import { authMiddleware } from './shared/middlewares/auth.middleware.js';
 import { errorHandler } from './shared/middlewares/error-handler.middleware.js';
-import { meHandler } from './modules/me/me.controller.js';
+import { meRouter } from './modules/me/index.js';
 import { usersRouter } from './modules/users/index.js';
 import { surveysRouter } from './modules/surveys/surveys.routes.js';
 import { adminsRouter } from './modules/admins/admins.routes.js';
@@ -21,7 +20,7 @@ const allowedOrigins = env.CORS_ORIGIN.split(',');
 app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json());
 
-app.get('/api/me', authMiddleware, meHandler);
+app.use('/api/me', meRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/admin', adminsRouter);
 app.use('/api/ticket-types', publicTicketTypesRouter);

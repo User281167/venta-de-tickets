@@ -10,6 +10,8 @@ export function findById(id: string) {
       email: true,
       fullName: true,
       phone: true,
+      address: true,
+      dateOfBirth: true,
       isActive: true,
       createdAt: true,
       updatedAt: true,
