@@ -15,9 +15,9 @@ export const paramsSchema = z.object({
 export const createTicketSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   description: z.string().optional(),
-  price: z.number({ required_error: 'Price is required' }).positive('Price must be greater than 0'),
+  price: z.number().positive('Price must be greater than 0'),
   quantityTotal: z
-    .number({ required_error: 'Quantity total is required' })
+    .number()
     .int()
     .positive('Quantity total must be greater than 0'),
   maxPerUser: z.number().int().positive('Max per user must be greater than 0').optional(),

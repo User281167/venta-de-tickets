@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const ADMIN_ROLES = new Set(["super_admin", "organizer", "staff", "checker"]);
+const ADMIN_ROLES = new Set(["super_admin", "admin", "checker"]);
 
 export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });

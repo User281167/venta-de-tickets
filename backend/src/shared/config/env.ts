@@ -25,6 +25,14 @@ const envSchema = z.object({
   CORS_ORIGIN: z.string().default('http://localhost:3000'),
 });
 
+console.log({
+  NODE_ENV: process.env.NODE_ENV,
+  API_URL: process.env.API_URL,
+  FRONTEND_URL: process.env.FRONTEND_URL,
+  MERCADOPAGO_ACCESS_TOKEN: !!process.env.MERCADOPAGO_ACCESS_TOKEN,
+  MERCADOPAGO_WEBHOOK_SECRET: !!process.env.MERCADOPAGO_WEBHOOK_SECRET,
+});
+
 const parsed = envSchema.safeParse(process.env);
 
 if (!parsed.success) {

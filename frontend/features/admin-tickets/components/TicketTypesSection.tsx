@@ -8,8 +8,6 @@ import { useTicketTable } from "../hook/useTicketTypes";
 
 export function TicketTypesSection() {
   const {
-    events,
-    eventId,
     ticketTypes,
     isLoading,
     createMutation,
@@ -32,17 +30,11 @@ export function TicketTypesSection() {
     );
   }
 
-  if (!eventId) {
-    return <Text color="red.400">No hay eventos publicados.</Text>;
-  }
-
   return (
     <VStack align="stretch" gap={6} w="full">
       <TicketTypesHeader
-        events={events}
         showCreate={showCreate}
         setShowCreate={setShowCreate}
-        eventId={eventId}
         createMutation={createMutation}
       />
 
@@ -53,7 +45,6 @@ export function TicketTypesSection() {
       />
 
       <TicketTypesDialogs
-        eventId={eventId}
         updateMutation={updateMutation}
         deactivateMutation={deactivateMutation}
         editing={editing}

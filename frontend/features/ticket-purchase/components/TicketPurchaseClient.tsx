@@ -53,7 +53,7 @@ export function TicketPurchaseClient() {
         </Heading>
       </Box>
 
-      <Grid templateColumns={{ base: "1fr", lg: "2fr 1fr" }} gap={8} align="start">
+      <Grid templateColumns={{ base: "1fr", lg: "2fr 1fr" }} gap={8} alignItems="start">
         <GridItem>
           <TicketTypeGrid
             ticketTypes={ticketTypes}

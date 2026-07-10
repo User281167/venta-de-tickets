@@ -25,7 +25,6 @@ import type {
 
 interface TicketTypeFormProps {
   ticketType?: AdminTicketType | null;
-  eventId: string;
   onCreate?: (data: CreateTicketTypeInput) => Promise<void>;
   onUpdate?: (id: string, data: UpdateTicketTypeInput) => Promise<void>;
   onCancel: () => void;

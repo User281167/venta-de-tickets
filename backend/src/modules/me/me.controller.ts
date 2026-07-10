@@ -7,19 +7,12 @@ import {
 } from './me.validators.js';
 
 export async function meHandler(req: Request, res: Response): Promise<void> {
-  const [personalInfo, privacyStatus] = await Promise.all([
-    meService.getPersonalInfo(req.user!.id),
-    usersService.getPrivacyStatus(req.user!.id),
-  ]);
-
+  const privacyStatus = await usersService.getPrivacyStatus(req.user!.id);
+  const personalInfo = await meService.getPersonalInfo(req.user!.id);
   res.json({
     user: {
       ...req.user,
-      fullName: personalInfo.fullName,
-      phone: personalInfo.phone,
-      cedula: personalInfo.cedula,
-      address: personalInfo.address,
-      dateOfBirth: personalInfo.dateOfBirth,
+      ...personalInfo,
     },
     consentStatus: privacyStatus.consentStatus,
   });

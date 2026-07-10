@@ -17,21 +17,16 @@ import { IconPlus } from "@tabler/icons-react";
 import React from "react";
 
 import { TicketTypeForm } from "@/features/ticket-types/components/TicketTypeForm";
-import { EventSummary } from "@/features/events/api/events.endpoints";
 
 interface Props {
-  events: EventSummary[] | undefined;
   showCreate: boolean;
   setShowCreate: (value: boolean) => void;
-  eventId: string;
   createMutation: any;
 }
 
 export const TicketTypesHeader = React.memo(function TicketTypesHeader({
-  events,
   showCreate,
   setShowCreate,
-  eventId,
   createMutation,
 }: Props) {
   return (
@@ -42,7 +37,7 @@ export const TicketTypesHeader = React.memo(function TicketTypesHeader({
         </Heading>
 
         <Text color="brand.muted" fontSize="sm">
-          {events?.[0]?.title ?? "Evento"}
+          Evento
         </Text>
       </VStack>
 
@@ -68,7 +63,6 @@ export const TicketTypesHeader = React.memo(function TicketTypesHeader({
 
             <DialogBody>
               <TicketTypeForm
-                eventId={eventId}
                 onCreate={async (data) => {
                   await createMutation.mutateAsync(data);
                   setShowCreate(false);
