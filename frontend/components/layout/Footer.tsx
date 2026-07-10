@@ -19,10 +19,12 @@ import {
   IconBrandFacebook,
   IconBrandInstagram,
   IconBrandLinkedin,
+  IconBrandX,
   IconBrandYoutube,
   IconMail,
   IconMapPin,
   IconPhone,
+  IconWorld,
 } from "@tabler/icons-react";
 import NextLink from "next/link";
 
@@ -58,7 +60,7 @@ export function Footer() {
 
             <HStack gap={3}>
               <ChakraLink
-                href="#"
+                href="https://instagram.com/UTPereira"
                 aria-label="Instagram"
                 color="brand.light"
                 _hover={{ color: "brand.cyan" }}
@@ -67,16 +69,7 @@ export function Footer() {
               </ChakraLink>
 
               <ChakraLink
-                href="#"
-                aria-label="LinkedIn"
-                color="brand.light"
-                _hover={{ color: "brand.cyan" }}
-              >
-                <IconBrandLinkedin size={22} />
-              </ChakraLink>
-
-              <ChakraLink
-                href="#"
+                href="https://www.facebook.com/UTPereira"
                 aria-label="Facebook"
                 color="brand.light"
                 _hover={{ color: "brand.cyan" }}
@@ -85,18 +78,36 @@ export function Footer() {
               </ChakraLink>
 
               <ChakraLink
-                href="#"
+                href="https://www.youtube.com/UTPereira"
                 aria-label="Youtube"
                 color="brand.light"
                 _hover={{ color: "brand.cyan" }}
               >
                 <IconBrandYoutube size={22} />
               </ChakraLink>
+
+              <ChakraLink
+                href="https://x.com/UTPereira"
+                aria-label="LinkedIn"
+                color="brand.light"
+                _hover={{ color: "brand.cyan" }}
+              >
+                <IconBrandX size={22} />
+              </ChakraLink>
+
+              <ChakraLink
+                href="https://www.linkedin.com/school/universidad-tecnol-gica-de-pereira/"
+                aria-label="LinkedIn"
+                color="brand.light"
+                _hover={{ color: "brand.cyan" }}
+              >
+                <IconBrandLinkedin size={22} />
+              </ChakraLink>
             </HStack>
           </Stack>
 
-          <Stack>
-            <HStack maxW="200px">
+          <Stack maxW="200px">
+            <HStack>
               <Image src="/ASE-icon.png" w="48px" />
 
               <VStack>
@@ -113,6 +124,44 @@ export function Footer() {
                 <Text fontSize="xs" color="gray.400">
                   Asociación de Egresados Universidad Tecnológica de Pereira
                 </Text>
+
+                <HStack gap={3} w="full">
+                  <ChakraLink
+                    href="https://egresados.utp.edu.co/"
+                    aria-label="egresados-web"
+                    color="brand.light"
+                    _hover={{ color: "brand.cyan" }}
+                  >
+                    <IconWorld size={22} />
+                  </ChakraLink>
+
+                  <ChakraLink
+                    href="https://www.instagram.com/aseutp/"
+                    aria-label="Instagram"
+                    color="brand.light"
+                    _hover={{ color: "brand.cyan" }}
+                  >
+                    <IconBrandInstagram size={22} />
+                  </ChakraLink>
+
+                  <ChakraLink
+                    href="https://www.facebook.com/EgresadosUTP?mibextid=ZbWKwL"
+                    aria-label="Facebook"
+                    color="brand.light"
+                    _hover={{ color: "brand.cyan" }}
+                  >
+                    <IconBrandFacebook size={22} />
+                  </ChakraLink>
+
+                  <ChakraLink
+                    href="https://www.facebook.com/aseutpe?mibextid=ZbWKwL"
+                    aria-label="Facebook"
+                    color="brand.light"
+                    _hover={{ color: "brand.cyan" }}
+                  >
+                    <IconBrandFacebook size={22} />
+                  </ChakraLink>
+                </HStack>
               </VStack>
             </HStack>
           </Stack>
@@ -181,8 +230,8 @@ export function Footer() {
                 Recibe novedades de La Convención.
               </Text>
 
-              <Flex gap="2">
-                <IconMail size={18} color="rgba(255,255,255,0.6)" />
+              <Flex gap="2" align="center">
+                <IconMail size={24} color="rgba(255,255,255,0.6)" />
 
                 <Field.Root>
                   <Input

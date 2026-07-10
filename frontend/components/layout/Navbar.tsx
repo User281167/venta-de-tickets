@@ -137,25 +137,47 @@ export function Navbar() {
               </>
             ) : (
               !isAuthPage && (
-                <Button
-                  asChild
-                  border="1px solid transparent"
-                  hideBelow="sm"
-                  size="md"
-                  bg={`
+                <>
+                  <Button
+                    asChild
+                    border="1px solid transparent"
+                    hideBelow="sm"
+                    size="md"
+                    bg={`
                     linear-gradient(#020414, #020414) padding-box,
                     linear-gradient(90deg, #ff0f7b, #00e5ff) border-box
                   `}
-                  _hover={{
-                    borderColor: "brand.pink",
-                    transform: "translateY(-2px)",
-                    boxShadow: "0 0 42px rgba(0,229,255,0.42)",
-                  }}
-                  color="white"
-                  fontWeight="bold"
-                >
-                  <NextLink href="/registro">INSCRÍBETE</NextLink>
-                </Button>
+                    _hover={{
+                      borderColor: "brand.pink",
+                      transform: "translateY(-2px)",
+                      boxShadow: "0 0 42px rgba(0,229,255,0.42)",
+                    }}
+                    color="white"
+                    fontWeight="bold"
+                  >
+                    <NextLink href="/login">INICIAR SESIÓN</NextLink>
+                  </Button>
+
+                  <Button
+                    asChild
+                    border="1px solid transparent"
+                    hideBelow="sm"
+                    size="md"
+                    bg={`
+                    linear-gradient(#020414, #020414) padding-box,
+                    linear-gradient(90deg, #ff0f7b, #00e5ff) border-box
+                  `}
+                    _hover={{
+                      borderColor: "brand.pink",
+                      transform: "translateY(-2px)",
+                      boxShadow: "0 0 42px rgba(0,229,255,0.42)",
+                    }}
+                    color="white"
+                    fontWeight="bold"
+                  >
+                    <NextLink href="/registro">INSCRÍBETE</NextLink>
+                  </Button>
+                </>
               )
             )}
 

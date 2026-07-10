@@ -6,6 +6,7 @@ import { SpeakersSection } from "@/features/landing/components/SpeakersSection";
 import { BenefitsSection } from "@/features/landing/components/BenefitsSection";
 import { CtaSection } from "@/features/landing/components/CtaSection";
 import { AuthErrorToast } from "@/features/auth/components/AuthErrorToast";
+import { FullWidthSlider } from "@/features/landing/components/FullWidthSlider";
 
 export default function LandingPage() {
   return (
@@ -15,6 +16,7 @@ export default function LandingPage() {
       <main>
         <HeroSection />
         <AboutSection />
+        <FullWidthSlider />
         <BenefitsSection />
         <SpeakersSection />
         <CtaSection />

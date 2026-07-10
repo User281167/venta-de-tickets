@@ -127,7 +127,7 @@ export function HeroSection() {
               }}
             >
               <NextLink href="/registro">
-                INSCRÍETE AHORA <IconArrowRight size={24} />
+                INSCRÍBETE AHORA <IconArrowRight size={24} />
               </NextLink>
             </Button>
           </Stack>
