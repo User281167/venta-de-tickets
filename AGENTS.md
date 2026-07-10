@@ -1,11 +1,11 @@
 <!-- SPECKIT START -->
-Current feature: specs/004-tickets-management/
-- spec.md     — feature spec
-- plan.md     — implementation plan (tech context, structure, phases)
-- research.md — schema audit, patterns audit, migration strategy
-- data-model.md — entity, states, validation rules
+Current feature: specs/005-payment-ticket-entrance/
+- spec.md        — feature spec
+- plan.md        — implementation plan (tech context, structure, phases)
+- research.md    — architecture decisions & schema audit
+- data-model.md  — entity, states, validation rules
 - contracts/api.md — endpoint contracts
-- quickstart.md — implementation steps
+- quickstart.md  — implementation steps
 <!-- SPECKIT END -->
 
 # AGENT.md
@@ -25,7 +25,7 @@ specs, plans, or code. This file is just the quick reference.
 - Frontend: Next.js (App Router) + TypeScript + Chakra UI + TanStack Query
 - Validation: Zod (both ends)
 - DB/Auth/Storage: Supabase + Prisma ORM
-- Payments: Wompi | Messaging: Infobip | Hosting: Railway
+- Payments: Mercado Pago | Messaging: Infobip | Hosting: Railway
 - Rate limit store: Upstash Redis (only Redis usage in the system)
 - PDFs/QR: PDFKit + `qrcode`
 - Tests: Vitest (unit/integration) + Playwright (E2E)
