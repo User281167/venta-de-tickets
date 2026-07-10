@@ -11,16 +11,11 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { usePublishedEvents } from "@/features/events/api/events.queries";
 import { useEventWithTicketTypes } from "@/features/ticket-types/api/ticket-types.queries";
 import { TicketTypeCard } from "@/features/ticket-types/components/TicketTypeCard";
 
 export function TicketSection() {
-  const { data: events, isLoading: loadingEvents } = usePublishedEvents();
-  const firstEventId = events?.[0]?.id ?? "";
-  const { data: event, isLoading: loadingEvent } =
-    useEventWithTicketTypes(firstEventId);
-  const isLoading = loadingEvents || (!!events?.length && loadingEvent);
+  const { data: event, isLoading } = useEventWithTicketTypes("");
 
   return (
     <Box

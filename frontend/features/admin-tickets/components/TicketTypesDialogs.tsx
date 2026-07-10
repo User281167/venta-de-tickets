@@ -27,7 +27,6 @@ type UpdateMutation = ReturnType<typeof useUpdateTicketType>;
 type DeactivateMutation = ReturnType<typeof useDeactivateTicketType>;
 
 interface Props {
-  eventId: string;
   updateMutation: UpdateMutation;
   deactivateMutation: DeactivateMutation;
   editing: AdminTicketType | null;
@@ -38,7 +37,6 @@ interface Props {
 }
 
 export const TicketTypesDialogs = React.memo(function TicketTypesDialogs({
-  eventId,
   updateMutation,
   deactivateMutation,
   editing,
@@ -69,7 +67,6 @@ export const TicketTypesDialogs = React.memo(function TicketTypesDialogs({
               {editing && (
                 <TicketTypeForm
                   ticketType={editing}
-                  eventId={eventId}
                   onCreate={async () => {}}
                   onUpdate={async (id, data) => {
                     await updateMutation.mutateAsync({ id, data });

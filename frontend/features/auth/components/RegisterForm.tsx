@@ -30,6 +30,13 @@ import { useRegister } from "../hooks/useRegister";
 export function RegisterForm() {
   const router = useRouter();
 
+  const registerReturn = useRegister();
+
+  if (!registerReturn) {
+    router.push("/mi-cuenta");
+    return null;
+  }
+
   const {
     status,
     email,
@@ -47,7 +54,7 @@ export function RegisterForm() {
     generalError,
     googleStatus,
     handleGoogleSignIn,
-  } = useRegister();
+  } = registerReturn;
 
   if (status === "success") {
     return (
