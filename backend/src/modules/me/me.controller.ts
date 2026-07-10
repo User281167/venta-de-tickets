@@ -7,9 +7,20 @@ import {
 } from './me.validators.js';
 
 export async function meHandler(req: Request, res: Response): Promise<void> {
-  const privacyStatus = await usersService.getPrivacyStatus(req.user!.id);
+  const [personalInfo, privacyStatus] = await Promise.all([
+    meService.getPersonalInfo(req.user!.id),
+    usersService.getPrivacyStatus(req.user!.id),
+  ]);
+
   res.json({
-    user: req.user,
+    user: {
+      ...req.user,
+      fullName: personalInfo.fullName,
+      phone: personalInfo.phone,
+      cedula: personalInfo.cedula,
+      address: personalInfo.address,
+      dateOfBirth: personalInfo.dateOfBirth,
+    },
     consentStatus: privacyStatus.consentStatus,
   });
 }

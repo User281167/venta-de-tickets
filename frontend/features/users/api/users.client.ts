@@ -3,13 +3,30 @@ import type { UpdateUserInput } from "../schemas/users.schema";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
+const ERROR_MESSAGES: Record<string, string> = {
+  VALIDATION_ERROR: "Algunos campos no son válidos. Revisa la información ingresada.",
+  CEDULA_INVALIDATION: "La cédula ya fue registrada y no puede modificarse.",
+  INTERNAL_ERROR: "Ocurrió un error inesperado. Intenta de nuevo más tarde.",
+  UNAUTHORIZED: "Tu sesión expiró. Inicia sesión nuevamente.",
+};
+
+export class ApiError extends Error {
+  code: string;
+
+  constructor(code: string, message: string) {
+    super(message);
+    this.name = "ApiError";
+    this.code = code;
+  }
+}
+
 async function getToken(): Promise<string> {
   const supabase = createClient();
   const { data } = await supabase.auth.getSession();
   const token = data.session?.access_token;
 
   if (!token) {
-    throw new Error("No autenticado");
+    throw new ApiError("UNAUTHORIZED", "No autenticado");
   }
 
   return token;
@@ -29,7 +46,9 @@ async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
 
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
-    throw new Error(body?.error?.message ?? `Error ${res.status}`);
+    const code = body?.error?.code ?? "INTERNAL_ERROR";
+    const msg = ERROR_MESSAGES[code] ?? body?.error?.message ?? `Error ${res.status}`;
+    throw new ApiError(code, msg);
   }
 
   return res.json();
@@ -42,6 +61,9 @@ export type GetMeResponse = {
     role: string | null;
     fullName: string | null;
     phone: string | null;
+    cedula: string | null;
+    address: string | null;
+    dateOfBirth: string | null;
   };
   consentStatus: {
     required: boolean;

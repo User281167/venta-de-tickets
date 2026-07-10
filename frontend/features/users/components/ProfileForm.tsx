@@ -12,9 +12,11 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useState } from "react";
+import { toast } from "sonner";
 import { useMe, useUpdateMe } from "../hooks/useProfile";
 import type { UpdateUserInput } from "../schemas/users.schema";
 import { updateUserSchema } from "../schemas/users.schema";
+import { ApiError } from "../api/users.client";
 
 export function ProfileForm() {
   const { data, isLoading } = useMe();
@@ -23,6 +25,9 @@ export function ProfileForm() {
   const [form, setForm] = useState<UpdateUserInput>({
     fullName: "",
     phone: "",
+    cedula: "",
+    address: "",
+    dateOfBirth: "",
   });
   const [error, setError] = useState<string | null>(null);
 
@@ -43,7 +48,13 @@ export function ProfileForm() {
   const { user, consentStatus } = data;
 
   const startEdit = () => {
-    setForm({ fullName: user.fullName ?? "", phone: user.phone ?? "" });
+    setForm({
+      fullName: user.fullName ?? "",
+      phone: user.phone ?? "",
+      cedula: user.cedula ?? "",
+      address: user.address ?? "",
+      dateOfBirth: user.dateOfBirth ?? "",
+    });
     setError(null);
     setEditing(true);
   };
@@ -58,12 +69,26 @@ export function ProfileForm() {
 
     if (!parsed.success) {
       setError(parsed.error.issues.map((i) => i.message).join(", "));
+      toast.error("Error de validación", {
+        description: parsed.error.issues.map((i) => i.message).join(", "),
+      });
       return;
     }
 
     setError(null);
     doUpdate(parsed.data, {
-      onSuccess: () => setEditing(false),
+      onSuccess: () => {
+        setEditing(false);
+        toast.success("Información actualizada", {
+          description: "Tus datos se han guardado correctamente",
+        });
+      },
+      onError: (err: Error) => {
+        const description = err instanceof ApiError
+          ? `${err.message} (${err.code})`
+          : err.message || "No se pudo guardar la información";
+        toast.error("Error al actualizar", { description });
+      },
     });
   };
 
@@ -77,6 +102,20 @@ export function ProfileForm() {
         <Field.Root>
           <Field.Label>Correo electrónico</Field.Label>
           <Input value={user.email} disabled />
+        </Field.Root>
+
+        <Field.Root>
+          <Field.Label>Cédula</Field.Label>
+          <Input
+            value={editing ? form.cedula : user.cedula ?? ""}
+            disabled={!editing || !!user.cedula}
+            onChange={(e) => setForm({ ...form, cedula: e.target.value })}
+          />
+          {editing && user.cedula && (
+            <Text fontSize="xs" color="gray.500" mt={1}>
+              La cédula no puede modificarse una vez establecida
+            </Text>
+          )}
         </Field.Root>
 
         <Field.Root>
@@ -96,6 +135,25 @@ export function ProfileForm() {
             onChange={(e) =>
               setForm({ ...form, phone: e.target.value || null })
             }
+          />
+        </Field.Root>
+
+        <Field.Root>
+          <Field.Label>Dirección</Field.Label>
+          <Input
+            value={editing ? (form.address ?? "") : user.address ?? ""}
+            disabled={!editing}
+            onChange={(e) => setForm({ ...form, address: e.target.value || null })}
+          />
+        </Field.Root>
+
+        <Field.Root>
+          <Field.Label>Fecha de nacimiento</Field.Label>
+          <Input
+            type="date"
+            value={editing ? form.dateOfBirth ?? "" : user.dateOfBirth ?? ""}
+            disabled={!editing}
+            onChange={(e) => setForm({ ...form, dateOfBirth: e.target.value || null })}
           />
         </Field.Root>
 
