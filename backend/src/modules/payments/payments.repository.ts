@@ -172,6 +172,37 @@ export function updateTicketQrToken(ticketId: string, qrToken: string) {
   });
 }
 
+const selectPaymentHistory = {
+  id: true,
+  provider: true,
+  amountCents: true,
+  status: true,
+  createdAt: true,
+  tickets: {
+    select: {
+      id: true,
+      ticketCode: true,
+      status: true,
+    },
+  },
+} as const;
+
+export function findAllByUserId(userId: string, page: number, limit: number) {
+  return prisma.payment.findMany({
+    where: { userId },
+    select: selectPaymentHistory,
+    skip: (page - 1) * limit,
+    take: limit,
+    orderBy: { createdAt: 'desc' },
+  });
+}
+
+export function countByUserId(userId: string) {
+  return prisma.payment.count({
+    where: { userId },
+  });
+}
+
 export type PaymentWithTickets = NonNullable<
   Awaited<ReturnType<typeof findByIdWithTickets>>
 >;

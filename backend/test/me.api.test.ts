@@ -15,10 +15,16 @@ vi.mock('../src/modules/me/me.repository.js', () => ({
   upsert: vi.fn(),
 }));
 
+vi.mock('../src/modules/payments/payments.repository.js', () => ({
+  findAllByUserId: vi.fn(),
+  countByUserId: vi.fn(),
+}));
+
 const { verifyToken } = await import('../src/shared/services/auth.service.js');
 const { resolveRole } = await import('../src/shared/services/role-resolver.js');
 
 const meRepo = await import('../src/modules/me/me.repository.js');
+const paymentsRepo = await import('../src/modules/payments/payments.repository.js');
 
 function authHeader(token = 'valid.jwt.token') {
   return { Authorization: `Bearer ${token}` };
@@ -339,5 +345,103 @@ describe('PATCH /api/me/personal-info (update)', () => {
 
     expect(res.status).toBe(200);
     expect(res.body.cedula).toBe('123456789');
+  });
+});
+
+describe('GET /api/me/payments', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockClientAuth();
+  });
+
+  it('returns 401 without Authorization header', async () => {
+    const res = await request(app).get('/api/me/payments');
+
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 403 FORBIDDEN when role is not client', async () => {
+    mockNonClientAuth('admin');
+
+    const res = await request(app)
+      .get('/api/me/payments')
+      .set(authHeader());
+
+    expect(res.status).toBe(403);
+    expect(res.body.error.code).toBe('FORBIDDEN');
+  });
+
+  it('returns 403 for checker role', async () => {
+    mockNonClientAuth('checker');
+
+    const res = await request(app)
+      .get('/api/me/payments')
+      .set(authHeader());
+
+    expect(res.status).toBe(403);
+  });
+
+  it('returns 200 with paginated payment history', async () => {
+    const mockPayments = [
+      {
+        id: 'pay-1',
+        provider: 'mercadopago',
+        amountCents: 50000,
+        status: 'completed',
+        createdAt: new Date('2026-07-09T00:00:00Z'),
+        tickets: [
+          { id: 'ticket-1', ticketCode: 'TC001', status: 'paid' },
+        ],
+      },
+    ];
+
+    vi.mocked(paymentsRepo.findAllByUserId).mockResolvedValue(mockPayments);
+    vi.mocked(paymentsRepo.countByUserId).mockResolvedValue(1);
+
+    const res = await request(app)
+      .get('/api/me/payments')
+      .set(authHeader());
+
+    expect(res.status).toBe(200);
+    expect(res.body.data).toHaveLength(1);
+    expect(res.body.total).toBe(1);
+    expect(res.body.page).toBe(1);
+    expect(res.body.limit).toBe(20);
+    expect(res.body.data[0].provider).toBe('mercadopago');
+    expect(res.body.data[0].tickets).toHaveLength(1);
+  });
+
+  it('returns 200 with empty array when user has no payments', async () => {
+    vi.mocked(paymentsRepo.findAllByUserId).mockResolvedValue([]);
+    vi.mocked(paymentsRepo.countByUserId).mockResolvedValue(0);
+
+    const res = await request(app)
+      .get('/api/me/payments')
+      .set(authHeader());
+
+    expect(res.status).toBe(200);
+    expect(res.body.data).toEqual([]);
+    expect(res.body.total).toBe(0);
+  });
+
+  it('respects page and limit query params', async () => {
+    vi.mocked(paymentsRepo.findAllByUserId).mockResolvedValue([]);
+    vi.mocked(paymentsRepo.countByUserId).mockResolvedValue(0);
+
+    const res = await request(app)
+      .get('/api/me/payments?page=2&limit=5')
+      .set(authHeader());
+
+    expect(res.status).toBe(200);
+    expect(paymentsRepo.findAllByUserId).toHaveBeenCalledWith('user-123', 2, 5);
+  });
+
+  it('returns 422 with invalid pagination params', async () => {
+    const res = await request(app)
+      .get('/api/me/payments?page=0')
+      .set(authHeader());
+
+    expect(res.status).toBe(422);
+    expect(res.body.error.code).toBe('VALIDATION_ERROR');
   });
 });

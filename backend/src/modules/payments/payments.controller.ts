@@ -1,7 +1,12 @@
 import type { Request, Response } from 'express';
-import { ZodError } from 'zod';
+import { z, ZodError } from 'zod';
 import * as paymentsService from './payments.service.js';
 import { checkoutSchema, paymentStatusParamsSchema } from './payments.validators.js';
+
+const paginationSchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+});
 
 export async function handleCheckout(req: Request, res: Response): Promise<void> {
   try {
@@ -39,6 +44,28 @@ export async function handleGetPaymentStatus(req: Request, res: Response): Promi
   try {
     const { id } = paymentStatusParamsSchema.parse(req.params);
     const result = await paymentsService.getPaymentStatus(id, req.user!.id, req.user!.role!);
+
+    res.json(result);
+  } catch (err) {
+    if (err instanceof ZodError) {
+      res.status(422).json({
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: err.issues.map((i) => i.message).join(', '),
+        },
+      });
+
+      return;
+    }
+
+    throw err;
+  }
+}
+
+export async function listMyPaymentsHandler(req: Request, res: Response): Promise<void> {
+  try {
+    const { page, limit } = paginationSchema.parse(req.query);
+    const result = await paymentsService.listMyPayments(req.user!.id, page, limit);
 
     res.json(result);
   } catch (err) {

@@ -138,6 +138,15 @@ export async function processWebhook(
   return { received: true };
 }
 
+export async function listMyPayments(userId: string, page: number, limit: number) {
+  const [data, total] = await Promise.all([
+    paymentsRepo.findAllByUserId(userId, page, limit),
+    paymentsRepo.countByUserId(userId),
+  ]);
+
+  return { data, total, page, limit };
+}
+
 export async function getPaymentStatus(paymentId: string, userId: string, userRole: string) {
   const payment = await paymentsRepo.findByIdWithTickets(paymentId);
   if (!payment) {
