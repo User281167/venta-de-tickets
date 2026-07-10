@@ -6,6 +6,8 @@ export function errorHandler(
   res: Response,
   _next: NextFunction,
 ): void {
+  console.error(err);
+
   const statusCode = err.statusCode ?? 500;
   const code = err.code ?? 'INTERNAL_ERROR';
   const message =

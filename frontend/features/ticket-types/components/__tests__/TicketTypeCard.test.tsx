@@ -95,7 +95,7 @@ describe("TicketTypeCard", () => {
       wrapper: TestWrapper,
     });
 
-    expect(screen.getByText("Comprar")).toBeInTheDocument();
+    expect(screen.getByText("Ver ubicación y comprar")).toBeInTheDocument();
   });
 
   it("shows disabled Agotado button when sold out and authenticated", () => {

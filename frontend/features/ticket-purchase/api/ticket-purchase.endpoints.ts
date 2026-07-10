@@ -1,5 +1,7 @@
 import type { TicketType } from "@/features/ticket-types/schemas/ticket-types.schema";
 
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+
 type BackendTicketType = {
   id: string;
   name: string;
@@ -20,7 +22,7 @@ type BackendResponse = {
 };
 
 export async function fetchActiveTicketTypes(): Promise<TicketType[]> {
-  const res = await fetch("/api/tickets?page=1&limit=50");
+  const res = await fetch(`${BASE_URL}/api/tickets?page=1&limit=50`);
 
   if (!res.ok) {
     throw new Error(`Error al cargar entradas: ${res.status}`);
