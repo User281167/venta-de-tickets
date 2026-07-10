@@ -20,16 +20,20 @@ Create a payment checkout session.
 **Request**:
 ```json
 {
-  "ticketTypeId": "uuid",
-  "quantity": 1,
-  "backUrl": "https://frontend.com/return"
+  "items": [
+    { "ticketTypeId": "uuid", "quantity": 1 }
+  ],
+  "backUrl": "https://frontend.com/return",
+  "provider": "mercadopago"
 }
 ```
 
 **Validation**:
-- `ticketTypeId`: valid UUID, must reference existing enabled TicketType
-- `quantity`: integer >= 1, must not exceed `maxPerUser` on TicketType
+- `items`: array, min 1 element
+- `items[].ticketTypeId`: valid UUID, must reference existing enabled TicketType
+- `items[].quantity`: integer >= 1, must not exceed `maxPerUser` on TicketType
 - `backUrl`: valid URL (frontend return URL)
+- `provider`: string, must match a registered provider name
 
 **Response 201**:
 ```json
@@ -43,9 +47,9 @@ Create a payment checkout session.
 
 ---
 
-## POST /api/payments/webhook
+## POST /api/payments/webhook/:provider
 
-Payment provider webhook receiver. Provider-agnostic — routes to correct provider's `parseWebhook`.
+Payment provider webhook receiver. Provider identified by URL segment (`:provider`).
 
 **Request**: Raw provider webhook payload (varies by provider)
 

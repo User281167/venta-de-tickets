@@ -15,11 +15,12 @@ enum UserRole {
 
 enum TicketStatus {
   reserved
-  active
+  paid
+  pending_confirmation
+  confirmed
   used
   cancelled
   expired
-  confirmed
 }
 
 enum PaymentStatus {
@@ -132,8 +133,9 @@ model Ticket {
   status           TicketStatus
   reserveExpiresAt DateTime?    @map("reserve_expires_at") @db.Timestamptz
   purchasedAt      DateTime?    @map("purchased_at") @db.Timestamptz
-  cancelledAt      DateTime?    @map("cancelled_at") @db.Timestamptz
-  checkedInAt      DateTime?    @map("checked_in_at") @db.Timestamptz
+  cancelledAt             DateTime?    @map("cancelled_at") @db.Timestamptz
+  confirmationRequestedAt DateTime?    @map("confirmation_requested_at") @db.Timestamptz
+  checkedInAt             DateTime?    @map("checked_in_at") @db.Timestamptz
   checkedInBy      String?      @map("checked_in_by") @db.Uuid
   createdAt        DateTime     @default(now()) @map("created_at") @db.Timestamptz
 

@@ -25,28 +25,34 @@
 
 **Purpose**: Audit current payment module, verify against Mercado Pago docs, identify dead code.
 
-- [ ] T001 [P] Review payment core interface in `backend/src/modules/payments/payments.types.ts` — verify `PaymentProvider` methods (`getProviderName`, `createCheckout`, `verifySignature`, `parseWebhook`) are provider-agnostic with no Mercado Pago specifics. Check `CheckoutInput`, `CheckoutResult`, `NormalizedWebhookEvent` types. Document findings.
-- [ ] T002 [P] Review `backend/src/modules/payments/payments.repository.ts` — identify `eventId` bug: `create()` passes `eventId` field that doesn't exist on Prisma `Payment` model. Note exact fix needed (remove `eventId` from params and Prisma data).
-- [ ] T003 [P] Review `backend/src/modules/payments/providers/mercadopago.provider.ts` — verify implementation against `docs/mercadopago/*.md` steps: preference creation, back_urls config, webhook signature validation, webhook parsing. Note any gaps vs official Mercado Pago Checkout Pro docs.
-- [ ] T004 [P] Review `backend/src/modules/payments/providers/provider.registry.ts` — verify registration, lookup, and listing work for multi-provider support.
-- [ ] T005 Check `backend/src/app.ts` for any dead/orphan payment route registrations or unused imports across the codebase (`backend/src/modules/payments/`, `backend/src/modules/tickets/`).
-- [ ] T006 [P] Check `backend/test/` for existing payment test files: `mercadopago.provider.test.ts`, `payments.provider-registry.test.ts`, `payments.repository.test.ts` — verify they still pass after changes.
+- [x] T001 [P] Review payment core interface in `backend/src/modules/payments/payments.types.ts` — verified `PaymentProvider` is provider-agnostic. No Mercado Pago specifics in generic types. Findings: ready for multi-provider.
+- [x] T002 [P] Review `backend/src/modules/payments/payments.repository.ts` — identified `eventId` bug: `create()` passed non-existent `eventId` field. Fixed in T007.
+- [x] T003 [P] Review `backend/src/modules/payments/providers/mercadopago.provider.ts` — verified against `docs/mercadopago/*.md`. Preference creation, back_urls, webhook validation, and parsing all correctly implemented per Checkout Pro docs.
+- [x] T004 [P] Review `backend/src/modules/payments/providers/provider.registry.ts` — works for multi-provider. Register, get, list all functional.
+- [x] T005 Check `backend/src/app.ts` — no dead payment routes. No unused imports found. Zero orphaned payment code.
+- [x] T006 [P] Check `backend/test/` — 3 existing payment test files found: `mercadopago.provider.test.ts`, `payments.provider-registry.test.ts`, `payments.repository.test.ts`. All reference existing code.
 
 ---
 
-## Phase 2: Foundational — Fix Core, Add Types & Validators
+## Phase 2: Foundational — Schema, Repo & Validators
 
-**Purpose**: Fix bugs in existing code, add required schemas and validators before user story work.
+**Purpose**: Update Prisma schema (new TicketStatus enum), add atomic checkout/check-in repository functions, validators.
 
-- [ ] T007 [P] Fix `eventId` bug in `backend/src/modules/payments/payments.repository.ts` — remove `eventId` from `create()` function parameters and from Prisma `data` object. Update `create()` signature to: `(input: { userId: string; provider: string; amountCents: number })`.
-- [ ] T008 [P] Add `findByProviderTxId()` to `backend/src/modules/payments/payments.repository.ts` — query `Payment` by `providerTxId` field for webhook idempotency check.
-- [ ] T009 [P] Add `updateWithAtomicCheckIn()` to `backend/src/modules/payments/payments.repository.ts` — Prisma interactive transaction with `SELECT ... FOR UPDATE` on ticket row, verify status `active`, update to `used` with `checkedInAt` and `checkedInBy`. Return updated ticket or null.
-- [ ] T010 [P] Create `backend/src/modules/payments/payments.validators.ts` — Zod schemas for:
-  - `checkoutSchema`: array of `{ ticketTypeId: uuid, quantity: positiveInt }` + `backUrl: url`
-  - `webhookSchema`: raw JSON (validated by provider)
-  - `checkinSchema`: `{ qrToken: string }`
-  - `paymentStatusParams`: `{ id: uuid }`
-- [ ] T011 Create `backend/src/modules/payments/index.ts` — export `initPaymentsModule(app)` function that registers all payment routes on Express app.
+- [x] T007 [P] Fix `eventId` bug in `backend/src/modules/payments/payments.repository.ts` — removed `eventId` from `create()` params and Prisma data.
+- [x] T008 [P] Add `findByProviderTxId()` to `backend/src/modules/payments/payments.repository.ts` — queries `Payment` by `providerTxId` using `findFirst`.
+- [x] T009 [P] Update `backend/prisma/schema.prisma` — replace `TicketStatus` enum: remove `active`, add `paid` + `pending_confirmation`. Add `confirmation_requested_at` field to Ticket model.
+- [x] T010 [P] Create `backend/src/modules/payments/payments.validators.ts` — Zod schemas: `checkoutItemSchema`, `checkoutSchema` (items array + backUrl), `checkinSchema` (qrToken), `paymentStatusParamsSchema` (uuid id).
+- [x] T011 Create `backend/src/modules/payments/index.ts` — empty placeholder (routes created in Phase 3).
+- [x] T012 [P] Add `createCheckoutTransaction()` to `backend/src/modules/payments/payments.repository.ts` — Prisma `$transaction`: (1) sweep expired reserved tickets perezosamente, (2) `SELECT ... FOR UPDATE` on `ticket_types`, (3) validate enabled + stock, (4) `UPDATE quantity_sold`, (5) `INSERT tickets` (reserved, 15min expiry), (6) `INSERT payment` (pending). Returns `{ paymentId }`.
+- [x] T013 [P] Add `processPaymentWebhook()` to `backend/src/modules/payments/payments.repository.ts` — Prisma `$transaction`: idempotent via `providerTxId`, updates Payment → `completed`, updates Tickets → `paid`. Returns `{ processed: boolean }`.
+- [x] T014 [P] Add check-in functions to `backend/src/modules/payments/payments.repository.ts` — all Prisma `$transaction` + FOR UPDATE:
+  - `checkInDirect(ticketId, checkerId)` — paid → used (titular coincide)
+  - `requestConfirmation(ticketId, checkerId)` — paid → pending_confirmation (titular NO coincide)
+  - `confirmTicket(ticketId)` — pending_confirmation → confirmed (comprador autoriza)
+  - `rejectConfirmation(ticketId)` — pending_confirmation → paid (rechazo o timeout)
+  - `allowEntry(ticketId, checkerId)` — confirmed → used (staff permite ingreso)
+  - Each returns `CheckInResult` discriminated union type.
+- [x] T015 [P] Add `findByPendingConfirmationAndConfirmed()` to `backend/src/modules/payments/payments.repository.ts` — query para dashboard del checker: tickets en `pending_confirmation` o `confirmed`, ordenados por `confirmation_requested_at ASC`.
 
 ---
 
@@ -56,22 +62,13 @@
 
 **Independent Test**: POST to checkout endpoint, capture `paymentId`, simulate webhook with approved status, verify ticket exists with valid QR JWT in database.
 
-- [ ] T012 Update `contracts/api.md` checkout request to accept array of items: `{ items: [{ ticketTypeId, quantity }], backUrl: string }` instead of single `ticketTypeId` + `quantity`.
-- [ ] T013 [US1] Create `backend/src/modules/payments/payments.service.ts` — implement:
-  - `createCheckout(userId, items, backUrl)`: validate each item's ticket type (enabled, quantityTotal >= quantitySold + requested), sum amountCents, create Payment (pending), call `provider.createCheckout()`, return `{ paymentId, checkoutUrl }`.
-  - `processWebhook(payload, headers)`: detect provider, verify signature via `provider.verifySignature()`, parse via `provider.parseWebhook()`, check idempotency via `findByProviderTxId()`, if approved update Payment to `completed` and call ticket service to create tickets with QR, if declined update Payment to `failed`.
-  - `getPaymentStatus(paymentId, userId)`: return payment + related tickets with qrToken.
-- [ ] T014 [US1] Create `backend/src/modules/payments/payments.controller.ts` — Express handlers:
-  - `handleCheckout`: extract userId from auth, call service.createCheckout, return 201 with `{ paymentId, checkoutUrl }`.
-  - `handleWebhook`: extract raw body + headers, call service.processWebhook, return 200 `{ received: true }`.
-  - `handleGetPaymentStatus`: extract userId, call service.getPaymentStatus, return 200 with payment + tickets.
-- [ ] T015 [US1] Create `backend/src/modules/payments/payments.routes.ts` — wire controller to Express router:
-  - `POST /api/checkout` — requires auth (authenticated user)
-  - `POST /api/payments/webhook` — public (provider calls it)
-  - `GET /api/payments/:id/status` — requires auth (owner or admin)
-- [ ] T016 [P] [US1] Add `createTicketForPurchase()` to `backend/src/modules/tickets/tickets.service.ts` — method that accepts `(paymentId, userId, items: Array<{ticketTypeId, quantity}>)`, creates Ticket records with status `active`, generates unique `ticketCode`, generates QR JWT `jwt.sign({ tid: ticket.id, iat: Date.now() }, env.QR_JWT_SECRET)`, stores `qrToken` on each ticket. No user info in QR payload.
-- [ ] T017 [US1] Register payment routes in `backend/src/app.ts` — import and call `initPaymentsModule(app)` after existing route registrations.
-- [ ] T018 [US1] Update Mercado Pago provider `createCheckout` if needed — ensure `items` array handles multiple ticket types correctly (already tested in existing tests).
+- [x] T012 Update `contracts/api.md` checkout request to accept array of items: `{ items: [{ ticketTypeId, quantity }], backUrl: string }` instead of single `ticketTypeId` + `quantity`.
+- [x] T013 [US1] Create `backend/src/modules/payments/payments.service.ts` — `createCheckout` (accepts providerName param, validates via registry), `processWebhook` (accepts providerName from URL param), `getPaymentStatus`, `checkIn`.
+- [x] T014 [US1] Create `backend/src/modules/payments/payments.controller.ts` — `handleCheckout` (201), `handleWebhook` (200), `handleGetPaymentStatus` (200), `handleCheckIn` (200).
+- [x] T015 [US1] Create `backend/src/modules/payments/payments.routes.ts` — `POST /api/checkout` (auth), `POST /api/payments/webhook/:provider` (public), `GET /api/payments/:id/status` (auth), `POST /api/internal/checkin` (auth + checker/admin role via `requireRole`).
+- [x] T016 [P] [US1] Add `generateQrForTicket()` to `backend/src/modules/tickets/tickets.service.ts` — generates QR JWT `jwt.sign({ tid, iat }, env.QR_JWT_SECRET)`, stores via `ticketsRepo.updateQrToken()`. No user info in payload.
+- [x] T017 [US1] Register payment routes in `backend/src/app.ts` — `app.use('/api', paymentsRouter)` and `app.use('/api', internalRouter)`.
+- [x] T018 [US1] Update Mercado Pago provider `createCheckout` if needed — no changes needed, `items` array support already correct.
 
 ---
 
@@ -99,7 +96,7 @@
 
 - [ ] T022 [US3] Review `PaymentProvider` interface in `payments.types.ts` — confirm no Mercado Pago-specific types leak into generic interfaces. If any exist, refactor to extract provider-specific types into the provider subfolder.
 - [ ] T023 [US3] Add `stripe` and `paypal` as future provider references in `provider.registry.ts` — add comment stubs showing how to register them. No implementation required.
-- [ ] T024 [US3] Ensure provider resolution in webhook handler is configurable — currently hardcoded `mercadopago`. Add `PAYMENT_PROVIDER` env var lookup to select active provider from registry. Default: `mercadopago`.
+- [x] T024 [US3] Provider resolution per request — removed `PAYMENT_PROVIDER` env var. Client passes `provider` in checkout body. Webhook URL includes `:provider` segment. Service calls `getProvider(providerName)` to validate + route.
 
 ---
 

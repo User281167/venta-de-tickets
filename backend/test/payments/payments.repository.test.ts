@@ -5,14 +5,18 @@ const mockPrisma = vi.hoisted(() => ({
     create: vi.fn(),
     update: vi.fn(),
     findUnique: vi.fn(),
+    findFirst: vi.fn(),
   },
+  $transaction: vi.fn(),
+  $queryRaw: vi.fn(),
+  $executeRaw: vi.fn(),
 }));
 
-vi.mock('../src/shared/database/prisma.client.js', () => ({
+vi.mock('../../src/shared/database/prisma.client.js', () => ({
   prisma: mockPrisma,
 }));
 
-import * as repo from '../src/modules/payments/payments.repository.js';
+import * as repo from '../../src/modules/payments/payments.repository.js';
 
 describe('payments.repository', () => {
   beforeEach(() => {
@@ -23,7 +27,6 @@ describe('payments.repository', () => {
     mockPrisma.payment.create.mockResolvedValue({
       id: 'payment-1',
       userId: 'user-1',
-      eventId: 'event-1',
       provider: 'mercadopago',
       amountCents: 25000,
       status: 'pending',
@@ -31,7 +34,6 @@ describe('payments.repository', () => {
 
     const result = await repo.create({
       userId: 'user-1',
-      eventId: 'event-1',
       provider: 'mercadopago',
       amountCents: 25000,
     });
@@ -39,7 +41,6 @@ describe('payments.repository', () => {
     expect(mockPrisma.payment.create).toHaveBeenCalledWith({
       data: {
         userId: 'user-1',
-        eventId: 'event-1',
         provider: 'mercadopago',
         amountCents: 25000,
         status: 'pending',
@@ -99,5 +100,19 @@ describe('payments.repository', () => {
       },
     });
     expect(result?.tickets).toHaveLength(1);
+  });
+
+  it('finds a payment by provider transaction id', async () => {
+    mockPrisma.payment.findFirst.mockResolvedValue({
+      id: 'payment-1',
+      providerTxId: 'mp-tx-123',
+    });
+
+    const result = await repo.findByProviderTxId('mp-tx-123');
+
+    expect(mockPrisma.payment.findFirst).toHaveBeenCalledWith({
+      where: { providerTxId: 'mp-tx-123' },
+    });
+    expect(result?.providerTxId).toBe('mp-tx-123');
   });
 });

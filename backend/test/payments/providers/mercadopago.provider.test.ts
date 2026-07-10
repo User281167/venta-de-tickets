@@ -19,7 +19,7 @@ vi.mock('mercadopago', () => ({
   },
 }));
 
-import { MercadoPagoProvider } from '../src/modules/payments/providers/mercadopago.provider.js';
+import { MercadoPagoProvider } from '../../../src/modules/payments/providers/mercadopago.provider.js';
 
 describe('MercadoPagoProvider', () => {
   let provider: MercadoPagoProvider;

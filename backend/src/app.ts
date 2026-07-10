@@ -8,6 +8,8 @@ import { usersRouter } from './modules/users/index.js';
 import { adminsRouter } from './modules/admins/admins.routes.js';
 import { authRouter } from './modules/auth/index.js';
 import { ticketsRouter, adminTicketsRouter } from './modules/tickets/tickets.routes.js';
+import { paymentsRouter } from './modules/payments/index.js';
+import { checkinRouter } from './modules/checkin/index.js';
 
 export const app = express();
 
@@ -22,5 +24,7 @@ app.use('/api/admin', adminsRouter);
 app.use('/api/tickets', ticketsRouter);
 app.use('/api/admin/tickets', adminTicketsRouter);
 app.use('/api/users', usersRouter);
+app.use('/api', paymentsRouter);
+app.use('/api', checkinRouter);
 
 app.use(errorHandler);
