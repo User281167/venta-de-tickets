@@ -10,7 +10,6 @@ const SLIDES = [
   { src: "/slider2.jpg", alt: "Slider 2" },
   { src: "/slider3.jpeg", alt: "Slider 3" },
   { src: "/slider4.jpg", alt: "Slider 4" },
-  { src: "/slider5.jpeg", alt: "Slider 5" },
 ];
 
 const AUTO_PLAY_INTERVAL = 5000;

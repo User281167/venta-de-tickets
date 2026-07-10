@@ -15,6 +15,7 @@ import { useState } from "react";
 import {
   IconUser,
   IconCreditCard,
+  IconTicket,
   IconX,
   IconTransitionRightFilled,
   IconHome,
@@ -23,6 +24,11 @@ import {
 const LINKS = [
   { href: "/", label: "Home", icon: <IconHome size={20} /> },
   { href: "/mi-cuenta", label: "Información", icon: <IconUser size={20} /> },
+  {
+    href: "/mi-cuenta/entradas",
+    label: "Mis Entradas",
+    icon: <IconTicket size={20} />,
+  },
   {
     href: "/mi-cuenta/pagos",
     label: "Pagos",

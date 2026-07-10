@@ -20,7 +20,6 @@ import {
   IconLogout,
   IconMenu2,
   IconUsers,
-  IconClipboardList,
   IconTicket,
   IconQrcode,
   IconX,
@@ -46,12 +45,6 @@ const ALL_LINKS: SidebarLink[] = [
     href: "/admin/usuarios",
     label: "Usuarios",
     icon: <IconUsers size={20} />,
-    roles: ["super_admin", "organizer"] as const,
-  },
-  {
-    href: "/admin/encuestas",
-    label: "Encuestas",
-    icon: <IconClipboardList size={20} />,
     roles: ["super_admin", "organizer"] as const,
   },
 ];

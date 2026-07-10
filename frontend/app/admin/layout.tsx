@@ -13,7 +13,6 @@ const queryClient = new QueryClient();
 const ROLE_RESTRICTED_PATHS: Record<string, string[]> = {
   "/admin/ticket-types": ["super_admin", "organizer"],
   "/admin/usuarios": ["super_admin", "organizer"],
-  "/admin/encuestas": ["super_admin", "organizer"],
 };
 
 function AdminLayoutInner({ children }: { children: ReactNode }) {
