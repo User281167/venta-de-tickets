@@ -31,7 +31,7 @@ const NAV_ITEMS = [
   { label: "AGENDA", href: "/agenda" },
   { label: "ACTIVIDADES", href: "/#actividades" },
   { label: "PONENTES", href: "/#speakers" },
-  { label: "ENTRADAS", href: "/#entradas" },
+  { label: "ENTRADAS", href: "/entradas" },
   { label: "CONTACTO", href: "/#contacto" },
 ];
 

@@ -4,6 +4,7 @@ import { HeroSection } from "@/features/landing/components/HeroSection";
 import { AboutSection } from "@/features/landing/components/AboutSection";
 import { SpeakersSection } from "@/features/landing/components/SpeakersSection";
 import { BenefitsSection } from "@/features/landing/components/BenefitsSection";
+import { TicketSection } from "@/features/landing/components/TicketSection";
 import { CtaSection } from "@/features/landing/components/CtaSection";
 import { AuthErrorToast } from "@/features/auth/components/AuthErrorToast";
 import { FullWidthSlider } from "@/features/landing/components/FullWidthSlider";
@@ -15,6 +16,7 @@ export default function LandingPage() {
       <Navbar />
       <main>
         <HeroSection />
+        <TicketSection />
         <AboutSection />
         <FullWidthSlider />
         <BenefitsSection />

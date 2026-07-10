@@ -1,10 +1,29 @@
-import { Box } from "@chakra-ui/react";
-import { TicketPurchaseClient } from "@/features/ticket-purchase/components/TicketPurchaseClient";
+import { TicketSection } from "@/features/landing/components/TicketSection";
+import {
+  Box,
+  Center,
+  Container,
+  Heading,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 
 export default function EntradasPage() {
   return (
-    <Box maxW="8xl" mx="auto" px={4} py={10}>
-      <TicketPurchaseClient />
+    <Box minH="60vh" py={20}>
+      <Container maxW="1200px">
+        <Center>
+          <VStack gap={4} textAlign="center">
+            <Text color="brand.muted" maxW="md">
+              Compra y venta de boletas no disponible por el momento. Permanezca
+              atento a nuestras redes sociales y a esta página para más
+              información.
+            </Text>
+
+            <TicketSection />
+          </VStack>
+        </Center>
+      </Container>
     </Box>
   );
 }

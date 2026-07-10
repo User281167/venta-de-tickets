@@ -5,6 +5,7 @@ import {
   Button,
   Flex,
   Heading,
+  Link as ChakraLink,
   Text,
   HStack,
   Badge,
@@ -87,10 +88,12 @@ export function TicketTypeCard({ ticketType }: TicketTypeCardProps) {
             mt={4}
             _hover={{ transform: "translateY(-1px)" }}
           >
-            <HStack gap={2}>
-              <IconTicket size={18} />
-              <Text>Comprar</Text>
-            </HStack>
+            <ChakraLink href="/entradas" color="inherit">
+              <HStack gap={2}>
+                <IconTicket size={18} />
+                <Text>Ver ubicación y comprar</Text>
+              </HStack>
+            </ChakraLink>
           </Button>
         </>
       ) : (
