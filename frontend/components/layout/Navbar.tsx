@@ -96,7 +96,7 @@ export function Navbar() {
           <HStack gap={3}>
             {user ? (
               <>
-                {role && (
+                {role !== "client" && (
                   <Button
                     asChild
                     variant="ghost"
@@ -110,6 +110,7 @@ export function Navbar() {
                     </NextLink>
                   </Button>
                 )}
+
                 <Button
                   asChild
                   variant="outline"
