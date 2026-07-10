@@ -8,8 +8,12 @@ import {
 
 export async function meHandler(req: Request, res: Response): Promise<void> {
   const privacyStatus = await usersService.getPrivacyStatus(req.user!.id);
+  const personalInfo = await meService.getPersonalInfo(req.user!.id);
   res.json({
-    user: req.user,
+    user: {
+      ...req.user,
+      ...personalInfo,
+    },
     consentStatus: privacyStatus.consentStatus,
   });
 }

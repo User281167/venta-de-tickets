@@ -15,9 +15,14 @@ vi.mock('../src/modules/users/users.service.js', () => ({
   getPrivacyStatus: vi.fn(),
 }));
 
+vi.mock('../src/modules/me/me.service.js', () => ({
+  getPersonalInfo: vi.fn(),
+}));
+
 const { verifyToken } = await import('../src/shared/services/auth.service.js');
 const { resolveRole } = await import('../src/shared/services/role-resolver.js');
 const { getPrivacyStatus } = await import('../src/modules/users/users.service.js');
+const { getPersonalInfo } = await import('../src/modules/me/me.service.js');
 
 describe('Auth Middleware', () => {
   beforeEach(() => {
@@ -81,6 +86,13 @@ describe('Auth Middleware', () => {
         acceptedAt: null,
         policyVersion: '1.0',
       },
+    });
+    vi.mocked(getPersonalInfo).mockResolvedValue({
+      fullName: null,
+      phone: null,
+      cedula: null,
+      address: null,
+      dateOfBirth: null,
     });
 
     const res = await request(app)
