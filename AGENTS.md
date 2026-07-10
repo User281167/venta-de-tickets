@@ -1,5 +1,5 @@
 <!-- SPECKIT START -->
-Current feature: specs/005-payment-ticket-entrance/
+Current feature: specs/006-api-dto-refactor/
 - spec.md        — feature spec
 - plan.md        — implementation plan (tech context, structure, phases)
 - research.md    — architecture decisions & schema audit
