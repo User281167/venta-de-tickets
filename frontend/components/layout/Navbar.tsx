@@ -213,7 +213,7 @@ export function Navbar() {
 
               {user ? (
                 <>
-                  {role && (
+                  {role === "admin" && (
                     <Button
                       asChild
                       variant="ghost"

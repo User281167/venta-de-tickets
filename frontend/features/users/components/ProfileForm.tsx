@@ -93,7 +93,7 @@ export function ProfileForm() {
   };
 
   return (
-    <Box maxW="md" mx="auto" mt={10} p={6}>
+    <Box maxW="md" mx="auto">
       <VStack gap={6} align="stretch">
         <Heading as="h1" size="lg">
           Mi cuenta

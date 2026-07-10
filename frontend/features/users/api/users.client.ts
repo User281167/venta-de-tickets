@@ -32,7 +32,7 @@ async function getToken(): Promise<string> {
   return token;
 }
 
-async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
+export async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
   const token = await getToken();
 
   const res = await fetch(`${BASE_URL}${path}`, {
