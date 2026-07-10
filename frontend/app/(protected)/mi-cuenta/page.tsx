@@ -25,7 +25,7 @@ export default function MiCuentaPage() {
   }
 
   const needsConsent =
-    data?.consentStatus.required && !data?.consentStatus.acceptedAt;
+    data?.consentStatus?.required && !data?.consentStatus?.acceptedAt;
 
   if (needsConsent) {
     return <PrivacyConsentModal />;

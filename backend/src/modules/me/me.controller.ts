@@ -1,12 +1,17 @@
 import type { Request, Response } from 'express';
 import * as meService from './me.service.js';
+import * as usersService from '../users/users.service.js';
 import {
   setPersonalInfoSchema,
   updatePersonalInfoSchema,
 } from './me.validators.js';
 
-export function meHandler(req: Request, res: Response): void {
-  res.json({ user: req.user });
+export async function meHandler(req: Request, res: Response): Promise<void> {
+  const privacyStatus = await usersService.getPrivacyStatus(req.user!.id);
+  res.json({
+    user: req.user,
+    consentStatus: privacyStatus.consentStatus,
+  });
 }
 
 export async function getPersonalInfoHandler(

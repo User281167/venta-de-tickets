@@ -17,7 +17,11 @@ export default function LoginPage() {
   if (!isLoading && user) {
     adminFetch<{ role: string | null }>("/api/auth/session")
       .then(({ role }) => {
-        router.replace(role ? "/admin" : "/mi-cuenta");
+        if (role == "client") {
+          router.replace("/mi-cuenta");
+        } else {
+          router.replace("/admin");
+        }
       })
       .catch(() => router.replace("/mi-cuenta"));
 

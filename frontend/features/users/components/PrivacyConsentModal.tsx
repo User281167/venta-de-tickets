@@ -24,13 +24,13 @@ export function PrivacyConsentModal() {
         Aviso de Privacidad
       </Heading>
 
-      <Text fontSize="sm" color="gray.600">
+      <Text fontSize="sm" color="gray.400">
         De acuerdo con la Ley 1581 de Protección de Datos Personales en
         Colombia, autorizas el tratamiento de tus datos personales para los
         fines de registro, comunicación y organización del evento.
       </Text>
 
-      <Text fontSize="sm" color="gray.600">
+      <Text fontSize="sm" color="gray.400">
         Tus datos serán almacenados de forma segura y no serán compartidos
         con terceros sin tu consentimiento explícito. Puedes revisar, actualizar
         o solicitar la eliminación de tus datos en cualquier momento.

@@ -61,20 +61,24 @@ export function useLogin() {
       const {
         data: { session },
       } = await supabase.auth.getSession();
-      const role = session?.user?.app_metadata?.role as string | null;
+      let role = session?.user?.app_metadata?.role as string | null;
 
-      if (role) {
-        router.push("/admin");
-      } else {
+      if (!role) {
         try {
           const { role: r } = await adminFetch<{ role: string | null }>(
             "/api/auth/session",
           );
 
-          router.push(r ? "/admin" : "/mi-cuenta");
+          role = r;
         } catch {
-          router.push("/mi-cuenta");
+          role = "client";
         }
+      }
+
+      if (role === "client") {
+        router.push("/mi-cuenta");
+      } else {
+        router.push("/admin");
       }
     },
     [email, password],

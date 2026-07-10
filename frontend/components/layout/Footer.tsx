@@ -206,12 +206,12 @@ export function Footer() {
 
             <HStack gap={2} color="brand.muted">
               <IconMail size={16} />
-              <Text fontSize="sm">convencion.egresados@utp.edu.co</Text>
+              <Text fontSize="sm">egresados@utp.edu.co, aseutp@utp.edu.co</Text>
             </HStack>
 
             <HStack gap={2} color="brand.muted">
               <IconPhone size={16} />
-              <Text fontSize="sm">(606) 313 7300</Text>
+              <Text fontSize="sm">+57 606 313 7110 - 313 7533</Text>
             </HStack>
           </Stack>
 
