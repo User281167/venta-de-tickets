@@ -147,6 +147,25 @@ export async function listMyPayments(userId: string, page: number, limit: number
   return { data, total, page, limit };
 }
 
+export async function listAllPayments(page: number, limit: number) {
+  const [data, total] = await Promise.all([
+    paymentsRepo.findAllPayments(page, limit),
+    paymentsRepo.countAllPayments(),
+  ]);
+
+  return { data, total, page, limit };
+}
+
+export async function getPaymentDetail(paymentId: string) {
+  const payment = await paymentsRepo.findPaymentByIdWithUser(paymentId);
+
+  if (!payment) {
+    throw new NotFoundError('Payment not found');
+  }
+
+  return payment;
+}
+
 export async function getPaymentStatus(paymentId: string, userId: string, userRole: string) {
   const payment = await paymentsRepo.findByIdWithTickets(paymentId);
   if (!payment) {

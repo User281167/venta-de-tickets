@@ -32,11 +32,28 @@ vi.mock('../src/shared/supabase/admin-client.js', () => ({
   },
 }));
 
+vi.mock('../src/modules/payments/payments.repository.js', () => ({
+  findAllPayments: vi.fn(),
+  countAllPayments: vi.fn(),
+  findPaymentByIdWithUser: vi.fn(),
+  create: vi.fn(),
+  update: vi.fn(),
+  findByProviderTxId: vi.fn(),
+  findByReference: vi.fn(),
+  findByIdWithTickets: vi.fn(),
+  findAllByUserId: vi.fn(),
+  countByUserId: vi.fn(),
+  createCheckoutTransaction: vi.fn(),
+  processPaymentWebhook: vi.fn(),
+  updateTicketQrToken: vi.fn(),
+}));
+
 const { verifyToken } = await import('../src/shared/services/auth.service.js');
 const { resolveRole } = await import('../src/shared/services/role-resolver.js');
 const adminsRepo = await import('../src/modules/admins/admins.repository.js');
 const { supabaseAdmin } =
   await import('../src/shared/supabase/admin-client.js');
+const paymentsRepo = await import('../src/modules/payments/payments.repository.js');
 
 function authHeader(token = 'valid.jwt.token') {
   return { Authorization: `Bearer ${token}` };
@@ -543,5 +560,134 @@ describe('PATCH /api/admin/users/:id', () => {
       .set(authHeader())
       .send({ cedula: '44444444' });
     expect(res.status).toBe(200);
+  });
+});
+
+describe('GET /api/admin/payments', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockAdminAuth();
+  });
+
+  const mockPaymentList = [
+    {
+      id: 'pay-1',
+      userId: 'user-1',
+      provider: 'mercadopago',
+      providerTxId: null,
+      amountCents: 25000,
+      status: 'completed',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      user: { id: 'user-1', email: 'a@test.com', fullName: 'Alice' },
+    },
+    {
+      id: 'pay-2',
+      userId: 'user-2',
+      provider: 'mercadopago',
+      providerTxId: 'mp-123',
+      amountCents: 15000,
+      status: 'pending',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      user: { id: 'user-2', email: 'b@test.com', fullName: 'Bob' },
+    },
+  ];
+
+  it('returns 200 with paginated list', async () => {
+    vi.mocked(paymentsRepo.findAllPayments).mockResolvedValue(mockPaymentList);
+    vi.mocked(paymentsRepo.countAllPayments).mockResolvedValue(2);
+
+    const res = await request(app).get('/api/admin/payments').set(authHeader());
+
+    expect(res.status).toBe(200);
+    expect(res.body.data).toHaveLength(2);
+    expect(res.body.total).toBe(2);
+    expect(res.body.page).toBe(1);
+    expect(res.body.limit).toBe(20);
+    expect(res.body.data[0].user.email).toBe('a@test.com');
+  });
+
+  it('passes pagination params correctly', async () => {
+    vi.mocked(paymentsRepo.findAllPayments).mockResolvedValue([mockPaymentList[1]]);
+    vi.mocked(paymentsRepo.countAllPayments).mockResolvedValue(1);
+
+    const res = await request(app)
+      .get('/api/admin/payments?page=2&limit=5')
+      .set(authHeader());
+
+    expect(res.status).toBe(200);
+    expect(res.body.page).toBe(2);
+    expect(res.body.limit).toBe(5);
+    expect(paymentsRepo.findAllPayments).toHaveBeenCalledWith(2, 5);
+  });
+
+  it('returns 422 with invalid page param', async () => {
+    const res = await request(app)
+      .get('/api/admin/payments?page=-1')
+      .set(authHeader());
+
+    expect(res.status).toBe(422);
+    expect(res.body.error.code).toBe('VALIDATION_ERROR');
+  });
+});
+
+describe('GET /api/admin/payments/:id', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockAdminAuth();
+  });
+
+  const mockPaymentDetail = {
+    id: 'pay-1',
+    userId: 'user-1',
+    provider: 'mercadopago',
+    providerTxId: null,
+    amountCents: 25000,
+    status: 'completed',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    user: { id: 'user-1', email: 'a@test.com', fullName: 'Alice' },
+    tickets: [
+      {
+        id: 'ticket-1',
+        ticketCode: 'ABC123',
+        status: 'paid',
+        ticketType: { id: 'tt-1', name: 'VIP', price: 25000 },
+      },
+    ],
+  };
+
+  it('returns 200 with payment detail', async () => {
+    vi.mocked(paymentsRepo.findPaymentByIdWithUser).mockResolvedValue(mockPaymentDetail);
+
+    const res = await request(app)
+      .get('/api/admin/payments/11111111-1111-4111-a111-111111111111')
+      .set(authHeader());
+
+    expect(res.status).toBe(200);
+    expect(res.body.id).toBe('pay-1');
+    expect(res.body.user.email).toBe('a@test.com');
+    expect(res.body.tickets).toHaveLength(1);
+  });
+
+  it('returns 404 when payment not found', async () => {
+    vi.mocked(paymentsRepo.findPaymentByIdWithUser).mockResolvedValue(null);
+
+    const res = await request(app)
+      .get('/api/admin/payments/00000000-0000-0000-0000-000000000000')
+      .set(authHeader());
+
+    expect(res.status).toBe(404);
+    expect(res.body.error.code).toBe('NOT_FOUND');
+  });
+
+  it('returns 422 with invalid uuid param', async () => {
+    const res = await request(app)
+      .get('/api/admin/payments/not-a-uuid')
+      .set(authHeader());
+
+    expect(res.status).toBe(422);
+    expect(res.body.error.code).toBe('VALIDATION_ERROR');
   });
 });

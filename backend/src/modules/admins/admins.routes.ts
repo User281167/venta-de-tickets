@@ -14,5 +14,7 @@ adminsRouter.post('/users', requireRole('admin'), adminsController.createUser);
 adminsRouter.post('/users/batch', requireRole('admin'), adminsController.batchCreateUsers);
 adminsRouter.patch('/users/:id', requireRole('admin'), adminsController.updateUser);
 
+adminsRouter.get('/payments', requireRole('admin'), adminsController.listPaymentsHandler);
+adminsRouter.get('/payments/:id', requireRole('admin'), adminsController.getPaymentDetailHandler);
 
 export { adminsRouter };

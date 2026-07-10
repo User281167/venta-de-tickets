@@ -1,12 +1,7 @@
 import type { Request, Response } from 'express';
-import { z, ZodError } from 'zod';
+import { ZodError } from 'zod';
 import * as paymentsService from './payments.service.js';
-import { checkoutSchema, paymentStatusParamsSchema } from './payments.validators.js';
-
-const paginationSchema = z.object({
-  page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(100).default(20),
-});
+import { checkoutSchema, paymentStatusParamsSchema, paginationSchema } from './payments.validators.js';
 
 export async function handleCheckout(req: Request, res: Response): Promise<void> {
   try {

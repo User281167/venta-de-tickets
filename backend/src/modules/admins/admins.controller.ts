@@ -1,12 +1,15 @@
 import type { Request, Response } from 'express';
 import { ZodError } from 'zod';
 import * as adminsService from './admins.service.js';
+import * as paymentsService from '../payments/payments.service.js';
 import {
   createUserSchema,
   batchCreateUsersSchema,
   updateUserSchema,
   updateRoleSchema,
   paginationSchema,
+  paymentPaginationSchema,
+  paymentParamsSchema,
 } from './admins.validators.js';
 
 export async function getMe(req: Request, res: Response): Promise<void> {
@@ -106,6 +109,44 @@ export async function updateUserRole(
   } catch (err) {
     if (err instanceof ZodError) {
       res.status(400).json({ error: 'Invalid role', details: err.issues });
+      return;
+    }
+
+    throw err;
+  }
+}
+
+export async function listPaymentsHandler(req: Request, res: Response): Promise<void> {
+  try {
+    const { page, limit } = paymentPaginationSchema.parse(req.query);
+    const result = await paymentsService.listAllPayments(page, limit);
+
+    res.json(result);
+  } catch (err) {
+    if (err instanceof ZodError) {
+      res.status(422).json({
+        error: { code: 'VALIDATION_ERROR', message: err.issues.map((i) => i.message).join(', ') },
+      });
+
+      return;
+    }
+
+    throw err;
+  }
+}
+
+export async function getPaymentDetailHandler(req: Request, res: Response): Promise<void> {
+  try {
+    const { id } = paymentParamsSchema.parse(req.params);
+    const result = await paymentsService.getPaymentDetail(id);
+
+    res.json(result);
+  } catch (err) {
+    if (err instanceof ZodError) {
+      res.status(422).json({
+        error: { code: 'VALIDATION_ERROR', message: err.issues.map((i) => i.message).join(', ') },
+      });
+
       return;
     }
 

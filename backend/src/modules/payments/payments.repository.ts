@@ -203,6 +203,63 @@ export function countByUserId(userId: string) {
   });
 }
 
+const selectPaymentAdmin = {
+  id: true,
+  userId: true,
+  provider: true,
+  providerTxId: true,
+  amountCents: true,
+  status: true,
+  createdAt: true,
+  updatedAt: true,
+  user: {
+    select: {
+      id: true,
+      email: true,
+      fullName: true,
+    },
+  },
+} as const;
+
+export function findAllPayments(page: number, limit: number) {
+  return prisma.payment.findMany({
+    select: selectPaymentAdmin,
+    skip: (page - 1) * limit,
+    take: limit,
+    orderBy: { createdAt: 'desc' },
+  });
+}
+
+export function countAllPayments() {
+  return prisma.payment.count();
+}
+
+export function findPaymentByIdWithUser(id: string) {
+  return prisma.payment.findUnique({
+    where: { id },
+    include: {
+      user: {
+        select: {
+          id: true,
+          email: true,
+          fullName: true,
+        },
+      },
+      tickets: {
+        include: {
+          ticketType: {
+            select: {
+              id: true,
+              name: true,
+              price: true,
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
 export type PaymentWithTickets = NonNullable<
   Awaited<ReturnType<typeof findByIdWithTickets>>
 >;
