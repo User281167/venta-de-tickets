@@ -57,3 +57,9 @@ export const paymentPaginationSchema = z.object({
 export const paymentParamsSchema = z.object({
   id: z.string().uuid(),
 });
+
+export const adminSaleSchema = z.object({
+  userId: z.string().uuid(),
+  ticketTypeId: z.string().uuid(),
+  quantity: z.number().int().min(1),
+}).strict();

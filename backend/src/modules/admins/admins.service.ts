@@ -1,6 +1,10 @@
+import { randomBytes } from 'crypto';
 import { ForbiddenError } from '../../shared/errors/ForbiddenError.js';
+import { NotFoundError } from '../../shared/errors/NotFoundError.js';
 import { supabaseAdmin } from '../../shared/supabase/admin-client.js';
 import * as adminsRepo from './admins.repository.js';
+import * as ticketsRepo from '../tickets/tickets.repository.js';
+import * as ticketsService from '../tickets/tickets.service.js';
 
 export async function listUsers(page: number, limit: number, search?: string) {
   const [data, total] = await Promise.all([
@@ -131,6 +135,41 @@ export async function batchCreateUsers(dataArray: Record<string, unknown>[]) {
   }
 
   return results;
+}
+
+export async function checkUserExists(userId: string) {
+  const user = await adminsRepo.findById(userId);
+  return !!user;
+}
+
+function generateTicketCode(): string {
+  return randomBytes(16).toString('hex');
+}
+
+export async function createAdminSale(
+  userId: string,
+  ticketTypeId: string,
+  quantity: number,
+) {
+  await ticketsService.getTicketTypeById(ticketTypeId);
+
+  const userExists = await checkUserExists(userId);
+  if (!userExists) {
+    throw new NotFoundError('User not found');
+  }
+
+  const ticketIds = await ticketsRepo.createAdminSale({
+    ticketTypeId,
+    userId,
+    quantity,
+    generateTicketCode,
+  });
+
+  for (const ticketId of ticketIds) {
+    await ticketsService.generateQrForTicket(ticketId);
+  }
+
+  return ticketIds;
 }
 
 export async function updateUser(id: string, data: Record<string, unknown>) {

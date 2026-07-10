@@ -132,23 +132,23 @@
 
 ### Repository
 
-- [ ] T043 [P] [US5] Add `findAllPayments(page, limit)` to `backend/src/modules/payments/payments.repository.ts` — queries all Payments, paginated, ordered by `createdAt DESC`. Include `user` relation (select `id`, `email`, `fullName`). Count variant `countAllPayments()`.
-- [ ] T044 [P] [US5] Add `findPaymentByIdWithUser(id)` to `backend/src/modules/payments/payments.repository.ts` — queries Payment by `id`, include `user` relation and `tickets` (with `ticketType` relation for name).
+- [x] T043 [P] [US5] Add `findAllPayments(page, limit)` to `backend/src/modules/payments/payments.repository.ts` — queries all Payments, paginated, ordered by `createdAt DESC`. Include `user` relation (select `id`, `email`, `fullName`). Count variant `countAllPayments()`.
+- [x] T044 [P] [US5] Add `findPaymentByIdWithUser(id)` to `backend/src/modules/payments/payments.repository.ts` — queries Payment by `id`, include `user` relation and `tickets` (with `ticketType` relation for name).
 
 ### Service
 
-- [ ] T045 [US5] Add `listPayments(page, limit)` to `backend/src/modules/admins/admins.service.ts` (or new `payments.admin.service.ts`) — calls `findAllPayments` + `countAllPayments`, returns `{ data, total, page, limit }`.
-- [ ] T046 [US5] Add `getPaymentDetail(paymentId)` to admin service — calls `findPaymentByIdWithUser`. Throws `NotFoundError` if null.
+- [x] T045 [US5] Add `listPayments(page, limit)` to `backend/src/modules/admins/admins.service.ts` (or new `payments.admin.service.ts`) — calls `findAllPayments` + `countAllPayments`, returns `{ data, total, page, limit }`.
+- [x] T046 [US5] Add `getPaymentDetail(paymentId)` to admin service — calls `findPaymentByIdWithUser`. Throws `NotFoundError` if null.
 
 ### Controller & Routes
 
-- [ ] T047 [P] [US5] Add `listPaymentsHandler` and `getPaymentDetailHandler` to `backend/src/modules/admins/admins.controller.ts` — wrap service calls with Zod validation, standard error handling.
-- [ ] T048 [P] [US5] Add routes to `backend/src/modules/admins/admins.routes.ts` — `GET /payments` (auth, admin, requireRole('admin')), `GET /payments/:id` (auth, admin, requireRole('admin')).
+- [x] T047 [P] [US5] Add `listPaymentsHandler` and `getPaymentDetailHandler` to `backend/src/modules/admins/admins.controller.ts` — wrap service calls with Zod validation, standard error handling.
+- [x] T048 [P] [US5] Add routes to `backend/src/modules/admins/admins.routes.ts` — `GET /payments` (auth, admin, requireRole('admin')), `GET /payments/:id` (auth, admin, requireRole('admin')).
 
 ### Tests
 
-- [ ] T049 [P] [US5] Create `backend/test/payments/payments.repository.admin.test.ts` — tests for `findAllPayments` (pagination, ordering), `findPaymentByIdWithUser` (found, not found).
-- [ ] T050 [US5] Create `backend/test/admins/admins.sales.test.ts` — integration tests: list payments with pagination, get payment detail, non-admin gets 403.
+- [x] T049 [P] [US5] Create `backend/test/payments/payments.repository.admin.test.ts` — tests for `findAllPayments` (pagination, ordering), `findPaymentByIdWithUser` (found, not found).
+- [x] T050 [US5] Create `backend/test/admins/admins.sales.test.ts` — integration tests: list payments with pagination, get payment detail, non-admin gets 403.
 
 ---
 
@@ -160,26 +160,26 @@
 
 ### Repository
 
-- [ ] T051 [US6] Add `createAdminSale(input)` to `backend/src/modules/tickets/tickets.repository.ts` — Prisma `$transaction`: (1) `SELECT ... FOR UPDATE` on `ticket_types`, (2) validate exists + enabled + stock, (3) `UPDATE quantity_sold`, (4) `INSERT tickets` (status `paid`, `purchasedAt = now()`, `qrToken` null initially, `ticketCode` generated). Returns array of ticket IDs.
+- [x] T051 [US6] Add `createAdminSale(input)` to `backend/src/modules/tickets/tickets.repository.ts` — Prisma `$transaction`: (1) `SELECT ... FOR UPDATE` on `ticket_types`, (2) validate exists + enabled + stock, (3) `UPDATE quantity_sold`, (4) `INSERT tickets` (status `paid`, `purchasedAt = now()`, `qrToken` null initially, `ticketCode` generated). Returns array of ticket IDs.
 
 ### Service
 
-- [ ] T052 [US6] Add `checkUserExists(userId)` to `backend/src/modules/admins/admins.service.ts` or `users.service.ts` — simple Prisma query to check user exists by ID.
-- [ ] T053 [US6] Add `createAdminSale(userId, ticketTypeId, quantity)` to `backend/src/modules/admins/admins.service.ts` — (1) validate ticket type exists + enabled + stock via `ticketsService.getTicketTypeById()`, (2) validate user exists via `checkUserExists()`, (3) call `ticketsRepo.createAdminSale()`, (4) for each created ticket, call `ticketsService.generateQrForTicket()`. Return created tickets.
+- [x] T052 [US6] Add `checkUserExists(userId)` to `backend/src/modules/admins/admins.service.ts` or `users.service.ts` — simple Prisma query to check user exists by ID.
+- [x] T053 [US6] Add `createAdminSale(userId, ticketTypeId, quantity)` to `backend/src/modules/admins/admins.service.ts` — (1) validate ticket type exists + enabled + stock via `ticketsService.getTicketTypeById()`, (2) validate user exists via `checkUserExists()`, (3) call `ticketsRepo.createAdminSale()`, (4) for each created ticket, call `ticketsService.generateQrForTicket()`. Return created tickets.
 
 ### Validator
 
-- [ ] T054 [P] [US6] Add `adminSaleSchema` to `backend/src/modules/admins/admins.validators.ts` — `{ userId: uuid, ticketTypeId: uuid, quantity: int >= 1 }`.
+- [x] T054 [P] [US6] Add `adminSaleSchema` to `backend/src/modules/admins/admins.validators.ts` — `{ userId: uuid, ticketTypeId: uuid, quantity: int >= 1 }`.
 
 ### Controller & Routes
 
-- [ ] T055 [P] [US6] Add `createSaleHandler` to `backend/src/modules/admins/admins.controller.ts` — validate body with `adminSaleSchema`, call admin service, return 201.
-- [ ] T056 [P] [US6] Add route to `backend/src/modules/admins/admins.routes.ts` — `POST /sales` (auth, adminMiddleware, requireRole('admin')).
+- [x] T055 [P] [US6] Add `createSaleHandler` to `backend/src/modules/admins/admins.controller.ts` — validate body with `adminSaleSchema`, call admin service, return 201.
+- [x] T056 [P] [US6] Add route to `backend/src/modules/admins/admins.routes.ts` — `POST /sales` (auth, adminMiddleware, requireRole('admin')).
 
 ### Tests
 
-- [ ] T057 [P] [US6] Create `backend/test/tickets/tickets.repository.admin-sale.test.ts` — tests for `createAdminSale`: success happy path, insufficient stock, ticket type not found, ticket type disabled, concurrent stock race.
-- [ ] T058 [US6] Add tests in `backend/test/admins/admins.sales.test.ts` — integration test: create sale with valid data returns 201, invalid user returns 404, insufficient stock returns 409, non-admin returns 403, verify tickets created with correct data (status `paid`, qrToken set, ticketCode set, quantitySold incremented).
+- [x] T057 [P] [US6] Create `backend/test/tickets/tickets.repository.admin-sale.test.ts` — tests for `createAdminSale`: success happy path, insufficient stock, ticket type not found, ticket type disabled, concurrent stock race.
+- [x] T058 [US6] Add tests in `backend/test/admins/admins.sales.test.ts` — integration test: create sale with valid data returns 201, invalid user returns 404, insufficient stock returns 409, non-admin returns 403, verify tickets created with correct data (status `paid`, qrToken set, ticketCode set, quantitySold incremented).
 
 ---
 

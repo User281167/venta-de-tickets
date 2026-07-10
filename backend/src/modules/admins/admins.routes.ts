@@ -16,5 +16,6 @@ adminsRouter.patch('/users/:id', requireRole('admin'), adminsController.updateUs
 
 adminsRouter.get('/payments', requireRole('admin'), adminsController.listPaymentsHandler);
 adminsRouter.get('/payments/:id', requireRole('admin'), adminsController.getPaymentDetailHandler);
+adminsRouter.post('/sales', requireRole('admin'), adminsController.createSaleHandler);
 
 export { adminsRouter };

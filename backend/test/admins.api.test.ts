@@ -48,12 +48,19 @@ vi.mock('../src/modules/payments/payments.repository.js', () => ({
   updateTicketQrToken: vi.fn(),
 }));
 
+vi.mock('../src/modules/tickets/tickets.repository.js', () => ({
+  findById: vi.fn(),
+  createAdminSale: vi.fn(),
+  updateQrToken: vi.fn(),
+}));
+
 const { verifyToken } = await import('../src/shared/services/auth.service.js');
 const { resolveRole } = await import('../src/shared/services/role-resolver.js');
 const adminsRepo = await import('../src/modules/admins/admins.repository.js');
 const { supabaseAdmin } =
   await import('../src/shared/supabase/admin-client.js');
 const paymentsRepo = await import('../src/modules/payments/payments.repository.js');
+const ticketsRepo = await import('../src/modules/tickets/tickets.repository.js');
 
 function authHeader(token = 'valid.jwt.token') {
   return { Authorization: `Bearer ${token}` };
@@ -689,5 +696,125 @@ describe('GET /api/admin/payments/:id', () => {
 
     expect(res.status).toBe(422);
     expect(res.body.error.code).toBe('VALIDATION_ERROR');
+  });
+});
+
+describe('POST /api/admin/sales', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockAdminAuth();
+  });
+
+  const mockTicketType = {
+    id: 'tt-1',
+    name: 'VIP',
+    description: null,
+    price: 50000,
+    quantityTotal: 100,
+    quantitySold: 5,
+    maxPerUser: null,
+    saleEndsAt: null,
+    status: 'enabled',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+
+  const VALID_UUID = '11111111-1111-4111-a111-111111111111';
+
+  it('returns 201 with ticket ids on success', async () => {
+    vi.mocked(ticketsRepo.findById).mockResolvedValue(mockTicketType);
+    vi.mocked(adminsRepo.findById).mockResolvedValue(mockExistingUser);
+    vi.mocked(ticketsRepo.createAdminSale).mockResolvedValue(['ticket-1', 'ticket-2']);
+    vi.mocked(ticketsRepo.updateQrToken).mockResolvedValue({} as any);
+
+    const res = await request(app)
+      .post('/api/admin/sales')
+      .set(authHeader())
+      .send({ userId: VALID_UUID, ticketTypeId: VALID_UUID, quantity: 2 });
+
+    expect(res.status).toBe(201);
+    expect(res.body.ticketIds).toEqual(['ticket-1', 'ticket-2']);
+  });
+
+  it('returns 422 with empty body', async () => {
+    const res = await request(app)
+      .post('/api/admin/sales')
+      .set(authHeader())
+      .send({});
+
+    expect(res.status).toBe(422);
+    expect(res.body.error.code).toBe('VALIDATION_ERROR');
+  });
+
+  it('returns 422 with invalid uuid', async () => {
+    const res = await request(app)
+      .post('/api/admin/sales')
+      .set(authHeader())
+      .send({ userId: 'not-a-uuid', ticketTypeId: VALID_UUID, quantity: 1 });
+
+    expect(res.status).toBe(422);
+    expect(res.body.error.code).toBe('VALIDATION_ERROR');
+  });
+
+  it('returns 422 with quantity 0', async () => {
+    const res = await request(app)
+      .post('/api/admin/sales')
+      .set(authHeader())
+      .send({ userId: VALID_UUID, ticketTypeId: VALID_UUID, quantity: 0 });
+
+    expect(res.status).toBe(422);
+    expect(res.body.error.code).toBe('VALIDATION_ERROR');
+  });
+
+  it('returns 404 when user not found', async () => {
+    vi.mocked(ticketsRepo.findById).mockResolvedValue(mockTicketType);
+    vi.mocked(adminsRepo.findById).mockResolvedValue(null);
+
+    const res = await request(app)
+      .post('/api/admin/sales')
+      .set(authHeader())
+      .send({ userId: VALID_UUID, ticketTypeId: VALID_UUID, quantity: 1 });
+
+    expect(res.status).toBe(404);
+    expect(res.body.error.code).toBe('NOT_FOUND');
+  });
+
+  it('returns 404 when ticket type not found', async () => {
+    vi.mocked(ticketsRepo.findById).mockResolvedValue(null);
+
+    const res = await request(app)
+      .post('/api/admin/sales')
+      .set(authHeader())
+      .send({ userId: VALID_UUID, ticketTypeId: VALID_UUID, quantity: 1 });
+
+    expect(res.status).toBe(404);
+    expect(res.body.error.code).toBe('NOT_FOUND');
+  });
+
+  it('returns 409 when insufficient stock', async () => {
+    vi.mocked(ticketsRepo.findById).mockResolvedValue(mockTicketType);
+    vi.mocked(adminsRepo.findById).mockResolvedValue(mockExistingUser);
+    vi.mocked(ticketsRepo.createAdminSale).mockRejectedValue(
+      Object.assign(new Error('Insufficient stock'), { statusCode: 409, code: 'SOLD_OUT' }),
+    );
+
+    const res = await request(app)
+      .post('/api/admin/sales')
+      .set(authHeader())
+      .send({ userId: VALID_UUID, ticketTypeId: VALID_UUID, quantity: 999 });
+
+    expect(res.status).toBe(409);
+    expect(res.body.error.code).toBe('SOLD_OUT');
+  });
+
+  it('returns 403 for checker role', async () => {
+    mockRoleAuth('checker');
+
+    const res = await request(app)
+      .post('/api/admin/sales')
+      .set(authHeader())
+      .send({ userId: VALID_UUID, ticketTypeId: VALID_UUID, quantity: 1 });
+
+    expect(res.status).toBe(403);
   });
 });

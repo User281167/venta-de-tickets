@@ -10,6 +10,7 @@ import {
   paginationSchema,
   paymentPaginationSchema,
   paymentParamsSchema,
+  adminSaleSchema,
 } from './admins.validators.js';
 
 export async function getMe(req: Request, res: Response): Promise<void> {
@@ -122,6 +123,25 @@ export async function listPaymentsHandler(req: Request, res: Response): Promise<
     const result = await paymentsService.listAllPayments(page, limit);
 
     res.json(result);
+  } catch (err) {
+    if (err instanceof ZodError) {
+      res.status(422).json({
+        error: { code: 'VALIDATION_ERROR', message: err.issues.map((i) => i.message).join(', ') },
+      });
+
+      return;
+    }
+
+    throw err;
+  }
+}
+
+export async function createSaleHandler(req: Request, res: Response): Promise<void> {
+  try {
+    const { userId, ticketTypeId, quantity } = adminSaleSchema.parse(req.body);
+    const result = await adminsService.createAdminSale(userId, ticketTypeId, quantity);
+
+    res.status(201).json({ ticketIds: result });
   } catch (err) {
     if (err instanceof ZodError) {
       res.status(422).json({
