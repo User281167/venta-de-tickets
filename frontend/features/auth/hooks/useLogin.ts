@@ -1,14 +1,11 @@
 import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { toast } from "sonner";
-
 import { loginSchema } from "@/features/auth/schemas/auth.schema";
 import {
   signInWithPassword,
   signInWithGoogle,
 } from "@/features/auth/api/auth.client";
-import { submitOnboardingSurvey } from "@/features/surveys/api/endpoints/surveys.endpoints";
 
 import { createClient } from "@/shared/lib/supabase/client";
 import { adminFetch } from "@/shared/api/admin-fetch";
@@ -27,7 +24,6 @@ export function useLogin() {
     "idle" | "submitting" | "error" | "success"
   >("idle");
   const [googleStatus, setGoogleStatus] = useState<"idle" | "loading">("idle");
-  const [skipLoading, setSkipLoading] = useState(false);
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -89,43 +85,12 @@ export function useLogin() {
     await signInWithGoogle();
   }, []);
 
-  const handleSkipSurvey = useCallback(async () => {
-    setSkipLoading(true);
-    const supabase = createClient();
-    const { data } = await supabase.auth.getSession();
-
-    if (!data.session) {
-      toast("Inicia sesión primero", {
-        description: "Debes iniciar sesión para omitir la encuesta.",
-      });
-
-      setSkipLoading(false);
-      return;
-    }
-
-    try {
-      await submitOnboardingSurvey({ responses: [] });
-      toast.success("Encuesta omitida", {
-        description: "Puedes completarla después desde tu perfil.",
-      });
-
-      router.push("/");
-    } catch {
-      toast.error("Error", {
-        description: "No se pudo omitir la encuesta. Intenta de nuevo.",
-      });
-    } finally {
-      setSkipLoading(false);
-    }
-  }, []);
-
   return {
     fieldErrors,
     showPassword,
     setShowPassword,
     generalError,
     googleStatus,
-    skipLoading,
     setPassword,
     email,
     setEmail,
@@ -133,6 +98,5 @@ export function useLogin() {
     status,
     handleSubmit,
     handleGoogleSignIn,
-    handleSkipSurvey,
   };
 }

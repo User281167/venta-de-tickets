@@ -10,8 +10,6 @@ import {
   type ReactNode,
 } from "react";
 import type { Session, User } from "@supabase/supabase-js";
-import { useMe } from "@/features/users/hooks/useProfile";
-import { OnboardingSurvey } from "@/features/surveys/components/OnboardingSurvey";
 import { adminFetch } from "@/shared/api/admin-fetch";
 
 type AuthContextValue = {
@@ -28,17 +26,13 @@ const AuthContext = createContext<AuthContextValue>({
   isLoading: true,
 });
 
-const ADMIN_ROLES = new Set(["super_admin", "organizer", "staff", "checker"]);
+const ADMIN_ROLES = new Set(["super_admin", "admin"]);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [role, setRole] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [showSurvey, setShowSurvey] = useState(false);
-
-  // Obtén el perfil del usuario para verificar el estado de incorporación.
-  const meQuery = useMe();
 
   const fetchRoleFallback = useCallback(async () => {
     try {
@@ -75,12 +69,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(session?.user ?? null);
       syncRole(session);
       setIsLoading(false);
-
-      if (session?.user) {
-        // La consulta useMe se activará con el cambio de sesión.
-      } else {
-        setShowSurvey(false);
-      }
     });
 
     return () => {
@@ -88,19 +76,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, [syncRole]);
 
-  useEffect(() => {
-    if (user && !meQuery.isLoading && !meQuery.isError) {
-      const onboardingDone = meQuery.data?.onboarding_survey_done ?? true;
-      setShowSurvey(!onboardingDone);
-    } else {
-      setShowSurvey(false);
-    }
-  }, [user, meQuery.data, meQuery.isLoading, meQuery.isError]);
-
   return (
     <AuthContext.Provider value={{ user, session, role, isLoading }}>
       {children}
-      {showSurvey && <OnboardingSurvey />}
     </AuthContext.Provider>
   );
 }

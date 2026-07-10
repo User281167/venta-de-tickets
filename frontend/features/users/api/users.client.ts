@@ -39,7 +39,8 @@ export type GetMeResponse = {
   user: {
     id: string;
     email: string;
-    fullName: string;
+    role: string | null;
+    fullName: string | null;
     phone: string | null;
   };
   consentStatus: {
@@ -47,7 +48,6 @@ export type GetMeResponse = {
     acceptedAt: string | null;
     policyVersion: string;
   };
-  onboarding_survey_done: boolean;
 };
 
 export type AcceptPrivacyResponse = {
@@ -57,13 +57,13 @@ export type AcceptPrivacyResponse = {
 };
 
 export function fetchMe(): Promise<GetMeResponse> {
-  return apiFetch<GetMeResponse>("/api/users/me");
+  return apiFetch<GetMeResponse>("/api/me");
 }
 
 export function updateMe(
   data: UpdateUserInput,
-): Promise<{ user: GetMeResponse["user"] }> {
-  return apiFetch("/api/users/me", {
+): Promise<{ cedula: string | null; fullName: string | null; phone: string | null; address: string | null; dateOfBirth: string | null }> {
+  return apiFetch("/api/me/personal-info", {
     method: "PATCH",
     body: JSON.stringify(data),
   });

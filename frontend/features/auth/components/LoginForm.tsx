@@ -13,7 +13,6 @@ import {
   VStack,
   Separator,
   IconButton,
-  chakra,
 } from "@chakra-ui/react";
 import {
   IconBrandGoogle,
@@ -21,7 +20,6 @@ import {
   IconEyeOff,
   IconMail,
   IconLock,
-  IconPlayerSkipForward,
 } from "@tabler/icons-react";
 
 import { useLogin } from "../hooks/useLogin";
@@ -38,10 +36,8 @@ export function LoginForm() {
     fieldErrors,
     generalError,
     googleStatus,
-    skipLoading,
     handleSubmit,
     handleGoogleSignIn,
-    handleSkipSurvey,
   } = useLogin();
 
   return (
@@ -158,27 +154,6 @@ export function LoginForm() {
           Google
         </Button>
 
-        <Box textAlign="center" pt={1}>
-          <chakra.button
-            onClick={handleSkipSurvey}
-            disabled={skipLoading}
-            opacity={skipLoading ? 0.6 : 0.6}
-            _hover={{ opacity: 1, color: "white" }}
-            transition="all 0.2s"
-            fontSize="xs"
-            color="gray.400"
-            cursor="pointer"
-            bg="transparent"
-            border="none"
-            display="inline-flex"
-            alignItems="center"
-            gap={1}
-            type="button"
-          >
-            <IconPlayerSkipForward size={12} />
-            Omitir encuesta de bienvenida
-          </chakra.button>
-        </Box>
       </VStack>
     </Box>
   );

@@ -43,7 +43,7 @@ export function ProfileForm() {
   const { user, consentStatus } = data;
 
   const startEdit = () => {
-    setForm({ fullName: user.fullName, phone: user.phone ?? "" });
+    setForm({ fullName: user.fullName ?? "", phone: user.phone ?? "" });
     setError(null);
     setEditing(true);
   };
@@ -82,7 +82,7 @@ export function ProfileForm() {
         <Field.Root>
           <Field.Label>Nombre completo</Field.Label>
           <Input
-            value={editing ? form.fullName : user.fullName}
+            value={editing ? form.fullName : user.fullName ?? ""}
             disabled={!editing}
             onChange={(e) => setForm({ ...form, fullName: e.target.value })}
           />
@@ -91,7 +91,7 @@ export function ProfileForm() {
         <Field.Root>
           <Field.Label>Teléfono</Field.Label>
           <Input
-            value={editing ? (form.phone ?? "") : (user.phone ?? "")}
+            value={editing ? (form.phone ?? "") : user.phone ?? ""}
             disabled={!editing}
             onChange={(e) =>
               setForm({ ...form, phone: e.target.value || null })

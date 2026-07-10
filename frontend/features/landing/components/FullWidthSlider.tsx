@@ -1,6 +1,7 @@
 "use client";
 
-import { Box, Flex, IconButton, Image } from "@chakra-ui/react";
+import { Box, Flex, IconButton } from "@chakra-ui/react";
+import Image from "next/image";
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 
@@ -50,14 +51,12 @@ export function FullWidthSlider() {
         transform={`translateX(-${current * 100}%)`}
       >
         {SLIDES.map((slide, i) => (
-          <Box key={i} minW="100%" h="full" flexShrink={0}>
+          <Box key={i} minW="100%" h="full" flexShrink={0} position="relative">
             <Image
               src={slide.src}
               alt={slide.alt}
-              w="full"
-              h="full"
-              objectFit="cover"
-              fallback={<Box w="full" h="full" bg="brand.panel" />}
+              fill
+              style={{ objectFit: "cover" }}
             />
           </Box>
         ))}
