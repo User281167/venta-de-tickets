@@ -39,6 +39,12 @@ function AdminLayoutInner({ children }: { children: ReactNode }) {
     return null;
   }
 
+  const ADMIN_ROLES = new Set(["super_admin", "admin", "checker"]);
+  if (!ADMIN_ROLES.has(role)) {
+    router.replace("/");
+    return null;
+  }
+
   const requiredRoles = ROLE_RESTRICTED_PATHS[pathname];
   if (requiredRoles && !requiredRoles.includes(role)) {
     return (
