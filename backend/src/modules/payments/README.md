@@ -1,50 +1,54 @@
-# Modulo Payments — Procesador de Pagos Multi-Provider
+# Payments Module — Multi-Provider Payment Processor
 
-Checkout, webhook y consulta de pagos. Endpoints bajo `/api/`.
+Checkout, webhook, payment status, and admin sale endpoints.
 
-## Rutas
+## Routes
 
-| Metodo | Ruta | Descripcion | Auth |
+| Method | Path | Description | Auth |
 |--------|------|-------------|------|
-| POST | `/api/checkout` | Crear sesion de pago | JWT usuario |
-| POST | `/api/payments/webhook/:provider` | Webhook del provider | Publico |
-| GET | `/api/payments/:id/status` | Estado del pago + tickets | JWT owner/admin |
+| POST | `/api/checkout` | Create checkout session | JWT user |
+| POST | `/api/payments/webhook/:provider` | Provider webhook | Public |
+| GET | `/api/payments/:id/status` | Payment status + tickets | JWT owner/admin |
+| GET | `/api/admin/payments` | List all payments (admin) | JWT admin |
+| GET | `/api/admin/payments/:id` | Payment detail (admin) | JWT admin |
+| POST | `/api/admin/sales` | Manual sale creation (admin) | JWT admin |
+| GET | `/api/me/payments` | Client payment history | JWT client |
 
-## Errores
+## Errors
 
-| Codigo | Status | Causa |
-|--------|--------|-------|
-| `VALIDATION_ERROR` | 422 | Datos invalidos (Zod) |
-| `TICKET_TYPE_NOT_AVAILABLE` | 400 | Tipo ticket deshabilitado |
-| `MAX_PER_USER_EXCEEDED` | 422 | Excede maxPerUser |
-| `SOLD_OUT` | 409 | Sin inventario |
-| `INVALID_SIGNATURE` | 400 | Firma webhook invalida |
-| `NOT_FOUND` | 404 | Payment no encontrado |
-| `FORBIDDEN` | 403 | No es owner/admin |
+| Code | Status | Cause |
+|------|--------|-------|
+| `VALIDATION_ERROR` | 422 | Invalid request data (Zod) |
+| `TICKET_TYPE_NOT_AVAILABLE` | 400 | Ticket type disabled |
+| `MAX_PER_USER_EXCEEDED` | 422 | Exceeds maxPerUser |
+| `SOLD_OUT` | 409 | No inventory |
+| `INVALID_SIGNATURE` | 400 | Webhook signature invalid |
+| `NOT_FOUND` | 404 | Payment/ticket/user not found |
+| `FORBIDDEN` | 403 | Not owner/admin |
 
-## Flujo: Checkout
+## Flow: Checkout
 
 ```mermaid
 sequenceDiagram
-    participant C as Cliente
+    participant C as Client
     participant API as API
     participant S as Service
     participant MP as Mercado Pago
     participant DB as PostgreSQL
 
     C->>API: POST /api/checkout { items, backUrl, provider }
-    API->>API: auth + validar Zod
+    API->>API: auth + Zod validate
     API->>S: createCheckout(userId, items, backUrl, provider)
-    S->>S: validar stock, maxPerUser
+    S->>S: validate stock, maxPerUser
     S->>S: getProvider(provider).createCheckout()
-    S->>MP: crear preferencia
+    S->>MP: create preference
     MP-->>S: { init_point, id }
-    S->>DB: createCheckoutTransaction (reservar tickets + payment)
+    S->>DB: createCheckoutTransaction (reserve tickets + payment)
     S-->>API: { paymentId, checkoutUrl }
     API-->>C: 201 { paymentId, checkoutUrl }
 ```
 
-## Flujo: Webhook
+## Flow: Webhook
 
 ```mermaid
 sequenceDiagram
@@ -67,15 +71,16 @@ sequenceDiagram
     API-->>MP: 200 { received: true }
 ```
 
-## Estructura
+## Structure
 
 ```
 payments/
-  routes/            -- definiciones de rutas Express
-  controllers/       -- handlers Express
-  services/          -- logica de negocio
-  repositories/      -- acceso a DB
-  validators/        -- esquemas Zod
-  types/             -- tipos e interfaces
-  providers/         -- implementaciones de PaymentProvider
+  payments.controller.ts   -- Express handlers
+  payments.service.ts      -- Business logic
+  payments.repository.ts   -- DB access
+  payments.validators.ts   -- Zod schemas
+  payments.types.ts        -- Types & interfaces
+  payments.routes.ts       -- Route definitions
+  index.ts                 -- Module exports
+  providers/               -- PaymentProvider implementations
 ```

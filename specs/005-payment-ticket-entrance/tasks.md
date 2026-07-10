@@ -187,7 +187,7 @@
 
 **Purpose**: Backfill tests for payment service flows not yet covered.
 
-- [ ] T059 Create `backend/test/payments/payments.service.test.ts` — Vitest tests for:
+- [x] T059 Create `backend/test/payments/payments.service.test.ts` — Vitest tests for:
   - `createCheckout` with valid items → creates Payment, calls provider, returns checkout URL
   - `createCheckout` with disabled ticket type → throws ValidationError
   - `createCheckout` exceeding `maxPerUser` → throws ValidationError
@@ -198,7 +198,7 @@
   - `processWebhook` duplicate notification → idempotent, skips processing
   - `processWebhook` invalid signature → rejects with error
   - `getPaymentStatus` returns payment + tickets with qrToken
-- [ ] T060 Run all tests in `backend/test/` to verify nothing is broken: `cd backend && npx vitest run`
+- [x] T060 Run all tests in `backend/test/` to verify nothing is broken: `cd backend && npx vitest run`
 
 ---
 
@@ -206,15 +206,15 @@
 
 **Purpose**: Documentation, constitution amendment, final cleanup.
 
-- [ ] T061 Clear dead code — remove any orphaned payment test files or unused imports found in T005. Check `backend/src/modules/payments/` for any leftover files no longer needed.
-- [ ] T062 [P] Create `backend/src/modules/payments/README.md` — follow format of `backend/src/modules/tickets/README.md`:
+- [x] T061 Clear dead code — remove any orphaned payment test files or unused imports found in T005. Check `backend/src/modules/payments/` for any leftover files no longer needed.
+- [x] T062 [P] Create `backend/src/modules/payments/README.md` — follow format of `backend/src/modules/tickets/README.md`:
   - Route table (method, path, description, auth) for all payment endpoints
   - Error codes with HTTP status and cause
   - Business rules (checkout validation, webhook idempotency, QR format, check-in atomicity)
   - Mermaid sequence diagrams for: checkout flow, webhook processing, QR check-in
   - Provider architecture explanation (interface + registry pattern)
-- [ ] T063 [P] Update `.specify/memory/constitution.md` — amend line 83: change `Payments: Wompi` to `Payments: Mercado Pago`. Add amendment rationale note referencing this feature (cost/scale/technical constraint: existing codebase already targets Mercado Pago, preferred for Colombia market compliance).
-- [ ] T064 Run final test suite: `cd backend && npx vitest run` — all tests pass.
+- [x] T063 [P] Update `.specify/memory/constitution.md` — amend line 83: change `Payments: Wompi` to `Payments: Mercado Pago`. Add amendment rationale note referencing this feature (cost/scale/technical constraint: existing codebase already targets Mercado Pago, preferred for Colombia market compliance).
+- [x] T064 Run final test suite: `cd backend && npx vitest run` — all tests pass.
 
 ---
 

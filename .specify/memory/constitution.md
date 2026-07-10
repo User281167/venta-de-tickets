@@ -80,7 +80,7 @@ UI wrappers. Domain logic MUST never live in `shared/`.
 | Validation (both ends) | Zod |
 | Database / Auth / Storage | Supabase (PostgreSQL) |
 | ORM | Prisma |
-| Payments | Wompi |
+| Payments | Mercado Pago |
 | Communications | Infobip (Email, WhatsApp, SMS) |
 | Backend hosting | Railway |
 | Rate limiting store | Upstash Redis (only Redis usage in the system) |

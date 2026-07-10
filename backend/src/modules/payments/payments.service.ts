@@ -1,5 +1,4 @@
 import { randomBytes, randomUUID } from 'crypto';
-import { env } from '../../shared/config/env.js';
 import { ForbiddenError } from '../../shared/errors/ForbiddenError.js';
 import { NotFoundError } from '../../shared/errors/NotFoundError.js';
 import { ValidationError } from '../../shared/errors/ValidationError.js';

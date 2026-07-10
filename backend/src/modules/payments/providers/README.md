@@ -1,6 +1,6 @@
-# Providers — Arquitectura Multi-Provider
+# Providers — Multi-Provider Architecture
 
-Interfaz `PaymentProvider` en `types/payments.types.ts`. Cada provider implementa:
+`PaymentProvider` interface in `payments.types.ts`. Each provider implements:
 
 - `createCheckout()` — crear sesion de pago externa
 - `verifySignature()` — validar firma de webhook
