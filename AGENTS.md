@@ -1,11 +1,6 @@
 <!-- SPECKIT START -->
-Current feature: specs/006-api-dto-refactor/
-- spec.md        — feature spec
-- plan.md        — implementation plan (tech context, structure, phases)
-- research.md    — architecture decisions & schema audit
-- data-model.md  — entity, states, validation rules
-- contracts/api.md — endpoint contracts
-- quickstart.md  — implementation steps
+For additional context about technologies to be used, project structure,
+shell commands, and other important information, read the current plan
 <!-- SPECKIT END -->
 
 # AGENT.md

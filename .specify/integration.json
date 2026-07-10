@@ -3,7 +3,8 @@
   "integration_state_schema": 1,
   "installed_integrations": [
     "opencode",
-    "codex"
+    "codex",
+    "vibe"
   ],
   "integration_settings": {
     "opencode": {
@@ -13,8 +14,12 @@
     "codex": {
       "script": "ps",
       "invoke_separator": "-"
+    },
+    "vibe": {
+      "script": "ps",
+      "invoke_separator": "-"
     }
   },
-  "integration": "opencode",
-  "default_integration": "opencode"
+  "integration": "vibe",
+  "default_integration": "vibe"
 }
