@@ -20,8 +20,13 @@ vi.mock('../src/modules/payments/payments.repository.js', () => ({
   countByUserId: vi.fn(),
 }));
 
+vi.mock('../src/modules/users/users.service.js', () => ({
+  getPrivacyStatus: vi.fn(),
+}));
+
 const { verifyToken } = await import('../src/shared/services/auth.service.js');
 const { resolveRole } = await import('../src/shared/services/role-resolver.js');
+const { getPrivacyStatus } = await import('../src/modules/users/users.service.js');
 
 const meRepo = await import('../src/modules/me/me.repository.js');
 const paymentsRepo = await import('../src/modules/payments/payments.repository.js');
@@ -95,12 +100,25 @@ describe('GET /api/me', () => {
   });
 
   it('returns 200 with user object when valid token provided', async () => {
+    vi.mocked(getPrivacyStatus).mockResolvedValue({
+      consentStatus: {
+        required: true,
+        acceptedAt: null,
+        policyVersion: '1.0',
+      },
+    });
+
     const res = await request(app).get('/api/me').set(authHeader());
 
     expect(res.status).toBe(200);
     expect(res.body.user).toMatchObject({
       id: 'user-123',
       email: 'test@example.com',
+    });
+    expect(res.body.consentStatus).toMatchObject({
+      required: true,
+      acceptedAt: null,
+      policyVersion: '1.0',
     });
   });
 });

@@ -11,7 +11,13 @@ vi.mock('../src/shared/services/role-resolver.js', () => ({
   resolveRole: vi.fn(),
 }));
 
+vi.mock('../src/modules/users/users.service.js', () => ({
+  getPrivacyStatus: vi.fn(),
+}));
+
 const { verifyToken } = await import('../src/shared/services/auth.service.js');
+const { resolveRole } = await import('../src/shared/services/role-resolver.js');
+const { getPrivacyStatus } = await import('../src/modules/users/users.service.js');
 
 describe('Auth Middleware', () => {
   beforeEach(() => {
@@ -67,6 +73,14 @@ describe('Auth Middleware', () => {
       id: 'user-123',
       email: 'test@example.com',
       role: 'super_admin',
+    });
+    vi.mocked(resolveRole).mockResolvedValueOnce('super_admin');
+    vi.mocked(getPrivacyStatus).mockResolvedValue({
+      consentStatus: {
+        required: true,
+        acceptedAt: null,
+        policyVersion: '1.0',
+      },
     });
 
     const res = await request(app)
