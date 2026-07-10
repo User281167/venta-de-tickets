@@ -78,3 +78,10 @@ export function update(id: string, data: Record<string, unknown>) {
     select: selectTicketType,
   });
 }
+
+export function updateQrToken(ticketId: string, qrToken: string) {
+  return prisma.ticket.update({
+    where: { id: ticketId },
+    data: { qrToken },
+  });
+}

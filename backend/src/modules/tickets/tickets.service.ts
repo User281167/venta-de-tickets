@@ -1,5 +1,7 @@
+import jwt from 'jsonwebtoken';
 import { NotFoundError } from '../../shared/errors/NotFoundError.js';
 import { ValidationError } from '../../shared/errors/ValidationError.js';
+import { env } from '../../shared/config/env.js';
 import * as ticketsRepo from './tickets.repository.js';
 
 export async function listTicketTypes(page: number, limit: number) {
@@ -91,4 +93,14 @@ export async function updateTicketType(
   }
 
   return ticketsRepo.update(id, updateData);
+}
+
+export async function generateQrForTicket(ticketId: string) {
+  const token = jwt.sign(
+    { tid: ticketId, iat: Math.floor(Date.now() / 1000) },
+    env.QR_JWT_SECRET,
+  );
+
+  await ticketsRepo.updateQrToken(ticketId, token);
+  return token;
 }
