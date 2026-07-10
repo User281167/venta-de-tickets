@@ -104,3 +104,22 @@ export async function generateQrForTicket(ticketId: string) {
   await ticketsRepo.updateQrToken(ticketId, token);
   return token;
 }
+
+export async function listMyTickets(userId: string, page: number, limit: number) {
+  const [data, total] = await Promise.all([
+    ticketsRepo.findByUserId(userId, page, limit),
+    ticketsRepo.countByUserId(userId),
+  ]);
+
+  return { data, total, page, limit };
+}
+
+export async function getMyTicketById(ticketId: string, userId: string) {
+  const ticket = await ticketsRepo.findOwnedById(ticketId, userId);
+
+  if (!ticket) {
+    throw new NotFoundError('Ticket not found');
+  }
+
+  return ticket;
+}

@@ -85,3 +85,42 @@ export function updateQrToken(ticketId: string, qrToken: string) {
     data: { qrToken },
   });
 }
+
+const selectTicketForOwner = {
+  id: true,
+  ticketCode: true,
+  qrToken: true,
+  status: true,
+  purchasedAt: true,
+  createdAt: true,
+  ticketType: {
+    select: {
+      id: true,
+      name: true,
+      price: true,
+    },
+  },
+} as const;
+
+export function findByUserId(userId: string, page: number, limit: number) {
+  return prisma.ticket.findMany({
+    where: { userId },
+    select: selectTicketForOwner,
+    skip: (page - 1) * limit,
+    take: limit,
+    orderBy: { createdAt: 'desc' },
+  });
+}
+
+export function countByUserId(userId: string) {
+  return prisma.ticket.count({
+    where: { userId },
+  });
+}
+
+export function findOwnedById(ticketId: string, userId: string) {
+  return prisma.ticket.findFirst({
+    where: { id: ticketId, userId },
+    select: selectTicketForOwner,
+  });
+}

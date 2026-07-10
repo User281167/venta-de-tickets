@@ -118,3 +118,47 @@ export async function update(req: Request, res: Response): Promise<void> {
     throw err;
   }
 }
+
+export async function listMyTicketsHandler(req: Request, res: Response): Promise<void> {
+  try {
+    const { page, limit } = paginationSchema.parse(req.query);
+    const result = await ticketsService.listMyTickets(req.user!.id, page, limit);
+
+    res.json(result);
+  } catch (err) {
+    if (err instanceof ZodError) {
+      res.status(422).json({
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: err.issues.map((i) => i.message).join(', '),
+        },
+      });
+
+      return;
+    }
+
+    throw err;
+  }
+}
+
+export async function getMyTicketByIdHandler(req: Request, res: Response): Promise<void> {
+  try {
+    const { id } = paramsSchema.parse(req.params);
+    const result = await ticketsService.getMyTicketById(id, req.user!.id);
+
+    res.json(result);
+  } catch (err) {
+    if (err instanceof ZodError) {
+      res.status(422).json({
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: err.issues.map((i) => i.message).join(', '),
+        },
+      });
+
+      return;
+    }
+
+    throw err;
+  }
+}

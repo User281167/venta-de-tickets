@@ -10,6 +10,9 @@ vi.mock('../src/modules/tickets/tickets.repository.js', () => ({
   findById: vi.fn(),
   create: vi.fn(),
   update: vi.fn(),
+  findByUserId: vi.fn(),
+  countByUserId: vi.fn(),
+  findOwnedById: vi.fn(),
 }));
 
 const repo = await import('../src/modules/tickets/tickets.repository.js');
@@ -170,5 +173,54 @@ describe('updateTicketType', () => {
     const result = await service.updateTicketType(mockTicketType.id, { quantityTotal: 30 });
 
     expect(result.quantityTotal).toBe(30);
+  });
+});
+
+describe('listMyTickets', () => {
+  beforeEach(() => { vi.clearAllMocks(); });
+
+  it('returns paginated tickets for the user', async () => {
+    const mockTickets = [{ id: 'ticket-1', ticketCode: 'TC001', status: 'paid' }];
+    vi.mocked(repo.findByUserId).mockResolvedValue(mockTickets as any);
+    vi.mocked(repo.countByUserId).mockResolvedValue(1);
+
+    const result = await service.listMyTickets('user-1', 1, 20);
+
+    expect(result.data).toHaveLength(1);
+    expect(result.total).toBe(1);
+    expect(result.page).toBe(1);
+    expect(result.limit).toBe(20);
+    expect(repo.findByUserId).toHaveBeenCalledWith('user-1', 1, 20);
+    expect(repo.countByUserId).toHaveBeenCalledWith('user-1');
+  });
+
+  it('returns empty list when user has no tickets', async () => {
+    vi.mocked(repo.findByUserId).mockResolvedValue([]);
+    vi.mocked(repo.countByUserId).mockResolvedValue(0);
+
+    const result = await service.listMyTickets('user-2', 1, 20);
+
+    expect(result.data).toEqual([]);
+    expect(result.total).toBe(0);
+  });
+});
+
+describe('getMyTicketById', () => {
+  beforeEach(() => { vi.clearAllMocks(); });
+
+  it('returns ticket when found and owned', async () => {
+    const mockTicket = { id: 'ticket-1', ticketCode: 'TC001', status: 'paid' };
+    vi.mocked(repo.findOwnedById).mockResolvedValue(mockTicket as any);
+
+    const result = await service.getMyTicketById('ticket-1', 'user-1');
+
+    expect(result.id).toBe('ticket-1');
+    expect(repo.findOwnedById).toHaveBeenCalledWith('ticket-1', 'user-1');
+  });
+
+  it('throws NotFoundError when ticket not found or not owned', async () => {
+    vi.mocked(repo.findOwnedById).mockResolvedValue(null);
+
+    await expect(service.getMyTicketById('nonexistent', 'user-1')).rejects.toThrow(NotFoundError);
   });
 });
