@@ -5,7 +5,6 @@ process.env.DATABASE_URL = 'postgresql://localhost:5432/test';
 process.env.QR_JWT_SECRET = 'test-qr-jwt-secret-min-32-chars-long!!';
 process.env.PORT = '3457';
 process.env.NODE_ENV = 'test';
-process.env.PAYMENT_PROVIDER = 'mercadopago';
 process.env.FRONTEND_URL = 'https://frontend.test';
 process.env.API_URL = 'https://api.test';
 process.env.MERCADOPAGO_ACCESS_TOKEN = 'test-mp-access-token';
