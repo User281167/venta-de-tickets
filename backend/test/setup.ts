@@ -2,6 +2,7 @@ process.env.SUPABASE_URL = 'https://test.supabase.co';
 process.env.SUPABASE_ANON_KEY = 'test-anon-key';
 process.env.SUPABASE_SERVICE_ROLE_KEY = 'test-service-role-key';
 process.env.DATABASE_URL = 'postgresql://localhost:5432/test';
+process.env.DIRECT_URL = 'postgresql://localhost:5432/test';
 process.env.QR_JWT_SECRET = 'test-qr-jwt-secret-min-32-chars-long!!';
 process.env.PORT = '3457';
 process.env.NODE_ENV = 'test';
