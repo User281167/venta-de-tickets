@@ -25,6 +25,14 @@ export type UserListResponse = {
   limit: number;
 };
 
+export type CreateUserInput = {
+  email: string;
+  password: string;
+  fullName: string;
+  cedula?: string;
+  phone?: string | null;
+};
+
 export type UpdateUserInput = {
   fullName?: string;
   phone?: string | null;
@@ -71,6 +79,26 @@ export function useUpdateUser() {
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdateUserInput }) =>
       updateUser(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["admin", "users"],
+      });
+    },
+  });
+}
+
+async function createUser(data: CreateUserInput): Promise<UserRow> {
+  return authFetch<UserRow>("/api/admin/users", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export function useCreateUser() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: CreateUserInput) => createUser(data),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["admin", "users"],

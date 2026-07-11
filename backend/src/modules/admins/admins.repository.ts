@@ -87,8 +87,16 @@ export function create(data: {
   phone: string | null;
   role: string;
 }) {
-  return prisma.user.create({
-    data: data as any,
+  return prisma.user.upsert({
+    where: { id: data.id },
+    update: {
+      email: data.email,
+      fullName: data.fullName,
+      cedula: data.cedula,
+      phone: data.phone,
+      role: data.role as any,
+    },
+    create: data as any,
     select: selectUserList,
   });
 }

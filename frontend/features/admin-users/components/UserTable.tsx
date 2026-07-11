@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import {
   Box,
   Button,
+  Flex,
   HStack,
   Heading,
   Input,
@@ -12,13 +13,17 @@ import {
   VStack,
 } from "@chakra-ui/react";
 
-import { useUsers, UserRow } from "@/features/admin-users/api/admin-users.queries";
+import {
+  useUsers,
+  UserRow,
+} from "@/features/admin-users/api/admin-users.queries";
 import { tableCss } from "@/shared/components/tablecss";
 
 import { TableSkeleton } from "./UserTableSkeleton";
 import { ErrorBanner } from "./UserError";
 import { UserTableItem } from "./UserTableItem";
 import { UserEditDialog } from "./UserEditDialog";
+import { UserCreateDialog } from "./UserCreateDialog";
 
 const LIMIT = 20;
 
@@ -27,6 +32,7 @@ export function UserTable() {
   const [search, setSearch] = useState("");
   const [searchInput, setSearchInput] = useState("");
   const [editingUser, setEditingUser] = useState<UserRow | null>(null);
+  const [showCreate, setShowCreate] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -46,12 +52,22 @@ export function UserTable() {
         Usuarios
       </Heading>
 
-      <Input
-        placeholder="Buscar por nombre o correo..."
-        value={searchInput}
-        onChange={(e) => setSearchInput(e.target.value)}
-        size="lg"
-      />
+      <Flex justify="space-between" align="center" w="full" wrap="wrap" gap="2">
+        <Input
+          flex="1"
+          placeholder="Buscar por nombre o correo..."
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          size="lg"
+        />
+
+        <Button
+          colorPalette="teal"
+          onClick={() => setShowCreate(true)}
+        >
+          Crear usuario
+        </Button>
+      </Flex>
 
       {isError && (
         <ErrorBanner>
@@ -126,6 +142,7 @@ export function UserTable() {
       )}
 
       <UserEditDialog user={editingUser} setUser={setEditingUser} />
+      <UserCreateDialog open={showCreate} setOpen={setShowCreate} />
     </VStack>
   );
 }
