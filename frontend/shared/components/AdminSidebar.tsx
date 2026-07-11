@@ -23,6 +23,7 @@ import {
   IconTicket,
   IconQrcode,
   IconX,
+  IconHome,
 } from "@tabler/icons-react";
 import { useState, type ReactNode } from "react";
 
@@ -34,18 +35,19 @@ type SidebarLink = {
 };
 
 const ALL_LINKS: SidebarLink[] = [
+  { href: "/", label: "Home", icon: <IconHome size={20} /> },
   { href: "/admin", label: "Panel", icon: <IconDashboard size={20} /> },
   {
     href: "/admin/ticket-types",
     label: "Tipos de entrada",
     icon: <IconTicket size={20} />,
-    roles: ["super_admin", "organizer"] as const,
+    roles: ["super_admin", "admin"] as const,
   },
   {
     href: "/admin/usuarios",
     label: "Usuarios",
     icon: <IconUsers size={20} />,
-    roles: ["super_admin", "organizer"] as const,
+    roles: ["super_admin", "admin"] as const,
   },
 ];
 

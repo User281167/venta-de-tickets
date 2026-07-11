@@ -8,9 +8,10 @@ import {
   Link as ChakraLink,
   Text,
   VStack,
+  Button,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import {
   IconUser,
@@ -19,7 +20,9 @@ import {
   IconX,
   IconTransitionRightFilled,
   IconHome,
+  IconLogout,
 } from "@tabler/icons-react";
+import { signOut } from "@/features/auth/api/auth.client";
 
 const LINKS = [
   { href: "/", label: "Home", icon: <IconHome size={20} /> },
@@ -39,43 +42,65 @@ const LINKS = [
 export function UserSidebar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const router = useRouter();
 
   function handleNav() {
     setMobileOpen(false);
   }
 
-  const sidebarContent = (
-    <VStack align="stretch" gap={1} flex={1}>
-      {LINKS.map((link) => {
-        const isActive = pathname === link.href;
+  async function handleLogout() {
+    await signOut();
+    router.push("/login");
+  }
 
-        return (
-          <ChakraLink
-            asChild
-            key={link.href}
-            display="block"
-            px={4}
-            py={2.5}
-            borderRadius="md"
-            bg={isActive ? "teal.50" : "transparent"}
-            color={isActive ? "teal.700" : "white"}
-            fontWeight={isActive ? "semibold" : "medium"}
-            _hover={{
-              bg: isActive ? "teal.50" : "gray.100",
-              color: isActive ? "teal.700" : "gray.800",
-            }}
-            transition="all 0.15s"
-          >
-            <NextLink href={link.href} onClick={handleNav}>
-              <HStack gap={3}>
-                {link.icon}
-                <Text>{link.label}</Text>
-              </HStack>
-            </NextLink>
-          </ChakraLink>
-        );
-      })}
-    </VStack>
+  const sidebarContent = (
+    <>
+      <VStack align="stretch" gap={1} flex={1}>
+        {LINKS.map((link) => {
+          const isActive = pathname === link.href;
+
+          return (
+            <ChakraLink
+              asChild
+              key={link.href}
+              display="block"
+              px={4}
+              py={2.5}
+              borderRadius="md"
+              bg={isActive ? "teal.50" : "transparent"}
+              color={isActive ? "teal.700" : "white"}
+              fontWeight={isActive ? "semibold" : "medium"}
+              _hover={{
+                bg: isActive ? "teal.50" : "gray.100",
+                color: isActive ? "teal.700" : "gray.800",
+              }}
+              transition="all 0.15s"
+            >
+              <NextLink href={link.href} onClick={handleNav}>
+                <HStack gap={3}>
+                  {link.icon}
+                  <Text>{link.label}</Text>
+                </HStack>
+              </NextLink>
+            </ChakraLink>
+          );
+        })}
+      </VStack>
+
+      <Button
+        variant="ghost"
+        color="gray.500"
+        _hover={{ bg: "gray.100", color: "red.500" }}
+        onClick={handleLogout}
+        w="full"
+        justifyContent="flex-start"
+        px={4}
+        gap={3}
+      >
+        <IconLogout size={20} />
+        Cerrar sesión
+      </Button>
+    </>
   );
 
   return (

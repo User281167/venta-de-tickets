@@ -24,6 +24,7 @@ const baseTicket: TicketType = {
   maxPerUser: 4,
   saleEndsAt: null,
   isSoldOut: false,
+  isActive: true,
 };
 
 describe("TicketTypeCard", () => {

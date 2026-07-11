@@ -45,17 +45,21 @@ export function TicketTypeCard({ ticketType }: TicketTypeCardProps) {
           </Heading>
           <Badge
             colorPalette={
-              ticketType.isSoldOut
-                ? "red"
-                : ticketType.availableCount <= 10
-                  ? "orange"
-                  : "green"
+              !ticketType.isActive
+                ? "gray"
+                : ticketType.isSoldOut
+                  ? "red"
+                  : ticketType.availableCount <= 10
+                    ? "orange"
+                    : "green"
             }
             size="sm"
           >
-            {ticketType.isSoldOut
-              ? "Agotado"
-              : `${ticketType.availableCount} disponibles`}
+            {!ticketType.isActive
+              ? "No disponible"
+              : ticketType.isSoldOut
+                ? "Agotado"
+                : `${ticketType.availableCount} disponibles`}
           </Badge>
         </HStack>
 
@@ -72,7 +76,14 @@ export function TicketTypeCard({ ticketType }: TicketTypeCardProps) {
         )}
       </Box>
 
-      {ticketType.isSoldOut ? (
+      {!ticketType.isActive ? (
+        <Button disabled colorPalette="gray" size="lg" w="full" mt={4}>
+          <HStack gap={2}>
+            <IconTicket size={18} />
+            <Text>No disponible</Text>
+          </HStack>
+        </Button>
+      ) : ticketType.isSoldOut ? (
         <Button disabled colorPalette="orange" size="lg" w="full" mt={4}>
           <HStack gap={2}>
             <IconTicket size={18} />

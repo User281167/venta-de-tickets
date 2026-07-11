@@ -1,41 +1,78 @@
 import { authFetch } from "@/shared/api/admin-fetch";
 import type {
-  EventWithTicketTypes,
   AdminTicketType,
   CreateTicketTypeInput,
   UpdateTicketTypeInput,
 } from "../schemas/ticket-types.schema";
 
-export async function fetchAdminTicketTypes(
-  eventId: string,
-): Promise<AdminTicketType[]> {
-  const body = await authFetch<{ data: AdminTicketType[] }>(
-    `/api/admin/${eventId}/ticket-types`,
+type BackendAdminTicketType = {
+  id: string;
+  name: string;
+  description: string | null;
+  price: number;
+  quantityTotal: number;
+  quantitySold: number;
+  maxPerUser: number | null;
+  saleEndsAt: string | null;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+function toAdminTicketType(tt: BackendAdminTicketType): AdminTicketType {
+  return {
+    ...tt,
+    isActive: tt.status === "enabled",
+  };
+}
+
+export async function fetchAdminTicketTypes(): Promise<AdminTicketType[]> {
+  const body = await authFetch<{ data: BackendAdminTicketType[] }>(
+    "/api/admin/tickets",
   );
 
-  return body.data;
+  return body.data.map(toAdminTicketType);
 }
 
 export async function createAdminTicketType(
-  eventId: string,
   data: CreateTicketTypeInput,
 ): Promise<AdminTicketType> {
-  return authFetch<AdminTicketType>(`/api/admin/${eventId}/ticket-types`, {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
+  const result = await authFetch<BackendAdminTicketType>(
+    "/api/admin/tickets",
+    {
+      method: "POST",
+      body: JSON.stringify(data),
+    },
+  );
+
+  return toAdminTicketType(result);
 }
 
 export async function updateAdminTicketType(
   id: string,
   data: UpdateTicketTypeInput,
 ): Promise<AdminTicketType> {
-  return authFetch<AdminTicketType>(`/api/admin/ticket-types/${id}`, {
-    method: "PATCH",
-    body: JSON.stringify(data),
-  });
+  const body: Record<string, unknown> = { ...data };
+
+  if (body.isActive !== undefined) {
+    body.status = body.isActive ? "enabled" : "disabled";
+    delete body.isActive;
+  }
+
+  const result = await authFetch<BackendAdminTicketType>(
+    `/api/admin/tickets/${id}`,
+    {
+      method: "PATCH",
+      body: JSON.stringify(body),
+    },
+  );
+
+  return toAdminTicketType(result);
 }
 
 export async function deactivateAdminTicketType(id: string): Promise<void> {
-  await authFetch<void>(`/api/admin/ticket-types/${id}`, { method: "DELETE" });
+  await authFetch<void>(`/api/admin/tickets/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify({ status: "disabled" }),
+  });
 }

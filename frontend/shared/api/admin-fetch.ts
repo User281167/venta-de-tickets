@@ -1,5 +1,7 @@
 import { createClient } from "@/shared/lib/supabase/client";
 
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+
 async function getToken(): Promise<string> {
   const supabase = createClient();
   const { data } = await supabase.auth.getSession();
@@ -15,7 +17,7 @@ async function getToken(): Promise<string> {
 export async function authFetch<T>(path: string, options?: RequestInit): Promise<T> {
   const token = await getToken();
 
-  const res = await fetch(path, {
+  const res = await fetch(`${BASE_URL}${path}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",

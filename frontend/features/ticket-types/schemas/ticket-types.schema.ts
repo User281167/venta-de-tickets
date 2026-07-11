@@ -9,6 +9,7 @@ export const ticketTypeSchema = z.object({
   maxPerUser: z.number().nullable(),
   saleEndsAt: z.string().nullable(),
   isSoldOut: z.boolean(),
+  isActive: z.boolean(),
 });
 
 export const eventWithTicketTypesSchema = z.object({

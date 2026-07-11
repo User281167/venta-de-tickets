@@ -10,7 +10,7 @@ export default function ProtectedLayout({
   return (
     <>
       <Navbar />
-      <Box pt={16} minH="90vh" bg="brand.dark">
+      <Box pt={4} minH="90vh" bg="brand.dark">
         {children}
       </Box>
       <Footer />

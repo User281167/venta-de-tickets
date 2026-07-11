@@ -8,10 +8,10 @@ import {
 import type { AdminTicketType } from "@/features/ticket-types/schemas/ticket-types.schema";
 
 export function useTicketTable() {
-  const { data: ticketTypes, isLoading: loadingTypes } = useAdminTicketTypes("");
-  const createMutation = useCreateTicketType("");
-  const updateMutation = useUpdateTicketType("");
-  const deactivateMutation = useDeactivateTicketType("");
+  const { data: ticketTypes, isLoading: loadingTypes } = useAdminTicketTypes();
+  const createMutation = useCreateTicketType();
+  const updateMutation = useUpdateTicketType();
+  const deactivateMutation = useDeactivateTicketType();
 
   const [editing, setEditing] = useState<AdminTicketType | null>(null);
   const [showCreate, setShowCreate] = useState(false);

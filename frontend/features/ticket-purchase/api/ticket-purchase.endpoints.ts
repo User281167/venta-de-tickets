@@ -39,5 +39,6 @@ export async function fetchActiveTicketTypes(): Promise<TicketType[]> {
     maxPerUser: tt.maxPerUser,
     saleEndsAt: tt.saleEndsAt,
     isSoldOut: tt.quantitySold >= tt.quantityTotal,
+    isActive: tt.status === "enabled",
   }));
 }

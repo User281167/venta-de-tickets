@@ -16,6 +16,7 @@ const validTicketType = {
   maxPerUser: 4,
   saleEndsAt: null,
   isSoldOut: false,
+  isActive: true,
 };
 
 describe("ticketTypeSchema (public)", () => {

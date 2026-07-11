@@ -12,29 +12,28 @@ import type {
   UpdateTicketTypeInput,
 } from "../schemas/ticket-types.schema";
 
-export function useAdminTicketTypes(eventId: string) {
+export function useAdminTicketTypes() {
   return useQuery({
-    queryKey: ["admin", "ticket-types", eventId],
-    queryFn: () => fetchAdminTicketTypes(eventId),
-    enabled: !!eventId,
+    queryKey: ["admin", "ticket-types"],
+    queryFn: () => fetchAdminTicketTypes(),
   });
 }
 
-export function useCreateTicketType(eventId: string) {
+export function useCreateTicketType() {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (data: CreateTicketTypeInput) =>
-      createAdminTicketType(eventId, data),
+      createAdminTicketType(data),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["admin", "ticket-types", eventId],
+        queryKey: ["admin", "ticket-types"],
       });
     },
   });
 }
 
-export function useUpdateTicketType(eventId: string) {
+export function useUpdateTicketType() {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -42,20 +41,20 @@ export function useUpdateTicketType(eventId: string) {
       updateAdminTicketType(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["admin", "ticket-types", eventId],
+        queryKey: ["admin", "ticket-types"],
       });
     },
   });
 }
 
-export function useDeactivateTicketType(eventId: string) {
+export function useDeactivateTicketType() {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (id: string) => deactivateAdminTicketType(id),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["admin", "ticket-types", eventId],
+        queryKey: ["admin", "ticket-types"],
       });
     },
   });
