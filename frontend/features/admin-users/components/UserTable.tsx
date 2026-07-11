@@ -12,12 +12,13 @@ import {
   VStack,
 } from "@chakra-ui/react";
 
-import { useUsers } from "@/features/admin-users/api/admin-users.queries";
+import { useUsers, UserRow } from "@/features/admin-users/api/admin-users.queries";
 import { tableCss } from "@/shared/components/tablecss";
 
 import { TableSkeleton } from "./UserTableSkeleton";
 import { ErrorBanner } from "./UserError";
 import { UserTableItem } from "./UserTableItem";
+import { UserEditDialog } from "./UserEditDialog";
 
 const LIMIT = 20;
 
@@ -25,12 +26,14 @@ export function UserTable() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [searchInput, setSearchInput] = useState("");
+  const [editingUser, setEditingUser] = useState<UserRow | null>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setSearch(searchInput);
       setPage(1);
     }, 350);
+
     return () => clearTimeout(timer);
   }, [searchInput]);
 
@@ -65,11 +68,14 @@ export function UserTable() {
             <Table.Root css={tableCss}>
               <Table.Header>
                 <Table.Row>
-                  <Table.ColumnHeader w="30%">Nombre</Table.ColumnHeader>
-                  <Table.ColumnHeader w="35%">Correo</Table.ColumnHeader>
-                  <Table.ColumnHeader w="20%">Registro</Table.ColumnHeader>
-                  <Table.ColumnHeader w="15%" textAlign="center">
+                  <Table.ColumnHeader w="25%">Nombre</Table.ColumnHeader>
+                  <Table.ColumnHeader w="30%">Correo</Table.ColumnHeader>
+                  <Table.ColumnHeader w="18%">Registro</Table.ColumnHeader>
+                  <Table.ColumnHeader w="12%" textAlign="center">
                     Encuesta
+                  </Table.ColumnHeader>
+                  <Table.ColumnHeader w="15%" textAlign="center">
+                    Acciones
                   </Table.ColumnHeader>
                 </Table.Row>
               </Table.Header>
@@ -77,13 +83,17 @@ export function UserTable() {
               <Table.Body>
                 {data.data.length === 0 ? (
                   <Table.Row>
-                    <Table.Cell colSpan={4}>
+                    <Table.Cell colSpan={5}>
                       No se encontraron usuarios
                     </Table.Cell>
                   </Table.Row>
                 ) : (
                   data.data.map((user) => (
-                    <UserTableItem key={user.id} user={user} />
+                    <UserTableItem
+                      key={user.id}
+                      user={user}
+                      onEdit={setEditingUser}
+                    />
                   ))
                 )}
               </Table.Body>
@@ -114,6 +124,8 @@ export function UserTable() {
           </HStack>
         </Box>
       )}
+
+      <UserEditDialog user={editingUser} setUser={setEditingUser} />
     </VStack>
   );
 }

@@ -1,7 +1,8 @@
-import { Badge, Table } from "@chakra-ui/react";
+import { Badge, Button, Table } from "@chakra-ui/react";
 import React from "react";
 
 import { UserRow } from "../api/admin-users.queries";
+import { IconEdit } from "@tabler/icons-react";
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("es-CO", {
@@ -13,9 +14,10 @@ function formatDate(iso: string): string {
 
 interface Props {
   user: UserRow;
+  onEdit: (user: UserRow) => void;
 }
 
-export const UserTableItem = React.memo(function ({ user }: Props) {
+export const UserTableItem = React.memo(function ({ user, onEdit }: Props) {
   return (
     <Table.Row key={user.id}>
       <Table.Cell>{user.fullName}</Table.Cell>
@@ -29,6 +31,18 @@ export const UserTableItem = React.memo(function ({ user }: Props) {
         >
           {user.onboardingSurveyDone ? "Completa" : "Pendiente"}
         </Badge>
+      </Table.Cell>
+
+      <Table.Cell textAlign="center">
+        <Button
+          size="sm"
+          variant="outline"
+          color="white"
+          _hover={{ color: "black" }}
+          onClick={() => onEdit(user)}
+        >
+          <IconEdit size={16} />
+        </Button>
       </Table.Cell>
     </Table.Row>
   );
