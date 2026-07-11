@@ -1,4 +1,4 @@
-import { Badge, Button, Table } from "@chakra-ui/react";
+import { Button, Table } from "@chakra-ui/react";
 import React from "react";
 
 import { UserRow } from "../api/admin-users.queries";
@@ -23,15 +23,6 @@ export const UserTableItem = React.memo(function ({ user, onEdit }: Props) {
       <Table.Cell>{user.fullName}</Table.Cell>
       <Table.Cell>{user.email}</Table.Cell>
       <Table.Cell>{formatDate(user.createdAt)}</Table.Cell>
-
-      <Table.Cell textAlign="center">
-        <Badge
-          colorPalette={user.onboardingSurveyDone ? "green" : "yellow"}
-          size="sm"
-        >
-          {user.onboardingSurveyDone ? "Completa" : "Pendiente"}
-        </Badge>
-      </Table.Cell>
 
       <Table.Cell textAlign="center">
         <Button

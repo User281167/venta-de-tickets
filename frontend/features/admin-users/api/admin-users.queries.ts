@@ -15,7 +15,6 @@ export type UserRow = {
   role: string | null;
   isActive: boolean;
   createdAt: string;
-  onboardingSurveyDone: boolean;
 };
 
 export type UserListResponse = {

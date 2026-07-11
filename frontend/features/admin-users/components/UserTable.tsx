@@ -84,13 +84,10 @@ export function UserTable() {
             <Table.Root css={tableCss}>
               <Table.Header>
                 <Table.Row>
-                  <Table.ColumnHeader w="25%">Nombre</Table.ColumnHeader>
-                  <Table.ColumnHeader w="30%">Correo</Table.ColumnHeader>
-                  <Table.ColumnHeader w="18%">Registro</Table.ColumnHeader>
-                  <Table.ColumnHeader w="12%" textAlign="center">
-                    Encuesta
-                  </Table.ColumnHeader>
-                  <Table.ColumnHeader w="15%" textAlign="center">
+                  <Table.ColumnHeader w="28%">Nombre</Table.ColumnHeader>
+                  <Table.ColumnHeader w="34%">Correo</Table.ColumnHeader>
+                  <Table.ColumnHeader w="22%">Registro</Table.ColumnHeader>
+                  <Table.ColumnHeader w="16%" textAlign="center">
                     Acciones
                   </Table.ColumnHeader>
                 </Table.Row>
@@ -99,7 +96,7 @@ export function UserTable() {
               <Table.Body>
                 {data.data.length === 0 ? (
                   <Table.Row>
-                    <Table.Cell colSpan={5}>
+                    <Table.Cell colSpan={4}>
                       No se encontraron usuarios
                     </Table.Cell>
                   </Table.Row>

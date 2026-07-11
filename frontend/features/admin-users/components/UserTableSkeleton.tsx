@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Flex, Table } from "@chakra-ui/react";
+import { Box, Table } from "@chakra-ui/react";
 import { tableCss } from "@/shared/components/tablecss";
 
 const SKELETON_ROWS = 5;
@@ -27,7 +27,6 @@ export function TableSkeleton() {
             <Table.ColumnHeader>Nombre</Table.ColumnHeader>
             <Table.ColumnHeader>Correo</Table.ColumnHeader>
             <Table.ColumnHeader>Registro</Table.ColumnHeader>
-            <Table.ColumnHeader textAlign="center">Encuesta</Table.ColumnHeader>
           </Table.Row>
         </Table.Header>
 
@@ -42,11 +41,6 @@ export function TableSkeleton() {
               </Table.Cell>
               <Table.Cell>
                 <SkeletonCell width="35%" />
-              </Table.Cell>
-              <Table.Cell textAlign="center">
-                <Flex justify="center">
-                  <SkeletonCell width="30%" />
-                </Flex>
               </Table.Cell>
             </Table.Row>
           ))}
