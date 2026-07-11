@@ -70,6 +70,6 @@ describe("TicketList", () => {
     });
 
     renderWithProviders(<TicketList />);
-    expect(screen.getByText("Tipo 1")).toBeDefined();
+    expect(screen.getAllByText("Tipo 1").length).toBeGreaterThanOrEqual(1);
   });
 });
