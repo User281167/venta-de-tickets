@@ -13,7 +13,7 @@ import { Footer } from "@/components/layout/Footer";
 
 export default function PrivacidadPage() {
   return (
-    <Box bg="gray.50">
+    <Box bg="brand.dark">
       <Box py={10}>
         <Container maxW="3xl">
           <VStack gap={8} align="stretch">
@@ -28,18 +28,18 @@ export default function PrivacidadPage() {
               </ChakraLink>
             </HStack>
 
-            <Heading as="h1" size="xl" color="gray.800">
+            <Heading as="h1" size="xl" color="gray.3  00">
               Política de Privacidad
             </Heading>
 
-            <Text color="gray.500" fontSize="sm" lineHeight="1.7">
+            <Text color="gray.300" fontSize="sm" lineHeight="1.7">
               <strong>Última actualización:</strong> Junio 2026
             </Text>
 
             <VStack
               gap={5}
               align="stretch"
-              color="gray.600"
+              color="gray.400"
               fontSize="sm"
               lineHeight="1.7"
             >
@@ -51,7 +51,7 @@ export default function PrivacidadPage() {
               </Text>
 
               <Box>
-                <Heading as="h2" size="md" color="gray.800" mb={3}>
+                <Heading as="h2" size="md" color="gray.200" mb={3}>
                   1. Responsable del Tratamiento
                 </Heading>
                 <Text>
@@ -62,7 +62,7 @@ export default function PrivacidadPage() {
               </Box>
 
               <Box>
-                <Heading as="h2" size="md" color="gray.800" mb={3}>
+                <Heading as="h2" size="md" color="gray.200" mb={3}>
                   2. Datos Recolectados
                 </Heading>
                 <Text>
@@ -74,7 +74,7 @@ export default function PrivacidadPage() {
               </Box>
 
               <Box>
-                <Heading as="h2" size="md" color="gray.800" mb={3}>
+                <Heading as="h2" size="md" color="gray.200" mb={3}>
                   3. Finalidades del Tratamiento
                 </Heading>
                 <Text>
@@ -90,7 +90,7 @@ export default function PrivacidadPage() {
               </Box>
 
               <Box>
-                <Heading as="h2" size="md" color="gray.800" mb={3}>
+                <Heading as="h2" size="md" color="gray.200" mb={3}>
                   4. Derechos del Titular (ARCO)
                 </Heading>
                 <Text>
@@ -118,7 +118,7 @@ export default function PrivacidadPage() {
               </Box>
 
               <Box>
-                <Heading as="h2" size="md" color="gray.800" mb={3}>
+                <Heading as="h2" size="md" color="gray.200" mb={3}>
                   5. Almacenamiento y Seguridad
                 </Heading>
                 <Text>
@@ -132,7 +132,7 @@ export default function PrivacidadPage() {
               </Box>
 
               <Box>
-                <Heading as="h2" size="md" color="gray.800" mb={3}>
+                <Heading as="h2" size="md" color="gray.200" mb={3}>
                   6. Transferencia de Datos
                 </Heading>
                 <Text>
@@ -145,7 +145,7 @@ export default function PrivacidadPage() {
               </Box>
 
               <Box>
-                <Heading as="h2" size="md" color="gray.800" mb={3}>
+                <Heading as="h2" size="md" color="gray.200" mb={3}>
                   7. Ejercicio de Derechos
                 </Heading>
                 <Text>
@@ -157,7 +157,7 @@ export default function PrivacidadPage() {
               </Box>
 
               <Box>
-                <Heading as="h2" size="md" color="gray.800" mb={3}>
+                <Heading as="h2" size="md" color="gray.200" mb={3}>
                   8. Cambios a esta Política
                 </Heading>
                 <Text>

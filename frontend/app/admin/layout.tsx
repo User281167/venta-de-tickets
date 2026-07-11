@@ -11,8 +11,8 @@ import { useEffect, type ReactNode } from "react";
 const queryClient = new QueryClient();
 
 const ROLE_RESTRICTED_PATHS: Record<string, string[]> = {
-  "/admin/ticket-types": ["super_admin", "organizer"],
-  "/admin/usuarios": ["super_admin", "organizer"],
+  "/admin/ticket-types": ["super_admin", "admin"],
+  "/admin/usuarios": ["super_admin", "admin"],
 };
 
 function AdminLayoutInner({ children }: { children: ReactNode }) {

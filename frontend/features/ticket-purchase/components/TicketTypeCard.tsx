@@ -37,10 +37,12 @@ export const TicketTypeCard = memo(function TicketTypeCard({
         <Text fontSize="lg" fontWeight="bold" color="brand.light">
           {ticketType.name}
         </Text>
+
         <Box textAlign="right">
           <Text fontSize="xs" color="brand.muted">
             Por persona
           </Text>
+
           <Text fontSize="xl" fontWeight="bold" color="brand.cyan">
             ${Number(ticketType.price).toLocaleString("es-CO")}
           </Text>
@@ -61,6 +63,7 @@ export const TicketTypeCard = memo(function TicketTypeCard({
             ? "Agotado"
             : `Solo quedan ${ticketType.availableCount}`}
         </Text>
+
         <CartQuantitySpinner
           quantity={quantity}
           onIncrement={onIncrement}

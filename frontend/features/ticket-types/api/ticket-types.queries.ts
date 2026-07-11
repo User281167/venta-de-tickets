@@ -2,7 +2,6 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-  fetchEventWithTicketTypes,
   fetchAdminTicketTypes,
   createAdminTicketType,
   updateAdminTicketType,
@@ -12,14 +11,6 @@ import type {
   CreateTicketTypeInput,
   UpdateTicketTypeInput,
 } from "../schemas/ticket-types.schema";
-
-export function useEventWithTicketTypes(eventId: string) {
-  return useQuery({
-    queryKey: ["event", eventId, "ticket-types"],
-    queryFn: () => fetchEventWithTicketTypes(eventId),
-    enabled: !!eventId,
-  });
-}
 
 export function useAdminTicketTypes(eventId: string) {
   return useQuery({

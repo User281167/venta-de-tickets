@@ -8,14 +8,14 @@ import { useRouter } from "next/navigation";
 
 import { LoginForm } from "@/features/auth/components/LoginForm";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { adminFetch } from "@/shared/api/admin-fetch";
+import { authFetch } from "@/shared/api/admin-fetch";
 
 export default function LoginPage() {
   const { user, isLoading } = useAuth();
   const router = useRouter();
 
   if (!isLoading && user) {
-    adminFetch<{ role: string | null }>("/api/auth/session")
+    authFetch<{ role: string | null }>("/api/auth/session")
       .then(({ role }) => {
         if (role == "client") {
           router.replace("/mi-cuenta");

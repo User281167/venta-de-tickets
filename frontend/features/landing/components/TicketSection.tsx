@@ -25,12 +25,19 @@ export function TicketSection() {
     >
       <Container maxW="1200px" px={{ base: 4, md: 6 }}>
         <Stack gap={3} align="center" textAlign="center" mb={10}>
-          <Text color="gray.200" fontSize="md" fontWeight="light" textTransform="uppercase">
+          <Text
+            color="gray.200"
+            fontSize="md"
+            fontWeight="light"
+            textTransform="uppercase"
+          >
             Inscripción
           </Text>
+
           <Heading color="white" fontSize={{ base: "3xl", md: "4xl" }}>
             Asegura tu cupo
           </Heading>
+
           <Text color="brand.muted">
             Cupos limitados para actividades académicas y culturales.
           </Text>

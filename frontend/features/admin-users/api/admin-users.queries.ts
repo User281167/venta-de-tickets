@@ -1,5 +1,5 @@
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
-import { adminFetch } from "@/shared/api/admin-fetch";
+import { authFetch } from "@/shared/api/admin-fetch";
 
 export type UserRow = {
   id: string;
@@ -31,7 +31,7 @@ async function fetchUsers(
     params.set("search", search);
   }
 
-  return adminFetch<UserListResponse>(`/api/admin/users?${params}`);
+  return authFetch<UserListResponse>(`/api/admin/users?${params}`);
 }
 
 export function useUsers(page: number, limit: number, search?: string) {

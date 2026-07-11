@@ -12,7 +12,7 @@ async function getToken(): Promise<string> {
   return token;
 }
 
-export async function adminFetch<T>(path: string, options?: RequestInit): Promise<T> {
+export async function authFetch<T>(path: string, options?: RequestInit): Promise<T> {
   const token = await getToken();
 
   const res = await fetch(path, {
@@ -28,6 +28,7 @@ export async function adminFetch<T>(path: string, options?: RequestInit): Promis
     if (res.status === 401 || res.status === 403) {
       throw new Error("unauthorized");
     }
+
     throw new Error(`Error ${res.status}`);
   }
 

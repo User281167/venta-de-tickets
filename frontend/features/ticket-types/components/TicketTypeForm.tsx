@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import type { ZodError } from "zod";
+
 import {
   Box,
   Button,
@@ -13,27 +13,24 @@ import {
   Switch,
 } from "@chakra-ui/react";
 import { toast } from "sonner";
+
 import {
   createTicketTypeSchema,
   updateTicketTypeSchema,
-} from "../schemas/ticket-types.schema";
-import type {
   AdminTicketType,
   CreateTicketTypeInput,
   UpdateTicketTypeInput,
 } from "../schemas/ticket-types.schema";
+import {
+  formatZodErrors,
+  FieldErrors,
+} from "../schemas/ticket-types.validator";
 
 interface TicketTypeFormProps {
   ticketType?: AdminTicketType | null;
   onCreate?: (data: CreateTicketTypeInput) => Promise<void>;
   onUpdate?: (id: string, data: UpdateTicketTypeInput) => Promise<void>;
   onCancel: () => void;
-}
-
-interface FieldErrors {
-  name?: string;
-  price?: string;
-  quantityTotal?: string;
 }
 
 const num = (v: unknown) => (v != null ? Number(v) : 0);
@@ -243,22 +240,4 @@ export function TicketTypeForm({
       </form>
     </Box>
   );
-}
-
-function formatZodErrors(error: ZodError): FieldErrors {
-  const fieldErrors: FieldErrors = {};
-
-  for (const issue of error.issues) {
-    const field = issue.path[0] as keyof FieldErrors;
-
-    if (field && !fieldErrors[field]) {
-      if (field === "name") fieldErrors.name = "El nombre es obligatorio";
-      else if (field === "price")
-        fieldErrors.price = "El precio debe ser mayor a 0";
-      else if (field === "quantityTotal")
-        fieldErrors.quantityTotal = "La cantidad debe ser mayor a 0";
-    }
-  }
-
-  return fieldErrors;
 }

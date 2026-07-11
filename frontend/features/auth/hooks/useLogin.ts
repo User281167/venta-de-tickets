@@ -8,7 +8,7 @@ import {
 } from "@/features/auth/api/auth.client";
 
 import { createClient } from "@/shared/lib/supabase/client";
-import { adminFetch } from "@/shared/api/admin-fetch";
+import { authFetch } from "@/shared/api/admin-fetch";
 
 export function useLogin() {
   const router = useRouter();
@@ -65,7 +65,7 @@ export function useLogin() {
 
       if (!role) {
         try {
-          const { role: r } = await adminFetch<{ role: string | null }>(
+          const { role: r } = await authFetch<{ role: string | null }>(
             "/api/auth/session",
           );
 

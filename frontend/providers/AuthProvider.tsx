@@ -10,7 +10,7 @@ import {
   type ReactNode,
 } from "react";
 import type { Session, User } from "@supabase/supabase-js";
-import { adminFetch } from "@/shared/api/admin-fetch";
+import { authFetch } from "@/shared/api/admin-fetch";
 
 type AuthContextValue = {
   user: User | null;
@@ -36,9 +36,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const fetchRoleFallback = useCallback(async () => {
     try {
-      const { role: r } = await adminFetch<{ role: string | null }>(
+      const { role: r } = await authFetch<{ role: string | null }>(
         "/api/auth/session",
       );
+
       setRole(r);
     } catch {
       setRole(null);
@@ -47,7 +48,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const syncRole = useCallback(
     (s: Session | null) => {
+      // obtenee el rol desde el JWT o desde la API de fallback
       const fromJwt = (s?.user?.app_metadata?.role as string | null) ?? null;
+
       if (fromJwt && ADMIN_ROLES.has(fromJwt)) {
         setRole(fromJwt);
       } else if (s?.user) {
