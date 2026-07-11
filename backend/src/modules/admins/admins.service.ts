@@ -6,6 +6,8 @@ import * as adminsRepo from './admins.repository.js';
 import * as ticketsRepo from '../tickets/tickets.repository.js';
 import * as ticketsService from '../tickets/tickets.service.js';
 
+import { logger } from '../../utils/logger.js';
+
 export async function listUsers(page: number, limit: number, search?: string) {
   const [data, total] = await Promise.all([
     adminsRepo.findAll(page, limit, search),
@@ -16,9 +18,12 @@ export async function listUsers(page: number, limit: number, search?: string) {
 }
 
 export async function updateRole(id: string, role: string) {
+  logger.info(`Updating role for user ${id} to ${role}`);
+
   const existing = await adminsRepo.findById(id);
 
   if (!existing) {
+    logger.warn(`User not found: ${id}`);
     throw new ForbiddenError('User not found');
   }
 
@@ -29,15 +34,21 @@ export async function updateRole(id: string, role: string) {
     }),
   ]);
 
+  logger.info(`Role updated for user ${id} to ${role}`);
+
   return user;
 }
 
 export async function createUser(data: Record<string, unknown>) {
+  logger.info(`Creating user with email ${data.email} and cedula ${data.cedula}`);
+
   const email = String(data.email);
   const cedula = data.cedula ? String(data.cedula) : undefined;
 
   const existingEmail = await adminsRepo.findByEmail(email);
   if (existingEmail) {
+    logger.warn(`Email already exists: ${email}`);
+
     throw Object.assign(new Error('Email already exists'), {
       statusCode: 409,
       code: 'CONFLICT',
@@ -49,6 +60,8 @@ export async function createUser(data: Record<string, unknown>) {
     const existingCedula = await adminsRepo.findByCedula(cedula);
 
     if (existingCedula) {
+      logger.warn(`Cedula already exists: ${cedula}`);
+
       throw Object.assign(new Error('Cedula already exists'), {
         statusCode: 409,
         code: 'CONFLICT',
@@ -66,6 +79,8 @@ export async function createUser(data: Record<string, unknown>) {
     });
 
   if (authError || !authData.user) {
+    logger.warn(`Failed to create auth user: ${authError?.message ?? 'Unknown error'}`);
+
     throw Object.assign(
       new Error(authError?.message ?? 'Failed to create auth user'),
       { statusCode: 502, code: 'AUTH_ERROR' },
@@ -83,10 +98,14 @@ export async function createUser(data: Record<string, unknown>) {
     role: 'client',
   });
 
+  logger.info(`User created: ${userId}`);
+
   return user;
 }
 
 export async function batchCreateUsers(dataArray: Record<string, unknown>[]) {
+  logger.info(`Batch creating users: ${dataArray.length} users`);
+
   const allEmails = dataArray.map((d) => d.email as string);
   const allCedulas = dataArray
     .map((d) => d.cedula as string | undefined)
@@ -98,6 +117,8 @@ export async function batchCreateUsers(dataArray: Record<string, unknown>[]) {
   const emailConflicts = emailChecks.filter(Boolean);
 
   if (emailConflicts.length > 0) {
+    logger.warn(`Email conflicts: ${emailConflicts.map((e) => e!.email).join(', ')}`);
+
     throw Object.assign(
       new Error(
         `Emails already exist: ${emailConflicts.map((e) => e!.email).join(', ')}`,
@@ -114,6 +135,8 @@ export async function batchCreateUsers(dataArray: Record<string, unknown>[]) {
     const cedulaConflicts = cedulaChecks.filter(Boolean);
 
     if (cedulaConflicts.length > 0) {
+      logger.warn(`Cedula conflicts: ${cedulaConflicts.map((c) => c!.cedula).join(', ')}`);
+
       throw Object.assign(
         new Error(
           `Cedulas already in use: ${cedulaConflicts.map((c) => c!.cedula).join(', ')}`,
@@ -130,9 +153,11 @@ export async function batchCreateUsers(dataArray: Record<string, unknown>[]) {
       const user = await createUser(data);
       results.push(user);
     } catch (err) {
-      console.error('Batch create failed for', (data as any).email, err);
+      logger.error('Batch create failed for', (data as any).email, err);
     }
   }
+
+  logger.info(`Batch create completed: ${results.length} users created`);
 
   return results;
 }
@@ -151,10 +176,12 @@ export async function createAdminSale(
   ticketTypeId: string,
   quantity: number,
 ) {
+  logger.info(`Creating admin sale: userId=${userId}, ticketTypeId=${ticketTypeId}, quantity=${quantity}`);
   await ticketsService.getTicketTypeById(ticketTypeId);
 
   const userExists = await checkUserExists(userId);
   if (!userExists) {
+    logger.warn(`User not found: userId=${userId}`);
     throw new NotFoundError('User not found');
   }
 
@@ -169,13 +196,17 @@ export async function createAdminSale(
     await ticketsService.generateQrForTicket(ticketId);
   }
 
+  logger.info(`Admin sale created: ticketIds=${ticketIds}`);
+
   return ticketIds;
 }
 
 export async function updateUser(id: string, data: Record<string, unknown>) {
+  logger.info(`Updating user: id=${id}`);
   const existing = await adminsRepo.findById(id);
 
   if (!existing) {
+    logger.warn(`User not found: id=${id}`);
     throw Object.assign(new Error('User not found'), {
       statusCode: 404,
       code: 'NOT_FOUND',
@@ -192,6 +223,8 @@ export async function updateUser(id: string, data: Record<string, unknown>) {
     const existingCedula = await adminsRepo.findByCedula(data.cedula as string);
 
     if (existingCedula && existingCedula.id !== id) {
+      logger.warn(`Cedula already in use by another user: cedula=${data.cedula}`);
+
       throw Object.assign(new Error('Cedula already in use by another user'), {
         statusCode: 409,
         code: 'CONFLICT',
@@ -205,6 +238,8 @@ export async function updateUser(id: string, data: Record<string, unknown>) {
     const role = data.role as string;
 
     if (role === 'super_admin') {
+      logger.warn(`Cannot assign super_admin role: role=${role}`);
+
       throw Object.assign(new Error('Cannot assign super_admin role'), {
         statusCode: 422,
         code: 'VALIDATION_ERROR',
@@ -217,6 +252,8 @@ export async function updateUser(id: string, data: Record<string, unknown>) {
 
     updateData.role = role;
   }
+
+  logger.info(`User updated: id=${id}`);
 
   return adminsRepo.update(id, updateData);
 }

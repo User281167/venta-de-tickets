@@ -6,6 +6,8 @@ import * as ticketsService from '../tickets/tickets.service.js';
 import * as paymentsRepo from './payments.repository.js';
 import { getProvider } from './providers/provider.registry.js';
 
+import { logger } from '../../utils/logger.js';
+
 function generateTicketCode(): string {
   return randomBytes(16).toString('hex');
 }
@@ -16,6 +18,10 @@ export async function createCheckout(
   backUrl: string,
   providerName: string,
 ) {
+  logger.info(
+    `Creating checkout for user: userId=${userId}, items=${JSON.stringify(items)}`,
+  );
+
   const checkoutItems: Array<{
     ticketTypeId: string;
     name: string;
@@ -26,13 +32,25 @@ export async function createCheckout(
   let totalAmountCents = 0;
 
   for (const item of items) {
-    const ticketType = await ticketsService.getTicketTypeById(item.ticketTypeId);
+    const ticketType = await ticketsService.getTicketTypeById(
+      item.ticketTypeId,
+    );
 
     if (ticketType.status !== 'enabled') {
-      throw new ValidationError('TICKET_TYPE_NOT_AVAILABLE', `Ticket type "${ticketType.name}" is not available`);
+      logger.warn(
+        `Ticket type not available: ticketTypeId=${item.ticketTypeId}, name=${ticketType.name}`,
+      );
+      throw new ValidationError(
+        'TICKET_TYPE_NOT_AVAILABLE',
+        `Ticket type "${ticketType.name}" is not available`,
+      );
     }
 
     if (ticketType.maxPerUser && item.quantity > ticketType.maxPerUser) {
+      logger.warn(
+        `Max per user exceeded: ticketTypeId=${item.ticketTypeId}, quantity=${item.quantity}, maxPerUser=${ticketType.maxPerUser}`,
+      );
+
       throw new ValidationError(
         'MAX_PER_USER_EXCEEDED',
         `Cannot buy more than ${ticketType.maxPerUser} of "${ticketType.name}" per user`,
@@ -41,6 +59,9 @@ export async function createCheckout(
 
     const available = ticketType.quantityTotal - ticketType.quantitySold;
     if (item.quantity > available) {
+      logger.warn(
+        `Sold out: ticketTypeId=${item.ticketTypeId}, quantity=${item.quantity}, available=${available}`,
+      );
       throw new ValidationError(
         'SOLD_OUT',
         `Not enough tickets available for "${ticketType.name}"`,
@@ -49,6 +70,10 @@ export async function createCheckout(
 
     const unitPriceCents = Math.round(Number(ticketType.price) * 100);
     totalAmountCents += unitPriceCents * item.quantity;
+
+    logger.info(
+      `Adding item to checkout: ticketTypeId=${item.ticketTypeId}, name=${ticketType.name}, quantity=${item.quantity}, unitPriceCents=${unitPriceCents}`,
+    );
 
     checkoutItems.push({
       ticketTypeId: item.ticketTypeId,
@@ -63,12 +88,20 @@ export async function createCheckout(
   const reserveExpiresAt = new Date(Date.now() + 15 * 60 * 1000);
   const paymentId = randomUUID();
 
+  logger.info(
+    `Creating checkout: paymentId=${paymentId}, userId=${userId}, totalAmountCents=${totalAmountCents}`,
+  );
+
   const checkoutResult = await provider.createCheckout({
     externalReference: paymentId,
     items: checkoutItems,
     backUrl,
     expiresAt: reserveExpiresAt.toISOString(),
   });
+
+  logger.info(
+    `Checkout created: paymentId=${paymentId}, checkoutUrl=${checkoutResult.checkoutUrl}`,
+  );
 
   for (const item of items) {
     await paymentsRepo.createCheckoutTransaction({
@@ -83,6 +116,8 @@ export async function createCheckout(
     });
   }
 
+  logger.info(`Checkout processed: paymentId=${paymentId}`);
+
   return {
     paymentId,
     checkoutUrl: checkoutResult.checkoutUrl,
@@ -94,9 +129,14 @@ export async function processWebhook(
   headers: Record<string, string>,
   providerName: string,
 ) {
+  logger.info(`Processing webhook: payload=${JSON.stringify(payload)}`);
   const provider = getProvider(providerName);
 
   if (!provider.verifySignature(payload, headers)) {
+    logger.warn(
+      `Invalid webhook signature: payload=${JSON.stringify(payload)}`,
+    );
+
     throw Object.assign(new Error('Invalid webhook signature'), {
       statusCode: 400,
       code: 'INVALID_SIGNATURE',
@@ -107,14 +147,20 @@ export async function processWebhook(
 
   const payment = await paymentsRepo.findByReference(event.reference);
   if (!payment) {
+    logger.warn(`Payment not found: reference=${event.reference}`);
     throw new NotFoundError('Payment not found');
   }
 
   if (payment.status !== 'pending') {
+    logger.info(`Payment not pending: status=${payment.status}`);
     return { received: true };
   }
 
   if (event.status === 'approved') {
+    logger.info(
+      `Approved payment: paymentId=${payment.id}, externalId=${event.externalId}`,
+    );
+
     const result = await paymentsRepo.processPaymentWebhook({
       paymentId: payment.id,
       providerTxId: event.externalId,
@@ -122,22 +168,35 @@ export async function processWebhook(
     });
 
     if (result.processed) {
-      const paymentWithTickets = await paymentsRepo.findByIdWithTickets(payment.id);
+      const paymentWithTickets = await paymentsRepo.findByIdWithTickets(
+        payment.id,
+      );
 
       if (paymentWithTickets) {
         for (const ticket of paymentWithTickets.tickets) {
           await ticketsService.generateQrForTicket(ticket.id);
         }
       }
+
+      logger.info(
+        `Processed payment: paymentId=${payment.id}, externalId=${event.externalId}`,
+      );
     }
   } else if (event.status === 'declined') {
+    logger.info(
+      `Declined payment: paymentId=${payment.id}, externalId=${event.externalId}`,
+    );
     await paymentsRepo.update(payment.id, { status: 'failed' });
   }
 
   return { received: true };
 }
 
-export async function listMyPayments(userId: string, page: number, limit: number) {
+export async function listMyPayments(
+  userId: string,
+  page: number,
+  limit: number,
+) {
   const [data, total] = await Promise.all([
     paymentsRepo.findAllByUserId(userId, page, limit),
     paymentsRepo.countByUserId(userId),
@@ -156,18 +215,28 @@ export async function listAllPayments(page: number, limit: number) {
 }
 
 export async function getPaymentDetail(paymentId: string) {
+  logger.info(`Getting payment detail: paymentId=${paymentId}`);
+
   const payment = await paymentsRepo.findPaymentByIdWithUser(paymentId);
 
   if (!payment) {
+    logger.warn(`Payment not found: paymentId=${paymentId}`);
     throw new NotFoundError('Payment not found');
   }
 
   return payment;
 }
 
-export async function getPaymentStatus(paymentId: string, userId: string, userRole: string) {
+export async function getPaymentStatus(
+  paymentId: string,
+  userId: string,
+  userRole: string,
+) {
+  logger.info(`Getting payment status: paymentId=${paymentId}`);
+
   const payment = await paymentsRepo.findByIdWithTickets(paymentId);
   if (!payment) {
+    logger.warn(`Payment not found: paymentId=${paymentId}`);
     throw new NotFoundError('Payment not found');
   }
 
@@ -175,8 +244,11 @@ export async function getPaymentStatus(paymentId: string, userId: string, userRo
   const isStaff = userRole === 'admin' || userRole === 'super_admin';
 
   if (!isOwner && !isStaff) {
+    logger.warn(`Access denied: paymentId=${paymentId}, userId=${userId}, userRole=${userRole}`);
     throw new ForbiddenError('Access denied');
   }
+
+  logger.info(`Payment status retrieved: paymentId=${paymentId}, status=${payment.status}`);
 
   return {
     id: payment.id,

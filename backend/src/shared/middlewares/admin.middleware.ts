@@ -9,6 +9,7 @@ export function adminMiddleware(
   next: NextFunction,
 ): void {
   if (!req.user?.role || !ADMIN_ROLES.includes(req.user.role)) {
+    console.info("User is not an admin", { role: req.user?.role, ADMIN_ROLES })
     throw new ForbiddenError('Admin access required');
   }
 

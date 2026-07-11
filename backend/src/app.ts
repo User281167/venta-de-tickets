@@ -7,9 +7,14 @@ import { usersRouter } from './modules/users/index.js';
 
 import { adminsRouter } from './modules/admins/admins.routes.js';
 import { authRouter } from './modules/auth/index.js';
-import { ticketsRouter, adminTicketsRouter } from './modules/tickets/tickets.routes.js';
+import {
+  ticketsRouter,
+  adminTicketsRouter,
+} from './modules/tickets/tickets.routes.js';
 import { paymentsRouter } from './modules/payments/index.js';
 import { checkinRouter } from './modules/checkin/index.js';
+
+import { logger } from './utils/logger.js';
 
 export const app = express();
 
@@ -17,6 +22,18 @@ app.set('trust proxy', 1);
 const allowedOrigins = env.CORS_ORIGIN.split(',');
 app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json());
+
+// Middleware de logging en Express
+app.use((req, res, next) => {
+  req.log = logger.child({ requestId: crypto.randomUUID() });
+  req.log.info({ method: req.method, url: req.url }, 'Request received');
+
+  res.on('finish', () => {
+    req.log.info({ statusCode: res.statusCode }, 'Request completed');
+  });
+
+  next();
+});
 
 app.use('/api/me', meRouter);
 app.use('/api/auth', authRouter);

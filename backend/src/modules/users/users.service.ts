@@ -3,6 +3,8 @@ import {
   PRIVACY_POLICY_TYPE,
 } from '../../shared/config/constants.js';
 import * as usersRepo from './users.repository.js';
+import { logger } from '../../utils/logger.js';
+
 
 export async function getPrivacyStatus(userId: string) {
   const acceptance = await usersRepo.findPrivacyAcceptance(
@@ -10,6 +12,8 @@ export async function getPrivacyStatus(userId: string) {
     PRIVACY_POLICY_VERSION,
     PRIVACY_POLICY_TYPE,
   );
+
+  logger.info(`Privacy status retrieved: userId=${userId}`);
 
   return {
     consentStatus: {
@@ -25,6 +29,7 @@ export async function acceptPrivacy(
   ipAddress: string,
   userAgent: string,
 ) {
+  logger.info(`Accepting privacy: userId=${userId}`);
   const existing = await usersRepo.findPrivacyAcceptance(
     userId,
     PRIVACY_POLICY_VERSION,
@@ -32,6 +37,8 @@ export async function acceptPrivacy(
   );
 
   if (existing) {
+    logger.warn(`Privacy already accepted: userId=${userId}`);
+
     return {
       status: 'accepted',
       acceptedAt: existing.acceptedAt.toISOString(),
@@ -46,6 +53,8 @@ export async function acceptPrivacy(
     ipAddress,
     userAgent,
   );
+
+  logger.info(`Privacy accepted: userId=${userId}`);
 
   return {
     status: 'accepted',
