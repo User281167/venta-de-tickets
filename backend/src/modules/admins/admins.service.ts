@@ -1,4 +1,5 @@
 import { randomBytes } from 'crypto';
+
 import { ForbiddenError } from '../../shared/errors/ForbiddenError.js';
 import { NotFoundError } from '../../shared/errors/NotFoundError.js';
 import { supabaseAdmin } from '../../shared/supabase/admin-client.js';
@@ -7,6 +8,9 @@ import * as ticketsRepo from '../tickets/tickets.repository.js';
 import * as ticketsService from '../tickets/tickets.service.js';
 
 import { logger } from '../../utils/logger.js';
+
+const ROLES = ['admin', 'checker', 'client'] as const;
+const NO_ALLOWED_ROLES = ['super_admin'] as const;
 
 export async function listUsers(page: number, limit: number, search?: string) {
   const [data, total] = await Promise.all([
@@ -40,35 +44,12 @@ export async function updateRole(id: string, role: string) {
 }
 
 export async function createUser(data: Record<string, unknown>) {
-  logger.info(`Creating user with email ${data.email} and cedula ${data.cedula}`);
+  logger.info(
+    `Creating user with email ${data.email} and cedula ${data.cedula}`,
+  );
 
   const email = String(data.email);
   const cedula = data.cedula ? String(data.cedula) : undefined;
-
-  const existingEmail = await adminsRepo.findByEmail(email);
-  if (existingEmail) {
-    logger.warn(`Email already exists: ${email}`);
-
-    throw Object.assign(new Error('Email already exists'), {
-      statusCode: 409,
-      code: 'CONFLICT',
-      message: `Email ${email} is already registered`,
-    });
-  }
-
-  if (cedula) {
-    const existingCedula = await adminsRepo.findByCedula(cedula);
-
-    if (existingCedula) {
-      logger.warn(`Cedula already exists: ${cedula}`);
-
-      throw Object.assign(new Error('Cedula already exists'), {
-        statusCode: 409,
-        code: 'CONFLICT',
-        message: `Cedula ${cedula} is already in use`,
-      });
-    }
-  }
 
   const { error: authError, data: authData } =
     await supabaseAdmin.auth.admin.createUser({
@@ -79,7 +60,9 @@ export async function createUser(data: Record<string, unknown>) {
     });
 
   if (authError || !authData.user) {
-    logger.warn(`Failed to create auth user: ${authError?.message ?? 'Unknown error'}`);
+    logger.warn(
+      `Failed to create auth user: ${authError?.message ?? 'Unknown error'}`,
+    );
 
     throw Object.assign(
       new Error(authError?.message ?? 'Failed to create auth user'),
@@ -89,18 +72,37 @@ export async function createUser(data: Record<string, unknown>) {
 
   const userId = authData.user.id;
 
-  const user = await adminsRepo.create({
-    id: userId,
-    email,
-    fullName: String(data.fullName),
-    cedula: cedula ?? null,
-    phone: data.phone ? String(data.phone) : null,
-    role: 'client',
-  });
+  try {
+    const user = await adminsRepo.upsert({
+      id: userId,
+      email,
+      fullName: String(data.fullName),
+      cedula: cedula ?? null,
+      phone: data.phone ? String(data.phone) : null,
+      role: 'client',
+    });
 
-  logger.info(`User created: ${userId}`);
+    logger.info(`User created: ${userId}`);
 
-  return user;
+    return user;
+  } catch (err) {
+    if (
+      typeof err === 'object' &&
+      err !== null &&
+      (err as Record<string, unknown>).code === 'P2002'
+    ) {
+      // si fallo por unique en email y cedula, auth trigger agrega de todos modos
+      await supabaseAdmin.auth.admin.deleteUser(userId);
+
+      throw Object.assign(new Error('Email or cedula already exists'), {
+        statusCode: 409,
+        code: 'CONFLICT',
+        data: { emails: email ? [email] : [], cedulas: cedula ? [cedula] : [] },
+      });
+    }
+
+    throw err;
+  }
 }
 
 export async function batchCreateUsers(dataArray: Record<string, unknown>[]) {
@@ -111,39 +113,26 @@ export async function batchCreateUsers(dataArray: Record<string, unknown>[]) {
     .map((d) => d.cedula as string | undefined)
     .filter(Boolean) as string[];
 
-  const emailChecks = await Promise.all(
-    allEmails.map((email) => adminsRepo.findByEmail(email)),
-  );
-  const emailConflicts = emailChecks.filter(Boolean);
+  const conflicts =
+    allCedulas.length > 0
+      ? await adminsRepo.findConflicts(allEmails, allCedulas)
+      : await adminsRepo.findConflicts(allEmails, []);
 
-  if (emailConflicts.length > 0) {
-    logger.warn(`Email conflicts: ${emailConflicts.map((e) => e!.email).join(', ')}`);
+  if (conflicts.length > 0) {
+    const emailConflicts = conflicts.filter((c) => c.email).map((c) => c.email);
+    const cedulaConflicts = conflicts
+      .filter((c) => c.cedula)
+      .map((c) => c.cedula);
 
-    throw Object.assign(
-      new Error(
-        `Emails already exist: ${emailConflicts.map((e) => e!.email).join(', ')}`,
-      ),
-      { statusCode: 409, code: 'CONFLICT' },
-    );
-  }
-
-  if (allCedulas.length > 0) {
-    const cedulaChecks = await Promise.all(
-      allCedulas.map((cedula) => adminsRepo.findByCedula(cedula)),
+    logger.warn(
+      `Batch conflicts — emails: ${emailConflicts.join(', ')}, cedulas: ${cedulaConflicts.join(', ')}`,
     );
 
-    const cedulaConflicts = cedulaChecks.filter(Boolean);
-
-    if (cedulaConflicts.length > 0) {
-      logger.warn(`Cedula conflicts: ${cedulaConflicts.map((c) => c!.cedula).join(', ')}`);
-
-      throw Object.assign(
-        new Error(
-          `Cedulas already in use: ${cedulaConflicts.map((c) => c!.cedula).join(', ')}`,
-        ),
-        { statusCode: 409, code: 'CONFLICT' },
-      );
-    }
+    throw Object.assign(new Error('Some emails or cedulas already exist'), {
+      statusCode: 409,
+      code: 'CONFLICT',
+      data: { emails: emailConflicts, cedulas: cedulaConflicts },
+    });
   }
 
   const results = [];
@@ -176,7 +165,9 @@ export async function createAdminSale(
   ticketTypeId: string,
   quantity: number,
 ) {
-  logger.info(`Creating admin sale: userId=${userId}, ticketTypeId=${ticketTypeId}, quantity=${quantity}`);
+  logger.info(
+    `Creating admin sale: userId=${userId}, ticketTypeId=${ticketTypeId}, quantity=${quantity}`,
+  );
   await ticketsService.getTicketTypeById(ticketTypeId);
 
   const userExists = await checkUserExists(userId);
@@ -223,7 +214,9 @@ export async function updateUser(id: string, data: Record<string, unknown>) {
     const existingCedula = await adminsRepo.findByCedula(data.cedula as string);
 
     if (existingCedula && existingCedula.id !== id) {
-      logger.warn(`Cedula already in use by another user: cedula=${data.cedula}`);
+      logger.warn(
+        `Cedula already in use by another user: cedula=${data.cedula}`,
+      );
 
       throw Object.assign(new Error('Cedula already in use by another user'), {
         statusCode: 409,
@@ -237,10 +230,19 @@ export async function updateUser(id: string, data: Record<string, unknown>) {
   if (data.role !== undefined) {
     const role = data.role as string;
 
-    if (role === 'super_admin') {
-      logger.warn(`Cannot assign super_admin role: role=${role}`);
+    if (NO_ALLOWED_ROLES.includes(role)) {
+      logger.warn(`Cannot assign ${role} role: role=${role}`);
 
-      throw Object.assign(new Error('Cannot assign super_admin role'), {
+      throw Object.assign(new Error(`Cannot assign ${role} role`), {
+        statusCode: 422,
+        code: 'VALIDATION_ERROR',
+      });
+    }
+
+    if (!ROLES.includes(role)) {
+      logger.warn(`Invalid role: role=${role}`);
+
+      throw Object.assign(new Error(`Invalid role`), {
         statusCode: 422,
         code: 'VALIDATION_ERROR',
       });

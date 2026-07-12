@@ -13,12 +13,12 @@ vi.mock('../src/shared/services/role-resolver.js', () => ({
 vi.mock('../src/modules/admins/admins.repository.js', () => ({
   findAll: vi.fn(),
   countAll: vi.fn(),
-  findByEmail: vi.fn(),
   findByCedula: vi.fn(),
   findById: vi.fn(),
-  create: vi.fn(),
+  upsert: vi.fn(),
   update: vi.fn(),
   updateRole: vi.fn(),
+  findConflicts: vi.fn(),
 }));
 
 vi.mock('../src/shared/supabase/admin-client.js', () => ({
@@ -27,6 +27,7 @@ vi.mock('../src/shared/supabase/admin-client.js', () => ({
       admin: {
         createUser: vi.fn(),
         updateUserById: vi.fn(),
+        deleteUser: vi.fn(),
       },
     },
   },
@@ -253,9 +254,16 @@ describe('POST /api/admin/users (create individual)', () => {
   });
 
   it('returns 409 CONFLICT when email already exists', async () => {
-    vi.mocked(adminsRepo.findByEmail).mockResolvedValue({
-      id: 'existing',
-      email: 'exists@test.com',
+    vi.mocked(supabaseAdmin.auth.admin.createUser).mockResolvedValue({
+      error: null,
+      data: { user: { id: 'new-user-id' } },
+    });
+    vi.mocked(adminsRepo.upsert).mockRejectedValue(
+      Object.assign(new Error('Unique constraint'), { code: 'P2002' }),
+    );
+    vi.mocked(supabaseAdmin.auth.admin.deleteUser).mockResolvedValue({
+      data: null,
+      error: null,
     });
 
     const res = await request(app)
@@ -271,10 +279,16 @@ describe('POST /api/admin/users (create individual)', () => {
   });
 
   it('returns 409 CONFLICT when cedula already exists', async () => {
-    vi.mocked(adminsRepo.findByEmail).mockResolvedValue(null);
-    vi.mocked(adminsRepo.findByCedula).mockResolvedValue({
-      id: 'other',
-      cedula: '12345678',
+    vi.mocked(supabaseAdmin.auth.admin.createUser).mockResolvedValue({
+      error: null,
+      data: { user: { id: 'new-user-id' } },
+    });
+    vi.mocked(adminsRepo.upsert).mockRejectedValue(
+      Object.assign(new Error('Unique constraint'), { code: 'P2002' }),
+    );
+    vi.mocked(supabaseAdmin.auth.admin.deleteUser).mockResolvedValue({
+      data: null,
+      error: null,
     });
 
     const res = await request(app)
@@ -291,8 +305,6 @@ describe('POST /api/admin/users (create individual)', () => {
   });
 
   it('returns 502 AUTH_ERROR when Supabase user creation fails', async () => {
-    vi.mocked(adminsRepo.findByEmail).mockResolvedValue(null);
-    vi.mocked(adminsRepo.findByCedula).mockResolvedValue(null);
     vi.mocked(supabaseAdmin.auth.admin.createUser).mockResolvedValue({
       error: { message: 'User already registered' },
       data: null,
@@ -311,13 +323,11 @@ describe('POST /api/admin/users (create individual)', () => {
   });
 
   it('returns 201 with user when valid data provided', async () => {
-    vi.mocked(adminsRepo.findByEmail).mockResolvedValue(null);
-    vi.mocked(adminsRepo.findByCedula).mockResolvedValue(null);
     vi.mocked(supabaseAdmin.auth.admin.createUser).mockResolvedValue({
       error: null,
       data: { user: { id: 'new-user-id' } },
     });
-    vi.mocked(adminsRepo.create).mockResolvedValue(mockCreatedUser);
+    vi.mocked(adminsRepo.upsert).mockResolvedValue(mockCreatedUser);
 
     const res = await request(app)
       .post('/api/admin/users')
@@ -365,13 +375,9 @@ describe('POST /api/admin/users/batch', () => {
   });
 
   it('returns 409 CONFLICT when any email already exists', async () => {
-    vi.mocked(adminsRepo.findByEmail).mockImplementation(
-      async (email: string) => {
-        if (email === 'conflict@test.com')
-          return { id: 'existing', email: 'conflict@test.com' };
-        return null;
-      },
-    );
+    vi.mocked(adminsRepo.findConflicts).mockResolvedValue([
+      { email: 'conflict@test.com', cedula: null },
+    ]);
 
     const res = await request(app)
       .post('/api/admin/users/batch')
@@ -386,16 +392,13 @@ describe('POST /api/admin/users/batch', () => {
       ]);
     expect(res.status).toBe(409);
     expect(res.body.error.code).toBe('CONFLICT');
+    expect(res.body.error.data.emails).toContain('conflict@test.com');
   });
 
   it('returns 409 CONFLICT when any cedula already exists', async () => {
-    vi.mocked(adminsRepo.findByEmail).mockResolvedValue(null);
-    vi.mocked(adminsRepo.findByCedula).mockImplementation(
-      async (cedula: string) => {
-        if (cedula === '99999999') return { id: 'other', cedula: '99999999' };
-        return null;
-      },
-    );
+    vi.mocked(adminsRepo.findConflicts).mockResolvedValue([
+      { email: null, cedula: '99999999' },
+    ]);
 
     const res = await request(app)
       .post('/api/admin/users/batch')
@@ -416,16 +419,16 @@ describe('POST /api/admin/users/batch', () => {
       ]);
     expect(res.status).toBe(409);
     expect(res.body.error.code).toBe('CONFLICT');
+    expect(res.body.error.data.cedulas).toContain('99999999');
   });
 
   it('returns 201 with array when all valid', async () => {
-    vi.mocked(adminsRepo.findByEmail).mockResolvedValue(null);
-    vi.mocked(adminsRepo.findByCedula).mockResolvedValue(null);
+    vi.mocked(adminsRepo.findConflicts).mockResolvedValue([]);
     vi.mocked(supabaseAdmin.auth.admin.createUser).mockResolvedValue({
       error: null,
       data: { user: { id: 'new-id' } },
     });
-    vi.mocked(adminsRepo.create).mockResolvedValue(mockCreatedUser);
+    vi.mocked(adminsRepo.upsert).mockResolvedValue(mockCreatedUser);
 
     const res = await request(app)
       .post('/api/admin/users/batch')

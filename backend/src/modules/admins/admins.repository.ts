@@ -57,17 +57,22 @@ export function findById(id: string) {
   });
 }
 
-export function findByEmail(email: string) {
-  return prisma.user.findUnique({
-    where: { email },
-    select: { id: true, email: true },
-  });
-}
-
 export function findByCedula(cedula: string) {
   return prisma.user.findUnique({
     where: { cedula },
     select: { id: true, cedula: true },
+  });
+}
+
+export function findConflicts(emails: string[], cedulas: string[]) {
+  return prisma.user.findMany({
+    where: {
+      OR: [
+        { email: { in: emails } },
+        ...(cedulas.length > 0 ? [{ cedula: { in: cedulas } }] : []),
+      ],
+    },
+    select: { email: true, cedula: true },
   });
 }
 
@@ -79,7 +84,7 @@ export function updateRole(id: string, role: string) {
   });
 }
 
-export function create(data: {
+export function upsert(data: {
   id: string;
   email: string;
   fullName: string;
