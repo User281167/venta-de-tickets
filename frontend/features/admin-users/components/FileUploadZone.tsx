@@ -88,6 +88,7 @@ export function FileUploadZone({
           type="file"
           accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
           style={{ display: "none" }}
+          data-testid="file-input"
           onChange={handleFileChange}
         />
 
@@ -97,6 +98,9 @@ export function FileUploadZone({
             <Text fontWeight="medium" color="teal.700">
               {selectedFile.name}
             </Text>
+            <Button size="sm" variant="ghost" colorPalette="red" onClick={(e) => { e.stopPropagation(); handleRemove(); }}>
+              Quitar archivo
+            </Button>
           </VStack>
         ) : (
           <VStack gap={2}>
