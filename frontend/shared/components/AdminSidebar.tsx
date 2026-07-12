@@ -19,6 +19,7 @@ import {
   IconDashboard,
   IconLogout,
   IconMenu2,
+  IconUpload,
   IconUsers,
   IconTicket,
   IconQrcode,
@@ -47,6 +48,12 @@ const ALL_LINKS: SidebarLink[] = [
     href: "/admin/usuarios",
     label: "Usuarios",
     icon: <IconUsers size={20} />,
+    roles: ["super_admin", "admin"] as const,
+  },
+  {
+    href: "/admin/usuarios/carga-masiva",
+    label: "Carga masiva",
+    icon: <IconUpload size={20} />,
     roles: ["super_admin", "admin"] as const,
   },
 ];
@@ -88,7 +95,7 @@ export function AdminSidebar() {
 
       <VStack align="stretch" gap={1} flex={1}>
         {visibleLinks.map((link) => {
-          const isActive = pathname === link.href;
+          const isActive = pathname === link.href || (link.href === "/admin/usuarios" && pathname.startsWith("/admin/usuarios/"));
 
           return (
             <ChakraLink

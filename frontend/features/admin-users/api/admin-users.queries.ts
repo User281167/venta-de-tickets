@@ -114,3 +114,25 @@ export function getUsersData(): { data: UserRow[] } | undefined {
     "users",
   ]);
 }
+
+async function batchCreateUsers(
+  data: CreateUserInput[],
+): Promise<UserRow[]> {
+  return authFetch<UserRow[]>("/api/admin/users/batch", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export function useBatchCreateUsers() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: CreateUserInput[]) => batchCreateUsers(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["admin", "users"],
+      });
+    },
+  });
+}

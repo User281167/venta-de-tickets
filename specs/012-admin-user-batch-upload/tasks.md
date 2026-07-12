@@ -28,9 +28,9 @@ description: "Implementation tasks for admin user batch upload from Excel"
 
 **Purpose**: Create directory structure, route page, and template file
 
-- [ ] T001 Create directory `frontend/features/admin-users/hooks/` for custom hooks
-- [ ] T002 [P] Create route directory `frontend/app/admin/usuarios/carga-masiva/` and add `page.tsx` that renders `BatchUploadPage` from `@/features/admin-users/components/BatchUploadPage`
-- [ ] T003 [P] Create template file `frontend/public/load_users_template.xlsx` with headers: nombre completo, cédula, teléfono, correo electrónico, contraseña (1 empty row below headers)
+- [x] T001 Create directory `frontend/features/admin-users/hooks/` for custom hooks
+- [x] T002 [P] Create route directory `frontend/app/admin/usuarios/carga-masiva/` and add `page.tsx` that renders `BatchUploadPage` from `@/features/admin-users/components/BatchUploadPage`
+- [x] T003 [P] Create template file `frontend/public/load_users_template.xlsx` with headers: nombre completo, cédula, teléfono, correo electrónico, contraseña (1 empty row below headers)
 
 ---
 
@@ -38,18 +38,18 @@ description: "Implementation tasks for admin user batch upload from Excel"
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T004 [P] Add `useBatchCreateUsers` mutation in `frontend/features/admin-users/api/admin-users.queries.ts`:
+- [x] T004 [P] Add `useBatchCreateUsers` mutation in `frontend/features/admin-users/api/admin-users.queries.ts`:
   - Mutation function POSTs array to `/api/admin/users/batch`
   - Invalidates `["admin", "users"]` query on success
   - Input type: `CreateUserInput[]` (reuse existing type)
   - Returns: `UserRow[]` on success, parses error `data.emails` and `data.cedulas` from 409 response
-- [ ] T005 [P] Add `excelRowSchema` in `frontend/features/admin-users/schemas/admin-user.schema.ts`:
+- [x] T005 [P] Add `excelRowSchema` in `frontend/features/admin-users/schemas/admin-user.schema.ts`:
   - Zod schema: `z.object({ fullName: z.string().min(1).max(150), cedula: z.string().min(8).max(15).regex(/^\d+$/).optional(), phone: z.string().min(10).max(20).optional(), email: z.string().email(), password: z.string().min(6) })`
   - Export `ParsedExcelRow` type inferred from schema
-- [ ] T006 [P] Add sidebar nav link in `frontend/shared/components/AdminSidebar.tsx`:
+- [x] T006 [P] Add sidebar nav link in `frontend/shared/components/AdminSidebar.tsx`:
   - New link entry: `href: "/admin/usuarios/carga-masiva"`, `label: "Carga masiva"`, `icon: <IconUpload size={20} />`, `roles: ["super_admin", "admin"]`
   - Import `IconUpload` from `@tabler/icons-react`
-- [ ] T007 [P] Add role-restricted path in `frontend/app/admin/layout.tsx`:
+- [x] T007 [P] Add role-restricted path in `frontend/app/admin/layout.tsx`:
   - Add `"/admin/usuarios/carga-masiva": ["super_admin", "admin"]` to `ROLE_RESTRICTED_PATHS`
 
 **Checkpoint**: Foundation ready — route page exists, template downloadable, schema defined, mutation wired, sidebar navigable
@@ -64,15 +64,15 @@ description: "Implementation tasks for admin user batch upload from Excel"
 
 ### Implementation for User Story 1
 
-- [ ] T008 [P] [US1] Create `frontend/features/admin-users/hooks/useExcelParser.ts`:
+- [x] T008 [P] [US1] Create `frontend/features/admin-users/hooks/useExcelParser.ts`:
   - Custom hook that accepts `File | null`
-  - Uses `read-excel-file` to parse the `.xlsx` file
-  - Maps Spanish headers (`nombre completo` → `fullName`, `cédula` → `cedula`, `teléfono` → `phone`, `correo electrónico` → `email`, `contraseña` → `password`)
+  - Uses `read-excel-file` (readSheet with schema API) to parse the `.xlsx` file
+  - Maps Spanish headers through readSheet schema to English fields
   - Validates each row against `excelRowSchema`
   - Returns state: `{ rows: ParsedExcelRow[], errors: { rowIndex: number, field: string, message: string }[], totalRows: number, validCount: number, invalidCount: number, isParsing: boolean, parseError: string | null }`
   - Enforces max 50 rows limit — if exceeded sets `parseError`
   - Accepts new file upload (replaces previous data)
-- [ ] T009 [P] [US1] Create `frontend/features/admin-users/components/FileUploadZone.tsx`:
+- [x] T009 [P] [US1] Create `frontend/features/admin-users/components/FileUploadZone.tsx`:
   - Chakra-based drag-and-drop zone with dashed border
   - Accepts only `.xlsx` files (validate by extension + MIME type)
   - Shows "Arrastra un archivo .xlsx aquí o haz clic para seleccionar" text
@@ -82,14 +82,14 @@ description: "Implementation tasks for admin user batch upload from Excel"
   - Shows error state if non-.xlsx file dropped
   - Download template button "Descargar plantilla" that triggers `onDownloadTemplate` prop
   - Props: `onFileSelect`, `onDownloadTemplate`, `isDisabled` (disabled during parsing/sending)
-- [ ] T010 [P] [US1] Create `frontend/features/admin-users/components/UploadPreviewTable.tsx`:
+- [x] T010 [P] [US1] Create `frontend/features/admin-users/components/UploadPreviewTable.tsx`:
   - Shows table with columns: #, nombre completo, cédula, teléfono, correo electrónico, contraseña (masked), Estado
   - Props: `rows: ParsedExcelRow[]`, `errors: RowError[]`
   - Valid rows show green checkmark in Estado column
   - Invalid rows show red X, row is highlighted, error message shown per field
   - Empty state when no rows parsed
   - Summary bar below table: "X de Y filas válidas"
-- [ ] T011 [US1] Create `frontend/features/admin-users/components/BatchUploadPage.tsx`:
+- [x] T011 [US1] Create `frontend/features/admin-users/components/BatchUploadPage.tsx`:
   - Main orchestrator component for the upload page
   - Uses `useExcelParser` hook and `useBatchCreateUsers` mutation
   - Manages flow state: `idle → uploaded → parsed → confirming → sending → done`
@@ -114,13 +114,13 @@ description: "Implementation tasks for admin user batch upload from Excel"
 
 ### Implementation for User Story 2
 
-- [ ] T012 [P] [US2] Create `frontend/features/admin-users/components/BatchResultSummary.tsx`:
+- [x] T012 [P] [US2] Create `frontend/features/admin-users/components/BatchResultSummary.tsx`:
   - Props: `result: { status: 'success' | 'conflict' | 'error', createdCount?: number, conflicts?: { emails: string[], cedulas: string[] }, errorMessage?: string }`
   - Success state: green box "X usuarios creados exitosamente"
   - Conflict state: yellow box showing list of conflicting emails and cedulas
   - Error state: red box with error message + "Reintentar" button
   - "Volver" button that resets flow to idle
-- [ ] T013 [US2] Wire `BatchResultSummary` into `BatchUploadPage.tsx`:
+- [x] T013 [US2] Wire `BatchResultSummary` into `BatchUploadPage.tsx`:
   - Show after mutation settles (success or error)
   - "Volver" calls a reset callback that clears file and parsed data
   - On conflict: show which rows match which conflict (match by email/cedula)
@@ -134,9 +134,9 @@ description: "Implementation tasks for admin user batch upload from Excel"
 
 **Purpose**: Active states, error UX refinements
 
-- [ ] T014 Update `AdminSidebar.tsx` — set link as active when pathname starts with `/admin/usuarios/` (so both `/admin/usuarios` and `/admin/usuarios/carga-masiva` highlight the Usuarios entry, or add a separate active highlight for carga-masiva)
-- [ ] T015 Add `IconUpload` import to `AdminSidebar.tsx` (move from task T006 to here if missed)
-- [ ] T016 Run `npm run lint` and `npm run typecheck` in frontend to verify no type/lint errors
+- [x] T014 Update `AdminSidebar.tsx` — set link as active when pathname starts with `/admin/usuarios/` (so both `/admin/usuarios` and `/admin/usuarios/carga-masiva` highlight the Usuarios entry, or add a separate active highlight for carga-masiva)
+- [x] T015 Add `IconUpload` import to `AdminSidebar.tsx` (part of T006)
+- [x] T016 Run `npm run lint` and `npm run typecheck` in frontend to verify no type/lint errors
 
 ---
 

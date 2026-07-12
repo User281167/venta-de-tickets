@@ -35,3 +35,13 @@ export const adminUserCreateSchema = z.object({
     .optional(),
   phone: phoneSchema,
 }).strict();
+
+export const excelRowSchema = z.object({
+  fullName: z.string().min(1).max(150),
+  cedula: z.string().min(8).max(15).regex(/^\d+$/).optional(),
+  phone: z.string().min(10).max(20).optional(),
+  email: z.string().email(),
+  password: z.string().min(6),
+});
+
+export type ParsedExcelRow = z.infer<typeof excelRowSchema>;
