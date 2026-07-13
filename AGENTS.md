@@ -1,6 +1,5 @@
 <!-- SPECKIT START -->
-For additional context about technologies to be used, project structure,
-shell commands, and other important information, read the current plan
+Current plan: specs/013-admin-payments-manager/plan.md
 <!-- SPECKIT END -->
 
 # AGENT.md
