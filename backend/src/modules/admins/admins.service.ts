@@ -9,8 +9,8 @@ import * as ticketsService from '../tickets/tickets.service.js';
 
 import { logger } from '../../utils/logger.js';
 
-const ROLES = ['admin', 'checker', 'client'] as const;
-const NO_ALLOWED_ROLES = ['super_admin'] as const;
+const ROLES = ['admin', 'checker', 'client'];
+const NO_ALLOWED_ROLES = ['super_admin'];
 
 export async function listUsers(page: number, limit: number, search?: string) {
   const [data, total] = await Promise.all([
