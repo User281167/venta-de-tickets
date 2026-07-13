@@ -10,6 +10,8 @@ import {
 } from "@chakra-ui/react";
 import type { PaymentItem } from "../types/payment.types";
 import { PaymentDetail } from "./PaymentDetail";
+import { formatCurrency } from "@/shared/utils/formats";
+import { PAYMENT_STATUS_LABELS } from "@/shared/utils/constants";
 
 const STATUS_BG: Record<string, string> = {
   pending: "yellow.500",
@@ -17,22 +19,6 @@ const STATUS_BG: Record<string, string> = {
   failed: "red.500",
   refunded: "gray.500",
 };
-
-const STATUS_LABELS: Record<string, string> = {
-  pending: "Pendiente",
-  completed: "Pagado",
-  failed: "Fallido",
-  refunded: "Reembolsado",
-};
-
-function formatCOP(cents: number): string {
-  return new Intl.NumberFormat("es-CO", {
-    style: "currency",
-    currency: "COP",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(cents / 100);
-}
 
 export function PaymentRow({ payment }: { payment: PaymentItem }) {
   return (
@@ -63,7 +49,7 @@ export function PaymentRow({ payment }: { payment: PaymentItem }) {
 
           <SimpleGrid columns={2} gap={4} templateColumns="1fr 1fr" w="52">
             <Text color="white" fontWeight="semibold">
-              {formatCOP(payment.amountCents)}
+              {formatCurrency(payment.amountCents)}
             </Text>
 
             <Box
@@ -73,7 +59,7 @@ export function PaymentRow({ payment }: { payment: PaymentItem }) {
               bg={STATUS_BG[payment.status] ?? "gray.500"}
             >
               <Text fontSize="xs" color="white" fontWeight="medium">
-                {STATUS_LABELS[payment.status] ?? payment.status}
+                {PAYMENT_STATUS_LABELS[payment.status] ?? payment.status}
               </Text>
             </Box>
           </SimpleGrid>

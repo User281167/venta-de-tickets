@@ -14,6 +14,7 @@ const ROLE_RESTRICTED_PATHS: Record<string, string[]> = {
   "/admin/ticket-types": ["super_admin", "admin"],
   "/admin/usuarios": ["super_admin", "admin"],
   "/admin/usuarios/carga-masiva": ["super_admin", "admin"],
+  "/admin/pagos": ["super_admin", "admin"],
 };
 
 function AdminLayoutInner({ children }: { children: ReactNode }) {

@@ -25,6 +25,7 @@ import {
   IconQrcode,
   IconX,
   IconHome,
+  IconCurrencyDollar,
 } from "@tabler/icons-react";
 import { useState, type ReactNode } from "react";
 
@@ -54,6 +55,12 @@ const ALL_LINKS: SidebarLink[] = [
     href: "/admin/usuarios/carga-masiva",
     label: "Carga masiva",
     icon: <IconUpload size={20} />,
+    roles: ["super_admin", "admin"] as const,
+  },
+  {
+    href: "/admin/pagos",
+    label: "Pagos",
+    icon: <IconCurrencyDollar size={20} />,
     roles: ["super_admin", "admin"] as const,
   },
 ];
@@ -95,7 +102,7 @@ export function AdminSidebar() {
 
       <VStack align="stretch" gap={1} flex={1}>
         {visibleLinks.map((link) => {
-          const isActive = pathname === link.href || (link.href === "/admin/usuarios" && pathname.startsWith("/admin/usuarios/"));
+          const isActive = pathname === link.href || (link.href.startsWith("/admin/") && link.href !== "/admin" && pathname.startsWith(link.href + "/"));
 
           return (
             <ChakraLink

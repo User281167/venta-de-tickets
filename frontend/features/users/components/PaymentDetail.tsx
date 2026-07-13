@@ -1,12 +1,6 @@
 import { Box, Separator, Text, VStack } from "@chakra-ui/react";
 import type { PaymentItem } from "../types/payment.types";
-
-const STATUS_LABELS: Record<string, string> = {
-  pending: "Pendiente",
-  completed: "Pagado",
-  failed: "Fallido",
-  refunded: "Reembolsado",
-};
+import { PAYMENT_STATUS_LABELS } from "@/shared/utils/constants";
 
 export function PaymentDetail({ payment }: { payment: PaymentItem }) {
   return (
@@ -43,7 +37,7 @@ export function PaymentDetail({ payment }: { payment: PaymentItem }) {
                   {ticket.ticketCode}
                 </Text>
                 <Text fontSize="xs" color="gray.400">
-                  {STATUS_LABELS[ticket.status] ?? ticket.status}
+                  {PAYMENT_STATUS_LABELS[ticket.status] ?? ticket.status}
                 </Text>
               </Box>
             ))}

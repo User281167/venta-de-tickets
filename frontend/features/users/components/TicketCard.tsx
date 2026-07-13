@@ -3,8 +3,8 @@
 import { Box, Flex, HStack, Separator, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import type { TicketItem } from "../types/ticket.types";
-import { formatCOP } from "./formatCOP";
 import { TicketQrExpand } from "./TicketQrExpand";
+import { formatCurrency } from "@/shared/utils/formats";
 
 const STATUS_BG: Record<string, string> = {
   reserved: "yellow.500",
@@ -55,6 +55,7 @@ export function TicketCard({ ticket }: { ticket: TicketItem }) {
           <Text color="white" fontWeight="semibold">
             {ticket.ticketType.name}
           </Text>
+
           <Text fontSize="sm" fontFamily="monospace" color="gray.400" mt={1}>
             {ticket.ticketCode}
           </Text>
@@ -62,8 +63,9 @@ export function TicketCard({ ticket }: { ticket: TicketItem }) {
 
         <HStack gap={3}>
           <Text color="white" fontSize="sm">
-            {formatCOP(ticket.ticketType.price)}
+            {formatCurrency(ticket.ticketType.price)}
           </Text>
+
           <Box
             px={2}
             py={0.5}
