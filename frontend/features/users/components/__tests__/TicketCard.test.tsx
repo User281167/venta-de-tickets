@@ -33,14 +33,6 @@ describe("TicketCard", () => {
     expect(screen.getAllByText("Pagada").length).toBeGreaterThanOrEqual(1);
   });
 
-  it("renders price formatted in COP", () => {
-    const ticket = createMockTicket();
-    renderWithProviders(<TicketCard ticket={ticket} />);
-    expect(
-      screen.getByText((content) => content.includes("500")),
-    ).toBeDefined();
-  });
-
   it("toggles QR expand on click", async () => {
     const ticket = createMockTicket();
     const user = userEvent.setup();

@@ -35,7 +35,7 @@ describe("PaymentFilters", () => {
 
   it("renders status dropdown", () => {
     setup();
-    expect(screen.getByText("Todos los estados")).toBeInTheDocument();
+    expect(screen.getAllByText("Todos los estados").length).toBeGreaterThan(0);
   });
 
   it("calls onSearchChange when typing", async () => {

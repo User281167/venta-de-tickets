@@ -264,11 +264,15 @@ export async function getPaymentStatus(
   const isStaff = userRole === 'admin' || userRole === 'super_admin';
 
   if (!isOwner && !isStaff) {
-    logger.warn(`Access denied: paymentId=${paymentId}, userId=${userId}, userRole=${userRole}`);
+    logger.warn(
+      `Access denied: paymentId=${paymentId}, userId=${userId}, userRole=${userRole}`,
+    );
     throw new ForbiddenError('Access denied');
   }
 
-  logger.info(`Payment status retrieved: paymentId=${paymentId}, status=${payment.status}`);
+  logger.info(
+    `Payment status retrieved: paymentId=${paymentId}, status=${payment.status}`,
+  );
 
   return {
     id: payment.id,
@@ -289,11 +293,15 @@ export async function processRefund(input: {
   reason: string;
   processedById: string;
 }) {
-  logger.info(`Processing refund: paymentId=${input.paymentId}`);
+  logger.info(
+    `Processing refund: paymentId=${input.paymentId} reason=${input.reason} processedById=${input.processedById}`,
+  );
 
   const refund = await paymentsRepo.refundTransaction(input);
 
-  logger.info(`Refund processed: paymentId=${input.paymentId}, status=${refund.status}`);
+  logger.info(
+    `Refund processed: paymentId=${input.paymentId}, status=${refund.status}`,
+  );
 
   return refund;
 }

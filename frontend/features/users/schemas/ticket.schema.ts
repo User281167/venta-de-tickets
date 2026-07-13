@@ -13,7 +13,6 @@ export const ticketStatusSchema = z.enum([
 export const ticketTypeInfoSchema = z.object({
   id: z.string(),
   name: z.string(),
-  price: z.number(),
 });
 
 export const ticketItemSchema = z.object({

@@ -43,9 +43,11 @@ export function RefundDialog({
 
     if (!parsed.success) {
       const fieldErrors: Record<string, string> = {};
+
       for (const issue of parsed.error.issues) {
         fieldErrors[issue.path[0] as string] = issue.message;
       }
+
       setErrors(fieldErrors);
       return;
     }
@@ -68,10 +70,10 @@ export function RefundDialog({
   }, [reset, onOpenChange]);
 
   return (
-    <DialogRoot open={open} onOpenChange={(e) => onOpenChange(e.open)}>
+    <DialogRoot open={open} onOpenChange={(e) => onOpenChange(e.open)} placement="top">
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Procesar reembolso</DialogTitle>
+          <DialogTitle color='black'>Procesar reembolso</DialogTitle>
           <DialogCloseTrigger />
         </DialogHeader>
 
@@ -86,6 +88,7 @@ export function RefundDialog({
 
             <Textarea
               value={reason}
+              color='black'
               onChange={(e) => setReason(e.target.value)}
               placeholder="Describa el motivo del reembolso (mín. 10 caracteres)"
             />

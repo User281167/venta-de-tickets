@@ -97,7 +97,6 @@ const selectTicketForOwner = {
     select: {
       id: true,
       name: true,
-      price: true,
     },
   },
 } as const;

@@ -74,11 +74,15 @@ export function PaymentFilters({
       <Field.Root w="180px">
         <Field.Label color="white">Estado</Field.Label>
 
-        <Select.Root collection={STATUS_OPTIONS} onChange={handleStatus}>
+        <Select.Root
+          collection={STATUS_OPTIONS}
+          defaultValue={[STATUS_OPTIONS.items[0].value]}
+          onChange={handleStatus}
+        >
           <Select.HiddenSelect />
 
           <Select.Control>
-            <Select.Trigger>
+            <Select.Trigger status-trigger="status-trigger">
               <Select.ValueText placeholder="Estado" />
             </Select.Trigger>
 

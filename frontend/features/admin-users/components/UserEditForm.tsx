@@ -6,15 +6,25 @@ import {
   Button,
   Field,
   Input,
-  NativeSelect,
   HStack,
   VStack,
   Switch,
+  createListCollection,
+  Select,
+  Portal,
 } from "@chakra-ui/react";
 import { toast } from "sonner";
 
 import { adminUserUpdateSchema } from "../schemas/admin-user.schema";
 import type { UserRow, UpdateUserInput } from "../api/admin-users.queries";
+
+const ROLE_OPTIONS = createListCollection({
+  items: [
+    { value: "cliente", label: "cliente" },
+    { value: "checker", label: "checker" },
+    { value: "admin", label: "admin" },
+  ],
+});
 
 interface Props {
   user: UserRow;
@@ -132,16 +142,36 @@ export function UserEditForm({ user, onSave, onCancel }: Props) {
           <Field.Root>
             <Field.Label>Rol</Field.Label>
 
-            <NativeSelect.Root>
-              <NativeSelect.Field
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-              >
-                <option value="client">Cliente</option>
-                <option value="checker">Checker</option>
-                <option value="admin">Admin</option>
-              </NativeSelect.Field>
-            </NativeSelect.Root>
+            <Select.Root
+              collection={ROLE_OPTIONS}
+              defaultValue={[ROLE_OPTIONS.items[0].value]}
+              onChange={(e) => setRole(e.target.value)}
+            >
+              <Select.HiddenSelect />
+
+              <Select.Control>
+                <Select.Trigger status-trigger="status-trigger">
+                  <Select.ValueText placeholder="Estado" />
+                </Select.Trigger>
+
+                <Select.IndicatorGroup>
+                  <Select.Indicator />
+                </Select.IndicatorGroup>
+              </Select.Control>
+
+              <Portal>
+                <Select.Positioner>
+                  <Select.Content>
+                    {ROLE_OPTIONS.items.map((opt) => (
+                      <Select.Item item={opt} key={opt.value} color="black">
+                        {opt.label}
+                        <Select.ItemIndicator />
+                      </Select.Item>
+                    ))}
+                  </Select.Content>
+                </Select.Positioner>
+              </Portal>
+            </Select.Root>
           </Field.Root>
 
           <Field.Root>
