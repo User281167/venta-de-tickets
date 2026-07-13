@@ -1,8 +1,8 @@
-# Módulo Admin — Gestión de Usuarios
+# Módulo Admin — Gestión de Usuarios y Pagos
 
 Solo rol `admin` (Prisma enum) puede acceder.
 
-## Rutas
+## Rutas: Usuarios
 
 | Método | Ruta | Descripción |
 |--------|------|-------------|
@@ -12,15 +12,26 @@ Solo rol `admin` (Prisma enum) puede acceder.
 | POST | `/api/admin/users/batch` | Crear N clientes desde JSON (máx 50) |
 | PATCH | `/api/admin/users/:id` | Modificar datos, cédula, rol, bloqueo |
 
+## Rutas: Pagos
+
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| GET | `/api/admin/payments?page=&limit=&status=&dateFrom=&dateTo=&search=` | Listar pagos paginados con filtros |
+| GET | `/api/admin/payments/:id` | Detalle del pago + usuario + tickets |
+| POST | `/api/admin/payments/:id/refund` | Reembolsar pago completo (borra tickets, restaura stock) |
+| POST | `/api/admin/sales` | Venta manual (crea tickets + pago) |
+
 ## Códigos de Error
 
 | Código | Status | Causa |
 |--------|--------|-------|
 | `VALIDATION_ERROR` | 422 | Datos inválidos |
 | `CONFLICT` | 409 | Email o cédula ya existen |
-| `NOT_FOUND` | 404 | Usuario no existe |
+| `NOT_FOUND` | 404 | Usuario/pago no existe |
 | `AUTH_ERROR` | 502 | Error en Supabase Auth |
 | `FORBIDDEN` | 403 | Rol no es `admin` |
+| `INVALID_PAYMENT_STATUS` | 409 | Reembolso sobre pago no completado |
+| `SOLD_OUT` | 409 | Sin inventario para venta manual |
 
 ## Reglas
 
@@ -107,4 +118,52 @@ sequenceDiagram
         API->>DB: UPDATE isActive
     end
     API-->>Admin: 200 + user DTO
+```
+
+### Reembolsar pago
+
+```mermaid
+sequenceDiagram
+    participant A as Admin
+    participant FE as Frontend
+    participant API as POST /payments/:id/refund
+    participant S as Service
+    participant DB as PostgreSQL
+
+    A->>FE: Click "Reembolsar" en detalle de pago
+    FE->>FE: Abre diálogo, admin escribe motivo
+    A->>FE: Confirma reembolso
+    FE->>API: POST { reason }
+    API->>S: processRefund(paymentId, reason, adminId)
+    S->>DB: SELECT payment FOR UPDATE
+    S->>S: valida status === 'completed'
+    S->>DB: SELECT tickets por payment_id
+    S->>DB: DELETE tickets por payment_id
+    S->>DB: UPDATE ticket_types quantity_sold -= count
+    S->>DB: UPDATE payments SET status = 'refunded'
+    S-->>API: { paymentId, status }
+    API-->>FE: 201
+    FE-->>A: Toast "Reembolso procesado exitosamente"
+    FE->>FE: Refresca detalle del pago
+```
+
+### Venta manual
+
+```mermaid
+sequenceDiagram
+    participant A as Admin
+    participant FE as Frontend
+    participant API as POST /admin/sales
+    participant S as Service
+    participant DB as PostgreSQL
+
+    A->>FE: Formulario: usuario + tipo entrada + cantidad
+    FE->>API: POST { userId, ticketTypeId, quantity }
+    API->>S: createAdminSale(userId, ticketTypeId, quantity)
+    S->>S: valida tipo entrada activo + stock
+    S->>DB: $transaction (FOR UPDATE, INSERT tickets, quantity_sold++)
+    S->>S: Genera QR cada ticket
+    S-->>API: [ticketId, ...]
+    API-->>FE: 201 { ticketIds }
+    FE-->>A: "Entradas creadas exitosamente"
 ```

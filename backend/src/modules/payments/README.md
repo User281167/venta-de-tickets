@@ -12,6 +12,7 @@ Checkout, webhook, payment status, and admin sale endpoints.
 | GET | `/api/admin/payments` | List all payments (admin) | JWT admin |
 | GET | `/api/admin/payments/:id` | Payment detail (admin) | JWT admin |
 | POST | `/api/admin/sales` | Manual sale creation (admin) | JWT admin |
+| POST | `/api/admin/payments/:id/refund` | Full refund (admin) | JWT admin |
 | GET | `/api/me/payments` | Client payment history | JWT client |
 
 ## Errors
@@ -25,6 +26,8 @@ Checkout, webhook, payment status, and admin sale endpoints.
 | `INVALID_SIGNATURE` | 400 | Webhook signature invalid |
 | `NOT_FOUND` | 404 | Payment/ticket/user not found |
 | `FORBIDDEN` | 403 | Not owner/admin |
+| `INVALID_PAYMENT_STATUS` | 409 | Refund attempted on non-completed payment |
+| `REFUND_EXCEEDS_BALANCE` | 409 | Refund amount > remaining |
 
 ## Flow: Checkout
 
@@ -69,6 +72,45 @@ sequenceDiagram
         S->>DB: update(payment, failed)
     end
     API-->>MP: 200 { received: true }
+```
+
+## Flow: Reembolso (Admin)
+
+```mermaid
+sequenceDiagram
+    participant A as Admin
+    participant API as POST /payments/:id/refund
+    participant S as Service
+    participant DB as PostgreSQL
+
+    A->>API: { reason }
+    API->>S: processRefund(paymentId, reason, processedById)
+    S->>DB: SELECT payment FOR UPDATE
+    S->>S: validate status === 'completed'
+    S->>DB: SELECT tickets WHERE payment_id = :id
+    S->>DB: DELETE tickets WHERE payment_id = :id
+    S->>DB: UPDATE ticket_types SET quantity_sold -= count (por cada tipo)
+    S->>DB: UPDATE payments SET status = 'refunded'
+    S-->>API: { paymentId, status }
+    API-->>A: 201 { paymentId, status }
+```
+
+## Flow: Venta manual (Admin)
+
+```mermaid
+sequenceDiagram
+    participant A as Admin
+    participant API as POST /admin/sales
+    participant S as Service
+    participant DB as PostgreSQL
+
+    A->>API: { userId, ticketTypeId, quantity }
+    API->>S: createAdminSale(userId, ticketTypeId, quantity)
+    S->>S: validate ticket type enabled + stock
+    S->>DB: $transaction (FOR UPDATE ticket_type, INSERT tickets, increment quantity_sold)
+    S->>S: generate QR for each ticket
+    S-->>API: [ticketId, ...]
+    API-->>A: 201 { ticketIds }
 ```
 
 ## Structure

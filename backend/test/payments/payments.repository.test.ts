@@ -133,18 +133,20 @@ describe('payments.repository', () => {
       },
     ]);
 
-    const result = await repo.findAllPayments(1, 20);
+    const result = await repo.findAllPaymentsFiltered({ page: 1, limit: 20 });
 
-    expect(mockPrisma.payment.findMany).toHaveBeenCalledWith({
-      select: expect.objectContaining({
-        id: true,
-        userId: true,
-        provider: true,
+    expect(mockPrisma.payment.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        select: expect.objectContaining({
+          id: true,
+          userId: true,
+          provider: true,
+        }),
+        skip: 0,
+        take: 20,
+        orderBy: { createdAt: 'desc' },
       }),
-      skip: 0,
-      take: 20,
-      orderBy: { createdAt: 'desc' },
-    });
+    );
     expect(result).toHaveLength(1);
     expect(result[0].user.email).toBe('a@test.com');
   });
@@ -152,9 +154,9 @@ describe('payments.repository', () => {
   it('counts all payments', async () => {
     mockPrisma.payment.count.mockResolvedValue(5);
 
-    const result = await repo.countAllPayments();
+    const result = await repo.countAllPaymentsFiltered({});
 
-    expect(mockPrisma.payment.count).toHaveBeenCalledWith();
+    expect(mockPrisma.payment.count).toHaveBeenCalledWith({ where: {} });
     expect(result).toBe(5);
   });
 

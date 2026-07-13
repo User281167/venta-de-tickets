@@ -77,6 +77,8 @@ export async function createCheckoutTransaction(input: {
   reserveExpiresAt: Date;
   generateTicketCode: () => string;
 }) {
+  // transacciön para crear pago, reducir stock todas las operaciones deben ser exitosas
+
   return prisma.$transaction(async (tx) => {
     await tx.$executeRaw`
       WITH expired AS (
@@ -146,6 +148,8 @@ export async function processPaymentWebhook(input: {
   providerTxId: string;
   metadata: Prisma.InputJsonValue;
 }) {
+  // actualizar checkout y crear tickets en una sola transacción
+
   return prisma.$transaction(async (tx) => {
     const updated = await tx.$executeRaw`
       UPDATE payments
@@ -219,19 +223,73 @@ const selectPaymentAdmin = {
       fullName: true,
     },
   },
+  _count: {
+    select: { tickets: true },
+  },
 } as const;
 
-export function findAllPayments(page: number, limit: number) {
+function buildPaymentWhere(input: {
+  status?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  search?: string;
+}): Record<string, unknown> {
+  const where: Record<string, unknown> = {};
+
+  if (input.status) {
+    where.status = input.status;
+  }
+
+  if (input.dateFrom || input.dateTo) {
+    const createdAt: Record<string, Date> = {};
+
+    if (input.dateFrom) createdAt.gte = new Date(input.dateFrom);
+    if (input.dateTo) createdAt.lte = new Date(input.dateTo);
+
+    where.createdAt = createdAt;
+  }
+
+  if (input.search) {
+    where.user = {
+      OR: [
+        { fullName: { contains: input.search, mode: 'insensitive' } },
+        { cedula: { contains: input.search, mode: 'insensitive' } },
+        { email: { contains: input.search, mode: 'insensitive' } },
+      ],
+    };
+  }
+
+  return where;
+}
+
+export function findAllPaymentsFiltered(input: {
+  page: number;
+  limit: number;
+  status?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  search?: string;
+}) {
+  const where = buildPaymentWhere(input);
+
   return prisma.payment.findMany({
     select: selectPaymentAdmin,
-    skip: (page - 1) * limit,
-    take: limit,
+    where,
+    skip: (input.page - 1) * input.limit,
+    take: input.limit,
     orderBy: { createdAt: 'desc' },
   });
 }
 
-export function countAllPayments() {
-  return prisma.payment.count();
+export function countAllPaymentsFiltered(input: {
+  status?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  search?: string;
+}) {
+  const where = buildPaymentWhere(input);
+
+  return prisma.payment.count({ where });
 }
 
 export function findPaymentByIdWithUser(id: string) {
@@ -265,3 +323,59 @@ export type PaymentWithTickets = NonNullable<
 >;
 
 export type PaymentRow = Payment;
+
+export async function refundTransaction(input: {
+  paymentId: string;
+  reason: string;
+  processedById: string;
+}) {
+  // 1. obtener el pago y verificar que esté completado
+  // 2. revertir el stock de los tickets
+  // 3. actualizar el estado del pago a 'refunded'
+  // 4. guardar el historial de devolución
+
+  return prisma.$transaction(async (tx) => {
+    const paymentRows = await tx.$queryRaw<
+      Array<{ status: string }>
+    >`SELECT status FROM payments WHERE id = ${input.paymentId}::uuid FOR UPDATE`;
+
+    const payment = paymentRows[0];
+    if (!payment) {
+      throw Object.assign(new Error('NOT_FOUND'), { statusCode: 404, code: 'NOT_FOUND' });
+    }
+
+    if (payment.status !== 'completed') {
+      throw Object.assign(new Error('INVALID_PAYMENT_STATUS'), {
+        statusCode: 409,
+        code: 'INVALID_PAYMENT_STATUS',
+      });
+    }
+
+    const tickets = await tx.$queryRaw<
+      Array<{ id: string; ticket_type_id: string }>
+    >`SELECT id, ticket_type_id FROM tickets WHERE payment_id = ${input.paymentId}::uuid`;
+
+    if (tickets.length > 0) {
+      const typeCounts = new Map<string, number>();
+      for (const t of tickets) {
+        typeCounts.set(t.ticket_type_id, (typeCounts.get(t.ticket_type_id) ?? 0) + 1);
+      }
+
+      await tx.$executeRaw`DELETE FROM tickets WHERE payment_id = ${input.paymentId}::uuid`;
+
+      for (const [typeId, count] of typeCounts) {
+        await tx.$executeRaw`
+          UPDATE ticket_types
+          SET quantity_sold = GREATEST(0, quantity_sold - ${count})
+          WHERE id = ${typeId}::uuid
+        `;
+      }
+    }
+
+    await tx.$executeRaw`
+      UPDATE payments SET status = 'refunded' WHERE id = ${input.paymentId}::uuid
+    `;
+
+    return { paymentId: input.paymentId, status: 'refunded' as const };
+  });
+}

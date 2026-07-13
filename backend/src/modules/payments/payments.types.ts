@@ -40,6 +40,16 @@ export interface PaymentProvider {
   createCheckout(input: CheckoutInput): Promise<CheckoutResult>;
   verifySignature(payload: unknown, headers: Record<string, string>): boolean;
   parseWebhook(payload: unknown): Promise<NormalizedWebhookEvent>;
+
 }
 
 export type PaymentRecord = PaymentModel;
+
+export interface PaymentFilters {
+  status?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  search?: string;
+  page: number;
+  limit: number;
+}

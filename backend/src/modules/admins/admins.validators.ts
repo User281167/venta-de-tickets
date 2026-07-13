@@ -63,3 +63,16 @@ export const adminSaleSchema = z.object({
   ticketTypeId: z.string().uuid(),
   quantity: z.number().int().min(1),
 }).strict();
+
+export const paymentFiltersSchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(25),
+  status: z.string().optional(),
+  dateFrom: z.string().optional(),
+  dateTo: z.string().optional(),
+  search: z.string().optional(),
+});
+
+export const refundSchema = z.object({
+  reason: z.string().min(10, 'Reason must be at least 10 characters').max(500),
+}).strict();

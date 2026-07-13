@@ -34,8 +34,8 @@ vi.mock('../src/shared/supabase/admin-client.js', () => ({
 }));
 
 vi.mock('../src/modules/payments/payments.repository.js', () => ({
-  findAllPayments: vi.fn(),
-  countAllPayments: vi.fn(),
+  findAllPaymentsFiltered: vi.fn(),
+  countAllPaymentsFiltered: vi.fn(),
   findPaymentByIdWithUser: vi.fn(),
   create: vi.fn(),
   update: vi.fn(),
@@ -590,6 +590,7 @@ describe('GET /api/admin/payments', () => {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       user: { id: 'user-1', email: 'a@test.com', fullName: 'Alice' },
+      _count: { tickets: 2 },
     },
     {
       id: 'pay-2',
@@ -601,12 +602,13 @@ describe('GET /api/admin/payments', () => {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       user: { id: 'user-2', email: 'b@test.com', fullName: 'Bob' },
+      _count: { tickets: 1 },
     },
   ];
 
   it('returns 200 with paginated list', async () => {
-    vi.mocked(paymentsRepo.findAllPayments).mockResolvedValue(mockPaymentList);
-    vi.mocked(paymentsRepo.countAllPayments).mockResolvedValue(2);
+    vi.mocked(paymentsRepo.findAllPaymentsFiltered).mockResolvedValue(mockPaymentList);
+    vi.mocked(paymentsRepo.countAllPaymentsFiltered).mockResolvedValue(2);
 
     const res = await request(app).get('/api/admin/payments').set(authHeader());
 
@@ -614,13 +616,13 @@ describe('GET /api/admin/payments', () => {
     expect(res.body.data).toHaveLength(2);
     expect(res.body.total).toBe(2);
     expect(res.body.page).toBe(1);
-    expect(res.body.limit).toBe(20);
+    expect(res.body.limit).toBe(25);
     expect(res.body.data[0].user.email).toBe('a@test.com');
   });
 
   it('passes pagination params correctly', async () => {
-    vi.mocked(paymentsRepo.findAllPayments).mockResolvedValue([mockPaymentList[1]]);
-    vi.mocked(paymentsRepo.countAllPayments).mockResolvedValue(1);
+    vi.mocked(paymentsRepo.findAllPaymentsFiltered).mockResolvedValue([mockPaymentList[1]]);
+    vi.mocked(paymentsRepo.countAllPaymentsFiltered).mockResolvedValue(1);
 
     const res = await request(app)
       .get('/api/admin/payments?page=2&limit=5')
@@ -629,7 +631,10 @@ describe('GET /api/admin/payments', () => {
     expect(res.status).toBe(200);
     expect(res.body.page).toBe(2);
     expect(res.body.limit).toBe(5);
-    expect(paymentsRepo.findAllPayments).toHaveBeenCalledWith(2, 5);
+    expect(paymentsRepo.findAllPaymentsFiltered).toHaveBeenCalledWith({
+      page: 2,
+      limit: 5,
+    });
   });
 
   it('returns 422 with invalid page param', async () => {

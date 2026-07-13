@@ -205,13 +205,33 @@ export async function listMyPayments(
   return { data, total, page, limit };
 }
 
-export async function listAllPayments(page: number, limit: number) {
+export async function listAllPayments(input: {
+  page: number;
+  limit: number;
+  status?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  search?: string;
+}) {
   const [data, total] = await Promise.all([
-    paymentsRepo.findAllPayments(page, limit),
-    paymentsRepo.countAllPayments(),
+    paymentsRepo.findAllPaymentsFiltered(input),
+    paymentsRepo.countAllPaymentsFiltered(input),
   ]);
 
-  return { data, total, page, limit };
+  const mapped = data.map((p) => ({
+    id: p.id,
+    userId: p.userId,
+    provider: p.provider,
+    providerTxId: p.providerTxId,
+    amountCents: p.amountCents,
+    status: p.status,
+    createdAt: p.createdAt,
+    updatedAt: p.updatedAt,
+    user: p.user,
+    ticketCount: p._count.tickets,
+  }));
+
+  return { data: mapped, total, page: input.page, limit: input.limit };
 }
 
 export async function getPaymentDetail(paymentId: string) {
@@ -262,4 +282,18 @@ export async function getPaymentStatus(
       qrToken: t.qrToken,
     })),
   };
+}
+
+export async function processRefund(input: {
+  paymentId: string;
+  reason: string;
+  processedById: string;
+}) {
+  logger.info(`Processing refund: paymentId=${input.paymentId}`);
+
+  const refund = await paymentsRepo.refundTransaction(input);
+
+  logger.info(`Refund processed: paymentId=${input.paymentId}, status=${refund.status}`);
+
+  return refund;
 }

@@ -8,9 +8,10 @@ import {
   updateUserSchema,
   updateRoleSchema,
   paginationSchema,
-  paymentPaginationSchema,
+  paymentFiltersSchema,
   paymentParamsSchema,
   adminSaleSchema,
+  refundSchema,
 } from './admins.validators.js';
 
 export async function getMe(req: Request, res: Response): Promise<void> {
@@ -119,8 +120,8 @@ export async function updateUserRole(
 
 export async function listPaymentsHandler(req: Request, res: Response): Promise<void> {
   try {
-    const { page, limit } = paymentPaginationSchema.parse(req.query);
-    const result = await paymentsService.listAllPayments(page, limit);
+    const filters = paymentFiltersSchema.parse(req.query);
+    const result = await paymentsService.listAllPayments(filters);
 
     res.json(result);
   } catch (err) {
@@ -161,6 +162,31 @@ export async function getPaymentDetailHandler(req: Request, res: Response): Prom
     const result = await paymentsService.getPaymentDetail(id);
 
     res.json(result);
+  } catch (err) {
+    if (err instanceof ZodError) {
+      res.status(422).json({
+        error: { code: 'VALIDATION_ERROR', message: err.issues.map((i) => i.message).join(', ') },
+      });
+
+      return;
+    }
+
+    throw err;
+  }
+}
+
+export async function refundPaymentHandler(req: Request, res: Response): Promise<void> {
+  try {
+    const { id } = paymentParamsSchema.parse(req.params);
+    const { reason } = refundSchema.parse(req.body);
+
+    const refund = await paymentsService.processRefund({
+      paymentId: id,
+      reason,
+      processedById: req.user!.id,
+    });
+
+    res.status(201).json(refund);
   } catch (err) {
     if (err instanceof ZodError) {
       res.status(422).json({
