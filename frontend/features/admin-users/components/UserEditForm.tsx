@@ -145,7 +145,8 @@ export function UserEditForm({ user, onSave, onCancel }: Props) {
             <Select.Root
               collection={ROLE_OPTIONS}
               defaultValue={[ROLE_OPTIONS.items[0].value]}
-              onChange={(e) => setRole(e.target.value)}
+              value={[role]}
+              onValueChange={({ value }) => setRole(value[0] ?? "")}
             >
               <Select.HiddenSelect />
 

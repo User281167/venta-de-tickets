@@ -98,13 +98,22 @@ export function FileUploadZone({
             <Text fontWeight="medium" color="teal.700">
               {selectedFile.name}
             </Text>
-            <Button size="sm" variant="ghost" colorPalette="red" onClick={(e) => { e.stopPropagation(); handleRemove(); }}>
+
+            <Button
+              size="sm"
+              variant="ghost"
+              colorPalette="red"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
               Quitar archivo
             </Button>
           </VStack>
         ) : (
           <VStack gap={2}>
             <Icon as={IconUpload} boxSize={8} color="gray.400" />
+
             <Text color="gray.600" fontWeight="medium">
               Arrastra un archivo .xlsx aquí o haz clic para seleccionar
             </Text>

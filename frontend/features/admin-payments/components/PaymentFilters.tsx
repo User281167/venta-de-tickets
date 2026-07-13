@@ -33,6 +33,7 @@ interface PaymentFiltersProps {
 
 export function PaymentFilters({
   search,
+  status,
   dateFrom,
   dateTo,
   onSearchChange,
@@ -76,8 +77,8 @@ export function PaymentFilters({
 
         <Select.Root
           collection={STATUS_OPTIONS}
-          defaultValue={[STATUS_OPTIONS.items[0].value]}
-          onChange={handleStatus}
+          value={[status]}
+          onValueChange={({ value }) => onStatusChange(value[0] ?? "")}
         >
           <Select.HiddenSelect />
 
