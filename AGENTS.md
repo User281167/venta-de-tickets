@@ -1,5 +1,5 @@
 <!-- SPECKIT START -->
-Current plan: specs/013-admin-payments-manager/plan.md
+Current plan: specs/014-admin-manual-payment/plan.md
 <!-- SPECKIT END -->
 
 # AGENT.md

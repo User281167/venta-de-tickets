@@ -288,6 +288,47 @@ export async function getPaymentStatus(
   };
 }
 
+export async function createAdminPayment(input: {
+  userId: string;
+  provider: 'MANUAL' | 'GIFT';
+  createdBy: string;
+  tickets: Array<{ ticketTypeId: string; quantity: number }>;
+}) {
+  logger.info(
+    `Creating admin payment: userId=${input.userId}, provider=${input.provider}, tickets=${JSON.stringify(input.tickets)}`,
+  );
+
+  let totalAmountCents = 0;
+
+  for (const item of input.tickets) {
+    const ticketType = await ticketsService.getTicketTypeById(
+      item.ticketTypeId,
+    );
+
+    const unitPriceCents = Math.round(Number(ticketType.price) * 100);
+    totalAmountCents += unitPriceCents * item.quantity;
+  }
+
+  const result = await paymentsRepo.createAdminPaymentTransaction({
+    userId: input.userId,
+    provider: input.provider,
+    amountCents: totalAmountCents,
+    createdBy: input.createdBy,
+    tickets: input.tickets,
+    generateTicketCode,
+  });
+
+  for (const ticketId of result.ticketIds) {
+    await ticketsService.generateQrForTicket(ticketId);
+  }
+
+  logger.info(
+    `Admin payment created: paymentId=${result.paymentId}, ticketCount=${result.ticketIds.length}`,
+  );
+
+  return result;
+}
+
 export async function processRefund(input: {
   paymentId: string;
   reason: string;

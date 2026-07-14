@@ -40,10 +40,21 @@ export interface PaymentProvider {
   createCheckout(input: CheckoutInput): Promise<CheckoutResult>;
   verifySignature(payload: unknown, headers: Record<string, string>): boolean;
   parseWebhook(payload: unknown): Promise<NormalizedWebhookEvent>;
-
 }
 
 export type PaymentRecord = PaymentModel;
+
+export interface TicketQuantityInput {
+  ticketTypeId: string;
+  quantity: number;
+}
+
+export interface AdminPaymentInput {
+  userId: string;
+  provider: 'MANUAL' | 'GIFT';
+  createdBy: string;
+  tickets: TicketQuantityInput[];
+}
 
 export interface PaymentFilters {
   status?: string;

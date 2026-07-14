@@ -181,6 +181,7 @@ const selectPaymentHistory = {
   provider: true,
   amountCents: true,
   status: true,
+  createdBy: true,
   createdAt: true,
   tickets: {
     select: {
@@ -214,6 +215,7 @@ const selectPaymentAdmin = {
   providerTxId: true,
   amountCents: true,
   status: true,
+  createdBy: true,
   createdAt: true,
   updatedAt: true,
   user: {
@@ -324,6 +326,99 @@ export type PaymentWithTickets = NonNullable<
 
 export type PaymentRow = Payment;
 
+export async function createAdminPaymentTransaction(input: {
+  userId: string;
+  provider: string;
+  amountCents: number;
+  createdBy: string;
+  tickets: Array<{ ticketTypeId: string; quantity: number }>;
+  generateTicketCode: () => string;
+}) {
+  return prisma.$transaction(async (tx) => {
+    const ticketIds: string[] = [];
+
+    for (const item of input.tickets) {
+      const rows = await tx.$queryRaw<
+        Array<{
+          quantity_sold: number;
+          quantity_total: number;
+          name: string;
+          status: string;
+        }>
+      >`SELECT quantity_sold, quantity_total, name, status FROM ticket_types WHERE id = ${item.ticketTypeId}::uuid FOR UPDATE`;
+
+      const ticketType = rows[0];
+
+      if (!ticketType) {
+        throw Object.assign(
+          new Error(`Ticket type not found: ${item.ticketTypeId}`),
+          {
+            statusCode: 404,
+            code: 'NOT_FOUND',
+          },
+        );
+      }
+
+      if (
+        ticketType.quantity_sold + item.quantity >
+        ticketType.quantity_total
+      ) {
+        const available = ticketType.quantity_total - ticketType.quantity_sold;
+        throw Object.assign(
+          new Error(
+            `Not enough tickets available for "${ticketType.name}", available: ${available}, requested: ${item.quantity}`,
+          ),
+          {
+            statusCode: 409,
+            code: 'SOLD_OUT',
+            details: [
+              {
+                ticketTypeId: item.ticketTypeId,
+                name: ticketType.name,
+                available,
+                requested: item.quantity,
+              },
+            ],
+          },
+        );
+      }
+
+      await tx.$executeRaw`
+        UPDATE ticket_types
+        SET quantity_sold = quantity_sold + ${item.quantity}
+        WHERE id = ${item.ticketTypeId}::uuid
+      `;
+
+      for (let i = 0; i < item.quantity; i++) {
+        const ticketCode = input.generateTicketCode();
+
+        const result = await tx.$queryRaw<Array<{ id: string }>>`
+          INSERT INTO tickets (id, ticket_type_id, user_id, status, purchased_at, ticket_code)
+          VALUES (gen_random_uuid(), ${item.ticketTypeId}::uuid, ${input.userId}::uuid, 'paid', now(), ${ticketCode})
+          RETURNING id
+        `;
+        ticketIds.push(result[0].id);
+      }
+    }
+
+    const paymentRow = await tx.$queryRaw<Array<{ id: string }>>`
+      INSERT INTO payments (id, user_id, provider, amount_cents, status, created_by)
+      VALUES (gen_random_uuid(), ${input.userId}::uuid, ${input.provider}, ${input.amountCents}, 'completed', ${input.createdBy}::uuid)
+      RETURNING id
+    `;
+
+    const paymentId = paymentRow[0].id;
+
+    await tx.$executeRaw`
+      UPDATE tickets
+      SET payment_id = ${paymentId}::uuid
+      WHERE id = ANY(${ticketIds}::uuid[])
+    `;
+
+    return { paymentId, ticketIds, amountCents: input.amountCents };
+  });
+}
+
 export async function refundTransaction(input: {
   paymentId: string;
   reason: string;
@@ -341,7 +436,10 @@ export async function refundTransaction(input: {
 
     const payment = paymentRows[0];
     if (!payment) {
-      throw Object.assign(new Error('NOT_FOUND'), { statusCode: 404, code: 'NOT_FOUND' });
+      throw Object.assign(new Error('NOT_FOUND'), {
+        statusCode: 404,
+        code: 'NOT_FOUND',
+      });
     }
 
     if (payment.status !== 'completed') {
@@ -357,8 +455,12 @@ export async function refundTransaction(input: {
 
     if (tickets.length > 0) {
       const typeCounts = new Map<string, number>();
+
       for (const t of tickets) {
-        typeCounts.set(t.ticket_type_id, (typeCounts.get(t.ticket_type_id) ?? 0) + 1);
+        typeCounts.set(
+          t.ticket_type_id,
+          (typeCounts.get(t.ticket_type_id) ?? 0) + 1,
+        );
       }
 
       await tx.$executeRaw`DELETE FROM tickets WHERE payment_id = ${input.paymentId}::uuid`;

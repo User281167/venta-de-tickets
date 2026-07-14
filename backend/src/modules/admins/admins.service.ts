@@ -1,11 +1,8 @@
-import { randomBytes } from 'crypto';
-
 import { ForbiddenError } from '../../shared/errors/ForbiddenError.js';
 import { NotFoundError } from '../../shared/errors/NotFoundError.js';
 import { supabaseAdmin } from '../../shared/supabase/admin-client.js';
 import * as adminsRepo from './admins.repository.js';
-import * as ticketsRepo from '../tickets/tickets.repository.js';
-import * as ticketsService from '../tickets/tickets.service.js';
+import * as paymentsService from '../payments/payments.service.js';
 
 import { logger } from '../../utils/logger.js';
 
@@ -156,19 +153,15 @@ export async function checkUserExists(userId: string) {
   return !!user;
 }
 
-function generateTicketCode(): string {
-  return randomBytes(16).toString('hex');
-}
-
-export async function createAdminSale(
+export async function createAdminPayment(
   userId: string,
-  ticketTypeId: string,
-  quantity: number,
+  provider: 'MANUAL' | 'GIFT',
+  tickets: Array<{ ticketTypeId: string; quantity: number }>,
+  adminId: string,
 ) {
   logger.info(
-    `Creating admin sale: userId=${userId}, ticketTypeId=${ticketTypeId}, quantity=${quantity}`,
+    `Creating admin payment: userId=${userId}, provider=${provider}, tickets=${JSON.stringify(tickets)}`,
   );
-  await ticketsService.getTicketTypeById(ticketTypeId);
 
   const userExists = await checkUserExists(userId);
   if (!userExists) {
@@ -176,20 +169,16 @@ export async function createAdminSale(
     throw new NotFoundError('User not found');
   }
 
-  const ticketIds = await ticketsRepo.createAdminSale({
-    ticketTypeId,
+  const result = await paymentsService.createAdminPayment({
     userId,
-    quantity,
-    generateTicketCode,
+    provider,
+    createdBy: adminId,
+    tickets,
   });
 
-  for (const ticketId of ticketIds) {
-    await ticketsService.generateQrForTicket(ticketId);
-  }
+  logger.info(`Admin payment created: paymentId=${result.paymentId}`);
 
-  logger.info(`Admin sale created: ticketIds=${ticketIds}`);
-
-  return ticketIds;
+  return result;
 }
 
 export async function updateUser(id: string, data: Record<string, unknown>) {

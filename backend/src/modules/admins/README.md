@@ -19,7 +19,7 @@ Solo rol `admin` (Prisma enum) puede acceder.
 | GET | `/api/admin/payments?page=&limit=&status=&dateFrom=&dateTo=&search=` | Listar pagos paginados con filtros |
 | GET | `/api/admin/payments/:id` | Detalle del pago + usuario + tickets |
 | POST | `/api/admin/payments/:id/refund` | Reembolsar pago completo (borra tickets, restaura stock) |
-| POST | `/api/admin/sales` | Venta manual (crea tickets + pago) |
+| POST | `/api/admin/payments/manual` | Pago manual/gift + tickets en transacción |
 
 ## Códigos de Error
 
@@ -147,23 +147,23 @@ sequenceDiagram
     FE->>FE: Refresca detalle del pago
 ```
 
-### Venta manual
+### Pago manual
 
 ```mermaid
 sequenceDiagram
     participant A as Admin
     participant FE as Frontend
-    participant API as POST /admin/sales
+    participant API as POST /admin/payments/manual
     participant S as Service
     participant DB as PostgreSQL
 
-    A->>FE: Formulario: usuario + tipo entrada + cantidad
-    FE->>API: POST { userId, ticketTypeId, quantity }
-    API->>S: createAdminSale(userId, ticketTypeId, quantity)
-    S->>S: valida tipo entrada activo + stock
-    S->>DB: $transaction (FOR UPDATE, INSERT tickets, quantity_sold++)
+    A->>FE: Modal: selecciona proveedor + tipos entrada + cantidades
+    FE->>API: POST { userId, provider, tickets[{ticketTypeId, quantity}] }
+    API->>S: createAdminPayment(userId, provider, tickets, adminId)
+    S->>S: valida stock cada tipo, calcula total
+    S->>DB: $transaction (FOR UPDATE, INSERT payment, INSERT tickets, quantity_sold++)
     S->>S: Genera QR cada ticket
-    S-->>API: [ticketId, ...]
-    API-->>FE: 201 { ticketIds }
-    FE-->>A: "Entradas creadas exitosamente"
+    S-->>API: { paymentId, ticketIds }
+    API-->>FE: 201 { paymentId, provider, amountCents, status, createdBy, ticketIds }
+    FE-->>A: "Pago creado exitosamente"
 ```

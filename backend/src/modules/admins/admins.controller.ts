@@ -10,8 +10,8 @@ import {
   paginationSchema,
   paymentFiltersSchema,
   paymentParamsSchema,
-  adminSaleSchema,
   refundSchema,
+  createAdminPaymentSchema,
 } from './admins.validators.js';
 
 export async function getMe(req: Request, res: Response): Promise<void> {
@@ -118,7 +118,10 @@ export async function updateUserRole(
   }
 }
 
-export async function listPaymentsHandler(req: Request, res: Response): Promise<void> {
+export async function listPaymentsHandler(
+  req: Request,
+  res: Response,
+): Promise<void> {
   try {
     const filters = paymentFiltersSchema.parse(req.query);
     const result = await paymentsService.listAllPayments(filters);
@@ -127,7 +130,10 @@ export async function listPaymentsHandler(req: Request, res: Response): Promise<
   } catch (err) {
     if (err instanceof ZodError) {
       res.status(422).json({
-        error: { code: 'VALIDATION_ERROR', message: err.issues.map((i) => i.message).join(', ') },
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: err.issues.map((i) => i.message).join(', '),
+        },
       });
 
       return;
@@ -137,26 +143,10 @@ export async function listPaymentsHandler(req: Request, res: Response): Promise<
   }
 }
 
-export async function createSaleHandler(req: Request, res: Response): Promise<void> {
-  try {
-    const { userId, ticketTypeId, quantity } = adminSaleSchema.parse(req.body);
-    const result = await adminsService.createAdminSale(userId, ticketTypeId, quantity);
-
-    res.status(201).json({ ticketIds: result });
-  } catch (err) {
-    if (err instanceof ZodError) {
-      res.status(422).json({
-        error: { code: 'VALIDATION_ERROR', message: err.issues.map((i) => i.message).join(', ') },
-      });
-
-      return;
-    }
-
-    throw err;
-  }
-}
-
-export async function getPaymentDetailHandler(req: Request, res: Response): Promise<void> {
+export async function getPaymentDetailHandler(
+  req: Request,
+  res: Response,
+): Promise<void> {
   try {
     const { id } = paymentParamsSchema.parse(req.params);
     const result = await paymentsService.getPaymentDetail(id);
@@ -165,7 +155,10 @@ export async function getPaymentDetailHandler(req: Request, res: Response): Prom
   } catch (err) {
     if (err instanceof ZodError) {
       res.status(422).json({
-        error: { code: 'VALIDATION_ERROR', message: err.issues.map((i) => i.message).join(', ') },
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: err.issues.map((i) => i.message).join(', '),
+        },
       });
 
       return;
@@ -175,7 +168,64 @@ export async function getPaymentDetailHandler(req: Request, res: Response): Prom
   }
 }
 
-export async function refundPaymentHandler(req: Request, res: Response): Promise<void> {
+export async function createAdminPaymentHandler(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  try {
+    const { userId, provider, tickets } = createAdminPaymentSchema.parse(
+      req.body,
+    );
+
+    const result = await adminsService.createAdminPayment(
+      userId,
+      provider,
+      tickets,
+      req.user!.id,
+    );
+
+    res.status(201).json({
+      paymentId: result.paymentId,
+      provider,
+      amountCents: result.amountCents,
+      status: 'completed',
+      createdBy: req.user!.id,
+      ticketIds: result.ticketIds,
+    });
+  } catch (err) {
+    if (err instanceof ZodError) {
+      res.status(422).json({
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: err.issues.map((i) => i.message).join(', '),
+        },
+      });
+
+      return;
+    }
+
+    if (err instanceof Error && (err as any).code === 'SOLD_OUT') {
+      const soldOutErr = err as any;
+
+      res.status(409).json({
+        error: {
+          code: 'SOLD_OUT',
+          message: soldOutErr.message,
+          details: soldOutErr.details ?? [],
+        },
+      });
+
+      return;
+    }
+
+    throw err;
+  }
+}
+
+export async function refundPaymentHandler(
+  req: Request,
+  res: Response,
+): Promise<void> {
   try {
     const { id } = paymentParamsSchema.parse(req.params);
     const { reason } = refundSchema.parse(req.body);
@@ -190,7 +240,10 @@ export async function refundPaymentHandler(req: Request, res: Response): Promise
   } catch (err) {
     if (err instanceof ZodError) {
       res.status(422).json({
-        error: { code: 'VALIDATION_ERROR', message: err.issues.map((i) => i.message).join(', ') },
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: err.issues.map((i) => i.message).join(', '),
+        },
       });
 
       return;

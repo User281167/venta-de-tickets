@@ -11,7 +11,7 @@ Checkout, webhook, payment status, and admin sale endpoints.
 | GET | `/api/payments/:id/status` | Payment status + tickets | JWT owner/admin |
 | GET | `/api/admin/payments` | List all payments (admin) | JWT admin |
 | GET | `/api/admin/payments/:id` | Payment detail (admin) | JWT admin |
-| POST | `/api/admin/sales` | Manual sale creation (admin) | JWT admin |
+| POST | `/api/admin/payments/manual` | Admin payment (MANUAL/GIFT) + tickets | JWT admin |
 | POST | `/api/admin/payments/:id/refund` | Full refund (admin) | JWT admin |
 | GET | `/api/me/payments` | Client payment history | JWT client |
 
@@ -95,22 +95,22 @@ sequenceDiagram
     API-->>A: 201 { paymentId, status }
 ```
 
-## Flow: Venta manual (Admin)
+## Flow: Pago manual (Admin)
 
 ```mermaid
 sequenceDiagram
     participant A as Admin
-    participant API as POST /admin/sales
+    participant API as POST /admin/payments/manual
     participant S as Service
     participant DB as PostgreSQL
 
-    A->>API: { userId, ticketTypeId, quantity }
-    API->>S: createAdminSale(userId, ticketTypeId, quantity)
-    S->>S: validate ticket type enabled + stock
-    S->>DB: $transaction (FOR UPDATE ticket_type, INSERT tickets, increment quantity_sold)
+    A->>API: { userId, provider, tickets[{ticketTypeId, quantity}] }
+    API->>S: createAdminPayment(userId, provider, tickets, adminId)
+    S->>S: validate each ticket type stock
+    S->>DB: $transaction (FOR UPDATE each ticket_type, INSERT payment, INSERT tickets, increment quantity_sold)
     S->>S: generate QR for each ticket
-    S-->>API: [ticketId, ...]
-    API-->>A: 201 { ticketIds }
+    S-->>API: { paymentId, ticketIds }
+    API-->>A: 201 { paymentId, provider, amountCents, status, createdBy, ticketIds }
 ```
 
 ## Structure
