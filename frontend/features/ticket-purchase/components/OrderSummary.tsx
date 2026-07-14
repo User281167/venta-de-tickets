@@ -70,6 +70,15 @@ export const OrderSummary = memo(function OrderSummary() {
           ${subtotalCents.toLocaleString("es-CO")}
         </Text>
       </Flex>
+
+      <Flex justify="space-between" align="center" mt={1}>
+        <Text fontSize="xs" color="brand.muted">
+          {items.reduce((sum, i) => sum + i.quantity, 0)} entrada(s)
+        </Text>
+        <Text fontSize="xs" color="brand.muted">
+          IVA incluido
+        </Text>
+      </Flex>
     </Box>
   );
 });

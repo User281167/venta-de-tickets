@@ -24,6 +24,9 @@ import NextLink from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "@/features/auth/api/auth.client";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { CartFab } from "@/features/ticket-purchase/components/CartFab";
+import { CartDrawer } from "@/features/ticket-purchase/components/CartDrawer";
+import { useCart } from "@/features/ticket-purchase/hooks/useCart";
 
 const NAV_ITEMS = [
   { label: "INICIO", href: "/#hero" },
@@ -37,9 +40,11 @@ const NAV_ITEMS = [
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
   const pathname = usePathname();
   const isAuthPage = pathname === "/login" || pathname === "/registro";
   const { user, role } = useAuth();
+  const { totalItems } = useCart();
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -182,6 +187,8 @@ export function Navbar() {
               )
             )}
 
+            <CartFab itemCount={totalItems} onClick={() => setCartOpen(true)} />
+
             <IconButton
               aria-label="Menu"
               color="white"
@@ -194,6 +201,8 @@ export function Navbar() {
             </IconButton>
           </HStack>
         </Flex>
+
+        <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
 
         {open && (
           <Box hideFrom="xl" py="4">

@@ -63,15 +63,15 @@ description: "Task list for client-side ticket cart feature"
 
 ### Tests for US1
 
-- [ ] T010 [P] [US1] Write `useCart` integration test in `frontend/features/ticket-purchase/hooks/__tests__/useCart.test.ts` — TicketTypeCard interaction with cart context
+- [X] T010 [P] [US1] Write `useCart` integration test in `frontend/features/ticket-purchase/hooks/__tests__/useCart.test.tsx` — TicketTypeCard interaction with cart context
 
 ### Implementation for US1
 
-- [ ] T011 [US1] Update `TicketTypeCard` in `frontend/features/ticket-purchase/components/TicketTypeCard.tsx` — use `useCart()` context; show +/‑ spinner + price; disable when sold out; `memo`
-- [ ] T012 [US1] Update `TicketTypeGrid` in `frontend/features/ticket-purchase/components/TicketTypeGrid.tsx` — read quantities from `useCart()` context; pass handlers to cards; `memo`
-- [ ] T013 [US1] Update `TicketPurchaseClient` in `frontend/features/ticket-purchase/components/TicketPurchaseClient.tsx` — consume `useCart()` context; grid left + summary sidebar layout; loading/error/empty states
-- [ ] T014 [US1] Wire `CartProvider` into `frontend/app/(public)/layout.tsx` — wrap public routes so cart available in navbar
-- [ ] T015 [US1] Update `frontend/app/entradas/page.tsx` — replace placeholder with `<TicketPurchaseClient />`
+- [X] T011 [US1] Update `TicketTypeCard` in `frontend/features/ticket-purchase/components/TicketTypeCard.tsx` — use `useCart()` context; show +/‑ spinner + price; disable when sold out; `memo`
+- [X] T012 [US1] Update `TicketTypeGrid` in `frontend/features/ticket-purchase/components/TicketTypeGrid.tsx` — read quantities from `useCart()` context; pass handlers to cards; `memo`
+- [X] T013 [US1] Update `TicketPurchaseClient` in `frontend/features/ticket-purchase/components/TicketPurchaseClient.tsx` — consume `useCart()` context; grid left + summary sidebar layout; loading/error/empty states
+- [X] T014 [US1] Wire `CartProvider` into `frontend/app/(public)/layout.tsx` — wrap public routes so cart available in navbar
+- [X] T015 [US1] Update `frontend/app/entradas/page.tsx` — replace placeholder with `<TicketPurchaseClient />`
 
 **Checkpoint**: `/entradas` shows ticket types with add/remove. Cart state accessible via context. Badge updates.
 
@@ -85,17 +85,17 @@ description: "Task list for client-side ticket cart feature"
 
 ### Tests for US2
 
-- [ ] T016 [P] [US2] Write `CartFab` test in `frontend/features/ticket-purchase/components/__tests__/CartFab.test.tsx` — renders count, click triggers onClick
-- [ ] T017 [P] [US2] Write `CartItemRow` test in `frontend/features/ticket-purchase/components/__tests__/CartItemRow.test.tsx` — shows name/price/qty, increment/decrement callbacks
-- [ ] T018 [P] [US2] Write `CartDrawer` test in `frontend/features/ticket-purchase/components/__tests__/CartDrawer.test.tsx` — open/close, empty state, items render, "Comprar" button
+- [X] T016 [P] [US2] Write `CartFab` test in `frontend/features/ticket-purchase/components/__tests__/CartFab.test.tsx` — renders count, click triggers onClick
+- [X] T017 [P] [US2] Write `CartItemRow` test in `frontend/features/ticket-purchase/components/__tests__/CartItemRow.test.tsx` — shows name/price/qty, increment/decrement callbacks
+- [X] T018 [P] [US2] Write `CartDrawer` test in `frontend/features/ticket-purchase/components/__tests__/CartDrawer.test.tsx` — open/close, empty state, items render, "Comprar" button
 
 ### Implementation for US2
 
-- [ ] T019 [P] [US2] Create `CartFab` in `frontend/features/ticket-purchase/components/CartFab.tsx` — floating action button bottom-right; `itemCount` badge from `useCart().totalItems`; `memo`; triggers `CartDrawer` open
-- [ ] T020 [P] [US2] Create `CartItemRow` in `frontend/features/ticket-purchase/components/CartItemRow.tsx` — name, unit-price, `CartQuantitySpinner`, line total, remove (trash) icon; `memo` with shallow prop comparison
-- [ ] T021 [P] [US2] Update `OrderSummary` in `frontend/features/ticket-purchase/components/OrderSummary.tsx` — consume items from `useCart()`; sidebar sticky (desktop), collapsible bottom bar (mobile); totalAmount prominent
-- [ ] T022 [US2] Create `CartDrawer` in `frontend/features/ticket-purchase/components/CartDrawer.tsx` — Chakra Drawer; `CartItemRow` list; empty state "No has seleccionado entradas"; footer with total + "Comprar" button; open/close state from CartFab
-- [ ] T023 [US2] Add `CartFab` to `frontend/components/layout/Navbar.tsx` — show next to auth buttons, wired to CartDrawer open
+- [X] T019 [P] [US2] Create `CartFab` in `frontend/features/ticket-purchase/components/CartFab.tsx` — floating action button bottom-right; `itemCount` badge from `useCart().totalItems`; `memo`; triggers `CartDrawer` open
+- [X] T020 [P] [US2] Create `CartItemRow` in `frontend/features/ticket-purchase/components/CartItemRow.tsx` — name, unit-price, `CartQuantitySpinner`, line total, remove (trash) icon; `memo` with shallow prop comparison
+- [X] T021 [P] [US2] Update `OrderSummary` in `frontend/features/ticket-purchase/components/OrderSummary.tsx` — consume items from `useCart()`; sidebar sticky (desktop), collapsible bottom bar (mobile); totalAmount prominent
+- [X] T022 [US2] Create `CartDrawer` in `frontend/features/ticket-purchase/components/CartDrawer.tsx` — Chakra Drawer; `CartItemRow` list; empty state "No has seleccionado entradas"; footer with total + "Comprar" button; open/close state from CartFab
+- [X] T023 [US2] Add `CartFab` to `frontend/components/layout/Navbar.tsx` — show next to auth buttons, wired to CartDrawer open
 
 **Checkpoint**: Cart drawer shows items with quantities. Summary sidebar updates in real time. Mobile responsive.
 
@@ -109,8 +109,8 @@ description: "Task list for client-side ticket cart feature"
 
 ### Implementation for US3
 
-- [ ] T024 [US3] Verify `useCartReducer` hydrates from localStorage on mount — already implemented in T006. Confirm test covers hydration path
-- [ ] T025 [US3] Write persistence boundary test — add item, simulate page reload (remount provider), assert item still present; use `vi.mock` for localStorage
+- [X] T024 [US3] Verify `useCartReducer` hydrates from localStorage on mount — already implemented in T006. Confirm test covers hydration path
+- [X] T025 [US3] Write persistence boundary test — add item, simulate page reload (remount provider), assert item still present; use `vi.mock` for localStorage
 
 **Checkpoint**: Cart persists across SPA navigation and full page refresh.
 

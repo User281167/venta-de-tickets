@@ -111,4 +111,42 @@ describe("useCart integration with TicketTypeGrid", () => {
       screen.getByText("No hay tipos de entrada disponibles"),
     ).toBeInTheDocument();
   });
+
+  it("persists cart across unmount/remount via localStorage", async () => {
+    const user = userEvent.setup();
+    const store: Record<string, string> = {};
+
+    vi.restoreAllMocks();
+
+    const getItemSpy = vi
+      .spyOn(Storage.prototype, "getItem")
+      .mockImplementation((key: string) => store[key] ?? null);
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(
+      (key: string, value: string) => {
+        store[key] = value;
+      },
+    );
+    vi.spyOn(Storage.prototype, "removeItem").mockImplementation(() => {});
+
+    render(<TicketTypeGrid ticketTypes={[general]} />, {
+      wrapper: CartTestWrapper,
+    });
+
+    expect(
+      screen.getByRole("button", { name: /agregar/i }),
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /agregar/i }));
+    expect(store["cart-current-event"]).toBeDefined();
+
+    cleanup();
+
+    render(<TicketTypeGrid ticketTypes={[general]} />, {
+      wrapper: CartTestWrapper,
+    });
+
+    expect(
+      screen.queryByRole("button", { name: /agregar/i }),
+    ).not.toBeInTheDocument();
+  });
 });
