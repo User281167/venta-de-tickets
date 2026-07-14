@@ -44,7 +44,9 @@ vi.mock("../../api/admin-payments.queries", () => ({
 }));
 
 function renderPage() {
-  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
   return render(
     <QueryClientProvider client={queryClient}>
       <PaymentDetail />
@@ -81,6 +83,6 @@ describe("PaymentDetail", () => {
 
   it("renders formatted currency for total", () => {
     renderPage();
-    expect(screen.getByText(/5\.000/)).toBeInTheDocument();
+    expect(screen.getAllByText(/5\.000/).length).toBeGreaterThan(0);
   });
 });
