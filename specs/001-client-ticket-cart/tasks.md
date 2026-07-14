@@ -124,9 +124,9 @@ description: "Task list for client-side ticket cart feature"
 
 ### Implementation for US4
 
-- [ ] T026 [US4] Add "Comprar" button to `CartDrawer` footer — disabled when cart empty; uses `useRouter` for navigation
-- [ ] T027 [US4] Implement auth check in `CartDrawer` — on "Comprar" click, read `useAuth().user`; if null, `router.push("/login?redirect=/entradas")`; if user exists, show future placeholder (toast "Redirigiendo al pago...")
-- [ ] T028 [P] [US4] Write `CartDrawer` redirect test — mock `useAuth` returning null, click Comprar, assert `router.push` called with `/login?redirect=/entradas`; mock user, assert no redirect
+- [X] T026 [US4] Add "Comprar" button to `CartDrawer` footer — disabled when cart empty; uses `useRouter` for navigation
+- [X] T027 [US4] Implement auth check in `CartDrawer` — on "Comprar" click, read `useAuth().user`; if null, `router.push("/login?redirect=/entradas")`; if user exists, show future placeholder (toast "Redirigiendo al pago...")
+- [X] T028 [P] [US4] Write `CartDrawer` redirect test — mock `useAuth` returning null, click Comprar, assert `router.push` called with `/login?redirect=/entradas`; mock user, assert no redirect
 
 **Checkpoint**: "Comprar" redirects unauthenticated users to login. Authenticated users see payment placeholder.
 
@@ -136,9 +136,9 @@ description: "Task list for client-side ticket cart feature"
 
 **Purpose**: Remove old in-memory cart code, ensure test suite passes, verify all features work together.
 
-- [ ] T029 Remove old in-memory `useCart` hook logic if unused — check no remaining imports from old implementation
-- [ ] T030 Run full `vitest` suite for frontend — fix any failures
-- [ ] T031 Verify `/entradas` page renders correctly: ticket types load, add/remove works, drawer opens, Comprar redirects
+- [X] T029 Remove old in-memory `useCart` hook logic if unused — check no remaining imports from old implementation
+- [X] T030 Run full `vitest` suite for frontend — fix any failures
+- [X] T031 Verify `/entradas` page renders correctly: ticket types load, add/remove works, drawer opens, Comprar redirects
 
 ---
 

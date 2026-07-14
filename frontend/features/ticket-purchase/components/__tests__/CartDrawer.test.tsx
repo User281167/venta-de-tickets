@@ -9,6 +9,21 @@ import { useCart } from "../../hooks/useCart";
 import { CartDrawer } from "../CartDrawer";
 import type { TicketType } from "@/features/ticket-types/schemas/ticket-types.schema";
 
+const mockPush = vi.fn();
+const mockUseAuth = vi.fn();
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push: mockPush }),
+}));
+
+vi.mock("@/features/auth/hooks/useAuth", () => ({
+  useAuth: () => mockUseAuth(),
+}));
+
+vi.mock("sonner", () => ({
+  toast: { info: vi.fn(), error: vi.fn(), success: vi.fn() },
+}));
+
 const general: TicketType = {
   id: "tt-1",
   name: "General",
@@ -39,6 +54,12 @@ function Wrapper({ children }: { children: React.ReactNode }) {
 
 describe("CartDrawer", () => {
   beforeEach(() => {
+    mockUseAuth.mockReturnValue({
+      user: null,
+      session: null,
+      role: null,
+      isLoading: false,
+    });
     vi.spyOn(Storage.prototype, "getItem").mockReturnValue(null);
     vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {});
     vi.spyOn(Storage.prototype, "removeItem").mockImplementation(() => {});
@@ -47,6 +68,8 @@ describe("CartDrawer", () => {
   afterEach(() => {
     cleanup();
     vi.restoreAllMocks();
+    mockPush.mockClear();
+    mockUseAuth.mockClear();
   });
 
   it("shows empty state when cart has no items", () => {
@@ -104,5 +127,61 @@ describe("CartDrawer", () => {
       await user.click(closeButton);
       expect(onClose).toHaveBeenCalledTimes(1);
     }
+  });
+
+  it("redirects to login when Comprar clicked with no user", async () => {
+    const user = userEvent.setup();
+    mockUseAuth.mockReturnValue({
+      user: null,
+      session: null,
+      role: null,
+      isLoading: false,
+    });
+
+    render(
+      <>
+        <AddItemHelper ticketType={general} />
+        <CartDrawer open={true} onClose={() => {}} />
+      </>,
+      { wrapper: Wrapper },
+    );
+
+    const comprarButton = screen.getByText("COMPRAR");
+    expect(comprarButton).not.toBeDisabled();
+
+    await user.click(comprarButton);
+    expect(mockPush).toHaveBeenCalledWith("/login?redirect=/entradas");
+  });
+
+  it("does not redirect when Comprar clicked with authenticated user", async () => {
+    const user = userEvent.setup();
+    mockUseAuth.mockReturnValue({
+      user: { id: "u1" },
+      session: { user: { id: "u1" } },
+      role: "client",
+      isLoading: false,
+    });
+
+    render(
+      <>
+        <AddItemHelper ticketType={general} />
+        <CartDrawer open={true} onClose={() => {}} />
+      </>,
+      { wrapper: Wrapper },
+    );
+
+    const comprarButton = screen.getByText("COMPRAR");
+    await user.click(comprarButton);
+
+    expect(mockPush).not.toHaveBeenCalled();
+  });
+
+  it("disables Comprar button when cart is empty", () => {
+    render(<CartDrawer open={true} onClose={() => {}} />, {
+      wrapper: Wrapper,
+    });
+
+    const comprarButton = screen.getByText("COMPRAR");
+    expect(comprarButton).toBeDisabled();
   });
 });

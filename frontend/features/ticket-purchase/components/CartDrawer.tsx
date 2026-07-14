@@ -15,6 +15,9 @@ import {
   Separator,
   Text,
 } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useCart } from "../hooks/useCart";
 import { CartItemRow } from "./CartItemRow";
 
@@ -33,6 +36,16 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
     canIncrement,
     canDecrement,
   } = useCart();
+  const { user } = useAuth();
+  const router = useRouter();
+
+  const handleBuy = () => {
+    if (!user) {
+      router.push("/login?redirect=/entradas");
+      return;
+    }
+    toast.info("Redirigiendo al pago...");
+  };
 
   const handleIncrement = (ticketTypeId: string) => {
     if (items.find((i) => i.ticketTypeId === ticketTypeId)) {
@@ -61,7 +74,10 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
       <DrawerBackdrop />
       <DrawerPositioner>
         <DrawerContent bg="brand.panel" color="brand.light">
-          <DrawerHeader borderBottom="1px solid" borderColor="rgba(174, 184, 216, 0.12)">
+          <DrawerHeader
+            borderBottom="1px solid"
+            borderColor="rgba(174, 184, 216, 0.12)"
+          >
             <DrawerTitle fontSize="xl" fontWeight="bold">
               Tu carrito
             </DrawerTitle>
@@ -95,46 +111,57 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
             )}
           </DrawerBody>
 
-          {items.length > 0 && (
-            <>
-              <Separator borderColor="rgba(174, 184, 216, 0.12)" />
+          <Separator borderColor="rgba(174, 184, 216, 0.12)" />
 
-              <DrawerFooter borderTop="1px solid" borderColor="rgba(174, 184, 216, 0.12)">
-                <Flex direction="column" w="full" gap={3}>
-                  <Flex justify="space-between" align="center">
-                    <Text fontSize="md" fontWeight="bold">
-                      Total
-                    </Text>
-                    <Text fontSize="lg" fontWeight="bold" color="brand.cyan">
-                      ${subtotalCents.toLocaleString("es-CO")}
-                    </Text>
-                  </Flex>
+          <DrawerFooter
+            borderTop="1px solid"
+            borderColor="rgba(174, 184, 216, 0.12)"
+          >
+            <Flex direction="column" w="full" gap={3}>
+              <Flex justify="space-between" align="center">
+                <Text fontSize="md" fontWeight="bold">
+                  Total
+                </Text>
+                <Text fontSize="lg" fontWeight="bold" color="brand.cyan">
+                  ${subtotalCents.toLocaleString("es-CO")}
+                </Text>
+              </Flex>
 
-                  <Button
-                    w="full"
-                    border="1px solid transparent"
-                    bg={`
-                      linear-gradient(#020414, #020414) padding-box,
-                      linear-gradient(90deg, #ff0f7b, #00e5ff) border-box
-                    `}
-                    color="white"
-                    fontWeight="bold"
-                    fontSize="md"
-                    _hover={{
-                      transform: "translateY(-1px)",
-                      boxShadow: "0 0 20px rgba(0,229,255,0.3)",
-                    }}
-                    _active={{ transform: "translateY(0)" }}
-                    transition="all 0.2s"
-                  >
-                    COMPRAR
-                  </Button>
-                </Flex>
-              </DrawerFooter>
-            </>
-          )}
+              <Button
+                w="full"
+                disabled={items.length === 0}
+                onClick={handleBuy}
+                border="1px solid transparent"
+                bg={`
+                  linear-gradient(#020414, #020414) padding-box,
+                  linear-gradient(90deg, #ff0f7b, #00e5ff) border-box
+                `}
+                color="white"
+                fontWeight="bold"
+                fontSize="md"
+                _hover={{
+                  transform: items.length > 0 ? "translateY(-1px)" : undefined,
+                  boxShadow:
+                    items.length > 0
+                      ? "0 0 20px rgba(0,229,255,0.3)"
+                      : undefined,
+                }}
+                _active={{
+                  transform: items.length > 0 ? "translateY(0)" : undefined,
+                }}
+                transition="all 0.2s"
+                opacity={items.length === 0 ? 0.4 : 1}
+                cursor={items.length === 0 ? "not-allowed" : "pointer"}
+              >
+                COMPRAR
+              </Button>
+            </Flex>
+          </DrawerFooter>
 
-          <DrawerCloseTrigger color="brand.muted" _hover={{ color: "brand.light" }} />
+          <DrawerCloseTrigger
+            color="brand.muted"
+            _hover={{ color: "brand.light" }}
+          />
         </DrawerContent>
       </DrawerPositioner>
     </DrawerRoot>
