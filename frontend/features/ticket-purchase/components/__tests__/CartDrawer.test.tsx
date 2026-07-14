@@ -20,10 +20,6 @@ vi.mock("@/features/auth/hooks/useAuth", () => ({
   useAuth: () => mockUseAuth(),
 }));
 
-vi.mock("sonner", () => ({
-  toast: { info: vi.fn(), error: vi.fn(), success: vi.fn() },
-}));
-
 const general: TicketType = {
   id: "tt-1",
   name: "General",
@@ -150,10 +146,10 @@ describe("CartDrawer", () => {
     expect(comprarButton).not.toBeDisabled();
 
     await user.click(comprarButton);
-    expect(mockPush).toHaveBeenCalledWith("/login?redirect=/entradas");
+    expect(mockPush).toHaveBeenCalledWith("/login?redirect=/checkout");
   });
 
-  it("does not redirect when Comprar clicked with authenticated user", async () => {
+  it("navigates to /checkout when Comprar clicked with authenticated user", async () => {
     const user = userEvent.setup();
     mockUseAuth.mockReturnValue({
       user: { id: "u1" },
@@ -173,7 +169,7 @@ describe("CartDrawer", () => {
     const comprarButton = screen.getByText("COMPRAR");
     await user.click(comprarButton);
 
-    expect(mockPush).not.toHaveBeenCalled();
+    expect(mockPush).toHaveBeenCalledWith("/checkout");
   });
 
   it("disables Comprar button when cart is empty", () => {

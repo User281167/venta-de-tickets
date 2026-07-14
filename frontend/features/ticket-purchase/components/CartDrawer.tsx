@@ -16,7 +16,6 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useCart } from "../hooks/useCart";
 import { CartItemRow } from "./CartItemRow";
@@ -41,10 +40,10 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
 
   const handleBuy = () => {
     if (!user) {
-      router.push("/login?redirect=/entradas");
+      router.push("/login?redirect=/checkout");
       return;
     }
-    toast.info("Redirigiendo al pago...");
+    router.push("/checkout");
   };
 
   const handleIncrement = (ticketTypeId: string) => {

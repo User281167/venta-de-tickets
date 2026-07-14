@@ -123,6 +123,7 @@ export async function createCheckout(
   return {
     paymentId,
     checkoutUrl: checkoutResult.checkoutUrl,
+    preferenceId: checkoutResult.providerTxId,
   };
 }
 

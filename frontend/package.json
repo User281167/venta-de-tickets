@@ -14,6 +14,7 @@
     "@chakra-ui/react": "3.36.0",
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "11.14.0",
+    "@mercadopago/sdk-react": "1.0.7",
     "@supabase/ssr": "^0.12.0",
     "@supabase/supabase-js": "^2.108.2",
     "@tabler/icons": "^3.44.0",

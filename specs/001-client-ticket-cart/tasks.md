@@ -1,221 +1,174 @@
 ---
 
-description: "Task list for client-side ticket cart feature"
+description: "Task list for Mercado Pago checkout integration"
 ---
 
-# Tasks: Client-Side Ticket Cart
+# Tasks: Mercado Pago Checkout Integration
 
-**Input**: Design documents from `specs/001-client-ticket-cart/`
+**Feature**: Client-Side Ticket Cart (iteration 2 — checkout + payment gateway)
 
-**Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/
+**Input**: spec.md, plan.md, docs/mercadopago/*.md, backend modules/payments/
 
-**Scope**: Frontend only — NO backend changes. All cart logic lives client-side.
+**Prerequisites**: All Phase 1-7 tasks completed (cart context, localStorage persistence, CartDrawer with auth check, 42 tests passing)
 
-**Organization**: Tasks grouped by user story for independent implementation.
+## Architecture Notes
 
-## Format: `[ID] [P?] [Story] Description`
-
-- **[P]**: Can run in parallel (different files, no dependencies)
-- **[Story]**: Maps to user story label (US1, US2, US3, US4)
-- Include exact file paths in descriptions
-
-## Path Conventions
-
-- **Frontend**: paths relative to `frontend/` directory
-- Example: `features/ticket-purchase/hooks/useCartReducer.ts`
+- **Backend checkout endpoint**: `POST /api/payments/checkout` (auth required) — accepts `{ items: [{ticketTypeId, quantity}], backUrl, provider }` — currently returns `{ paymentId, checkoutUrl }`
+- **Backend webhook**: `POST /api/payments/webhook/:provider` — already fully implemented in `mercadopago.provider.ts` with signature validation, status normalization, and payment processing
+- **Frontend SDK**: `@mercadopago/sdk-react@1.0.7` already installed in `frontend/package.json`
+- **Existing cart types**: `CartItem` has `ticketTypeId`, `quantity`, `unitPriceCents`, `name` — maps directly to backend checkout items
+- **Backend `providerTxId`** = Mercado Pago `preferenceId` — needed by Wallet Brick but NOT currently returned in checkout response
 
 ---
 
-## Phase 1: Setup
+## Phase 1: Setup & Integration Review
 
-**Purpose**: Ensure directory structure and confirm existing code
+**Purpose**: Configure env vars, review backend compatibility, plan integration surface
 
-**⚠️ No backend**: All work stays in `frontend/`
-
-- [X] T001 Verify existing structure under `frontend/features/ticket-purchase/` — api/, components/, hooks/ exist
-- [X] T002 Create `frontend/features/ticket-purchase/schemas/` directory if missing
-
----
-
-## Phase 2: Foundational — Cart Context + localStorage
-
-**Purpose**: Core cart infrastructure needed by all user stories. Reducer, localStorage hook, context provider.
-
-**Independent Test**: CartProvider wraps a test component, add/remove dispatches update state, state persists across mount/unmount via localStorage mock.
-
-- [X] T003 [P] Create cart Zod schemas in `frontend/features/ticket-purchase/schemas/cart.schema.ts` — CartItem, CartState types
-- [X] T004 [P] Create `useLocalStorage` generic hook in `frontend/features/ticket-purchase/hooks/useLocalStorage.ts` — SSR-safe, JSON parse-error fallback
-- [X] T005 [P] Write `useLocalStorage` test in `frontend/features/ticket-purchase/hooks/__tests__/useLocalStorage.test.ts` — SSR safety, round-trip, corrupt data recovery
-- [X] T006 Create `useCartReducer` in `frontend/features/ticket-purchase/hooks/useCartReducer.ts` — reducer with ADD, REMOVE, INCREMENT, DECREMENT, CLEAR, HYDRATE actions; `canIncrement`/`canDecrement` derived; `maxPerUser` enforcement; localStorage sync via `useLocalStorage`
-- [X] T007 Write `useCartReducer` test in `frontend/features/ticket-purchase/hooks/__tests__/useCartReducer.test.ts` — each action boundary: maxPerUser, availableStock, decrement from 1 removes item
-- [X] T008 Create `CartProvider` context in `frontend/providers/CartProvider.tsx` — wraps `useCartReducer`, exposes items/totalItems/subtotalCents/addItem/removeItem/increment/decrement/clearCart/canIncrement/canDecrement
-- [X] T009 Rewrite `useCart` in `frontend/features/ticket-purchase/hooks/useCart.ts` — re-export from CartProvider context
-
-**Checkpoint**: Cart context, reducer, localStorage ready. Components can consume `useCart()`.
+- [X] T001 Add `NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY` to `frontend/.env.local.example` (user said: env files are gitignored; only example file needed for setup reference)
+- [ ] T002 Review backend checkout response — confirm `createCheckout` in `payments.service.ts` returns `preferenceId` (alias for `providerTxId` from `mercadopago.provider.ts`); if missing, add it alongside `paymentId` / `checkoutUrl`
+- [ ] T003 Create Mercado Pago initialization module at `frontend/features/ticket-purchase/lib/initMercadoPago.ts` — calls `initMercadoPago(process.env.NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY)` once, exports ready flag
 
 ---
 
-## Phase 3: User Story 1 — Browse & Add Ticket Types (Priority: P1)
+## Phase 2: Foundational
 
-**Goal**: Visitor sees ticket types on `/entradas`, can add/remove quantities with number input on each card. Cart badge updates.
+**Purpose**: Backend response update + frontend API helper — blocks all user stories
 
-**Independent Test**: Load `/entradas`, see ticket type cards with name/price/stock. Click + to add. Quantity shows on card. Badge in navbar reflects total.
+- [X] T004 Modify `payments.service.ts:createCheckout` return to include `preferenceId: checkoutResult.providerTxId` in response — frontend Wallet Brick needs this
+- [X] T005 Create checkout API helper at `frontend/features/ticket-purchase/api/checkout.api.ts` — `createCheckoutPreference(items: CheckoutItem[], backUrl: string)` calls `POST /api/payments/checkout`, returns `{ paymentId, checkoutUrl, preferenceId }`; uses Supabase session token for auth
+- [X] T006 Update CartDrawer `handleBuy` in `frontend/features/ticket-purchase/components/CartDrawer.tsx` — replace `toast.info` + redirect with `router.push("/checkout")` (auth redirect to `/login?redirect=/checkout` if no user); removed unused `sonner` import; updated tests accordingly
 
-### Tests for US1
-
-- [X] T010 [P] [US1] Write `useCart` integration test in `frontend/features/ticket-purchase/hooks/__tests__/useCart.test.tsx` — TicketTypeCard interaction with cart context
-
-### Implementation for US1
-
-- [X] T011 [US1] Update `TicketTypeCard` in `frontend/features/ticket-purchase/components/TicketTypeCard.tsx` — use `useCart()` context; show +/‑ spinner + price; disable when sold out; `memo`
-- [X] T012 [US1] Update `TicketTypeGrid` in `frontend/features/ticket-purchase/components/TicketTypeGrid.tsx` — read quantities from `useCart()` context; pass handlers to cards; `memo`
-- [X] T013 [US1] Update `TicketPurchaseClient` in `frontend/features/ticket-purchase/components/TicketPurchaseClient.tsx` — consume `useCart()` context; grid left + summary sidebar layout; loading/error/empty states
-- [X] T014 [US1] Wire `CartProvider` into `frontend/app/(public)/layout.tsx` — wrap public routes so cart available in navbar
-- [X] T015 [US1] Update `frontend/app/entradas/page.tsx` — replace placeholder with `<TicketPurchaseClient />`
-
-**Checkpoint**: `/entradas` shows ticket types with add/remove. Cart state accessible via context. Badge updates.
+**Checkpoint**: Cart → /checkout navigation works. Backend returns preferenceId.
 
 ---
 
-## Phase 4: User Story 2 — Cart View & Checkout Summary (Priority: P1)
+## Phase 3: User Story 1 — Checkout Page with Mercado Pago Wallet (Priority: P1)
 
-**Goal**: Visitor opens drawer with cart contents. Order summary visible as sidebar (desktop) / bottom (mobile). Can adjust quantities and see running total.
+**Goal**: Full-page checkout showing cart items, order summary sidebar, and Mercado Pago Wallet Brick button. User clicks Wallet → redirected to MP hosted checkout.
 
-**Independent Test**: Add 2 ticket types, open drawer. See item rows with name/price/qty/total. Change quantity in drawer — total recalculates. Remove item — disappears. Empty cart shows empty state.
+**Independent Test**: Load `/checkout` with items in cart → items + summary + Wallet button render. Wallet button renders without error.
 
-### Tests for US2
+### Tests for User Story 1
 
-- [X] T016 [P] [US2] Write `CartFab` test in `frontend/features/ticket-purchase/components/__tests__/CartFab.test.tsx` — renders count, click triggers onClick
-- [X] T017 [P] [US2] Write `CartItemRow` test in `frontend/features/ticket-purchase/components/__tests__/CartItemRow.test.tsx` — shows name/price/qty, increment/decrement callbacks
-- [X] T018 [P] [US2] Write `CartDrawer` test in `frontend/features/ticket-purchase/components/__tests__/CartDrawer.test.tsx` — open/close, empty state, items render, "Comprar" button
+- [ ] T007 [P] [US1] Test `checkout.api.ts` — mock fetch, verify correct body (`items`, `backUrl`, `provider`) sent to backend, verify response parsed
+- [ ] T008 [P] [US1] Test CheckoutPage rendering — mock `useCart` with items, assert items list + OrderSummary + Wallet container rendered; mock empty cart, assert empty state message
 
-### Implementation for US2
+### Implementation for User Story 1
 
-- [X] T019 [P] [US2] Create `CartFab` in `frontend/features/ticket-purchase/components/CartFab.tsx` — floating action button bottom-right; `itemCount` badge from `useCart().totalItems`; `memo`; triggers `CartDrawer` open
-- [X] T020 [P] [US2] Create `CartItemRow` in `frontend/features/ticket-purchase/components/CartItemRow.tsx` — name, unit-price, `CartQuantitySpinner`, line total, remove (trash) icon; `memo` with shallow prop comparison
-- [X] T021 [P] [US2] Update `OrderSummary` in `frontend/features/ticket-purchase/components/OrderSummary.tsx` — consume items from `useCart()`; sidebar sticky (desktop), collapsible bottom bar (mobile); totalAmount prominent
-- [X] T022 [US2] Create `CartDrawer` in `frontend/features/ticket-purchase/components/CartDrawer.tsx` — Chakra Drawer; `CartItemRow` list; empty state "No has seleccionado entradas"; footer with total + "Comprar" button; open/close state from CartFab
-- [X] T023 [US2] Add `CartFab` to `frontend/components/layout/Navbar.tsx` — show next to auth buttons, wired to CartDrawer open
+- [ ] T009 [P] [US1] Create `CheckoutPageClient` component at `frontend/features/ticket-purchase/components/CheckoutPageClient.tsx` — reads cart via `useCart()`, renders items list (left) + `OrderSummary` (right, sticky sidebar) + `MpWalletButton` below summary; handles empty cart (redirect to `/entradas`)
+- [ ] T010 [P] [US1] Create `MpWalletButton` component at `frontend/features/ticket-purchase/components/MpWalletButton.tsx` — wraps `<Wallet initialization={{ preferenceId }} />` from `@mercadopago/sdk-react`; receives `preferenceId` as prop; shows loading skeleton while preference is being created
+- [ ] T011 [US1] Create checkout page route at `frontend/app/(public)/checkout/page.tsx` — imports and renders `CheckoutPageClient`
+- [ ] T012 [US1] Wire checkout flow: on mount, `CheckoutPageClient` calls `createCheckoutPreference(items, backUrl)` with `backUrl = window.origin + "/checkout/success"`; passes returned `preferenceId` to `MpWalletButton`
 
-**Checkpoint**: Cart drawer shows items with quantities. Summary sidebar updates in real time. Mobile responsive.
+**Checkpoint**: User can navigate cart → /checkout → see items + summary → see Wallet Brick → click MP button → redirected to Mercado Pago
 
 ---
 
-## Phase 5: User Story 3 — Persistence Across Navigation (Priority: P2)
+## Phase 4: User Story 2 — Redirect / Status Pages (Priority: P2)
 
-**Goal**: Cart survives page navigation and full refresh via localStorage.
+**Goal**: Handle Mercado Pago `back_urls` redirects — show appropriate success/failure/pending status to user after MP payment flow.
 
-**Independent Test**: Add items, navigate to another page, return — cart intact. Refresh browser — cart restored.
+**Independent Test**: Navigate to `/checkout/success?collection_status=approved&payment_id=123&external_reference=abc` → shows success with payment ID. Navigate to `/checkout/failure?collection_status=rejected` → shows failure message.
 
-### Implementation for US3
+### Tests for User Story 2
 
-- [X] T024 [US3] Verify `useCartReducer` hydrates from localStorage on mount — already implemented in T006. Confirm test covers hydration path
-- [X] T025 [US3] Write persistence boundary test — add item, simulate page reload (remount provider), assert item still present; use `vi.mock` for localStorage
+- [ ] T013 [P] [US2] Test `CheckoutSuccessPage` — mock query params with `collection_status=approved&payment_id=123`, assert success message + payment ID rendered
+- [ ] T014 [P] [US2] Test `CheckoutFailurePage` — renders failure message with retry link
+- [ ] T015 [P] [US2] Test `CheckoutPendingPage` — renders pending message with instructions
 
-**Checkpoint**: Cart persists across SPA navigation and full page refresh.
+### Implementation for User Story 2
 
----
+- [ ] T016 [P] [US2] Create success page at `frontend/app/(public)/checkout/success/page.tsx` — reads query params (`collection_status`, `payment_id`, `external_reference`), shows "Pago exitoso" + payment ID + "Volver a entradas" link; clears cart on mount via `clearCart()`
+- [ ] T017 [P] [US2] Create failure page at `frontend/app/(public)/checkout/failure/page.tsx` — reads query params, shows "Pago rechazado" + reason (from `collection_status`) + "Intentar de nuevo" link back to `/entradas`; cart preserved
+- [ ] T018 [P] [US2] Create pending page at `frontend/app/(public)/checkout/pending/page.tsx` — shows "Pago pendiente" + "Recibirás confirmación por correo" + instructions for cash/offline payments
+- [ ] T019 [US2] Add a route group layout at `frontend/app/(public)/checkout/layout.tsx` — minimal layout (no Navbar CartFab to avoid confusion), shared `title` logic
 
-## Phase 6: User Story 4 — "Comprar" with Auth Check (Priority: P2)
-
-**Goal**: "Comprar" button in cart drawer checks authentication. If not logged in, redirect to `/login?redirect=/entradas`. If logged in, proceed (future: Mercado Pago).
-
-**Independent Test**: With no logged-in user, click "Comprar" → navigates to `/login?redirect=/entradas`. With mock authenticated user, click "Comprar" → no redirect (stays on page, ready for future payment integration).
-
-### Implementation for US4
-
-- [X] T026 [US4] Add "Comprar" button to `CartDrawer` footer — disabled when cart empty; uses `useRouter` for navigation
-- [X] T027 [US4] Implement auth check in `CartDrawer` — on "Comprar" click, read `useAuth().user`; if null, `router.push("/login?redirect=/entradas")`; if user exists, show future placeholder (toast "Redirigiendo al pago...")
-- [X] T028 [P] [US4] Write `CartDrawer` redirect test — mock `useAuth` returning null, click Comprar, assert `router.push` called with `/login?redirect=/entradas`; mock user, assert no redirect
-
-**Checkpoint**: "Comprar" redirects unauthenticated users to login. Authenticated users see payment placeholder.
+**Checkpoint**: All three redirect routes render with correct status info. Cart clears on success.
 
 ---
 
-## Phase 7: Polish & Cleanup
+## Phase 5: User Story 3 — Webhook Verification & End-to-End Tests (Priority: P3)
 
-**Purpose**: Remove old in-memory cart code, ensure test suite passes, verify all features work together.
+**Goal**: Verify backend webhook correctly processes MP notifications. Write mock-based E2E test covering full flow.
 
-- [X] T029 Remove old in-memory `useCart` hook logic if unused — check no remaining imports from old implementation
-- [X] T030 Run full `vitest` suite for frontend — fix any failures
-- [X] T031 Verify `/entradas` page renders correctly: ticket types load, add/remove works, drawer opens, Comprar redirects
+**Independent Test**: Mock MP webhook POST → backend processes → payment status updated. Mock frontend flow: CartDrawer → checkout → MP redirect → success page → cart cleared.
+
+### Tests for User Story 3
+
+- [ ] T020 [US3] Write webhook integration test — mock `paymentClient.get` returning approved status, POST to `/api/payments/webhook/mercadopago`, assert payment updated + tickets created
+- [ ] T021 [US3] Write full flow integration test (mock-based): add items to cart → navigate to checkout → "createPreference" mock returns preferenceId → Wallet button renders → mock MP redirect to success → cart cleared
+- [ ] T022 [US3] Verify `notification_url` in `mercadopago.provider.ts` points to correct public URL (`env.API_URL + "/api/payments/webhook"`) — no mismatch
+
+**Checkpoint**: Webhook processes payments end-to-end. Frontend flow works with mocks.
 
 ---
 
-## Dependencies & Execution Order
+## Phase 6: Polish & Cross-Cutting
 
-### Phase Dependencies
+**Purpose**: Error handling, loading states, visual polish
 
-| Phase | Depends On | Notes |
-|-------|-----------|-------|
-| 1. Setup | — | Can start immediately |
-| 2. Foundational | Phase 1 | BLOCKS all user stories |
-| 3. US1 (P1) | Phase 2 | Browse & add |
-| 4. US2 (P1) | Phase 2 | Cart view + sidebar |
-| 5. US3 (P2) | Phase 2 | Persistence (impl in T006, test here) |
-| 6. US4 (P2) | Phase 4 | Comprar button in drawer |
-| 7. Polish | All phases | Final cleanup |
+- [ ] T023 Add loading skeleton state to `MpWalletButton` while preference is being created — show shimmer placeholder matching Wallet button dimensions
+- [ ] T024 Add error state to `CheckoutPageClient` — if preference creation fails, show error message + "Volver a intentar" button that retries `createCheckoutPreference`
+- [ ] T025 Run full `vitest` suite — verify no regressions across all 42+ existing tests plus new checkout tests
+- [ ] T026 Verify `/entradas` page still works end-to-end: ticket types load, add/remove, CartDrawer opens, Comprar navigates to /checkout
 
-### Parallel Opportunities
+---
 
-- **Phase 2**: T003 (schemas) ‖ T004 (useLocalStorage) ‖ T005 (test) — all independent
-- **Phase 4**: T016–T018 (tests) ‖ T019–T021 (components) — all independent (different files)
-- **Phase 6**: T028 (test) ‖ T026–T027 (impl) — test independent of impl
-- US3 and US4 can be worked on in parallel once Phase 2 completes (US3 is mostly verification)
+## Dependency Graph
 
-### Parallel Example: Phase 4
-
-```bash
-# Launch all tasks together (different files, no shared dependencies):
-Task: "Create CartFab in frontend/features/ticket-purchase/components/CartFab.tsx"
-Task: "Create CartItemRow in frontend/features/ticket-purchase/components/CartItemRow.tsx"
-Task: "Update OrderSummary in frontend/features/ticket-purchase/components/OrderSummary.tsx"
-Task: "Write CartFab test in frontend/features/ticket-purchase/components/__tests__/CartFab.test.tsx"
-Task: "Write CartItemRow test in frontend/features/ticket-purchase/components/__tests__/CartItemRow.test.tsx"
+```
+Phase 1 (Setup)
+    └── No deps
+Phase 2 (Foundational)
+    └── Depends on Phase 1
+    └── BLOCKS all user stories
+Phase 3 [US1] (Checkout Page + Wallet)
+    └── Depends on Phase 2
+    └── Blocks US2 (redirect pages assume checkout exists)
+    └── Independent test: /checkout page renders
+Phase 4 [US2] (Redirect Pages)
+    └── Depends on Phase 3 (redirect pages served from /checkout/*)
+    └── Independent test: render with mock query params
+Phase 5 [US3] (Webhook + E2E)
+    └── Depends on Phase 3 (frontend flow) + Phase 4 (redirects)
+    └── Independent test: backend webhook mock-only
+Phase 6 (Polish)
+    └── Depends on all phases
 ```
 
-### Parallel Example: Phase 2
+## Parallel Opportunities
 
-```bash
-# Schemas, localStorage hook, and localStorage test are all independent:
-Task: "Create cart Zod schemas in frontend/features/ticket-purchase/schemas/cart.schema.ts"
-Task: "Create useLocalStorage in frontend/features/ticket-purchase/hooks/useLocalStorage.ts"
-Task: "Write useLocalStorage test in frontend/features/ticket-purchase/hooks/__tests__/useLocalStorage.test.ts"
-```
-
----
+| Task IDs | Why Parallel |
+|----------|-------------|
+| T001, T002, T003 | Different files, no deps |
+| T004, T005 | Backend + frontend, independent |
+| T007, T008 | Different test files |
+| T009, T010 | Different components |
+| T013, T014, T015 | Different test files |
+| T016, T017, T018 | Different page files |
+| T020, T021 | Different test scopes |
+| T023, T024 | Different components |
 
 ## Implementation Strategy
 
-### MVP (Phase 1 + 2 + 3)
-
-Complete Setup + Foundational + US1 → `/entradas` page shows ticket types with working add/remove. Cart context is ready. This is the functional MVP.
+### MVP First (US1 Only)
+1. Phase 1: Setup env vars + review backend
+2. Phase 2: Backend returns preferenceId, API helper, CartDrawer redirect
+3. Phase 3: Checkout page with Wallet Brick
+4. **STOP**: User can go cart → /checkout → click MP Wallet → redirected to MP
+5. Deploy/demo
 
 ### Incremental Delivery
-
-1. **Setup + Foundational** → Cart infrastructure ready (reducer, localStorage, context)
-2. **US1** → `/entradas` page live with ticket types and add/remove (MVP!)
-3. **US2** → Cart drawer + summary sidebar complete
-4. **US3** → Persistence verified + tested
-5. **US4** → Buy flow with auth redirect
-6. **Polish** → Old code removed, tests passing
-
-### Test Strategy
-
-- **Unit (reducer)**: Pure function tests — fastest, no DOM. T007
-- **Boundary (localStorage)**: Storage API mock, SSR guard. T005
-- **Component (UI)**: `@testing-library/react` with `TestWrapper`. T016–T018
-- **Integration (hook + component)**: Cart context + TicketTypeCard interaction. T010
-- **Auth redirect**: Mock `useAuth`, spy on `router.push`. T028
-
----
+1. MVP (US1) → Checkout page working with Wallet
+2. Add US2 → Redirect pages handle MP return
+3. Add US3 → Webhook verified, mock E2E tests
+4. Polish → Loading states, error recovery
 
 ## Notes
-
+- `@mercadopago/sdk-react` Wallet Brick uses `Wallet` component, not `WalletBrick` — see docs `Agregar el SDK al frontend e inicializar el checkout.md`
+- `backUrl` for checkout must point to frontend success page (e.g., `https://dominio/checkout/success`) — NOT localhost per MP docs
+- Webhook `notification_url` already set in `mercadopago.provider.ts:47` — verify `env.API_URL` is correct for production
+- CartDrawer auth check remains: if no user, redirects to `/login?redirect=/checkout` before reaching checkout page
 - [P] tasks = different files, no dependencies
-- [Story] label maps task to user story for traceability
-- Each user story must be independently testable
-- Tests should be written alongside or before implementation
-- Commit after each logical group of tasks
-- All cart state lives in React Context + localStorage — no API calls except fetching ticket types
-- No backend changes — no Prisma, no Express, no Supabase
+- Commit after each logical group
