@@ -26,8 +26,8 @@ description: "Task list for Mercado Pago checkout integration"
 **Purpose**: Configure env vars, review backend compatibility, plan integration surface
 
 - [X] T001 Add `NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY` to `frontend/.env.local.example` (user said: env files are gitignored; only example file needed for setup reference)
-- [ ] T002 Review backend checkout response — confirm `createCheckout` in `payments.service.ts` returns `preferenceId` (alias for `providerTxId` from `mercadopago.provider.ts`); if missing, add it alongside `paymentId` / `checkoutUrl`
-- [ ] T003 Create Mercado Pago initialization module at `frontend/features/ticket-purchase/lib/initMercadoPago.ts` — calls `initMercadoPago(process.env.NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY)` once, exports ready flag
+- [X] T002 Review backend checkout response — confirm `createCheckout` in `payments.service.ts` returns `preferenceId` (alias for `providerTxId` from `mercadopago.provider.ts`); if missing, add it alongside `paymentId` / `checkoutUrl`
+- [X] T003 Create Mercado Pago initialization module at `frontend/features/ticket-purchase/lib/initMercadoPago.ts` — calls `initMercadoPago(process.env.NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY)` once, exports ready flag
 
 ---
 
@@ -93,9 +93,9 @@ description: "Task list for Mercado Pago checkout integration"
 
 ### Tests for User Story 3
 
-- [ ] T020 [US3] Write webhook integration test — mock `paymentClient.get` returning approved status, POST to `/api/payments/webhook/mercadopago`, assert payment updated + tickets created
-- [ ] T021 [US3] Write full flow integration test (mock-based): add items to cart → navigate to checkout → "createPreference" mock returns preferenceId → Wallet button renders → mock MP redirect to success → cart cleared
-- [ ] T022 [US3] Verify `notification_url` in `mercadopago.provider.ts` points to correct public URL (`env.API_URL + "/api/payments/webhook"`) — no mismatch
+- [X] T020 [US3] Write webhook integration test — mock `paymentClient.get` returning approved status, POST to `/api/payments/webhook/mercadopago`, assert payment updated + tickets created
+- [X] T021 [US3] Write full flow integration test (mock-based): add items to cart → navigate to checkout → "createPreference" mock returns preferenceId → Wallet button renders → mock MP redirect to success → cart cleared
+- [X] T022 [US3] Verify `notification_url` in `mercadopago.provider.ts` points to correct public URL (`env.API_URL + "/api/payments/webhook"`) — no mismatch
 
 **Checkpoint**: Webhook processes payments end-to-end. Frontend flow works with mocks.
 
@@ -105,10 +105,10 @@ description: "Task list for Mercado Pago checkout integration"
 
 **Purpose**: Error handling, loading states, visual polish
 
-- [ ] T023 Add loading skeleton state to `MpWalletButton` while preference is being created — show shimmer placeholder matching Wallet button dimensions
-- [ ] T024 Add error state to `CheckoutPageClient` — if preference creation fails, show error message + "Volver a intentar" button that retries `createCheckoutPreference`
-- [ ] T025 Run full `vitest` suite — verify no regressions across all 42+ existing tests plus new checkout tests
-- [ ] T026 Verify `/entradas` page still works end-to-end: ticket types load, add/remove, CartDrawer opens, Comprar navigates to /checkout
+- [X] T023 Add loading skeleton state to `MpWalletButton` while preference is being created — show shimmer placeholder matching Wallet button dimensions
+- [X] T024 Add error state to `CheckoutPageClient` — if preference creation fails, show error message + "Volver a intentar" button that retries `createCheckoutPreference`
+- [X] T025 Run full `vitest` suite — verify no regressions across all 42+ existing tests plus new checkout tests
+- [X] T026 Verify `/entradas` page still works end-to-end: ticket types load, add/remove, CartDrawer opens, Comprar navigates to /checkout
 
 ---
 

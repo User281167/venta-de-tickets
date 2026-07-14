@@ -11,6 +11,25 @@ vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: mockPush }),
 }));
 
+const CART_ITEMS = [
+  {
+    ticketTypeId: "tt-1",
+    name: "General",
+    unitPriceCents: 50000,
+    quantity: 2,
+    maxPerUser: 4,
+    availableStock: 100,
+  },
+  {
+    ticketTypeId: "tt-2",
+    name: "VIP",
+    unitPriceCents: 100000,
+    quantity: 1,
+    maxPerUser: 2,
+    availableStock: 50,
+  },
+];
+
 function Wrapper({ children }: { children: React.ReactNode }) {
   return (
     <ChakraProvider value={system}>
@@ -19,7 +38,7 @@ function Wrapper({ children }: { children: React.ReactNode }) {
   );
 }
 
-describe("CheckoutPageClient", () => {
+describe("Checkout flow", () => {
   let store: Record<string, string>;
 
   beforeEach(() => {
@@ -35,22 +54,14 @@ describe("CheckoutPageClient", () => {
     );
   });
 
-  it("renders items list and OrderSummary when cart has items", async () => {
-    store["cart-current-event"] = JSON.stringify([
-      {
-        ticketTypeId: "tt-1",
-        name: "General",
-        unitPriceCents: 50000,
-        quantity: 2,
-        maxPerUser: 4,
-        availableStock: 100,
-      },
-    ]);
+  it("renders items and OrderSummary with items in cart", async () => {
+    store["cart-current-event"] = JSON.stringify(CART_ITEMS);
 
     render(<CheckoutPageClient />, { wrapper: Wrapper });
 
-    const items = screen.getAllByText("General");
-    expect(items.length).toBeGreaterThanOrEqual(1);
+    await screen.findByText("Revisa tu pedido");
+
+    expect(screen.getAllByText("VIP").length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText("Resumen del pedido")).toBeInTheDocument();
     expect(mockPush).not.toHaveBeenCalled();
   });
