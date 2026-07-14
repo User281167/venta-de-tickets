@@ -9,7 +9,9 @@ export type TicketSummary = {
 export type PaymentItem = {
   id: string;
   provider: string;
-  amountCents: number;
+  subtotalCents: number;
+  discountCents: number;
+  totalCents: number;
   status: PaymentStatus;
   createdAt: string;
   tickets: TicketSummary[];

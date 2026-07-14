@@ -117,32 +117,30 @@ model DiscountCode {
   createdBy     String       @map("created_by") @db.Uuid
 
   creator User  @relation("CreatedBy", fields: [createdBy], references: [id])
-  tickets Ticket[]
+  payments Payment[]
 
   @@map("discount_codes")
 }
 
 model Ticket {
   id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  ticketTypeId     String       @map("ticket_type_id") @db.Uuid
-  userId           String       @map("user_id") @db.Uuid
-  paymentId        String?      @map("payment_id") @db.Uuid
-  discountCodeId   String?      @map("discount_code_id") @db.Uuid
-  discountApplied  Decimal?     @map("discount_applied") @db.Decimal(10, 2)
-  ticketCode       String       @unique @map("ticket_code") @db.VarChar(100)
-  qrToken          String?      @unique @map("qr_token") @db.Text
-  status           TicketStatus
-  reserveExpiresAt DateTime?    @map("reserve_expires_at") @db.Timestamptz
-  purchasedAt      DateTime?    @map("purchased_at") @db.Timestamptz
-  cancelledAt             DateTime?    @map("cancelled_at") @db.Timestamptz
-  confirmationRequestedAt DateTime?    @map("confirmation_requested_at") @db.Timestamptz
-  checkedInAt             DateTime?    @map("checked_in_at") @db.Timestamptz
-  checkedInBy      String?      @map("checked_in_by") @db.Uuid
-  createdAt        DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  ticketTypeId            String            @map("ticket_type_id") @db.Uuid
+  userId                  String            @map("user_id") @db.Uuid
+  paymentId               String?           @map("payment_id") @db.Uuid
+  unitPriceCents          Int               @map("unit_price_cents")
+  ticketCode              String            @unique @map("ticket_code") @db.VarChar(100)
+  qrToken                 String?           @unique @map("qr_token") @db.Text
+  status                  TicketStatus
+  reserveExpiresAt        DateTime?         @map("reserve_expires_at") @db.Timestamptz
+  purchasedAt             DateTime?         @map("purchased_at") @db.Timestamptz
+  cancelledAt             DateTime?         @map("cancelled_at") @db.Timestamptz
+  confirmationRequestedAt DateTime?         @map("confirmation_requested_at") @db.Timestamptz
+  checkedInAt             DateTime?         @map("checked_in_at") @db.Timestamptz
+  checkedInBy             String?           @map("checked_in_by") @db.Uuid
+  createdAt               DateTime          @default(now()) @map("created_at") @db.Timestamptz
 
   ticketType   TicketType    @relation(fields: [ticketTypeId], references: [id])
   user         User          @relation(fields: [userId], references: [id])
-  discountCode DiscountCode? @relation(fields: [discountCodeId], references: [id])
   checker      User?         @relation("CheckedInBy", fields: [checkedInBy], references: [id])
   payment      Payment?      @relation(fields: [paymentId], references: [id])
 
@@ -155,18 +153,22 @@ model Ticket {
 
 model Payment {
   id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userId       String        @map("user_id") @db.Uuid
-  provider     String        @db.VarChar(50)
-  providerTxId String?       @map("provider_tx_id") @db.VarChar(255)
-  amountCents  Int           @map("amount_cents")
-  status       PaymentStatus @default(pending)
-  createdBy    String?       @map("created_by") @db.Uuid
-  metadata     Json?
-  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt    DateTime      @updatedAt @map("updated_at") @db.Timestamptz
+  userId          String        @map("user_id") @db.Uuid
+  provider        String        @db.VarChar(50)
+  providerTxId    String?       @map("provider_tx_id") @db.VarChar(255)
+  subtotalCents   Int           @map("subtotal_cents")
+  discountCents   Int           @default(0) @map("discount_cents")
+  totalCents      Int           @map("total_cents")
+  discountCodeId  String?       @map("discount_code_id") @db.Uuid
+  status          PaymentStatus @default(pending)
+  createdBy       String?       @map("created_by") @db.Uuid
+  metadata        Json?
+  createdAt       DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime      @updatedAt @map("updated_at") @db.Timestamptz
 
-  user    User     @relation(fields: [userId], references: [id])
-  creator User?    @relation("CreatedPayments", fields: [createdBy], references: [id])
+  user    User         @relation(fields: [userId], references: [id])
+  creator User?        @relation("CreatedPayments", fields: [createdBy], references: [id])
+  discountCode DiscountCode? @relation(fields: [discountCodeId], references: [id])
   tickets Ticket[]
 
   @@index([userId])

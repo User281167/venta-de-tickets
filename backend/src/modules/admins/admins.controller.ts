@@ -187,7 +187,9 @@ export async function createAdminPaymentHandler(
     res.status(201).json({
       paymentId: result.paymentId,
       provider,
-      amountCents: result.amountCents,
+      subtotalCents: result.subtotalCents,
+      discountCents: result.discountCents,
+      totalCents: result.totalCents,
       status: 'completed',
       createdBy: req.user!.id,
       ticketIds: result.ticketIds,

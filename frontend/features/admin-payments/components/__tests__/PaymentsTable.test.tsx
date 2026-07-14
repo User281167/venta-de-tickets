@@ -12,7 +12,9 @@ vi.mock("next/navigation", () => ({
 const payments: PaymentListRow[] = [
   {
     id: "p1",
-    amountCents: 500000,
+    subtotalCents: 500000,
+    discountCents: 0,
+    totalCents: 500000,
     status: "completed",
     provider: "mercadopago",
     providerTxId: "mp123",
@@ -23,7 +25,9 @@ const payments: PaymentListRow[] = [
   },
   {
     id: "p2",
-    amountCents: 250000,
+    subtotalCents: 250000,
+    discountCents: 0,
+    totalCents: 250000,
     status: "refunded",
     provider: "mercadopago",
     providerTxId: null,

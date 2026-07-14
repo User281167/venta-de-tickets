@@ -94,10 +94,30 @@ export function PaymentDetail() {
 
           <Box>
             <Text fontWeight="bold" fontSize="sm" color="gray.500">
+              Subtotal
+            </Text>
+
+            <Text>{formatCurrency(data.subtotalCents)}</Text>
+          </Box>
+
+          {data.discountCents > 0 && (
+            <Box>
+              <Text fontWeight="bold" fontSize="sm" color="gray.500">
+                Descuento
+              </Text>
+
+              <Text color="green.500">
+                -{formatCurrency(data.discountCents)}
+              </Text>
+            </Box>
+          )}
+
+          <Box>
+            <Text fontWeight="bold" fontSize="sm" color="gray.500">
               Total
             </Text>
 
-            <Text>{formatCurrency(data.amountCents)}</Text>
+            <Text>{formatCurrency(data.totalCents)}</Text>
           </Box>
 
           <Box>
@@ -150,7 +170,7 @@ export function PaymentDetail() {
             <Table.Header>
               <Table.Row>
                 <Table.ColumnHeader>Tipo</Table.ColumnHeader>
-                <Table.ColumnHeader>Precio unit Actual.</Table.ColumnHeader>
+                <Table.ColumnHeader>Precio unit.</Table.ColumnHeader>
                 <Table.ColumnHeader>Estado</Table.ColumnHeader>
                 <Table.ColumnHeader>Código</Table.ColumnHeader>
               </Table.Row>
@@ -162,7 +182,7 @@ export function PaymentDetail() {
                   <Table.Cell>{t.ticketType.name}</Table.Cell>
 
                   <Table.Cell>
-                    {formatCurrency(Number(t.ticketType.price) * 100)}
+                    {formatCurrency(t.unitPriceCents)}
                   </Table.Cell>
 
                   <Table.Cell>{t.status}</Table.Cell>

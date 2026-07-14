@@ -22,7 +22,9 @@ export type RefundFormData = z.infer<typeof refundFormSchema>;
 
 export interface PaymentListRow {
   id: string;
-  amountCents: number;
+  subtotalCents: number;
+  discountCents: number;
+  totalCents: number;
   status: string;
   provider: string;
   providerTxId: string | null;
@@ -46,7 +48,9 @@ export interface PaymentListResponse {
 export interface PaymentDetailResponse {
   id: string;
   userId: string;
-  amountCents: number;
+  subtotalCents: number;
+  discountCents: number;
+  totalCents: number;
   status: string;
   provider: string;
   providerTxId: string | null;
@@ -61,6 +65,7 @@ export interface PaymentDetailResponse {
     id: string;
     ticketCode: string;
     status: string;
+    unitPriceCents: number;
     ticketType: {
       id: string;
       name: string;
@@ -83,7 +88,9 @@ export interface CreateAdminPaymentInput {
 export interface CreateAdminPaymentResponse {
   paymentId: string;
   provider: string;
-  amountCents: number;
+  subtotalCents: number;
+  discountCents: number;
+  totalCents: number;
   status: string;
   createdBy: string;
   ticketIds: string[];

@@ -44,7 +44,7 @@ export function PaymentsTable({ payments }: { payments: PaymentListRow[] }) {
             <Table.Cell>{p.user.fullName}</Table.Cell>
             <Table.Cell>{p.user.email}</Table.Cell>
             <Table.Cell>{p.ticketCount}</Table.Cell>
-            <Table.Cell>{formatCurrency(p.amountCents)}</Table.Cell>
+            <Table.Cell>{formatCurrency(p.totalCents)}</Table.Cell>
             <Table.Cell>
               {PAYMENT_STATUS_LABELS[p.status] ?? p.status}
             </Table.Cell>

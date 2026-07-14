@@ -7,7 +7,9 @@ export function createMockPayment(overrides?: Partial<PaymentItem>): PaymentItem
   return {
     id: `payment-${counter}`,
     provider: "mercadopago",
-    amountCents: 25000,
+    subtotalCents: 25000,
+    discountCents: 0,
+    totalCents: 25000,
     status: "completed",
     createdAt: new Date(2026, 6, counter).toISOString(),
     tickets: [
@@ -22,7 +24,7 @@ export function createMockPaymentList(
   overrides?: Partial<PaymentListResponse>,
 ): PaymentListResponse {
   return {
-    data: Array.from({ length: count }, (_, i) => createMockPayment({ amountCents: (i + 1) * 10000 })),
+    data: Array.from({ length: count }, (_, i) => createMockPayment({ subtotalCents: (i + 1) * 10000, discountCents: 0, totalCents: (i + 1) * 10000 })),
     total: count,
     page: 1,
     limit: 20,

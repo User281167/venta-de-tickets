@@ -49,7 +49,7 @@ export function PaymentRow({ payment }: { payment: PaymentItem }) {
 
           <SimpleGrid columns={2} gap={4} templateColumns="1fr 1fr" w="52">
             <Text color="white" fontWeight="semibold">
-              {formatCurrency(payment.amountCents)}
+              {formatCurrency(payment.totalCents)}
             </Text>
 
             <Box

@@ -29,7 +29,7 @@ export async function createCheckout(
     unitPriceCents: number;
   }> = [];
 
-  let totalAmountCents = 0;
+  let subtotalCents = 0;
 
   for (const item of items) {
     const ticketType = await ticketsService.getTicketTypeById(
@@ -69,7 +69,7 @@ export async function createCheckout(
     }
 
     const unitPriceCents = Math.round(Number(ticketType.price) * 100);
-    totalAmountCents += unitPriceCents * item.quantity;
+    subtotalCents += unitPriceCents * item.quantity;
 
     logger.info(
       `Adding item to checkout: ticketTypeId=${item.ticketTypeId}, name=${ticketType.name}, quantity=${item.quantity}, unitPriceCents=${unitPriceCents}`,
@@ -89,7 +89,7 @@ export async function createCheckout(
   const paymentId = randomUUID();
 
   logger.info(
-    `Creating checkout: paymentId=${paymentId}, userId=${userId}, totalAmountCents=${totalAmountCents}`,
+    `Creating checkout: paymentId=${paymentId}, userId=${userId}, subtotalCents=${subtotalCents}`,
   );
 
   const checkoutResult = await provider.createCheckout({
@@ -108,8 +108,10 @@ export async function createCheckout(
       ticketTypeId: item.ticketTypeId,
       userId,
       quantity: item.quantity,
+      unitPriceCents: item.unitPriceCents,
       paymentId,
-      amountCents: totalAmountCents,
+      subtotalCents,
+      totalCents: subtotalCents,
       provider: providerName,
       reserveExpiresAt,
       generateTicketCode,
@@ -223,7 +225,9 @@ export async function listAllPayments(input: {
     userId: p.userId,
     provider: p.provider,
     providerTxId: p.providerTxId,
-    amountCents: p.amountCents,
+    subtotalCents: p.subtotalCents,
+    discountCents: p.discountCents,
+    totalCents: p.totalCents,
     status: p.status,
     createdAt: p.createdAt,
     updatedAt: p.updatedAt,
@@ -277,7 +281,9 @@ export async function getPaymentStatus(
   return {
     id: payment.id,
     status: payment.status,
-    amountCents: payment.amountCents,
+    totalCents: payment.totalCents,
+    subtotalCents: payment.subtotalCents,
+    discountCents: payment.discountCents,
     provider: payment.provider,
     tickets: payment.tickets.map((t) => ({
       id: t.id,
@@ -298,7 +304,8 @@ export async function createAdminPayment(input: {
     `Creating admin payment: userId=${input.userId}, provider=${input.provider}, tickets=${JSON.stringify(input.tickets)}`,
   );
 
-  let totalAmountCents = 0;
+  let subtotalCents = 0;
+  const ticketsWithPrice: Array<{ ticketTypeId: string; quantity: number; unitPriceCents: number }> = [];
 
   for (const item of input.tickets) {
     const ticketType = await ticketsService.getTicketTypeById(
@@ -306,15 +313,18 @@ export async function createAdminPayment(input: {
     );
 
     const unitPriceCents = Math.round(Number(ticketType.price) * 100);
-    totalAmountCents += unitPriceCents * item.quantity;
+    subtotalCents += unitPriceCents * item.quantity;
+    ticketsWithPrice.push({ ...item, unitPriceCents });
   }
 
   const result = await paymentsRepo.createAdminPaymentTransaction({
     userId: input.userId,
     provider: input.provider,
-    amountCents: totalAmountCents,
+    subtotalCents,
+    discountCents: 0,
+    totalCents: subtotalCents,
     createdBy: input.createdBy,
-    tickets: input.tickets,
+    tickets: ticketsWithPrice,
     generateTicketCode,
   });
 

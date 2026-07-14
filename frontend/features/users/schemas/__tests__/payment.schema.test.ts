@@ -19,7 +19,9 @@ describe("paymentItemSchema", () => {
   const validItem = {
     id: "550e8400-e29b-41d4-a716-446655440000",
     provider: "mercadopago",
-    amountCents: 50000,
+    subtotalCents: 50000,
+    discountCents: 0,
+    totalCents: 50000,
     status: "completed",
     createdAt: "2026-07-10T12:00:00Z",
     tickets: [
@@ -37,8 +39,8 @@ describe("paymentItemSchema", () => {
     expect(result.success).toBe(true);
   });
 
-  it("rejects negative amountCents", () => {
-    const result = paymentItemSchema.safeParse({ ...validItem, amountCents: -100 });
+  it("rejects negative totalCents", () => {
+    const result = paymentItemSchema.safeParse({ ...validItem, totalCents: -100 });
     expect(result.success).toBe(false);
   });
 
@@ -48,8 +50,8 @@ describe("paymentItemSchema", () => {
     expect(result.success).toBe(false);
   });
 
-  it("rejects non-integer amountCents", () => {
-    const result = paymentItemSchema.safeParse({ ...validItem, amountCents: 50.5 });
+  it("rejects non-integer totalCents", () => {
+    const result = paymentItemSchema.safeParse({ ...validItem, totalCents: 50.5 });
     expect(result.success).toBe(false);
   });
 });
@@ -60,7 +62,9 @@ describe("paymentListResponseSchema", () => {
       {
         id: "550e8400-e29b-41d4-a716-446655440000",
         provider: "mercadopago",
-        amountCents: 50000,
+        subtotalCents: 50000,
+        discountCents: 0,
+        totalCents: 50000,
         status: "completed",
         createdAt: "2026-07-10T12:00:00Z",
         tickets: [],

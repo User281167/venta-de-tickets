@@ -246,7 +246,9 @@ describe('payments.service', () => {
       id: 'pay-1',
       userId: 'user-1',
       status: 'completed',
-      amountCents: 50000,
+      subtotalCents: 50000,
+      discountCents: 0,
+      totalCents: 50000,
       provider: 'mercadopago',
       tickets: [
         { id: 'ticket-1', ticketCode: 'ABC123', status: 'paid', qrToken: 'eyJ123' },

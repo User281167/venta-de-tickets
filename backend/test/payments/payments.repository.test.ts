@@ -30,21 +30,25 @@ describe('payments.repository', () => {
       id: 'payment-1',
       userId: 'user-1',
       provider: 'mercadopago',
-      amountCents: 25000,
+      subtotalCents: 25000,
+      discountCents: 0,
+      totalCents: 25000,
       status: 'pending',
     });
 
     const result = await repo.create({
       userId: 'user-1',
       provider: 'mercadopago',
-      amountCents: 25000,
+      subtotalCents: 25000,
+      totalCents: 25000,
     });
 
     expect(mockPrisma.payment.create).toHaveBeenCalledWith({
       data: {
         userId: 'user-1',
         provider: 'mercadopago',
-        amountCents: 25000,
+        subtotalCents: 25000,
+        totalCents: 25000,
         status: 'pending',
       },
     });
@@ -125,7 +129,9 @@ describe('payments.repository', () => {
         userId: 'user-1',
         provider: 'mercadopago',
         providerTxId: null,
-        amountCents: 25000,
+        subtotalCents: 25000,
+        discountCents: 0,
+        totalCents: 25000,
         status: 'completed',
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -165,7 +171,9 @@ describe('payments.repository', () => {
       id: 'pay-1',
       userId: 'user-1',
       provider: 'mercadopago',
-      amountCents: 25000,
+      subtotalCents: 25000,
+      discountCents: 0,
+      totalCents: 25000,
       status: 'completed',
       user: { id: 'user-1', email: 'a@test.com', fullName: 'Alice' },
       tickets: [

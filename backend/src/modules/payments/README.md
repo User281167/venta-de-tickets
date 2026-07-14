@@ -110,7 +110,7 @@ sequenceDiagram
     S->>DB: $transaction (FOR UPDATE each ticket_type, INSERT payment, INSERT tickets, increment quantity_sold)
     S->>S: generate QR for each ticket
     S-->>API: { paymentId, ticketIds }
-    API-->>A: 201 { paymentId, provider, amountCents, status, createdBy, ticketIds }
+    API-->>A: 201 { paymentId, provider, subtotalCents, discountCents, totalCents, status, createdBy, ticketIds }
 ```
 
 ## Structure

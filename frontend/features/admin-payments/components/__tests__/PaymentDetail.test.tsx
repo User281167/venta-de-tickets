@@ -12,7 +12,9 @@ vi.mock("next/navigation", () => ({
 const mockDetail = {
   id: "p1",
   userId: "u1",
-  amountCents: 500000,
+  subtotalCents: 500000,
+  discountCents: 0,
+  totalCents: 500000,
   status: "completed",
   provider: "mercadopago",
   providerTxId: "mp123",

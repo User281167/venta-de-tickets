@@ -6,13 +6,15 @@ import type { PaymentStatus } from './payments.types.js';
 export function create(input: {
   userId: string;
   provider: string;
-  amountCents: number;
+  subtotalCents: number;
+  totalCents: number;
 }) {
   return prisma.payment.create({
     data: {
       userId: input.userId,
       provider: input.provider,
-      amountCents: input.amountCents,
+      subtotalCents: input.subtotalCents,
+      totalCents: input.totalCents,
       status: 'pending',
     },
   });
@@ -71,8 +73,10 @@ export async function createCheckoutTransaction(input: {
   ticketTypeId: string;
   userId: string;
   quantity: number;
+  unitPriceCents: number;
   paymentId: string;
-  amountCents: number;
+  subtotalCents: number;
+  totalCents: number;
   provider: string;
   reserveExpiresAt: Date;
   generateTicketCode: () => string;
@@ -129,14 +133,14 @@ export async function createCheckoutTransaction(input: {
       ticketCodes.push(ticketCode);
 
       await tx.$executeRaw`
-        INSERT INTO tickets (id, ticket_type_id, user_id, status, reserve_expires_at, ticket_code, payment_id)
-        VALUES (gen_random_uuid(), ${input.ticketTypeId}::uuid, ${input.userId}::uuid, 'reserved', ${input.reserveExpiresAt}, ${ticketCode}, ${input.paymentId}::uuid)
+        INSERT INTO tickets (id, ticket_type_id, user_id, status, reserve_expires_at, ticket_code, payment_id, unit_price_cents)
+        VALUES (gen_random_uuid(), ${input.ticketTypeId}::uuid, ${input.userId}::uuid, 'reserved', ${input.reserveExpiresAt}, ${ticketCode}, ${input.paymentId}::uuid, ${input.unitPriceCents})
       `;
     }
 
     await tx.$executeRaw`
-      INSERT INTO payments (id, user_id, status, amount_cents, provider)
-      VALUES (${input.paymentId}::uuid, ${input.userId}::uuid, 'pending', ${input.amountCents}, ${input.provider})
+      INSERT INTO payments (id, user_id, status, subtotal_cents, discount_cents, total_cents, provider)
+      VALUES (${input.paymentId}::uuid, ${input.userId}::uuid, 'pending', ${input.subtotalCents}, 0, ${input.totalCents}, ${input.provider})
     `;
 
     return { paymentId: input.paymentId };
@@ -179,7 +183,9 @@ export function updateTicketQrToken(ticketId: string, qrToken: string) {
 const selectPaymentHistory = {
   id: true,
   provider: true,
-  amountCents: true,
+  subtotalCents: true,
+  discountCents: true,
+  totalCents: true,
   status: true,
   createdBy: true,
   createdAt: true,
@@ -213,7 +219,9 @@ const selectPaymentAdmin = {
   userId: true,
   provider: true,
   providerTxId: true,
-  amountCents: true,
+  subtotalCents: true,
+  discountCents: true,
+  totalCents: true,
   status: true,
   createdBy: true,
   createdAt: true,
@@ -329,9 +337,11 @@ export type PaymentRow = Payment;
 export async function createAdminPaymentTransaction(input: {
   userId: string;
   provider: string;
-  amountCents: number;
+  subtotalCents: number;
+  discountCents: number;
+  totalCents: number;
   createdBy: string;
-  tickets: Array<{ ticketTypeId: string; quantity: number }>;
+  tickets: Array<{ ticketTypeId: string; quantity: number; unitPriceCents: number }>;
   generateTicketCode: () => string;
 }) {
   return prisma.$transaction(async (tx) => {
@@ -393,8 +403,8 @@ export async function createAdminPaymentTransaction(input: {
         const ticketCode = input.generateTicketCode();
 
         const result = await tx.$queryRaw<Array<{ id: string }>>`
-          INSERT INTO tickets (id, ticket_type_id, user_id, status, purchased_at, ticket_code)
-          VALUES (gen_random_uuid(), ${item.ticketTypeId}::uuid, ${input.userId}::uuid, 'paid', now(), ${ticketCode})
+          INSERT INTO tickets (id, ticket_type_id, user_id, status, purchased_at, ticket_code, unit_price_cents)
+          VALUES (gen_random_uuid(), ${item.ticketTypeId}::uuid, ${input.userId}::uuid, 'paid', now(), ${ticketCode}, ${item.unitPriceCents})
           RETURNING id
         `;
         ticketIds.push(result[0].id);
@@ -402,8 +412,8 @@ export async function createAdminPaymentTransaction(input: {
     }
 
     const paymentRow = await tx.$queryRaw<Array<{ id: string }>>`
-      INSERT INTO payments (id, user_id, provider, amount_cents, status, created_by)
-      VALUES (gen_random_uuid(), ${input.userId}::uuid, ${input.provider}, ${input.amountCents}, 'completed', ${input.createdBy}::uuid)
+      INSERT INTO payments (id, user_id, provider, subtotal_cents, discount_cents, total_cents, status, created_by, created_at, updated_at)
+      VALUES (gen_random_uuid(), ${input.userId}::uuid, ${input.provider}, ${input.subtotalCents}, ${input.discountCents}, ${input.totalCents}, 'completed', ${input.createdBy}::uuid, now(), now())
       RETURNING id
     `;
 
@@ -415,7 +425,7 @@ export async function createAdminPaymentTransaction(input: {
       WHERE id = ANY(${ticketIds}::uuid[])
     `;
 
-    return { paymentId, ticketIds, amountCents: input.amountCents };
+    return { paymentId, ticketIds, subtotalCents: input.subtotalCents, discountCents: input.discountCents, totalCents: input.totalCents };
   });
 }
 

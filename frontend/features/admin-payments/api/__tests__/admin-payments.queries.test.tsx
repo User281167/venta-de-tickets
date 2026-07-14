@@ -42,7 +42,7 @@ describe("usePaymentDetail", () => {
   });
 
   it("fetches payment detail by id", async () => {
-    const mockDetail = { id: "p1", amountCents: 5000, status: "completed", provider: "mp", providerTxId: null, createdAt: "", updatedAt: "", userId: "u1", user: { id: "u1", email: "a@b.com", fullName: "Ana" }, tickets: [] };
+    const mockDetail = { id: "p1", subtotalCents: 5000, discountCents: 0, totalCents: 5000, status: "completed", provider: "mp", providerTxId: null, createdAt: "", updatedAt: "", userId: "u1", user: { id: "u1", email: "a@b.com", fullName: "Ana" }, tickets: [] };
     vi.mocked(authFetch).mockResolvedValue(mockDetail);
 
     const { result } = renderHook(

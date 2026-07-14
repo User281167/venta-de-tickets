@@ -404,7 +404,9 @@ describe('GET /api/me/payments', () => {
       {
         id: 'pay-1',
         provider: 'mercadopago',
-        amountCents: 50000,
+        subtotalCents: 50000,
+        discountCents: 0,
+        totalCents: 50000,
         status: 'completed',
         createdAt: new Date('2026-07-09T00:00:00Z'),
         tickets: [

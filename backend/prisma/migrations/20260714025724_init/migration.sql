@@ -87,8 +87,7 @@ CREATE TABLE "tickets" (
     "ticket_type_id" UUID NOT NULL,
     "user_id" UUID NOT NULL,
     "payment_id" UUID,
-    "discount_code_id" UUID,
-    "discount_applied" DECIMAL(10,2),
+    "unit_price_cents" INTEGER NOT NULL,
     "ticket_code" VARCHAR(100) NOT NULL,
     "qr_token" TEXT,
     "status" "TicketStatus" NOT NULL,
@@ -109,7 +108,10 @@ CREATE TABLE "payments" (
     "user_id" UUID NOT NULL,
     "provider" VARCHAR(50) NOT NULL,
     "provider_tx_id" VARCHAR(255),
-    "amount_cents" INTEGER NOT NULL,
+    "subtotal_cents" INTEGER NOT NULL,
+    "discount_cents" INTEGER NOT NULL DEFAULT 0,
+    "total_cents" INTEGER NOT NULL,
+    "discount_code_id" UUID,
     "status" "PaymentStatus" NOT NULL DEFAULT 'pending',
     "created_by" UUID,
     "metadata" JSONB,
@@ -165,9 +167,6 @@ ALTER TABLE "tickets" ADD CONSTRAINT "tickets_ticket_type_id_fkey" FOREIGN KEY (
 ALTER TABLE "tickets" ADD CONSTRAINT "tickets_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "tickets" ADD CONSTRAINT "tickets_discount_code_id_fkey" FOREIGN KEY ("discount_code_id") REFERENCES "discount_codes"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "tickets" ADD CONSTRAINT "tickets_checked_in_by_fkey" FOREIGN KEY ("checked_in_by") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -178,3 +177,6 @@ ALTER TABLE "payments" ADD CONSTRAINT "payments_user_id_fkey" FOREIGN KEY ("user
 
 -- AddForeignKey
 ALTER TABLE "payments" ADD CONSTRAINT "payments_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "payments" ADD CONSTRAINT "payments_discount_code_id_fkey" FOREIGN KEY ("discount_code_id") REFERENCES "discount_codes"("id") ON DELETE SET NULL ON UPDATE CASCADE;

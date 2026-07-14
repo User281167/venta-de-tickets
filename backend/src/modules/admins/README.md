@@ -164,6 +164,6 @@ sequenceDiagram
     S->>DB: $transaction (FOR UPDATE, INSERT payment, INSERT tickets, quantity_sold++)
     S->>S: Genera QR cada ticket
     S-->>API: { paymentId, ticketIds }
-    API-->>FE: 201 { paymentId, provider, amountCents, status, createdBy, ticketIds }
+    API-->>FE: 201 { paymentId, provider, subtotalCents, discountCents, totalCents, status, createdBy, ticketIds }
     FE-->>A: "Pago creado exitosamente"
 ```
