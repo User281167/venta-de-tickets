@@ -3,6 +3,7 @@
 import { memo } from "react";
 import { Box, Flex, Text, Separator } from "@chakra-ui/react";
 import type { CartItem } from "../hooks/useCart";
+import { formatCurrency } from "@/shared/utils/formats";
 
 interface OrderSummaryProps {
   items: CartItem[];
@@ -27,6 +28,7 @@ export const OrderSummary = memo(function OrderSummary({
         <Text fontSize="lg" fontWeight="bold" color="brand.light" mb={4}>
           Resumen del pedido
         </Text>
+
         <Text fontSize="sm" color="brand.muted">
           Selecciona tus entradas para ver el resumen
         </Text>
@@ -50,17 +52,19 @@ export const OrderSummary = memo(function OrderSummary({
 
       <Flex direction="column" gap={3}>
         {items.map((item) => (
-          <Flex key={item.ticketType.id} justify="space-between" align="center">
+          <Flex key={item.ticketTypeId} justify="space-between" align="center">
             <Box>
               <Text fontSize="sm" color="brand.light">
-                {item.ticketType.name}
+                {item.name}
               </Text>
+
               <Text fontSize="xs" color="brand.muted">
                 Cant: {item.quantity}
               </Text>
             </Box>
+
             <Text fontSize="sm" fontWeight="semibold" color="brand.light">
-              ${(item.ticketType.price * item.quantity).toLocaleString("es-CO")}
+              ${formatCurrency((item.unitPriceCents * item.quantity))}
             </Text>
           </Flex>
         ))}
@@ -72,8 +76,9 @@ export const OrderSummary = memo(function OrderSummary({
         <Text fontSize="md" fontWeight="bold" color="brand.light">
           Total
         </Text>
+
         <Text fontSize="lg" fontWeight="bold" color="brand.cyan">
-          ${totalAmount.toLocaleString("es-CO")}
+          ${formatCurrency(totalAmount)}
         </Text>
       </Flex>
     </Box>

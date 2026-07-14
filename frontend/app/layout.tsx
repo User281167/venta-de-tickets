@@ -3,6 +3,7 @@ import { Toaster } from "sonner";
 import Provider from "@/components/ui/provider";
 import { AuthProvider } from "@/providers/AuthProvider";
 import "./globals.css";
+import { CartProvider } from "@/providers/CartProvider";
 
 export const metadata: Metadata = {
   title: "La Convención 2026",
@@ -19,7 +20,10 @@ export default function RootLayout({
     <html lang="es" suppressHydrationWarning>
       <body>
         <Provider>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <CartProvider>{children}</CartProvider>
+          </AuthProvider>
+
           <Toaster richColors />
         </Provider>
       </body>
