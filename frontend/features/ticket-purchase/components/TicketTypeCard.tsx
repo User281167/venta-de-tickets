@@ -1,7 +1,8 @@
 "use client";
 
 import { memo } from "react";
-import { Box, Flex, Text, Separator } from "@chakra-ui/react";
+import { Box, Flex, Text, Separator, Button } from "@chakra-ui/react";
+import { IconPlus } from "@tabler/icons-react";
 import { CartQuantitySpinner } from "./CartQuantitySpinner";
 import type { TicketType } from "@/features/ticket-types/schemas/ticket-types.schema";
 
@@ -22,6 +23,8 @@ export const TicketTypeCard = memo(function TicketTypeCard({
   canIncrement,
   canDecrement,
 }: TicketTypeCardProps) {
+  const isSoldOut = ticketType.availableCount <= 0;
+
   return (
     <Flex
       direction="column"
@@ -57,20 +60,40 @@ export const TicketTypeCard = memo(function TicketTypeCard({
 
       <Separator borderColor="rgba(174, 184, 216, 0.15)" my={3} />
 
-      <Flex justify="space-between" align="center" mt="auto">
+      <Flex justify="space-between" align="center" mt="auto" gap="4">
         <Text fontSize="sm" color="brand.muted">
-          {ticketType.availableCount <= 0
+          {isSoldOut
             ? "Agotado"
             : `Solo quedan ${ticketType.availableCount}`}
         </Text>
 
-        <CartQuantitySpinner
-          quantity={quantity}
-          onIncrement={onIncrement}
-          onDecrement={onDecrement}
-          canIncrement={canIncrement}
-          canDecrement={canDecrement}
-        />
+        {isSoldOut ? (
+          <Text fontSize="sm" color="brand.muted" fontWeight="semibold">
+            Agotado
+          </Text>
+        ) : quantity === 0 ? (
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={!canIncrement}
+            onClick={onIncrement}
+            borderColor="brand.cyan"
+            color="brand.cyan"
+            _hover={{ bg: "rgba(0, 229, 255, 0.1)" }}
+            _disabled={{ opacity: 0.3, cursor: "not-allowed" }}
+          >
+            <IconPlus size={16} />
+            Agregar
+          </Button>
+        ) : (
+          <CartQuantitySpinner
+            quantity={quantity}
+            onIncrement={onIncrement}
+            onDecrement={onDecrement}
+            canIncrement={canIncrement}
+            canDecrement={canDecrement}
+          />
+        )}
       </Flex>
     </Flex>
   );

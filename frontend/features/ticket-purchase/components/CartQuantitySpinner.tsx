@@ -35,9 +35,11 @@ export const CartQuantitySpinner = memo(function CartQuantitySpinner({
         h="36px"
         color="brand.light"
         _disabled={{ opacity: 0.3, cursor: "not-allowed" }}
+        _hover={{ color: "black" }}
       >
         <IconMinus size={16} />
       </Button>
+
       <Text
         w="44px"
         textAlign="center"
@@ -51,6 +53,7 @@ export const CartQuantitySpinner = memo(function CartQuantitySpinner({
       >
         {quantity}
       </Text>
+
       <Button
         size="sm"
         variant="outline"
@@ -65,6 +68,7 @@ export const CartQuantitySpinner = memo(function CartQuantitySpinner({
         h="36px"
         color="brand.light"
         _disabled={{ opacity: 0.3, cursor: "not-allowed" }}
+        _hover={{ color: "black" }}
       >
         <IconPlus size={16} />
       </Button>

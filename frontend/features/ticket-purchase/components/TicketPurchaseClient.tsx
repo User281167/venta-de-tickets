@@ -2,20 +2,11 @@
 
 import { Grid, GridItem, Box, Heading, Text, Spinner, Center } from "@chakra-ui/react";
 import { useActiveTicketTypes } from "../api/ticket-purchase.queries";
-import { useCart } from "../hooks/useCart";
 import { TicketTypeGrid } from "./TicketTypeGrid";
 import { OrderSummary } from "./OrderSummary";
 
 export function TicketPurchaseClient() {
   const { data: ticketTypes, isLoading, error } = useActiveTicketTypes();
-  const {
-    items: cartItems,
-    increment,
-    decrement,
-    canIncrement,
-    canDecrement,
-    summary,
-  } = useCart(ticketTypes ?? []);
 
   if (isLoading) {
     return (
@@ -55,18 +46,11 @@ export function TicketPurchaseClient() {
 
       <Grid templateColumns={{ base: "1fr", lg: "2fr 1fr" }} gap={8} alignItems="start">
         <GridItem>
-          <TicketTypeGrid
-            ticketTypes={ticketTypes}
-            cartItems={cartItems}
-            onIncrement={increment}
-            onDecrement={decrement}
-            canIncrement={canIncrement}
-            canDecrement={canDecrement}
-          />
+          <TicketTypeGrid ticketTypes={ticketTypes} />
         </GridItem>
 
         <GridItem>
-          <OrderSummary items={summary.list} totalAmount={summary.totalAmount} />
+          <OrderSummary />
         </GridItem>
       </Grid>
     </Box>
