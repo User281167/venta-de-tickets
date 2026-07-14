@@ -2,7 +2,7 @@
 CREATE TYPE "UserRole" AS ENUM ('super_admin', 'admin', 'checker', 'client');
 
 -- CreateEnum
-CREATE TYPE "TicketStatus" AS ENUM ('reserved', 'active', 'used', 'cancelled', 'expired', 'confirmed');
+CREATE TYPE "TicketStatus" AS ENUM ('reserved', 'paid', 'pending_confirmation', 'confirmed', 'used', 'cancelled', 'expired');
 
 -- CreateEnum
 CREATE TYPE "PaymentStatus" AS ENUM ('pending', 'completed', 'failed', 'refunded');
@@ -13,11 +13,16 @@ CREATE TYPE "DiscountType" AS ENUM ('percentage', 'fixed');
 -- CreateEnum
 CREATE TYPE "PolicyType" AS ENUM ('privacy_policy', 'terms_of_service');
 
+-- CreateEnum
+CREATE TYPE "TicketTypeStatus" AS ENUM ('enabled', 'disabled', 'blocked');
+
 -- CreateTable
 CREATE TABLE "users" (
-    "id" UUID NOT NULL,
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "cedula" VARCHAR(20),
     "full_name" VARCHAR(150) NOT NULL,
+    "address" TEXT,
+    "date_of_birth" DATE,
     "email" VARCHAR(255) NOT NULL,
     "phone" VARCHAR(20),
     "role" "UserRole" NOT NULL,
@@ -31,7 +36,7 @@ CREATE TABLE "users" (
 
 -- CreateTable
 CREATE TABLE "privacy_acceptances" (
-    "id" UUID NOT NULL,
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "user_id" UUID NOT NULL,
     "policy_version" VARCHAR(20) NOT NULL,
     "policy_type" "PolicyType" NOT NULL,
@@ -45,7 +50,7 @@ CREATE TABLE "privacy_acceptances" (
 
 -- CreateTable
 CREATE TABLE "ticket_types" (
-    "id" UUID NOT NULL,
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "name" VARCHAR(100) NOT NULL,
     "description" TEXT,
     "price" DECIMAL(12,2) NOT NULL,
@@ -53,7 +58,7 @@ CREATE TABLE "ticket_types" (
     "quantity_sold" INTEGER NOT NULL DEFAULT 0,
     "max_per_user" INTEGER,
     "sale_ends_at" TIMESTAMPTZ,
-    "is_active" BOOLEAN NOT NULL DEFAULT true,
+    "status" "TicketTypeStatus" NOT NULL DEFAULT 'enabled',
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ NOT NULL,
 
@@ -62,7 +67,7 @@ CREATE TABLE "ticket_types" (
 
 -- CreateTable
 CREATE TABLE "discount_codes" (
-    "id" UUID NOT NULL,
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "code" VARCHAR(50) NOT NULL,
     "discount_type" "DiscountType" NOT NULL,
     "discount_value" DECIMAL(10,2) NOT NULL,
@@ -78,7 +83,7 @@ CREATE TABLE "discount_codes" (
 
 -- CreateTable
 CREATE TABLE "tickets" (
-    "id" UUID NOT NULL,
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "ticket_type_id" UUID NOT NULL,
     "user_id" UUID NOT NULL,
     "payment_id" UUID,
@@ -90,6 +95,7 @@ CREATE TABLE "tickets" (
     "reserve_expires_at" TIMESTAMPTZ,
     "purchased_at" TIMESTAMPTZ,
     "cancelled_at" TIMESTAMPTZ,
+    "confirmation_requested_at" TIMESTAMPTZ,
     "checked_in_at" TIMESTAMPTZ,
     "checked_in_by" UUID,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -99,12 +105,13 @@ CREATE TABLE "tickets" (
 
 -- CreateTable
 CREATE TABLE "payments" (
-    "id" UUID NOT NULL,
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "user_id" UUID NOT NULL,
     "provider" VARCHAR(50) NOT NULL,
     "provider_tx_id" VARCHAR(255),
     "amount_cents" INTEGER NOT NULL,
     "status" "PaymentStatus" NOT NULL DEFAULT 'pending',
+    "created_by" UUID,
     "metadata" JSONB,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ NOT NULL,
@@ -168,3 +175,6 @@ ALTER TABLE "tickets" ADD CONSTRAINT "tickets_payment_id_fkey" FOREIGN KEY ("pay
 
 -- AddForeignKey
 ALTER TABLE "payments" ADD CONSTRAINT "payments_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "payments" ADD CONSTRAINT "payments_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
