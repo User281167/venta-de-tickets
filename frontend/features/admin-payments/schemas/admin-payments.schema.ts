@@ -68,3 +68,23 @@ export interface PaymentDetailResponse {
     };
   }>;
 }
+
+export interface CreateAdminPaymentTicket {
+  ticketTypeId: string;
+  quantity: number;
+}
+
+export interface CreateAdminPaymentInput {
+  userId: string;
+  provider: "MANUAL" | "GIFT";
+  tickets: CreateAdminPaymentTicket[];
+}
+
+export interface CreateAdminPaymentResponse {
+  paymentId: string;
+  provider: string;
+  amountCents: number;
+  status: string;
+  createdBy: string;
+  ticketIds: string[];
+}

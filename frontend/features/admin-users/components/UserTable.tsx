@@ -24,6 +24,7 @@ import { ErrorBanner } from "./UserError";
 import { UserTableItem } from "./UserTableItem";
 import { UserEditDialog } from "./UserEditDialog";
 import { UserCreateDialog } from "./UserCreateDialog";
+import { AddPaymentDialog } from "./AddPaymentDialog";
 
 const LIMIT = 20;
 
@@ -32,6 +33,7 @@ export function UserTable() {
   const [search, setSearch] = useState("");
   const [searchInput, setSearchInput] = useState("");
   const [editingUser, setEditingUser] = useState<UserRow | null>(null);
+  const [paymentUser, setPaymentUser] = useState<UserRow | null>(null);
   const [showCreate, setShowCreate] = useState(false);
 
   useEffect(() => {
@@ -106,6 +108,7 @@ export function UserTable() {
                       key={user.id}
                       user={user}
                       onEdit={setEditingUser}
+                      onAddPayment={setPaymentUser}
                     />
                   ))
                 )}
@@ -139,6 +142,7 @@ export function UserTable() {
       )}
 
       <UserEditDialog user={editingUser} setUser={setEditingUser} />
+      <AddPaymentDialog user={paymentUser} setUser={setPaymentUser} />
       <UserCreateDialog open={showCreate} setOpen={setShowCreate} />
     </VStack>
   );

@@ -10,6 +10,8 @@ import type {
   PaymentFilters,
   PaymentDetailResponse,
   RefundFormData,
+  CreateAdminPaymentInput,
+  CreateAdminPaymentResponse,
 } from "../schemas/admin-payments.schema";
 
 async function fetchPayments(
@@ -61,6 +63,31 @@ async function processRefund(
       body: JSON.stringify({ reason: data.reason }),
     },
   );
+}
+
+async function createAdminPayment(
+  data: CreateAdminPaymentInput,
+): Promise<CreateAdminPaymentResponse> {
+  return authFetch<CreateAdminPaymentResponse>(
+    "/api/admin/payments/manual",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    },
+  );
+}
+
+export function useCreateAdminPayment() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: CreateAdminPaymentInput) =>
+      createAdminPayment(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin", "payments"] });
+    },
+  });
 }
 
 export function useProcessRefund(paymentId: string) {
