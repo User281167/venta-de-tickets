@@ -70,16 +70,16 @@ description: "Task list for Mercado Pago checkout integration"
 
 ### Tests for User Story 2
 
-- [ ] T013 [P] [US2] Test `CheckoutSuccessPage` — mock query params with `collection_status=approved&payment_id=123`, assert success message + payment ID rendered
-- [ ] T014 [P] [US2] Test `CheckoutFailurePage` — renders failure message with retry link
-- [ ] T015 [P] [US2] Test `CheckoutPendingPage` — renders pending message with instructions
+- [X] T013 [P] [US2] Test `CheckoutSuccessPage` — mock query params with `collection_status=approved&payment_id=123`, assert success message + payment ID rendered
+- [X] T014 [P] [US2] Test `CheckoutFailurePage` — renders failure message with retry link
+- [X] T015 [P] [US2] Test `CheckoutPendingPage` — renders pending message with instructions
 
 ### Implementation for User Story 2
 
-- [ ] T016 [P] [US2] Create success page at `frontend/app/(public)/checkout/success/page.tsx` — reads query params (`collection_status`, `payment_id`, `external_reference`), shows "Pago exitoso" + payment ID + "Volver a entradas" link; clears cart on mount via `clearCart()`
-- [ ] T017 [P] [US2] Create failure page at `frontend/app/(public)/checkout/failure/page.tsx` — reads query params, shows "Pago rechazado" + reason (from `collection_status`) + "Intentar de nuevo" link back to `/entradas`; cart preserved
-- [ ] T018 [P] [US2] Create pending page at `frontend/app/(public)/checkout/pending/page.tsx` — shows "Pago pendiente" + "Recibirás confirmación por correo" + instructions for cash/offline payments
-- [ ] T019 [US2] Add a route group layout at `frontend/app/(public)/checkout/layout.tsx` — minimal layout (no Navbar CartFab to avoid confusion), shared `title` logic
+- [X] T016 [P] [US2] Create success page at `frontend/app/(public)/checkout/success/page.tsx` — reads query params (`collection_status`, `payment_id`, `external_reference`), shows "Pago exitoso" + payment ID + "Volver a entradas" link; clears cart on mount via `clearCart()`
+- [X] T017 [P] [US2] Create failure page at `frontend/app/(public)/checkout/failure/page.tsx` — reads query params, shows "Pago rechazado" + reason (from `collection_status`) + "Intentar de nuevo" link back to `/entradas`; cart preserved
+- [X] T018 [P] [US2] Create pending page at `frontend/app/(public)/checkout/pending/page.tsx` — shows "Pago pendiente" + "Recibirás confirmación por correo" + instructions for cash/offline payments
+- [X] T019 [US2] Add a route group layout at `frontend/app/(public)/checkout/layout.tsx` — minimal layout (no Navbar CartFab to avoid confusion), shared `title` logic
 
 **Checkpoint**: All three redirect routes render with correct status info. Cart clears on success.
 

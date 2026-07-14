@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Box, Flex, Text, Separator, Button } from "@chakra-ui/react";
 import { useCart } from "../hooks/useCart";
 import { useAuth } from "@/providers/AuthProvider";
+import { formatCurrency } from "@/shared/utils/formats";
 
 interface OrderSummaryProps {
   hideComprar?: boolean;
@@ -78,7 +79,7 @@ export const OrderSummary = memo(function OrderSummary({
             </Box>
 
             <Text fontSize="sm" fontWeight="semibold" color="brand.light">
-              ${(item.unitPriceCents * item.quantity).toLocaleString("es-CO")}
+              {formatCurrency(item.unitPriceCents * item.quantity * 100)}
             </Text>
           </Flex>
         ))}
@@ -92,7 +93,7 @@ export const OrderSummary = memo(function OrderSummary({
         </Text>
 
         <Text fontSize="lg" fontWeight="bold" color="brand.cyan">
-          ${subtotalCents.toLocaleString("es-CO")}
+          {formatCurrency(subtotalCents * 100)}
         </Text>
       </Flex>
 

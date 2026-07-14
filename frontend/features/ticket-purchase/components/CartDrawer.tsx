@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useCart } from "../hooks/useCart";
 import { CartItemRow } from "./CartItemRow";
+import { formatCurrency } from "@/shared/utils/formats";
 
 interface CartDrawerProps {
   open: boolean;
@@ -122,7 +123,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                   Total
                 </Text>
                 <Text fontSize="lg" fontWeight="bold" color="brand.cyan">
-                  ${subtotalCents.toLocaleString("es-CO")}
+                  {formatCurrency(subtotalCents * 100)}
                 </Text>
               </Flex>
 

@@ -14,6 +14,7 @@ import { IconTicket } from "@tabler/icons-react";
 import NextLink from "next/link";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import type { TicketType } from "../schemas/ticket-types.schema";
+import { formatCurrency } from "@/shared/utils/formats";
 
 interface TicketTypeCardProps {
   ticketType: TicketType;
@@ -41,7 +42,7 @@ export function TicketTypeCard({ ticketType }: TicketTypeCardProps) {
 
         <HStack justify="space-between" align="baseline" mb={2}>
           <Heading as="span" size="xl" color="#76ABAE">
-            ${Number(ticketType.price).toLocaleString("es-CO")}
+            {formatCurrency(Number(ticketType.price))}
           </Heading>
           <Badge
             colorPalette={

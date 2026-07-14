@@ -89,7 +89,7 @@ describe("CartDrawer", () => {
 
     const names = screen.getAllByText("General");
     expect(names.length).toBeGreaterThanOrEqual(1);
-    expect(screen.getByText("$50.000 c/u")).toBeInTheDocument();
+    expect(screen.getByText("$ 50.000 c/u")).toBeInTheDocument();
   });
 
   it("shows total in footer", () => {

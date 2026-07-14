@@ -4,6 +4,7 @@ import React from "react";
 
 import { tableCss } from "@/shared/components/tablecss";
 import { AdminTicketType } from "@/features/ticket-types/schemas/ticket-types.schema";
+import { formatCurrency } from "@/shared/utils/formats";
 
 interface Props {
   setEditing: (value: AdminTicketType | null) => void;
@@ -40,7 +41,7 @@ export const TicketTypesTable = React.memo(function TicketTypesTable({
                   <Table.Cell fontWeight="medium">{tt.name}</Table.Cell>
 
                   <Table.Cell>
-                    ${Number(tt.price).toLocaleString("es-CO")}
+                    {formatCurrency(Number(tt.price * 100))}
                   </Table.Cell>
 
                   <Table.Cell>

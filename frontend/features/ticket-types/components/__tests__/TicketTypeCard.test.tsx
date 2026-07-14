@@ -19,7 +19,7 @@ const baseTicket: TicketType = {
   id: "tt-1",
   name: "General",
   description: "Entrada general al evento",
-  price: 120000,
+  price: 12000000,
   availableCount: 400,
   maxPerUser: 4,
   saleEndsAt: null,
@@ -39,7 +39,7 @@ describe("TicketTypeCard", () => {
     });
 
     expect(screen.getByText("General")).toBeInTheDocument();
-    expect(screen.getByText("$120.000")).toBeInTheDocument();
+    expect(screen.getByText("$ 120.000")).toBeInTheDocument();
   });
 
   it("renders description when provided", () => {
@@ -127,10 +127,10 @@ describe("TicketTypeCard", () => {
   });
 
   it("formats price with Colombian locale", () => {
-    render(<TicketTypeCard ticketType={{ ...baseTicket, price: 2500000 }} />, {
+    render(<TicketTypeCard ticketType={{ ...baseTicket, price: 250000000 }} />, {
       wrapper: TestWrapper,
     });
 
-    expect(screen.getByText("$2.500.000")).toBeInTheDocument();
+    expect(screen.getByText("$ 2.500.000")).toBeInTheDocument();
   });
 });

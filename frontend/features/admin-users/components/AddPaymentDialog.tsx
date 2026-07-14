@@ -26,6 +26,7 @@ import { useCreateAdminPayment } from "@/features/admin-payments/api/admin-payme
 import type { UserRow } from "../api/admin-users.queries";
 import { toast } from "sonner";
 import { tableCss } from "@/shared/components/tablecss";
+import { formatCurrency } from "@/shared/utils/formats";
 
 const PROVIDER_OPTIONS = createListCollection({
   items: [
@@ -153,7 +154,7 @@ export function AddPaymentDialog({ user, setUser }: Props) {
                           <Table.Cell>{tt.name}</Table.Cell>
 
                           <Table.Cell>
-                            ${tt.price.toLocaleString("es-CO")}
+                            {formatCurrency(tt.price)}
                           </Table.Cell>
 
                           <Table.Cell>{available}</Table.Cell>
@@ -232,7 +233,7 @@ export function AddPaymentDialog({ user, setUser }: Props) {
                   textAlign="right"
                   color="brand.light"
                 >
-                  Total: ${total.toLocaleString("es-CO")}
+                  Total: {formatCurrency(total)}
                 </Text>
               </VStack>
             )}

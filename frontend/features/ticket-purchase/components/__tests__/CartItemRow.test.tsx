@@ -34,9 +34,9 @@ describe("CartItemRow", () => {
     );
 
     expect(screen.getByText("General")).toBeInTheDocument();
-    expect(screen.getByText("$50.000 c/u")).toBeInTheDocument();
+    expect(screen.getByText("$ 50.000 c/u")).toBeInTheDocument();
     expect(screen.getByText("2")).toBeInTheDocument();
-    expect(screen.getByText("$100.000")).toBeInTheDocument();
+    expect(screen.getByText("$ 100.000")).toBeInTheDocument();
   });
 
   it("calls onIncrement when plus button clicked", async () => {

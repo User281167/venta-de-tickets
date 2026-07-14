@@ -5,6 +5,7 @@ import { Box, Flex, Text, Separator, Button } from "@chakra-ui/react";
 import { IconPlus } from "@tabler/icons-react";
 import { CartQuantitySpinner } from "./CartQuantitySpinner";
 import type { TicketType } from "@/features/ticket-types/schemas/ticket-types.schema";
+import { formatCurrency } from "@/shared/utils/formats";
 
 interface TicketTypeCardProps {
   ticketType: TicketType;
@@ -47,7 +48,7 @@ export const TicketTypeCard = memo(function TicketTypeCard({
           </Text>
 
           <Text fontSize="xl" fontWeight="bold" color="brand.cyan">
-            ${Number(ticketType.price).toLocaleString("es-CO")}
+            {formatCurrency(Number(ticketType.price) * 100)}
           </Text>
         </Box>
       </Flex>

@@ -14,6 +14,7 @@ import { useCart } from "../hooks/useCart";
 import { OrderSummary } from "./OrderSummary";
 import { MpWalletButton } from "./MpWalletButton";
 import { useCreateCheckoutPreference } from "../api/checkout.queries";
+import { formatCurrency } from "@/shared/utils/formats";
 
 export function CheckoutPageClient() {
   const { items } = useCart();
@@ -51,7 +52,7 @@ export function CheckoutPageClient() {
       <Container maxW="8xl">
         <Flex gap={8} align="flex-start" wrap={{ base: "wrap", lg: "nowrap" }}>
           {/* Left: items list */}
-          <Box flex={2} minW="300px">
+          <Box flex={2} minW="300px" w="full">
             <Text fontSize="2xl" fontWeight="bold" color="brand.light" mb={6}>
               Revisa tu pedido
             </Text>
@@ -74,15 +75,14 @@ export function CheckoutPageClient() {
                     >
                       {item.name}
                     </Text>
+
                     <Text fontSize="sm" color="brand.muted">
                       Cantidad: {item.quantity}
                     </Text>
                   </Box>
+
                   <Text fontSize="md" fontWeight="bold" color="brand.light">
-                    $
-                    {(item.unitPriceCents * item.quantity).toLocaleString(
-                      "es-CO",
-                    )}
+                    {formatCurrency((item.unitPriceCents * item.quantity * 100))}
                   </Text>
                 </Flex>
               ))}
