@@ -7,7 +7,13 @@ import { Box, Flex, Text, Separator, Button } from "@chakra-ui/react";
 import { useCart } from "../hooks/useCart";
 import { useAuth } from "@/providers/AuthProvider";
 
-export const OrderSummary = memo(function OrderSummary() {
+interface OrderSummaryProps {
+  hideComprar?: boolean;
+}
+
+export const OrderSummary = memo(function OrderSummary({
+  hideComprar,
+}: OrderSummaryProps) {
   const { items, subtotalCents } = useCart();
 
   const { user } = useAuth();
@@ -21,7 +27,6 @@ export const OrderSummary = memo(function OrderSummary() {
 
     router.push("/checkout");
   };
-
 
   if (items.length === 0) {
     return (
@@ -37,6 +42,7 @@ export const OrderSummary = memo(function OrderSummary() {
         <Text fontSize="lg" fontWeight="bold" color="brand.light" mb={4}>
           Resumen del pedido
         </Text>
+
         <Text fontSize="sm" color="brand.muted">
           Selecciona tus entradas para ver el resumen
         </Text>
@@ -65,10 +71,12 @@ export const OrderSummary = memo(function OrderSummary() {
               <Text fontSize="sm" color="brand.light">
                 {item.name}
               </Text>
+
               <Text fontSize="xs" color="brand.muted">
                 Cant: {item.quantity}
               </Text>
             </Box>
+
             <Text fontSize="sm" fontWeight="semibold" color="brand.light">
               ${(item.unitPriceCents * item.quantity).toLocaleString("es-CO")}
             </Text>
@@ -82,6 +90,7 @@ export const OrderSummary = memo(function OrderSummary() {
         <Text fontSize="md" fontWeight="bold" color="brand.light">
           Total
         </Text>
+
         <Text fontSize="lg" fontWeight="bold" color="brand.cyan">
           ${subtotalCents.toLocaleString("es-CO")}
         </Text>
@@ -97,34 +106,34 @@ export const OrderSummary = memo(function OrderSummary() {
         </Text>
       </Flex>
 
-      <Button
-        w="full"
-        disabled={items.length === 0}
-        onClick={handleBuy}
-        border="1px solid transparent"
-        bg={`
-          linear-gradient(#020414, #020414) padding-box,
-          linear-gradient(90deg, #ff0f7b, #00e5ff) border-box
-        `}
-        color="white"
-        fontWeight="bold"
-        fontSize="md"
-        _hover={{
-          transform: items.length > 0 ? "translateY(-1px)" : undefined,
-          boxShadow:
-            items.length > 0
-              ? "0 0 20px rgba(0,229,255,0.3)"
-              : undefined,
-        }}
-        _active={{
-          transform: items.length > 0 ? "translateY(0)" : undefined,
-        }}
-        transition="all 0.2s"
-        opacity={items.length === 0 ? 0.4 : 1}
-        cursor={items.length === 0 ? "not-allowed" : "pointer"}
-      >
-        COMPRAR
-      </Button>
+      {!hideComprar && (
+        <Button
+          w="full"
+          disabled={items.length === 0}
+          onClick={handleBuy}
+          border="1px solid transparent"
+          bg={`
+            linear-gradient(#020414, #020414) padding-box,
+            linear-gradient(90deg, #ff0f7b, #00e5ff) border-box
+          `}
+          color="white"
+          fontWeight="bold"
+          fontSize="md"
+          _hover={{
+            transform: items.length > 0 ? "translateY(-1px)" : undefined,
+            boxShadow:
+              items.length > 0 ? "0 0 20px rgba(0,229,255,0.3)" : undefined,
+          }}
+          _active={{
+            transform: items.length > 0 ? "translateY(0)" : undefined,
+          }}
+          transition="all 0.2s"
+          opacity={items.length === 0 ? 0.4 : 1}
+          cursor={items.length === 0 ? "not-allowed" : "pointer"}
+        >
+          COMPRAR
+        </Button>
+      )}
     </Box>
   );
 });

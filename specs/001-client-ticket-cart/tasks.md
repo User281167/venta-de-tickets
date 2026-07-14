@@ -51,15 +51,12 @@ description: "Task list for Mercado Pago checkout integration"
 
 ### Tests for User Story 1
 
-- [ ] T007 [P] [US1] Test `checkout.api.ts` — mock fetch, verify correct body (`items`, `backUrl`, `provider`) sent to backend, verify response parsed
-- [ ] T008 [P] [US1] Test CheckoutPage rendering — mock `useCart` with items, assert items list + OrderSummary + Wallet container rendered; mock empty cart, assert empty state message
-
-### Implementation for User Story 1
-
-- [ ] T009 [P] [US1] Create `CheckoutPageClient` component at `frontend/features/ticket-purchase/components/CheckoutPageClient.tsx` — reads cart via `useCart()`, renders items list (left) + `OrderSummary` (right, sticky sidebar) + `MpWalletButton` below summary; handles empty cart (redirect to `/entradas`)
-- [ ] T010 [P] [US1] Create `MpWalletButton` component at `frontend/features/ticket-purchase/components/MpWalletButton.tsx` — wraps `<Wallet initialization={{ preferenceId }} />` from `@mercadopago/sdk-react`; receives `preferenceId` as prop; shows loading skeleton while preference is being created
-- [ ] T011 [US1] Create checkout page route at `frontend/app/(public)/checkout/page.tsx` — imports and renders `CheckoutPageClient`
-- [ ] T012 [US1] Wire checkout flow: on mount, `CheckoutPageClient` calls `createCheckoutPreference(items, backUrl)` with `backUrl = window.origin + "/checkout/success"`; passes returned `preferenceId` to `MpWalletButton`
+- [X] T007 [P] [US1] Test `checkout.api.ts` — mock fetch, verify correct body (`items`, `backUrl`, `provider`) sent to backend, verify response parsed (5 tests)
+- [X] T008 [P] [US1] Test CheckoutPage rendering — mock `useCart` with items, assert items list + OrderSummary + Wallet container rendered; mock empty cart, assert redirect (3 tests)
+- [X] T009 [P] [US1] Create `CheckoutPageClient` component at `frontend/features/ticket-purchase/components/CheckoutPageClient.tsx` — reads cart via `useCart()`, renders items list (left) + `OrderSummary` with `hideComprar` (right, sticky sidebar) + `MpWalletButton` at summary bottom; handles empty cart (redirect to `/entradas`)
+- [X] T010 [P] [US1] Create `MpWalletButton` component at `frontend/features/ticket-purchase/components/MpWalletButton.tsx` — wraps `<Wallet initialization={{ preferenceId }} />` from `@mercadopago/sdk-react`; receives `preferenceId` as prop; shows loading skeleton while preference is being created
+- [X] T011 [US1] Create checkout page route at `frontend/app/(public)/checkout/page.tsx` — imports and renders `CheckoutPageClient`
+- [X] T012 [US1] Wire checkout flow: on mount, `CheckoutPageClient` calls `createCheckoutPreference(items, backUrl)` with `backUrl = window.origin + "/checkout/success"`; passes returned `preferenceId` to `MpWalletButton` (done inside CheckoutPageClient)
 
 **Checkpoint**: User can navigate cart → /checkout → see items + summary → see Wallet Brick → click MP button → redirected to Mercado Pago
 

@@ -18,12 +18,14 @@ describe("CartFab", () => {
     expect(screen.getByText("3")).toBeInTheDocument();
   });
 
-  it("renders without badge when count is 0", () => {
+  it("renders badge with 0 but visually hidden (hydration fix)", () => {
     render(<CartFab itemCount={0} onClick={() => {}} />, {
       wrapper: TestWrapper,
     });
 
-    expect(screen.queryByText("0")).not.toBeInTheDocument();
+    const badge = screen.getByText("0");
+    expect(badge).toBeInTheDocument();
+    expect(badge).toHaveStyle({ visibility: "hidden" });
   });
 
   it("shows 99+ when count exceeds 99", () => {
