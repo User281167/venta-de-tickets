@@ -20,7 +20,7 @@
 
 **Purpose**: Prepare content inventory and shared motion constants for the redesign.
 
-- [ ] T001 [P] Audit current landing component copy and images in `frontend/features/landing/components/` and document what Spanish copy and placeholder images/icons each section needs
+- [x] T001 [P] Audit current landing component copy and images in `frontend/features/landing/components/` and document what Spanish copy and placeholder images/icons each section needs
 
 ---
 
@@ -30,7 +30,7 @@
 
 **⚠️ CRITICAL**: No landing or dashboard component work should begin until T002 is complete.
 
-- [ ] T002 [P] Add `prefers-reduced-motion` fallback styles to `frontend/app/globals.css` so all animations can be disabled globally when the user prefers reduced motion
+- [x] T002 [P] Add `prefers-reduced-motion` fallback styles to `frontend/app/globals.css` so all animations can be disabled globally when the user prefers reduced motion
 - [ ] T003 [P] Create a reusable `SkeletonButton` or `SkeletonHStack` placeholder pattern in `frontend/shared/components/SkeletonButton.tsx` for auth loading states
 
 **Checkpoint**: Motion infrastructure and skeleton utilities ready.
@@ -45,17 +45,17 @@
 
 ### Implementation for User Story 1
 
-- [ ] T004 [P] [US1] Redesign `frontend/features/landing/components/HeroSection.tsx` with Spanish convention copy, entrance animation (fade/slide via Chakra UI `transition`/`transform`), responsive typography, and a clear primary CTA button with hover glow/elevation
-- [ ] T005 [P] [US1] Redesign `frontend/features/landing/components/TicketSection.tsx` with hover transitions on cards (scale/shadow/color change), better event info layout (name, date, place, price), responsive grid, and Spanish labels
-- [ ] T006 [P] [US1] Redesign `frontend/features/landing/components/AboutSection.tsx` with improved layout, icons from `@tabler/icons-react`, Spanish copy, and subtle scroll reveal transition
-- [ ] T007 [P] [US1] Redesign `frontend/features/landing/components/BenefitsSection.tsx` with improved layout, benefit cards with hover lift, icons, and Spanish copy
-- [ ] T008 [P] [US1] Redesign `frontend/features/landing/components/SpeakersSection.tsx` with improved speaker cards, hover transitions, and Spanish copy
-- [ ] T009 [P] [US1] Redesign `frontend/features/landing/components/CtaSection.tsx` with background gradient animation or pulse, Spanish copy, and responsive CTA button
-- [ ] T010 [P] [US1] Redesign `frontend/features/landing/components/FaqSection.tsx` with accordion open/close animation, Spanish questions/answers, and responsive spacing
-- [ ] T011 [P] [US1] Redesign `frontend/features/landing/components/FullWidthSlider.tsx` with slide transitions (opacity/transform) and responsive image sizing
-- [ ] T012 [P] [US1] Create `frontend/features/landing/components/PartnersSection.tsx` with horizontal auto-scrolling carousel of 6-8 partner logos/icons, CSS `animation` or Chakra `transform` loop, pause on hover, and `prefers-reduced-motion` fallback
-- [ ] T013 [US1] Compose redesigned landing page in `frontend/app/page.tsx` importing all updated sections including the new `PartnersSection`
-- [ ] T014 [P] [US1] Ensure responsive spacing and sizing across all landing components using Chakra UI breakpoint props; no horizontal scroll on mobile/tablet/desktop
+- [x] T004 [P] [US1] Redesign `frontend/features/landing/components/HeroSection.tsx` with Spanish convention copy, entrance animation (fade/slide via Chakra UI `transition`/`transform`), responsive typography, and a clear primary CTA button with hover glow/elevation
+- [x] T005 [P] [US1] Redesign `frontend/features/landing/components/TicketSection.tsx` with hover transitions on cards (scale/shadow/color change), better event info layout (name, date, place, price), responsive grid, and Spanish labels
+- [x] T006 [P] [US1] Redesign `frontend/features/landing/components/AboutSection.tsx` with improved layout, icons from `@tabler/icons-react`, Spanish copy, and subtle scroll reveal transition
+- [x] T007 [P] [US1] Redesign `frontend/features/landing/components/BenefitsSection.tsx` with improved layout, benefit cards with hover lift, icons, and Spanish copy
+- [x] T008 [P] [US1] Redesign `frontend/features/landing/components/SpeakersSection.tsx` with improved speaker cards, hover transitions, and Spanish copy
+- [x] T009 [P] [US1] Redesign `frontend/features/landing/components/CtaSection.tsx` with background gradient animation or pulse, Spanish copy, and responsive CTA button
+- [x] T010 [P] [US1] Redesign `frontend/features/landing/components/FaqSection.tsx` with accordion open/close animation, Spanish questions/answers, and responsive spacing
+- [x] T011 [P] [US1] Redesign `frontend/features/landing/components/FullWidthSlider.tsx` with slide transitions (opacity/transform) and responsive image sizing
+- [x] T012 [P] [US1] Create `frontend/features/landing/components/PartnersSection.tsx` with horizontal auto-scrolling carousel of 6-8 partner logos/icons, CSS `animation` or Chakra `transform` loop, pause on hover, and `prefers-reduced-motion` fallback
+- [x] T013 [US1] Compose redesigned landing page in `frontend/app/page.tsx` importing all updated sections including the new `PartnersSection`
+- [x] T014 [P] [US1] Ensure responsive spacing and sizing across all landing components using Chakra UI breakpoint props; no horizontal scroll on mobile/tablet/desktop
 
 **Checkpoint**: Landing page is fully redesigned, animated, responsive, and independently viewable.
 
@@ -97,9 +97,9 @@
 
 **Purpose**: Accessibility, performance, and build verification.
 
-- [ ] T021 [P] Responsive audit: open every updated page (landing, `/mi-cuenta`, `/mi-cuenta/entradas`, `/mi-cuenta/pagos`) on mobile, tablet, and desktop widths; fix any overflow or clipped elements
-- [ ] T022 [P] Motion audit: enable `prefers-reduced-motion` in OS settings and confirm all landing and dashboard animations are disabled or replaced with instant transitions
-- [ ] T023 [P] Run `pnpm build` in `frontend/` and fix any TypeScript, ESLint, or unused import errors introduced by the redesign
+- [x] T021 [P] Responsive audit: open every updated page (landing, `/mi-cuenta`, `/mi-cuenta/entradas`, `/mi-cuenta/pagos`) on mobile, tablet, and desktop widths; fix any overflow or clipped elements
+- [x] T022 [P] Motion audit: enable `prefers-reduced-motion` in OS settings and confirm all landing and dashboard animations are disabled or replaced with instant transitions
+- [x] T023 [P] Run `pnpm build` in `frontend/` and fix any TypeScript, ESLint, or unused import errors introduced by the redesign
 
 ---
 

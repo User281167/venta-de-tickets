@@ -1,4 +1,6 @@
-﻿import {
+﻿"use client";
+
+import {
   Box,
   Button,
   Container,
@@ -10,10 +12,19 @@
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { IconArrowRight, IconCalendar, IconMapPin } from "@tabler/icons-react";
+import {
+  IconArrowRight,
+  IconCalendar,
+  IconMapPin,
+  IconUser,
+} from "@tabler/icons-react";
 import NextLink from "next/link";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import { AnimatedSection } from "@/shared/components/AnimatedSection";
 
 export function HeroSection() {
+  const { user } = useAuth();
+
   return (
     <Box
       id="hero"
@@ -31,7 +42,7 @@ export function HeroSection() {
         inset: 0,
         bg: {
           base: "linear-gradient(90deg, rgba(2,4,20,0.94), rgba(2,4,20,0.62))",
-          lg: "linear-gradient(90deg, rgba(2,4,20,0.26), rgba(2,4,20,0.03))",
+          lg: "linear-gradient(90deg, rgba(2,4,20,0.52), rgba(2,4,20,0.12))",
         },
       }}
     >
@@ -41,15 +52,26 @@ export function HeroSection() {
         position="relative"
         zIndex={1}
       >
-        <Stack gap={{ base: 5, md: 7 }} maxW={{ base: "full", md: "680px" }}>
+        <AnimatedSection direction="up" delay={0} duration={0.6}>
+          <Stack
+            gap={{ base: 6, md: 8 }}
+            maxW={{ base: "full", md: "720px" }}
+          >
           <Flex
-            gap="4"
+            gap={{ base: 4, md: 6 }}
             flexDir={{ base: "column", md: "row" }}
             align={{ md: "flex-end" }}
           >
-            <Image src="/la-u.png" w="sm" />
+            <Image
+              src="/la-u.png"
+              alt="La U"
+              w={{ base: "40", md: "sm" }}
+              className="animate-float"
+              transition="transform 0.3s ease"
+              _hover={{ transform: "scale(1.03)" }}
+            />
 
-            <Stack>
+            <Stack gap={2}>
               <Heading
                 as="h1"
                 fontSize={{ base: "4xl", md: "6xl", lg: "7xl" }}
@@ -71,7 +93,7 @@ export function HeroSection() {
                 <Box as="span" color="brand.pink">
                   talento
                 </Box>
-                ,<br /> impulsamos el{" "}
+                , impulsamos el{" "}
                 <Box as="span" color="brand.cyan">
                   futuro
                 </Box>
@@ -81,9 +103,16 @@ export function HeroSection() {
 
           <Separator maxW="360px" borderColor="brand.cyan" opacity={0.8} />
 
-          <Stack gap={4} color="white" maxW="sm">
+          <Stack gap={5} color="white" maxW="sm">
             <HStack gap={4} align="center">
-              <IconCalendar stroke={1} size={64} color="#ff0f7b" />
+              <Box
+                p={2.5}
+                borderRadius="full"
+                bg="rgba(255,15,123,0.12)"
+                border="1px solid rgba(255,15,123,0.25)"
+              >
+                <IconCalendar stroke={1} size={40} color="#ff0f7b" />
+              </Box>
 
               <Stack gap={0}>
                 <Text fontSize={{ base: "2xl", md: "4xl" }} fontWeight="black">
@@ -100,7 +129,14 @@ export function HeroSection() {
             </HStack>
 
             <HStack gap={4} align="center">
-              <IconMapPin stroke={1} size={64} color="#00e5ff" />
+              <Box
+                p={2.5}
+                borderRadius="full"
+                bg="rgba(0,229,255,0.12)"
+                border="1px solid rgba(0,229,255,0.25)"
+              >
+                <IconMapPin stroke={1} size={40} color="#00e5ff" />
+              </Box>
 
               <Text fontSize={{ base: "md", md: "lg" }} fontWeight="medium">
                 Universidad Tecnológica de Pereira
@@ -109,29 +145,57 @@ export function HeroSection() {
               </Text>
             </HStack>
 
-            <Button
-              asChild
-              w="full"
-              alignSelf="flex-start"
-              size={{ base: "md", md: "lg" }}
-              px={{ base: 6, md: 8 }}
-              minH="54px"
-              bg="linear-gradient(90deg, #ff0f7b 0%, #0969ff 100%)"
-              color="white"
-              borderRadius="10px"
-              fontWeight="black"
-              boxShadow="0 0 34px rgba(255,15,123,0.35)"
-              _hover={{
-                transform: "translateY(-2px)",
-                boxShadow: "0 0 42px rgba(0,229,255,0.42)",
-              }}
-            >
-              <NextLink href="/registro">
-                INSCRÍBETE AHORA <IconArrowRight size={24} />
-              </NextLink>
-            </Button>
+            {user ? (
+              <Button
+                asChild
+                w="full"
+                alignSelf="flex-start"
+                size={{ base: "md", md: "lg" }}
+                px={{ base: 6, md: 8 }}
+                minH="54px"
+                bg="linear-gradient(90deg, #00e5ff 0%, #0969ff 100%)"
+                color="white"
+                borderRadius="10px"
+                fontWeight="black"
+                boxShadow="0 0 34px rgba(0,229,255,0.35)"
+                transition="all 0.25s ease"
+                _hover={{
+                  transform: "translateY(-2px)",
+                  boxShadow: "0 0 42px rgba(0,229,255,0.42)",
+                }}
+              >
+                <NextLink href="/mi-cuenta">
+                  IR A MI CUENTA <IconUser size={24} />
+                </NextLink>
+              </Button>
+            ) : (
+              <Button
+                asChild
+                w="full"
+                alignSelf="flex-start"
+                size={{ base: "md", md: "lg" }}
+                px={{ base: 6, md: 8 }}
+                minH="54px"
+                bg="linear-gradient(90deg, #ff0f7b 0%, #0969ff 100%)"
+                color="white"
+                borderRadius="10px"
+                fontWeight="black"
+                boxShadow="0 0 34px rgba(255,15,123,0.35)"
+                className="animate-pulse-glow"
+                transition="all 0.25s ease"
+                _hover={{
+                  transform: "translateY(-2px)",
+                  boxShadow: "0 0 42px rgba(0,229,255,0.42)",
+                }}
+              >
+                <NextLink href="/registro">
+                  INSCRÍBETE AHORA <IconArrowRight size={24} />
+                </NextLink>
+              </Button>
+            )}
           </Stack>
         </Stack>
+        </AnimatedSection>
       </Container>
     </Box>
   );

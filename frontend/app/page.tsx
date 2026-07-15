@@ -8,6 +8,9 @@ import { TicketSection } from "@/features/landing/components/TicketSection";
 import { CtaSection } from "@/features/landing/components/CtaSection";
 import { AuthErrorToast } from "@/features/auth/components/AuthErrorToast";
 import { FullWidthSlider } from "@/features/landing/components/FullWidthSlider";
+import { FaqSection } from "@/features/landing/components/FaqSection";
+import { TestimonialsSection } from "@/features/landing/components/TestimonialsSection";
+import { PartnersSection } from "@/features/landing/components/PartnersSection";
 
 export default function LandingPage() {
   return (
@@ -21,6 +24,9 @@ export default function LandingPage() {
         <FullWidthSlider />
         <BenefitsSection />
         <SpeakersSection />
+        <TestimonialsSection />
+        <PartnersSection />
+        <FaqSection />
         <CtaSection />
       </main>
       <Footer />
