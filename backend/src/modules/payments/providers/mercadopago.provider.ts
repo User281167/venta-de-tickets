@@ -57,6 +57,8 @@ export class MercadoPagoProvider implements PaymentProvider {
       },
     });
 
+    logger.info(`FULL RES CREATE ${JSON.stringify(result)}`)
+
     logger.info(
       `Checkout created for external mercadopago  reference ${input.externalReference}, providerTxId: ${result.id!}`,
     );
