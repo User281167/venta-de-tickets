@@ -130,6 +130,7 @@ export const TicketTypesDialogs = React.memo(function TicketTypesDialogs({
                 <Button
                   variant="outline"
                   color="white"
+                  _hover={{ color: "black" }}
                   borderColor="rgba(255,255,255,0.16)"
                   borderRadius="xl"
                   flex={1}

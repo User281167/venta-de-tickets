@@ -213,6 +213,7 @@ export function UserEditForm({ user, onSave, onCancel }: Props) {
           <Button
             variant="outline"
             color="white"
+            _hover={{ color: "black" }}
             borderColor="rgba(255,255,255,0.16)"
             borderRadius="xl"
             onClick={onCancel}

@@ -116,4 +116,29 @@ describe("UserTable", () => {
 
     expect(screen.getByText("Editar usuario")).toBeInTheDocument();
   });
+
+  it("switches to table view when clicking table button", async () => {
+    mockUseUsers.mockReturnValue(createMockReturnValue());
+    renderWithProviders(<UserTable />);
+
+    const user = userEvent.setup();
+    await user.click(screen.getByRole("button", { name: /Vista de tabla/i }));
+
+    expect(screen.getByRole("table")).toBeInTheDocument();
+    expect(screen.getByText("Ana Pérez")).toBeInTheDocument();
+    expect(screen.getByText("Carlos Ruiz")).toBeInTheDocument();
+  });
+
+  it("switches back to cards view when clicking cards button", async () => {
+    mockUseUsers.mockReturnValue(createMockReturnValue());
+    renderWithProviders(<UserTable />);
+
+    const user = userEvent.setup();
+    await user.click(screen.getByRole("button", { name: /Vista de tabla/i }));
+    expect(screen.getByRole("table")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /Vista de tarjetas/i }));
+    expect(screen.queryByRole("table")).not.toBeInTheDocument();
+    expect(screen.getByText("Ana Pérez")).toBeInTheDocument();
+  });
 });

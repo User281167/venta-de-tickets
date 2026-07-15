@@ -270,6 +270,7 @@ export function TicketTypeForm({
           <Button
             variant="outline"
             color="white"
+            _hover={{ color: "black" }}
             borderColor="rgba(255,255,255,0.16)"
             borderRadius="xl"
             onClick={onCancel}
@@ -277,6 +278,7 @@ export function TicketTypeForm({
           >
             Cancelar
           </Button>
+
           <Button
             type="submit"
             bg="brand.violet"
