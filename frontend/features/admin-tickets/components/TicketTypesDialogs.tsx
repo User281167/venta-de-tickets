@@ -56,10 +56,18 @@ export const TicketTypesDialogs = React.memo(function TicketTypesDialogs({
         <DialogBackdrop />
 
         <DialogPositioner>
-          <DialogContent bg="gray.600" color="brand.light">
+          <DialogContent
+            bg="brand.panel"
+            color="brand.light"
+            border="1px solid rgba(255,255,255,0.08)"
+            borderRadius="2xl"
+            maxW="600px"
+            w="full"
+            mx={4}
+          >
             <DialogHeader>
-              <DialogTitle color="brand.light">
-                Editar: {editing?.name ?? ""}
+              <DialogTitle color="white" fontSize="2xl">
+                Editar tipo de entrada
               </DialogTitle>
             </DialogHeader>
 
@@ -91,31 +99,40 @@ export const TicketTypesDialogs = React.memo(function TicketTypesDialogs({
         <DialogBackdrop />
 
         <DialogPositioner>
-          <DialogContent bg="brand.dark" color="brand.light">
+          <DialogContent
+            bg="brand.panel"
+            color="brand.light"
+            border="1px solid rgba(255,255,255,0.08)"
+            borderRadius="2xl"
+            maxW="440px"
+            w="full"
+            mx={4}
+          >
             <DialogHeader>
-              <DialogTitle color="brand.light">
+              <DialogTitle color="white" fontSize="xl">
                 Desactivar tipo de entrada
               </DialogTitle>
             </DialogHeader>
 
             <DialogBody>
-              <Text>
+              <Text color="brand.muted" lineHeight="1.7">
                 ¿Desactivar{" "}
-                <strong>
+                <Text as="span" color="white" fontWeight="bold">
                   {ticketTypesList.find((t) => t.id === deletingId)?.name ?? ""}
-                </strong>
+                </Text>
                 ? Los tickets existentes no se verán afectados, pero el tipo no
                 estará disponible para nuevas compras.
               </Text>
             </DialogBody>
 
             <DialogFooter>
-              <HStack gap={3}>
+              <HStack gap={3} w="full">
                 <Button
                   variant="outline"
-                  color="brand.light"
-                  borderColor="rgba(255,255,255,0.2)"
-                  _hover={{ bg: "rgba(255,255,255,0.08)" }}
+                  color="white"
+                  borderColor="rgba(255,255,255,0.16)"
+                  borderRadius="xl"
+                  flex={1}
                   onClick={() => setDeletingId(null)}
                 >
                   Cancelar
@@ -123,6 +140,8 @@ export const TicketTypesDialogs = React.memo(function TicketTypesDialogs({
 
                 <Button
                   colorPalette="red"
+                  borderRadius="xl"
+                  flex={1}
                   loading={deactivateMutation.isPending}
                   onClick={async () => {
                     if (deletingId)

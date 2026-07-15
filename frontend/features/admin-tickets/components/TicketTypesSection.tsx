@@ -1,14 +1,14 @@
 "use client";
 
-import { Center, Spinner, Text, VStack } from "@chakra-ui/react";
+import { Center, Spinner, VStack } from "@chakra-ui/react";
 import { TicketTypesHeader } from "./TicketTypesHeader";
-import { TicketTypesTable } from "./TicketTypesTable";
+import { TicketTypesGrid } from "./TicketTypesGrid";
 import { TicketTypesDialogs } from "./TicketTypesDialogs";
+import { TicketTypesStats } from "./TicketTypesStats";
 import { useTicketTable } from "../hook/useTicketTypes";
 
 export function TicketTypesSection() {
   const {
-    ticketTypes,
     isLoading,
     createMutation,
     updateMutation,
@@ -25,20 +25,22 @@ export function TicketTypesSection() {
   if (isLoading) {
     return (
       <Center h="full" flex={1}>
-        <Spinner size="xl" color="brand.teal" />
+        <Spinner size="xl" color="brand.cyan" />
       </Center>
     );
   }
 
   return (
-    <VStack align="stretch" gap={6} w="full">
+    <VStack align="stretch" gap={8} w="full">
       <TicketTypesHeader
         showCreate={showCreate}
         setShowCreate={setShowCreate}
         createMutation={createMutation}
       />
 
-      <TicketTypesTable
+      <TicketTypesStats ticketTypesList={ticketTypesList} />
+
+      <TicketTypesGrid
         setEditing={setEditing}
         setDeletingId={setDeletingId}
         ticketTypesList={ticketTypesList}
