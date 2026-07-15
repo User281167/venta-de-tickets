@@ -103,6 +103,14 @@ export async function createCheckout(
     `Checkout created: paymentId=${paymentId}, checkoutUrl=${checkoutResult.checkoutUrl}`,
   );
 
+  await paymentsRepo.createPaymentRow({
+    paymentId,
+    userId,
+    subtotalCents,
+    totalCents: subtotalCents,
+    provider: providerName,
+  });
+
   for (const item of checkoutItems) {
     await paymentsRepo.createCheckoutTransaction({
       ticketTypeId: item.ticketTypeId,

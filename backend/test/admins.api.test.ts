@@ -44,6 +44,7 @@ vi.mock('../src/modules/payments/payments.repository.js', () => ({
   findByIdWithTickets: vi.fn(),
   findAllByUserId: vi.fn(),
   countByUserId: vi.fn(),
+  createPaymentRow: vi.fn(),
   createCheckoutTransaction: vi.fn(),
   processPaymentWebhook: vi.fn(),
   updateTicketQrToken: vi.fn(),

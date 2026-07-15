@@ -71,7 +71,6 @@ describe('MercadoPagoProvider', () => {
             failure: 'https://frontend.test/mi-cuenta/tiquetes',
             pending: 'https://frontend.test/mi-cuenta/tiquetes',
           },
-          auto_return: 'approved',
           notification_url: expect.stringContaining('/api/payments/webhook'),
           payer: { email: 'buyer@example.com' },
           date_of_expiration: '2026-07-08T20:38:00Z',

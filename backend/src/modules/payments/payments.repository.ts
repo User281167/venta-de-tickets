@@ -69,6 +69,19 @@ export function findByIdWithTickets(id: string) {
   });
 }
 
+export async function createPaymentRow(input: {
+  paymentId: string;
+  userId: string;
+  subtotalCents: number;
+  totalCents: number;
+  provider: string;
+}) {
+  await prisma.$executeRaw`
+    INSERT INTO payments (id, user_id, status, subtotal_cents, discount_cents, total_cents, provider, created_at, updated_at)
+    VALUES (${input.paymentId}::uuid, ${input.userId}::uuid, 'pending', ${input.subtotalCents}, 0, ${input.totalCents}, ${input.provider}, now(), now())
+  `;
+}
+
 export async function createCheckoutTransaction(input: {
   ticketTypeId: string;
   userId: string;
@@ -124,11 +137,6 @@ export async function createCheckoutTransaction(input: {
       UPDATE ticket_types
       SET quantity_sold = quantity_sold + ${input.quantity}
       WHERE id = ${input.ticketTypeId}::uuid
-    `;
-
-    await tx.$executeRaw`
-      INSERT INTO payments (id, user_id, status, subtotal_cents, discount_cents, total_cents, provider, created_at, updated_at)
-      VALUES (${input.paymentId}::uuid, ${input.userId}::uuid, 'pending', ${input.subtotalCents}, 0, ${input.totalCents}, ${input.provider}, now(), now())
     `;
 
     const ticketCodes: string[] = [];

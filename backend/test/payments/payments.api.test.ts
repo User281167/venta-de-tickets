@@ -20,6 +20,7 @@ vi.mock('mercadopago', () => ({
 }));
 
 vi.mock('../../src/modules/payments/payments.repository.js', () => ({
+  createPaymentRow: vi.fn(),
   createCheckoutTransaction: vi.fn(),
   processPaymentWebhook: vi.fn(),
   findByIdWithTickets: vi.fn(),
