@@ -39,7 +39,7 @@ describe("TicketTypeCard", () => {
     });
 
     expect(screen.getByText("General")).toBeInTheDocument();
-    expect(screen.getByText("$ 120.000")).toBeInTheDocument();
+    expect(screen.getByText("$ 12.000.000")).toBeInTheDocument();
   });
 
   it("renders description when provided", () => {
@@ -131,6 +131,6 @@ describe("TicketTypeCard", () => {
       wrapper: TestWrapper,
     });
 
-    expect(screen.getByText("$ 2.500.000")).toBeInTheDocument();
+    expect(screen.getByText("$ 250.000.000")).toBeInTheDocument();
   });
 });

@@ -21,7 +21,7 @@ const PARTNERS = [
   { name: "Logística Plus", icon: IconTruck },
   { name: "EdTech Colombia", icon: IconDeviceLaptop },
   { name: "DataLab", icon: IconChartBar },
-  { name: "Universitas", icon: IconSchool },
+  { name: "Egresados UTP", icon: IconSchool },
 ];
 
 export function PartnersSection() {

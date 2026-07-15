@@ -24,6 +24,8 @@ import NextLink from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "@/features/auth/api/auth.client";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { SkeletonButton } from "@/shared/components/SkeletonButton";
+import { isAdminRole } from "@/providers/AuthProvider";
 import { CartFab } from "@/features/ticket-purchase/components/CartFab";
 import { CartDrawer } from "@/features/ticket-purchase/components/CartDrawer";
 import { useCart } from "@/features/ticket-purchase/hooks/useCart";
@@ -43,7 +45,7 @@ export function Navbar() {
   const [cartOpen, setCartOpen] = useState(false);
   const pathname = usePathname();
   const isAuthPage = pathname === "/login" || pathname === "/registro";
-  const { user, role } = useAuth();
+  const { user, role, isLoading } = useAuth();
   const { totalItems } = useCart();
   const router = useRouter();
 
@@ -76,32 +78,37 @@ export function Navbar() {
           </ChakraLink>
 
           <HStack gap={7} hideBelow="xl">
-            {NAV_ITEMS.map((item) => (
-              <ChakraLink
-                asChild
-                key={item.href + item.label}
-                textDecoration="none"
-                color="brand.light"
-                fontSize="xs"
-                fontWeight="bold"
-                borderBottom="2px solid"
-                borderColor="transparent"
-                transition="all 0.2s ease"
-                _hover={{
-                  borderColor: "brand.pink",
-                  transform: "translateY(-2px)",
-                  boxShadow: "0 0 42px rgba(0,229,255,0.42)",
-                }}
-              >
-                <NextLink href={item.href}>{item.label}</NextLink>
-              </ChakraLink>
-            ))}
+            {NAV_ITEMS.map((item) => {
+              const isActive = !item.href.includes("#") && item.href === pathname;
+              return (
+                <ChakraLink
+                  asChild
+                  key={item.href + item.label}
+                  textDecoration="none"
+                  color={isActive ? "brand.cyan" : "brand.light"}
+                  fontSize="xs"
+                  fontWeight="bold"
+                  borderBottom="2px solid"
+                  borderColor={isActive ? "brand.cyan" : "transparent"}
+                  transition="all 0.2s ease"
+                  _hover={{
+                    borderColor: "brand.pink",
+                    transform: "translateY(-2px)",
+                    boxShadow: "0 0 42px rgba(0,229,255,0.42)",
+                  }}
+                >
+                  <NextLink href={item.href}>{item.label}</NextLink>
+                </ChakraLink>
+              );
+            })}
           </HStack>
 
           <HStack gap={3}>
-            {user ? (
+            {isLoading ? (
+              <SkeletonButton count={2} />
+            ) : user ? (
               <>
-                {role !== "client" && (
+                {isAdminRole(role) && (
                   <Button
                     asChild
                     variant="ghost"
@@ -207,22 +214,30 @@ export function Navbar() {
         {open && (
           <Box hideFrom="xl" py="4">
             <Stack gap={3}>
-              {NAV_ITEMS.map((item) => (
-                <ChakraLink
-                  asChild
-                  key={item.href + item.label}
-                  fontWeight="bold"
-                  color="white"
-                >
-                  <NextLink href={item.href} onClick={() => setOpen(false)}>
-                    {item.label}
-                  </NextLink>
-                </ChakraLink>
-              ))}
+              {NAV_ITEMS.map((item) => {
+              const isActive = !item.href.includes("#") && item.href === pathname;
+                return (
+                  <ChakraLink
+                    asChild
+                    key={item.href + item.label}
+                    fontWeight="bold"
+                    color={isActive ? "brand.cyan" : "white"}
+                    borderLeft={isActive ? "3px solid" : "none"}
+                    borderColor="brand.cyan"
+                    pl={isActive ? 3 : 0}
+                  >
+                    <NextLink href={item.href} onClick={() => setOpen(false)}>
+                      {item.label}
+                    </NextLink>
+                  </ChakraLink>
+                );
+              })}
 
-              {user ? (
+              {isLoading ? (
+                <SkeletonButton count={2} />
+              ) : user ? (
                 <>
-                  {role === "admin" && (
+                  {isAdminRole(role) && (
                     <Button
                       asChild
                       variant="ghost"
