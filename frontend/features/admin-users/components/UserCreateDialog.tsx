@@ -36,9 +36,19 @@ export const UserCreateDialog = React.memo(function UserCreateDialog({
     >
       <DialogBackdrop />
       <DialogPositioner>
-        <DialogContent bg="gray.600" color="brand.light">
+        <DialogContent
+          bg="brand.panel"
+          color="brand.light"
+          border="1px solid rgba(255,255,255,0.08)"
+          borderRadius="2xl"
+          maxW="520px"
+          w="full"
+          mx={4}
+        >
           <DialogHeader>
-            <DialogTitle color="brand.light">Crear usuario</DialogTitle>
+            <DialogTitle color="white" fontSize="2xl">
+              Crear usuario
+            </DialogTitle>
           </DialogHeader>
 
           <DialogBody>

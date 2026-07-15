@@ -4,24 +4,26 @@ import { useEffect, useState } from "react";
 import {
   Box,
   Button,
-  Flex,
   HStack,
   Heading,
   Input,
-  Table,
+  InputGroup,
+  Stack,
   Text,
   VStack,
 } from "@chakra-ui/react";
+import { IconPlus, IconSearch } from "@tabler/icons-react";
+import { motion, useReducedMotion } from "framer-motion";
 
 import {
   useUsers,
   UserRow,
 } from "@/features/admin-users/api/admin-users.queries";
-import { tableCss } from "@/shared/components/tablecss";
 
 import { TableSkeleton } from "./UserTableSkeleton";
 import { ErrorBanner } from "./UserError";
-import { UserTableItem } from "./UserTableItem";
+import { UserList } from "./UserList";
+import { UserStats } from "./UserStats";
 import { UserEditDialog } from "./UserEditDialog";
 import { UserCreateDialog } from "./UserCreateDialog";
 import { AddPaymentDialog } from "./AddPaymentDialog";
@@ -35,6 +37,7 @@ export function UserTable() {
   const [editingUser, setEditingUser] = useState<UserRow | null>(null);
   const [paymentUser, setPaymentUser] = useState<UserRow | null>(null);
   const [showCreate, setShowCreate] = useState(false);
+  const reduced = useReducedMotion();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -49,27 +52,68 @@ export function UserTable() {
   const totalPages = data ? Math.ceil(data.total / LIMIT) : 0;
 
   return (
-    <VStack align="stretch" w="full">
-      <Heading as="h1" size="lg" color="brand.light">
-        Usuarios
-      </Heading>
+    <VStack align="stretch" w="full" gap={8}>
+      <motion.div
+        initial={reduced ? {} : { opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <Stack
+          direction={{ base: "column", sm: "row" }}
+          justify="space-between"
+          align={{ base: "flex-start", sm: "center" }}
+          gap={4}
+        >
+          <Box>
+            <Text
+              color="brand.cyan"
+              fontSize="sm"
+              fontWeight="black"
+              textTransform="uppercase"
+              letterSpacing="0.15em"
+            >
+              Gestión de usuarios
+            </Text>
+            <Heading as="h1" size="2xl" color="white" lineHeight="1.1">
+              Usuarios
+            </Heading>
+          </Box>
 
-      <Flex justify="space-between" align="center" w="full" wrap="wrap" gap="2">
+          <Button
+            bg="brand.violet"
+            color="white"
+            fontWeight="bold"
+            borderRadius="xl"
+            px={6}
+            size="lg"
+            _hover={{ bg: "#6a2be2", transform: "translateY(-2px)" }}
+            transition="all 0.2s ease"
+            onClick={() => setShowCreate(true)}
+          >
+            <IconPlus size={20} />
+            Crear usuario
+          </Button>
+        </Stack>
+      </motion.div>
+
+      <InputGroup maxW="md" startElement={<IconSearch size={18} color="#aeb8d8" />}>
         <Input
-          flex="1"
           placeholder="Buscar por nombre o correo..."
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           size="lg"
+          bg="rgba(255,255,255,0.03)"
+          border="1px solid rgba(255,255,255,0.08)"
+          borderRadius="xl"
+          color="white"
+          _placeholder={{ color: "brand.muted" }}
+          _hover={{ borderColor: "rgba(255,255,255,0.16)" }}
+          _focus={{
+            borderColor: "brand.cyan",
+            boxShadow: "0 0 12px rgba(0,229,255,0.2)",
+          }}
         />
-
-        <Button
-          colorPalette="teal"
-          onClick={() => setShowCreate(true)}
-        >
-          Crear usuario
-        </Button>
-      </Flex>
+      </InputGroup>
 
       {isError && (
         <ErrorBanner>
@@ -81,42 +125,16 @@ export function UserTable() {
       {isLoading && <TableSkeleton />}
 
       {data && (
-        <Box mt="4" spaceY="2">
-          <Box w="12/12" overflow="auto">
-            <Table.Root css={tableCss}>
-              <Table.Header>
-                <Table.Row>
-                  <Table.ColumnHeader w="28%">Nombre</Table.ColumnHeader>
-                  <Table.ColumnHeader w="34%">Correo</Table.ColumnHeader>
-                  <Table.ColumnHeader w="22%">Registro</Table.ColumnHeader>
-                  <Table.ColumnHeader w="16%" textAlign="center">
-                    Acciones
-                  </Table.ColumnHeader>
-                </Table.Row>
-              </Table.Header>
+        <VStack align="stretch" gap={8}>
+          <UserStats users={data.data} />
 
-              <Table.Body>
-                {data.data.length === 0 ? (
-                  <Table.Row>
-                    <Table.Cell colSpan={4}>
-                      No se encontraron usuarios
-                    </Table.Cell>
-                  </Table.Row>
-                ) : (
-                  data.data.map((user) => (
-                    <UserTableItem
-                      key={user.id}
-                      user={user}
-                      onEdit={setEditingUser}
-                      onAddPayment={setPaymentUser}
-                    />
-                  ))
-                )}
-              </Table.Body>
-            </Table.Root>
-          </Box>
+          <UserList
+            users={data.data}
+            onEdit={setEditingUser}
+            onAddPayment={setPaymentUser}
+          />
 
-          <HStack justify="space-between">
+          <HStack justify="space-between" flexWrap="wrap" gap={4}>
             <Text fontSize="sm" color="brand.muted">
               {data.total} usuario(s) — Página {page} de {totalPages}
             </Text>
@@ -124,6 +142,10 @@ export function UserTable() {
             <HStack gap={2}>
               <Button
                 size="sm"
+                variant="outline"
+                color="white"
+                borderColor="rgba(255,255,255,0.16)"
+                borderRadius="xl"
                 disabled={page <= 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
               >
@@ -131,6 +153,10 @@ export function UserTable() {
               </Button>
               <Button
                 size="sm"
+                variant="outline"
+                color="white"
+                borderColor="rgba(255,255,255,0.16)"
+                borderRadius="xl"
                 disabled={page >= totalPages}
                 onClick={() => setPage((p) => p + 1)}
               >
@@ -138,7 +164,7 @@ export function UserTable() {
               </Button>
             </HStack>
           </HStack>
-        </Box>
+        </VStack>
       )}
 
       <UserEditDialog user={editingUser} setUser={setEditingUser} />
