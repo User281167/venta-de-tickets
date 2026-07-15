@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { Box, Flex, Skeleton } from "@chakra-ui/react";
+import { Box, Skeleton } from "@chakra-ui/react";
 import { initMercadoPago, Wallet } from "@mercadopago/sdk-react";
 
 interface MpWalletButtonProps {

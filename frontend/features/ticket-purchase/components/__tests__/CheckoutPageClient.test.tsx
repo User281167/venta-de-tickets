@@ -1,20 +1,40 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { ChakraProvider } from "@chakra-ui/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { system } from "@/components/ui/theme";
 import { CartProvider } from "@/providers/CartProvider";
 import { CheckoutPageClient } from "../CheckoutPageClient";
 
 const mockPush = vi.fn();
+const mockMutate = vi.fn();
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: mockPush }),
 }));
 
+vi.mock("../../api/checkout.queries", () => ({
+  useCreateCheckoutPreference: () => ({
+    data: undefined,
+    isPending: false,
+    isError: false,
+    error: null,
+    mutate: mockMutate,
+    reset: vi.fn(),
+  }),
+}));
+
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { retry: false } },
+});
+
 function Wrapper({ children }: { children: React.ReactNode }) {
   return (
     <ChakraProvider value={system}>
-      <CartProvider>{children}</CartProvider>
+      <QueryClientProvider client={queryClient}>
+        <CartProvider>{children}</CartProvider>
+      </QueryClientProvider>
     </ChakraProvider>
   );
 }
@@ -35,7 +55,7 @@ describe("CheckoutPageClient", () => {
     );
   });
 
-  it("renders items list and OrderSummary when cart has items", async () => {
+  it("renders items list, OrderSummary, and Pagar button when cart has items", async () => {
     store["cart-current-event"] = JSON.stringify([
       {
         ticketTypeId: "tt-1",
@@ -52,6 +72,7 @@ describe("CheckoutPageClient", () => {
     const items = screen.getAllByText("General");
     expect(items.length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText("Resumen del pedido")).toBeInTheDocument();
+    expect(screen.getByTestId("pagar-mp-button")).toBeInTheDocument();
     expect(mockPush).not.toHaveBeenCalled();
   });
 

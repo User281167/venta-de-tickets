@@ -13,11 +13,14 @@ description: "Task list for Mercado Pago checkout integration"
 
 ## Architecture Notes
 
-- **Backend checkout endpoint**: `POST /api/payments/checkout` (auth required) — accepts `{ items: [{ticketTypeId, quantity}], backUrl, provider }` — currently returns `{ paymentId, checkoutUrl }`
+- **Backend checkout endpoint**: `POST /api/payments/checkout` (auth required) — accepts `{ items: [{ticketTypeId, quantity}], backUrl, provider }` — returns `{ paymentId, checkoutUrl, preferenceId }`
 - **Backend webhook**: `POST /api/payments/webhook/:provider` — already fully implemented in `mercadopago.provider.ts` with signature validation, status normalization, and payment processing
 - **Frontend SDK**: `@mercadopago/sdk-react@1.0.7` already installed in `frontend/package.json`
 - **Existing cart types**: `CartItem` has `ticketTypeId`, `quantity`, `unitPriceCents`, `name` — maps directly to backend checkout items
-- **Backend `providerTxId`** = Mercado Pago `preferenceId` — needed by Wallet Brick but NOT currently returned in checkout response
+- **Backend `providerTxId`** = Mercado Pago `preferenceId` — returned as `preferenceId` in checkout response
+- **Payment flow**: User clicks "Pagar con Mercado Pago" → frontend calls `POST /api/payments/checkout` with `provider: "mercadopago"` → backend returns `preferenceId` → frontend renders `<Wallet initialization={{ preferenceId }} />` → user clicks official MP button → redirected to MP hosted checkout
+- **No auto-creation**: Payment preference is NEVER created automatically on page mount. User must explicitly select a provider.
+- **Future providers**: Architecture supports adding PayPal etc. by adding new provider implementations + buttons in CheckoutPageClient
 
 ---
 
@@ -43,22 +46,22 @@ description: "Task list for Mercado Pago checkout integration"
 
 ---
 
-## Phase 3: User Story 1 — Checkout Page with Mercado Pago Wallet (Priority: P1)
+## Phase 3: User Story 1 — Checkout Review Page (Priority: P1)
 
-**Goal**: Full-page checkout showing cart items, order summary sidebar, and Mercado Pago Wallet Brick button. User clicks Wallet → redirected to MP hosted checkout.
+**Goal**: Full-page checkout review showing cart items and order summary. Payment provider selection handled in separate phase (see Phase 7).
 
-**Independent Test**: Load `/checkout` with items in cart → items + summary + Wallet button render. Wallet button renders without error.
+**Independent Test**: Load `/checkout` with items in cart → items list + OrderSummary render. Empty cart → redirects to `/entradas`.
 
 ### Tests for User Story 1
 
 - [X] T007 [P] [US1] Test `checkout.api.ts` — mock fetch, verify correct body (`items`, `backUrl`, `provider`) sent to backend, verify response parsed (5 tests)
-- [X] T008 [P] [US1] Test CheckoutPage rendering — mock `useCart` with items, assert items list + OrderSummary + Wallet container rendered; mock empty cart, assert redirect (3 tests)
-- [X] T009 [P] [US1] Create `CheckoutPageClient` component at `frontend/features/ticket-purchase/components/CheckoutPageClient.tsx` — reads cart via `useCart()`, renders items list (left) + `OrderSummary` with `hideComprar` (right, sticky sidebar) + `MpWalletButton` at summary bottom; handles empty cart (redirect to `/entradas`)
+- [X] T008 [P] [US1] Test CheckoutPage rendering — mock `useCart` with items, assert items list + OrderSummary rendered; mock empty cart, assert redirect (2 tests)
+- [X] T009 [P] [US1] Create `CheckoutPageClient` component at `frontend/features/ticket-purchase/components/CheckoutPageClient.tsx` — reads cart via `useCart()`, renders items list (left) + `OrderSummary` with `hideComprar` (right, sticky sidebar); handles empty cart (redirect to `/entradas`)
 - [X] T010 [P] [US1] Create `MpWalletButton` component at `frontend/features/ticket-purchase/components/MpWalletButton.tsx` — wraps `<Wallet initialization={{ preferenceId }} />` from `@mercadopago/sdk-react`; receives `preferenceId` as prop; shows loading skeleton while preference is being created
 - [X] T011 [US1] Create checkout page route at `frontend/app/(public)/checkout/page.tsx` — imports and renders `CheckoutPageClient`
-- [X] T012 [US1] Wire checkout flow: on mount, `CheckoutPageClient` calls `createCheckoutPreference(items, backUrl)` with `backUrl = window.origin + "/checkout/success"`; passes returned `preferenceId` to `MpWalletButton` (done inside CheckoutPageClient)
+- [X] T012 [US1] Wire checkout navigation: CartDrawer "Comprar" redirects to `/checkout`; checkout page does NOT auto-create payment preference (user must click provider button in Phase 7)
 
-**Checkpoint**: User can navigate cart → /checkout → see items + summary → see Wallet Brick → click MP button → redirected to Mercado Pago
+**Checkpoint**: User can navigate cart → /checkout → see items + summary. No payment API called.
 
 ---
 
@@ -106,9 +109,41 @@ description: "Task list for Mercado Pago checkout integration"
 **Purpose**: Error handling, loading states, visual polish
 
 - [X] T023 Add loading skeleton state to `MpWalletButton` while preference is being created — show shimmer placeholder matching Wallet button dimensions
-- [X] T024 Add error state to `CheckoutPageClient` — if preference creation fails, show error message + "Volver a intentar" button that retries `createCheckoutPreference`
-- [X] T025 Run full `vitest` suite — verify no regressions across all 42+ existing tests plus new checkout tests
+- [X] T024 Remove auto-mutation from `CheckoutPageClient` — checkout page no longer creates payment preference on mount; only shows items + summary
+- [X] T025 Update all checkout tests to match new flow — remove auto-mutation/wallet tests, keep basic render + redirect tests (195 total pass)
 - [X] T026 Verify `/entradas` page still works end-to-end: ticket types load, add/remove, CartDrawer opens, Comprar navigates to /checkout
+
+---
+
+## Phase 7: User Story 4 — Explicit Payment Provider Selection (Priority: P1)
+
+**Goal**: User clicks "Pagar con Mercado Pago" button → frontend calls API with `provider: "mercadopago"` → backend returns `preferenceId` → Wallet renders → user redirected to MP.
+
+**Why explicit**: Payment preference must NEVER be created on page mount. User always chooses provider. This enables future providers (PayPal, etc.) with same pattern.
+
+**Independent Test**: Load `/checkout` with items → click "Pagar con Mercado Pago" → Wallet button renders → click MP Wallet → redirected to MP checkout.
+
+### Tests for User Story 4
+
+- [X] T027 [P] [US4] Test "Pagar con Mercado Pago" button renders in `CheckoutPageClient` when cart has items in `frontend/features/ticket-purchase/components/__tests__/CheckoutPageClient.test.tsx`
+- [X] T028 [P] [US4] Test click handler triggers `createCheckoutPreference` with correct items and `provider: "mercadopago"` in `frontend/features/ticket-purchase/components/__tests__/checkout-flow.test.tsx`
+- [X] T029 [P] [US4] Test `MpWalletButton` renders after `preferenceId` received in response in `frontend/features/ticket-purchase/components/__tests__/checkout-flow.test.tsx`
+- [X] T030 [US4] Test error state when `createCheckoutPreference` fails — show error message + retry button in `frontend/features/ticket-purchase/components/__tests__/checkout-flow.test.tsx`
+
+### Implementation for User Story 4
+
+- [X] T031 [P] [US4] Add "Pagar con Mercado Pago" button to `CheckoutPageClient` below `OrderSummary` in `frontend/features/ticket-purchase/components/CheckoutPageClient.tsx` — button disabled while loading, calls `createCheckoutPreference(items, backUrl)` on click
+- [X] T032 [P] [US4] Add `preferenceId` state to `CheckoutPageClient` — when preferenceId is set, hide the "Pagar con Mercado Pago" button and show `MpWalletButton` with the received `preferenceId` prop
+- [X] T033 [US4] Add loading state to "Pagar con Mercado Pago" button — show spinner while `createCheckoutPreference` is in flight, disable button to prevent double-click
+- [X] T034 [US4] Add error handling to `CheckoutPageClient` — if preference creation fails, show error message + "Reintentar" button that retries `createCheckoutPreference`; replace old error UI (was removed in T024)
+- [X] T035 [US4] Verify `backUrl` in `checkout.queries.ts` uses `${window.location.origin}/checkout/success` — confirmed at `frontend/features/ticket-purchase/api/checkout.queries.ts:12-14`
+
+### Backend verification
+
+- [X] T036 [US4] Verify `payments.service.ts:createCheckout` returns `preferenceId` in response — confirmed at `backend/src/modules/payments/payments.service.ts:126` (`preferenceId: checkoutResult.providerTxId`)
+- [X] T037 [US4] Fix `auto_return` / `back_url` issue in `mercadopago.provider.ts:41-46` — removed `auto_return: 'approved'` at `backend/src/modules/payments/providers/mercadopago.provider.ts:46`. Relies on `notification_url` for async status updates. Fixes 500 error on localhost.
+
+**Checkpoint**: User flow: /checkout → click "Pagar con Mercado Pago" → Wallet renders → click MP Wallet → redirected to MP → success/failure/pending page.
 
 ---
 
@@ -120,10 +155,10 @@ Phase 1 (Setup)
 Phase 2 (Foundational)
     └── Depends on Phase 1
     └── BLOCKS all user stories
-Phase 3 [US1] (Checkout Page + Wallet)
+Phase 3 [US1] (Checkout Review Page)
     └── Depends on Phase 2
     └── Blocks US2 (redirect pages assume checkout exists)
-    └── Independent test: /checkout page renders
+    └── Independent test: /checkout page renders items + summary
 Phase 4 [US2] (Redirect Pages)
     └── Depends on Phase 3 (redirect pages served from /checkout/*)
     └── Independent test: render with mock query params
@@ -132,6 +167,9 @@ Phase 5 [US3] (Webhook + E2E)
     └── Independent test: backend webhook mock-only
 Phase 6 (Polish)
     └── Depends on all phases
+Phase 7 [US4] (Explicit Payment Provider)
+    └── Depends on Phase 3 (checkout page exists)
+    └── Independent test: button click → Wallet renders
 ```
 
 ## Parallel Opportunities
@@ -146,26 +184,37 @@ Phase 6 (Polish)
 | T016, T017, T018 | Different page files |
 | T020, T021 | Different test scopes |
 | T023, T024 | Different components |
+| T027, T028, T029, T030 | All test files, no deps |
+| T031, T032 | Same file but different concerns (button vs state) |
+| T036, T037 | Backend verification, no frontend deps |
 
 ## Implementation Strategy
 
-### MVP First (US1 Only)
-1. Phase 1: Setup env vars + review backend
-2. Phase 2: Backend returns preferenceId, API helper, CartDrawer redirect
-3. Phase 3: Checkout page with Wallet Brick
-4. **STOP**: User can go cart → /checkout → click MP Wallet → redirected to MP
-5. Deploy/demo
+### MVP First (US4 Only)
+1. Phase 1-6 complete (cart, review page, redirects, webhook, polish)
+2. Phase 7: Add "Pagar con Mercado Pago" button → Wallet flow
+3. **STOP**: User can go cart → /checkout → click "Pagar con Mercado Pago" → Wallet → redirected to MP
+4. Deploy/demo
 
 ### Incremental Delivery
-1. MVP (US1) → Checkout page working with Wallet
-2. Add US2 → Redirect pages handle MP return
-3. Add US3 → Webhook verified, mock E2E tests
-4. Polish → Loading states, error recovery
+1. Phase 1 → Setup
+2. Phase 2 → Foundational (backend returns preferenceId, API helper)
+3. Phase 3 → Checkout review page (items + summary, no payment)
+4. Phase 4 → Redirect pages (success/failure/pending)
+5. Phase 5 → Webhook processing + mock E2E tests
+6. Phase 6 → Polish
+7. Phase 7 [US4] → Explicit "Pagar con Mercado Pago" button → Wallet → payment flow
 
 ## Notes
 - `@mercadopago/sdk-react` Wallet Brick uses `Wallet` component, not `WalletBrick` — see docs `Agregar el SDK al frontend e inicializar el checkout.md`
-- `backUrl` for checkout must point to frontend success page (e.g., `https://dominio/checkout/success`) — NOT localhost per MP docs
+- `backUrl` for checkout must point to frontend success page (e.g., `https://dominio/checkout/success`) — NOT localhost per MP docs (`auto_return` requires whitelisted URLs)
 - Webhook `notification_url` already set in `mercadopago.provider.ts:47` — verify `env.API_URL` is correct for production
 - CartDrawer auth check remains: if no user, redirects to `/login?redirect=/checkout` before reaching checkout page
+- **Payment preference NEVER created on page mount** — always user-initiated via button click
+- `CheckoutPageClient.tsx` currently shows items + `OrderSummary` only. Phase 7 adds the "Pagar con Mercado Pago" button + Wallet rendering.
+- `MpWalletButton.tsx` already exists with skeleton + `Wallet` component — just needs `preferenceId` prop
+- `checkout.api.ts` already sends `provider: "mercadopago"` in request body — no change needed
+- Backend `payments.service.ts:126` already returns `preferenceId` in response
+- T037: Fix `auto_return` issue — MP requires `back_urls.success` to be a real domain (not localhost). Options: (a) disable `auto_return` in dev, (b) use a tunnel/test domain, or (c) use `notification_url`-only flow
 - [P] tasks = different files, no dependencies
 - Commit after each logical group

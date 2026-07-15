@@ -13,6 +13,8 @@ import type {
 } from '../payments.types.js';
 import { env } from '../../../shared/config/env.js';
 
+import { logger } from '../../../utils/logger.js';
+
 export class MercadoPagoProvider implements PaymentProvider {
   private client: MercadoPagoConfig;
 
@@ -29,6 +31,10 @@ export class MercadoPagoProvider implements PaymentProvider {
   async createCheckout(input: CheckoutInput): Promise<CheckoutResult> {
     const preferenceClient = new Preference(this.client);
 
+    logger.info(
+      `Creating checkout for external mercadopago reference ${input.externalReference}`,
+    );
+
     const result = await preferenceClient.create({
       body: {
         items: input.items.map((item) => ({
@@ -43,7 +49,6 @@ export class MercadoPagoProvider implements PaymentProvider {
           failure: input.backUrl,
           pending: input.backUrl,
         },
-        auto_return: 'approved',
         notification_url: `${env.API_URL}/api/payments/webhook`,
         payer: {
           email: input.payerEmail ?? '',
@@ -52,6 +57,10 @@ export class MercadoPagoProvider implements PaymentProvider {
       },
     });
 
+    logger.info(
+      `Checkout created for external mercadopago  reference ${input.externalReference}, providerTxId: ${result.id!}`,
+    );
+
     return {
       checkoutUrl: result.init_point!,
       providerTxId: result.id!,
@@ -59,6 +68,10 @@ export class MercadoPagoProvider implements PaymentProvider {
   }
 
   verifySignature(payload: unknown, headers: Record<string, string>): boolean {
+    logger.info(
+      `Verifying signature for mercadopago payload: ${JSON.stringify(payload)}`,
+    );
+
     try {
       const body = payload as { data?: { id?: string } };
       const dataId = body?.data?.id ?? '';
@@ -70,8 +83,13 @@ export class MercadoPagoProvider implements PaymentProvider {
         secret: env.MERCADOPAGO_WEBHOOK_SECRET,
       });
 
+      logger.info(`Signature verified for mercadopago dataId: ${dataId}`);
+
       return true;
-    } catch {
+    } catch (error) {
+      logger.warn(
+        `Signature verification failed for mercadopago dataId: ${error}`,
+      );
       return false;
     }
   }
@@ -83,7 +101,13 @@ export class MercadoPagoProvider implements PaymentProvider {
       data?: { id?: string | number };
     };
 
+    logger.info(`Parsing mercadopago webhook payload: ${JSON.stringify(body)}`);
+
     if (body.type !== 'payment' || !body.data?.id) {
+      logger.warn(
+        `Invalid webhook payload: expected payment type with data.id: ${JSON.stringify(body)}`,
+      );
+
       throw new Error(
         'Invalid webhook payload: expected payment type with data.id',
       );
@@ -93,6 +117,10 @@ export class MercadoPagoProvider implements PaymentProvider {
     const mpPayment = await paymentClient.get({ id: body.data.id });
 
     const status = this.normalizeStatus(mpPayment.status ?? '');
+
+    logger.info(
+      `Parsed mercadopago webhook event: reference=${mpPayment.external_reference ?? ''}, status=${status}, externalId=${String(mpPayment.id)}`,
+    );
 
     return {
       reference: mpPayment.external_reference ?? '',

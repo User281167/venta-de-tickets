@@ -126,6 +126,11 @@ export async function createCheckoutTransaction(input: {
       WHERE id = ${input.ticketTypeId}::uuid
     `;
 
+    await tx.$executeRaw`
+      INSERT INTO payments (id, user_id, status, subtotal_cents, discount_cents, total_cents, provider, created_at, updated_at)
+      VALUES (${input.paymentId}::uuid, ${input.userId}::uuid, 'pending', ${input.subtotalCents}, 0, ${input.totalCents}, ${input.provider}, now(), now())
+    `;
+
     const ticketCodes: string[] = [];
 
     for (let i = 0; i < input.quantity; i++) {
@@ -137,11 +142,6 @@ export async function createCheckoutTransaction(input: {
         VALUES (gen_random_uuid(), ${input.ticketTypeId}::uuid, ${input.userId}::uuid, 'reserved', ${input.reserveExpiresAt}, ${ticketCode}, ${input.paymentId}::uuid, ${input.unitPriceCents})
       `;
     }
-
-    await tx.$executeRaw`
-      INSERT INTO payments (id, user_id, status, subtotal_cents, discount_cents, total_cents, provider)
-      VALUES (${input.paymentId}::uuid, ${input.userId}::uuid, 'pending', ${input.subtotalCents}, 0, ${input.totalCents}, ${input.provider})
-    `;
 
     return { paymentId: input.paymentId };
   });
