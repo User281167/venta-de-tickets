@@ -1,7 +1,7 @@
 "use client";
 
-import { ProfileForm } from "@/features/users/components/ProfileForm";
+import { DashboardOverview } from "@/features/users/components/DashboardOverview";
 
 export default function MiCuentaPage() {
-  return <ProfileForm />;
+  return <DashboardOverview />;
 }

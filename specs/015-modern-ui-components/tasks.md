@@ -31,7 +31,7 @@
 **⚠️ CRITICAL**: No landing or dashboard component work should begin until T002 is complete.
 
 - [x] T002 [P] Add `prefers-reduced-motion` fallback styles to `frontend/app/globals.css` so all animations can be disabled globally when the user prefers reduced motion
-- [ ] T003 [P] Create a reusable `SkeletonButton` or `SkeletonHStack` placeholder pattern in `frontend/shared/components/SkeletonButton.tsx` for auth loading states
+- [x] T003 [P] Create a reusable `SkeletonButton` or `SkeletonHStack` placeholder pattern in `frontend/shared/components/SkeletonButton.tsx` for auth loading states
 
 **Checkpoint**: Motion infrastructure and skeleton utilities ready.
 
@@ -69,9 +69,9 @@
 
 ### Implementation for User Story 2
 
-- [ ] T015 [P] [US2] Create `frontend/features/users/components/DashboardOverview.tsx` with summary widgets: active tickets count, recent payments list, profile completion status, and quick links to `/mi-cuenta/entradas` and `/mi-cuenta/pagos`
-- [ ] T016 [US2] Update `frontend/app/(protected)/mi-cuenta/page.tsx` to render `DashboardOverview`; keep `ProfileForm` accessible via a link or tab inside the dashboard
-- [ ] T017 [P] [US2] Add loading skeletons, empty states (no tickets / no payments), and error retry UI to `frontend/features/users/components/DashboardOverview.tsx`
+- [x] T015 [P] [US2] Create `frontend/features/users/components/DashboardOverview.tsx` with summary widgets: active tickets count, recent payments list, profile completion status, and quick links to `/mi-cuenta/entradas` and `/mi-cuenta/pagos`
+- [x] T016 [US2] Update `frontend/app/(protected)/mi-cuenta/page.tsx` to render `DashboardOverview`; keep `ProfileForm` accessible via a link or tab inside the dashboard
+- [x] T017 [P] [US2] Add loading skeletons, empty states (no tickets / no payments), and error retry UI to `frontend/features/users/components/DashboardOverview.tsx`
 
 **Checkpoint**: Dashboard renders and is independently usable.
 
@@ -85,9 +85,9 @@
 
 ### Implementation for User Story 3
 
-- [ ] T018 [US3] Fix `frontend/components/layout/Navbar.tsx`: while `isLoading` from `useAuth` is true, render `SkeletonButton` (or null) in the auth button area instead of showing Admin / Mi Perfil / Logout or Login / Register buttons; apply to both desktop `HStack` and mobile `Stack` menu
-- [ ] T019 [P] [US3] Ensure active route highlight logic in `frontend/components/layout/Navbar.tsx` works for desktop links and mobile menu items using `usePathname`
-- [ ] T020 [US3] Verify `frontend/app/(protected)/layout.tsx` handles browser back button gracefully without losing scroll or sidebar context
+- [x] T018 [US3] Fix `frontend/components/layout/Navbar.tsx`: while `isLoading` from `useAuth` is true, render `SkeletonButton` (or null) in the auth button area instead of showing Admin / Mi Perfil / Logout or Login / Register buttons; apply to both desktop `HStack` and mobile `Stack` menu
+- [x] T019 [P] [US3] Ensure active route highlight logic in `frontend/components/layout/Navbar.tsx` works for desktop links and mobile menu items using `usePathname`
+- [x] T020 [US3] Verify `frontend/app/(protected)/layout.tsx` handles browser back button gracefully without losing scroll or sidebar context
 
 **Checkpoint**: Navbar auth loading is fixed and navigation state is consistent.
 

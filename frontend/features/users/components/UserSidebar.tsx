@@ -11,18 +11,20 @@ import {
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { signOut } from "@/features/auth/api/auth.client";
 import {
   IconCreditCard,
   IconHome,
+  IconLayoutDashboard,
   IconTicket,
   IconUser,
   IconLogout,
 } from "@tabler/icons-react";
-import { signOut } from "@/features/auth/api/auth.client";
 
 const LINKS = [
   { href: "/", label: "Inicio", icon: IconHome },
-  { href: "/mi-cuenta", label: "Información", icon: IconUser },
+  { href: "/mi-cuenta", label: "Resumen", icon: IconLayoutDashboard },
+  { href: "/mi-cuenta/perfil", label: "Información", icon: IconUser },
   {
     href: "/mi-cuenta/entradas",
     label: "Mis entradas",

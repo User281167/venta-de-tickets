@@ -10,7 +10,8 @@ import { PrivacyConsentModal } from "@/features/users/components/PrivacyConsentM
 import { UserSidebar } from "@/features/users/components/UserSidebar";
 
 const TITLES: Record<string, string> = {
-  "/mi-cuenta": "Información personal",
+  "/mi-cuenta": "Resumen",
+  "/mi-cuenta/perfil": "Información personal",
   "/mi-cuenta/entradas": "Mis entradas",
   "/mi-cuenta/pagos": "Historial de pagos",
 };
