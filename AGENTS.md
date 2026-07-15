@@ -1,5 +1,5 @@
 <!-- SPECKIT START -->
-Current plan: specs/001-client-ticket-cart/plan.md
+Current plan: specs/015-modern-ui-components/plan.md
 <!-- SPECKIT END -->
 
 # AGENT.md
