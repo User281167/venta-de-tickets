@@ -86,6 +86,7 @@ export function SpeakersSection() {
               {SPEAKERS.map((speaker) => (
                 <StaggerItem key={speaker.name}>
                   <Stack
+                    h="full"
                     align="center"
                     textAlign="center"
                     gap={4}
@@ -122,13 +123,15 @@ export function SpeakersSection() {
                       />
                     </Box>
 
-                    <Text color="white" fontWeight="black" fontSize="md">
-                      {speaker.name}
-                    </Text>
+                    <Stack gap={1} mt="auto" align="center" textAlign="center" w="full">
+                      <Text color="white" fontWeight="black" fontSize="md">
+                        {speaker.name}
+                      </Text>
 
-                    <Text color="brand.muted" fontSize="xs" lineHeight="1.6">
-                      {speaker.role}
-                    </Text>
+                      <Text color="brand.muted" fontSize="xs" lineHeight="1.6">
+                        {speaker.role}
+                      </Text>
+                    </Stack>
                   </Stack>
                 </StaggerItem>
               ))}

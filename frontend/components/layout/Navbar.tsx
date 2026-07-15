@@ -155,7 +155,6 @@ export function Navbar() {
                     asChild
                     border="1px solid transparent"
                     hideBelow="sm"
-                    // size="md"
                     bg={`
                     linear-gradient(#020414, #020414) padding-box,
                     linear-gradient(90deg, #ff0f7b, #00e5ff) border-box

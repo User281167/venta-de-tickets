@@ -104,6 +104,7 @@ export function TicketSection() {
                 {ticketTypes.map((tt) => (
                   <StaggerItem key={tt.id}>
                     <Box
+                      h="full"
                       transition="transform 0.25s ease, box-shadow 0.25s ease"
                       _hover={{
                         transform: "translateY(-6px)",

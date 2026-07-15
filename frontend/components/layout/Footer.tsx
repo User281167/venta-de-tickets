@@ -3,14 +3,13 @@
   Button,
   Container,
   Flex,
+  Grid,
   HStack,
   Image,
   Link as ChakraLink,
   Separator,
-  SimpleGrid,
   Stack,
   Text,
-  VStack,
   Field,
   Input,
 } from "@chakra-ui/react";
@@ -27,6 +26,7 @@ import {
   IconWorld,
 } from "@tabler/icons-react";
 import NextLink from "next/link";
+import React from "react";
 
 const QUICK_LINKS = [
   { label: "La Convención", href: "/#convencion" },
@@ -37,6 +37,20 @@ const QUICK_LINKS = [
   { label: "Contacto", href: "/#contacto" },
 ];
 
+function FooterHeading({ children }: { children: React.ReactNode }) {
+  return (
+    <Text
+      fontSize="xs"
+      fontWeight="black"
+      color="brand.cyan"
+      textTransform="uppercase"
+      letterSpacing="0.12em"
+    >
+      {children}
+    </Text>
+  );
+}
+
 export function Footer() {
   return (
     <Box
@@ -44,19 +58,21 @@ export function Footer() {
       as="footer"
       bg="#030615"
       color="white"
-      pt={14}
+      pt={{ base: 12, md: 16 }}
       pb={8}
       borderTopWidth="1px"
       borderColor="rgba(255,255,255,0.08)"
     >
       <Container maxW="8xl" px={{ base: 4, md: 6 }}>
-        <SimpleGrid columns={{ base: 1, md: 3, xl: 5 }} gap={10}>
-          <Stack gap={5}>
-            <HStack gap={5} align="center">
-              <Image src="/utp-logo.png" alt="UTP" h="46px" />
+        <Grid
+          templateColumns={{ base: "1fr", sm: "1fr 1fr", lg: "repeat(5, 1fr)" }}
+          gap={{ base: 10, lg: 8 }}
+          alignItems="start"
+        >
+          <Stack gap={5} align="flex-start">
+            <FooterHeading>Organiza</FooterHeading>
 
-              <Box h="44px" w="1px" bg="rgba(255,255,255,0.22)" />
-            </HStack>
+            <Image src="/utp-logo.png" alt="UTP" h="46px" w="auto" />
 
             <HStack gap={3}>
               <ChakraLink
@@ -88,7 +104,7 @@ export function Footer() {
 
               <ChakraLink
                 href="https://x.com/UTPereira"
-                aria-label="LinkedIn"
+                aria-label="X"
                 color="brand.light"
                 _hover={{ color: "brand.cyan" }}
               >
@@ -106,33 +122,29 @@ export function Footer() {
             </HStack>
           </Stack>
 
-          <Stack maxW="200px">
-            <HStack>
-              <Image src="/ASE-icon.png" w="48px" />
+          <Stack gap={4} align="flex-start">
+            <FooterHeading>Con el apoyo de</FooterHeading>
 
-              <VStack>
-                <Text
-                  w="full"
-                  textAlign="center"
-                  fontWeight="black"
-                  borderBottom="2px solid"
-                  borderColor="white"
-                >
+            <HStack gap={3} align="flex-start">
+              <Image src="/ASE-icon.png" w="48px" h="48px" objectFit="contain" />
+
+              <Stack gap={1} align="flex-start">
+                <Text fontWeight="black" color="white" lineHeight="1.2">
                   ASE UTP
                 </Text>
 
-                <Text fontSize="xs" color="gray.400">
+                <Text fontSize="xs" color="brand.muted" lineHeight="1.5" maxW="180px">
                   Asociación de Egresados Universidad Tecnológica de Pereira
                 </Text>
 
-                <HStack gap={3} w="full">
+                <HStack gap={2} pt={1}>
                   <ChakraLink
                     href="https://egresados.utp.edu.co/"
                     aria-label="egresados-web"
                     color="brand.light"
                     _hover={{ color: "brand.cyan" }}
                   >
-                    <IconWorld size={22} />
+                    <IconWorld size={18} />
                   </ChakraLink>
 
                   <ChakraLink
@@ -141,7 +153,7 @@ export function Footer() {
                     color="brand.light"
                     _hover={{ color: "brand.cyan" }}
                   >
-                    <IconBrandInstagram size={22} />
+                    <IconBrandInstagram size={18} />
                   </ChakraLink>
 
                   <ChakraLink
@@ -150,7 +162,7 @@ export function Footer() {
                     color="brand.light"
                     _hover={{ color: "brand.cyan" }}
                   >
-                    <IconBrandFacebook size={22} />
+                    <IconBrandFacebook size={18} />
                   </ChakraLink>
 
                   <ChakraLink
@@ -159,22 +171,15 @@ export function Footer() {
                     color="brand.light"
                     _hover={{ color: "brand.cyan" }}
                   >
-                    <IconBrandFacebook size={22} />
+                    <IconBrandFacebook size={18} />
                   </ChakraLink>
                 </HStack>
-              </VStack>
+              </Stack>
             </HStack>
           </Stack>
 
-          <Stack gap={3}>
-            <Text
-              fontSize="sm"
-              fontWeight="bold"
-              color="brand.light"
-              textTransform="uppercase"
-            >
-              Enlaces rápidos
-            </Text>
+          <Stack gap={3} align="flex-start">
+            <FooterHeading>Enlaces rápidos</FooterHeading>
 
             {QUICK_LINKS.map((link) => (
               <ChakraLink
@@ -189,84 +194,89 @@ export function Footer() {
             ))}
           </Stack>
 
-          <Stack gap={3}>
-            <Text
-              fontSize="sm"
-              fontWeight="bold"
-              color="brand.light"
-              textTransform="uppercase"
-            >
-              Información
-            </Text>
+          <Stack gap={3} align="flex-start">
+            <FooterHeading>Información</FooterHeading>
 
-            <HStack gap={2} color="brand.muted">
-              <IconMapPin size={16} />
+            <HStack gap={2} color="brand.muted" align="flex-start">
+              <Box pt={0.5}>
+                <IconMapPin size={16} />
+              </Box>
               <Text fontSize="sm">Universidad Tecnológica de Pereira</Text>
             </HStack>
 
-            <HStack gap={2} color="brand.muted">
-              <IconMail size={16} />
+            <HStack gap={2} color="brand.muted" align="flex-start">
+              <Box pt={0.5}>
+                <IconMail size={16} />
+              </Box>
               <Text fontSize="sm">egresados@utp.edu.co, aseutp@utp.edu.co</Text>
             </HStack>
 
-            <HStack gap={2} color="brand.muted">
-              <IconPhone size={16} />
+            <HStack gap={2} color="brand.muted" align="flex-start">
+              <Box pt={0.5}>
+                <IconPhone size={16} />
+              </Box>
               <Text fontSize="sm">+57 606 313 7110 - 313 7533</Text>
             </HStack>
           </Stack>
 
-          <form className="max-w-xs">
-            <Stack gap={4}>
-              <Text
-                fontSize="sm"
-                fontWeight="bold"
-                color="brand.light"
-                textTransform="uppercase"
-              >
-                Boletín
-              </Text>
+          <Box asChild w="full">
+            <form className="max-w-xs">
+              <Stack gap={4} align="flex-start">
+                <FooterHeading>Boletín</FooterHeading>
 
-              <Text fontSize="sm" color="brand.muted">
-                Recibe novedades de La Convención.
-              </Text>
+                <Text fontSize="sm" color="brand.muted">
+                  Recibe novedades de La Convención.
+                </Text>
 
-              <Flex gap="2" align="center">
-                <IconMail size={24} color="rgba(255,255,255,0.6)" />
+                <Flex gap="2" align="center" w="full">
+                  <IconMail size={24} color="rgba(255,255,255,0.6)" />
 
-                <Field.Root>
-                  <Input
-                    type="email"
-                    placeholder="correo@ejemplo.com"
-                    color="white"
-                    _placeholder={{ color: "rgba(255,255,255,0.5)" }}
-                  />
-                </Field.Root>
-              </Flex>
+                  <Field.Root flex={1}>
+                    <Input
+                      type="email"
+                      placeholder="correo@ejemplo.com"
+                      color="white"
+                      bg="rgba(255,255,255,0.03)"
+                      border="1px solid rgba(255,255,255,0.08)"
+                      borderRadius="xl"
+                      _placeholder={{ color: "rgba(255,255,255,0.5)" }}
+                      _hover={{ borderColor: "rgba(255,255,255,0.16)" }}
+                      _focus={{
+                        borderColor: "brand.cyan",
+                        boxShadow: "0 0 12px rgba(0,229,255,0.2)",
+                      }}
+                    />
+                  </Field.Root>
+                </Flex>
 
-              <Button
-                type="submit"
-                bg="linear-gradient(90deg, #ff0f7b, #0969ff)"
-                color="white"
-                fontWeight="black"
-                _hover={{ transform: "translateY(-2px)" }}
-              >
-                <NextLink href="/registro" className="flex gap-2">
-                  Suscribirme <IconArrowRight size={18} />
-                </NextLink>
-              </Button>
-            </Stack>
-          </form>
-        </SimpleGrid>
+                <Button
+                  type="submit"
+                  bg="linear-gradient(90deg, #ff0f7b, #0969ff)"
+                  color="white"
+                  fontWeight="black"
+                  borderRadius="xl"
+                  w="full"
+                  _hover={{ transform: "translateY(-2px)" }}
+                >
+                  <NextLink href="/registro" className="flex gap-2">
+                    Suscribirme <IconArrowRight size={18} />
+                  </NextLink>
+                </Button>
+              </Stack>
+            </form>
+          </Box>
+        </Grid>
 
         <Separator my={8} borderColor="rgba(255,255,255,0.08)" />
 
-        <Flex
-          direction={{ base: "column", sm: "row" }}
-          justify="space-between"
-          align="center"
+        <Box
+          display="flex"
+          flexDirection={{ base: "column", sm: "row" }}
+          justifyContent="space-between"
+          alignItems="center"
           gap={4}
         >
-          <Text fontSize="xs" color="brand.muted">
+          <Text fontSize="xs" color="brand.muted" textAlign="center">
             &copy; {new Date().getFullYear()} Universidad Tecnológica de Pereira
             - ASE UTP.
           </Text>
@@ -290,7 +300,7 @@ export function Footer() {
               <NextLink href="/terminos">Términos y condiciones</NextLink>
             </ChakraLink>
           </HStack>
-        </Flex>
+        </Box>
       </Container>
     </Box>
   );
