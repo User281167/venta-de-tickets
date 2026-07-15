@@ -2,51 +2,48 @@
 
 import {
   Box,
+  Button,
   Flex,
   HStack,
-  IconButton,
   Link as ChakraLink,
   Text,
   VStack,
-  Button,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
 import {
-  IconUser,
   IconCreditCard,
-  IconTicket,
-  IconX,
-  IconTransitionRightFilled,
   IconHome,
+  IconTicket,
+  IconUser,
   IconLogout,
 } from "@tabler/icons-react";
 import { signOut } from "@/features/auth/api/auth.client";
 
 const LINKS = [
-  { href: "/", label: "Home", icon: <IconHome size={20} /> },
-  { href: "/mi-cuenta", label: "Información", icon: <IconUser size={20} /> },
+  { href: "/", label: "Inicio", icon: IconHome },
+  { href: "/mi-cuenta", label: "Información", icon: IconUser },
   {
     href: "/mi-cuenta/entradas",
-    label: "Mis Entradas",
-    icon: <IconTicket size={20} />,
+    label: "Mis entradas",
+    icon: IconTicket,
   },
   {
     href: "/mi-cuenta/pagos",
     label: "Pagos",
-    icon: <IconCreditCard size={20} />,
+    icon: IconCreditCard,
   },
 ];
 
-export function UserSidebar() {
+export function UserSidebar({
+  mobileOpen,
+  onClose,
+}: {
+  mobileOpen: boolean;
+  onClose: () => void;
+}) {
   const pathname = usePathname();
-  const [mobileOpen, setMobileOpen] = useState(false);
   const router = useRouter();
-
-  function handleNav() {
-    setMobileOpen(false);
-  }
 
   async function handleLogout() {
     await signOut();
@@ -55,32 +52,55 @@ export function UserSidebar() {
 
   const sidebarContent = (
     <>
-      <VStack align="stretch" gap={1} flex={1}>
+      <VStack align="stretch" gap={2} flex={1}>
         {LINKS.map((link) => {
+          const Icon = link.icon;
           const isActive = pathname === link.href;
-
           return (
             <ChakraLink
               asChild
               key={link.href}
               display="block"
               px={4}
-              py={2.5}
-              borderRadius="md"
-              bg={isActive ? "teal.50" : "transparent"}
-              color={isActive ? "teal.700" : "white"}
-              fontWeight={isActive ? "semibold" : "medium"}
+              py={3}
+              borderRadius="xl"
+              border="1px solid"
+              borderColor={isActive ? "transparent" : "transparent"}
+              bg={
+                isActive
+                  ? "linear-gradient(90deg, rgba(255,15,123,0.18), rgba(0,229,255,0.12))"
+                  : "transparent"
+              }
+              color={isActive ? "white" : "brand.muted"}
+              fontWeight={isActive ? "bold" : "medium"}
+              transition="all 0.2s ease"
               _hover={{
-                bg: isActive ? "teal.50" : "gray.100",
-                color: isActive ? "teal.700" : "gray.800",
+                bg: "rgba(255,255,255,0.06)",
+                color: "white",
               }}
-              transition="all 0.15s"
+              position="relative"
+              overflow="hidden"
             >
-              <NextLink href={link.href} onClick={handleNav}>
+              <NextLink href={link.href} onClick={onClose}>
                 <HStack gap={3}>
-                  {link.icon}
+                  <Icon
+                    size={20}
+                    color={isActive ? "#00e5ff" : "#aeb8d8"}
+                  />
                   <Text>{link.label}</Text>
                 </HStack>
+                {isActive && (
+                  <Box
+                    position="absolute"
+                    left={0}
+                    top="50%"
+                    transform="translateY(-50%)"
+                    w="3px"
+                    h="60%"
+                    borderRadius="full"
+                    bg="linear-gradient(to bottom, #ff0f7b, #00e5ff)"
+                  />
+                )}
               </NextLink>
             </ChakraLink>
           );
@@ -89,13 +109,15 @@ export function UserSidebar() {
 
       <Button
         variant="ghost"
-        color="gray.500"
-        _hover={{ bg: "gray.100", color: "red.500" }}
+        color="brand.muted"
+        _hover={{ bg: "rgba(239,68,68,0.1)", color: "red.300" }}
         onClick={handleLogout}
         w="full"
         justifyContent="flex-start"
         px={4}
         gap={3}
+        borderRadius="xl"
+        transition="all 0.2s ease"
       >
         <IconLogout size={20} />
         Cerrar sesión
@@ -105,36 +127,15 @@ export function UserSidebar() {
 
   return (
     <>
-      <IconButton
-        aria-label="Menú"
-        variant="ghost"
-        size="md"
-        hideFrom="md"
-        position="fixed"
-        border="1px solid"
-        borderColor="white"
-        top="4"
-        right="4"
-        hidden={mobileOpen}
-        zIndex={1100}
-        bg="white"
-        onClick={() => setMobileOpen(!mobileOpen)}
-      >
-        {mobileOpen ? (
-          <IconX size={24} />
-        ) : (
-          <IconTransitionRightFilled size={24} />
-        )}
-      </IconButton>
-
       {mobileOpen && (
         <Box
           hideFrom="md"
           position="fixed"
           inset={0}
-          bg="rgba(0,0,0,0.5)"
-          zIndex={1000}
-          onClick={() => setMobileOpen(false)}
+          bg="rgba(0,0,0,0.6)"
+          backdropFilter="blur(4px)"
+          zIndex={40}
+          onClick={onClose}
         />
       )}
 
@@ -145,27 +146,48 @@ export function UserSidebar() {
         top={0}
         left={0}
         bottom={0}
-        w="64"
-        borderRight="1px"
-        borderColor="gray.200"
-        bg="brand.dark"
+        w="72"
+        borderRight="1px solid rgba(255,255,255,0.08)"
+        bg="brand.panel"
         p={4}
-        zIndex={1050}
-        boxShadow="lg"
+        zIndex={50}
+        boxShadow="2xl"
         transform={mobileOpen ? "translateX(0)" : "translateX(-100%)"}
-        transition="transform 0.25s ease"
+        transition="transform 0.3s ease"
       >
+        <Text
+          fontSize="xl"
+          fontWeight="black"
+          color="white"
+          mb={8}
+          px={2}
+          className="gradient-text"
+        >
+          Mi cuenta
+        </Text>
         {sidebarContent}
       </Flex>
 
       <Flex
         hideBelow="md"
         direction="column"
-        borderRight="1px solid"
-        borderColor="rgba(255,255,255,0.2)"
-        p={4}
+        w="64"
         flexShrink={0}
+        borderRight="1px solid rgba(255,255,255,0.08)"
+        bg="brand.panel"
+        p={4}
+        overflowY="auto"
       >
+        <Text
+          fontSize="xl"
+          fontWeight="black"
+          color="white"
+          mb={8}
+          px={2}
+          className="gradient-text"
+        >
+          Mi cuenta
+        </Text>
         {sidebarContent}
       </Flex>
     </>

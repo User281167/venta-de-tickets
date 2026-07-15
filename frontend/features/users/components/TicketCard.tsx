@@ -1,19 +1,32 @@
 "use client";
 
-import { Box, Flex, HStack, Separator, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  HStack,
+  Separator,
+  Text,
+} from "@chakra-ui/react";
 import { useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
+import {
+  IconCalendar,
+  IconQrcode,
+  IconTicket,
+} from "@tabler/icons-react";
 import type { TicketItem } from "../types/ticket.types";
 import { TicketQrExpand } from "./TicketQrExpand";
-import { formatCurrency, formatDate } from "@/shared/utils/formats";
+import { formatDate } from "@/shared/utils/formats";
 
 const STATUS_BG: Record<string, string> = {
-  reserved: "yellow.500",
-  paid: "green.500",
-  pending_confirmation: "yellow.500",
-  confirmed: "blue.500",
-  used: "gray.500",
-  cancelled: "red.500",
-  expired: "red.500",
+  reserved: "#eab308",
+  paid: "#22c55e",
+  pending_confirmation: "#eab308",
+  confirmed: "#0969ff",
+  used: "#6b7280",
+  cancelled: "#ef4444",
+  expired: "#ef4444",
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -26,69 +39,131 @@ const STATUS_LABELS: Record<string, string> = {
   expired: "Expirada",
 };
 
-const expandStyles = {
-  overflow: "hidden",
-  transition: "max-height 0.3s ease, opacity 0.3s ease",
-  maxHeight: "0px",
-  opacity: 0,
-};
-
-const expandedStyles = {
-  maxHeight: "600px",
-  opacity: 1,
-};
+const statusColor = (status: string) => STATUS_BG[status] ?? "#6b7280";
 
 export function TicketCard({ ticket }: { ticket: TicketItem }) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const reduced = useReducedMotion();
+  const color = statusColor(ticket.status);
+  const statusLabel = STATUS_LABELS[ticket.status] ?? ticket.status;
 
   return (
-    <Box
-      bg="brand.panel"
-      borderRadius="md"
-      p={4}
-      cursor="pointer"
-      onClick={() => setIsExpanded((prev) => !prev)}
-      _hover={{ bg: "brand.panelHighlight" }}
+    <motion.div
+      initial={reduced ? {} : { opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      style={{ height: "100%" }}
     >
-      <Flex justify="space-between" align="start" wrap="wrap" gap={2}>
-        <Box>
-          <Text color="white" fontWeight="semibold">
-            {ticket.ticketType.name}
-          </Text>
-
-          <Text fontSize="sm" fontFamily="monospace" color="gray.400" mt={1}>
-            {ticket.ticketCode}
-          </Text>
-        </Box>
-
-        <Box
-          px={2}
-          py={0.5}
-          borderRadius="full"
-          bg={STATUS_BG[ticket.status] ?? "gray.500"}
-        >
-          <Text fontSize="xs" color="white" fontWeight="medium">
-            {STATUS_LABELS[ticket.status] ?? ticket.status}
-          </Text>
-        </Box>
-      </Flex>
-
-      <Separator my={3} borderColor="gray.600" />
-
-      <Text fontSize="xs" color="gray.500">
-        {ticket.purchasedAt
-          ? `Comprada el ${formatDate(ticket.purchasedAt)}`
-          : `Creada el ${formatDate(ticket.createdAt)}`}
-      </Text>
-
       <Box
-        style={{
-          ...expandStyles,
-          ...(isExpanded ? expandedStyles : {}),
+        className="glass-card"
+        borderRadius="2xl"
+        overflow="hidden"
+        h="full"
+        position="relative"
+        transition="all 0.3s ease"
+        cursor="pointer"
+        onClick={() => setIsExpanded((prev) => !prev)}
+        _hover={{
+          transform: "translateY(-6px)",
+          boxShadow: `0 20px 48px ${color}22`,
+          borderColor: color,
         }}
+        role="button"
+        aria-expanded={isExpanded}
       >
-        <TicketQrExpand ticket={ticket} />
+        <Box
+          position="absolute"
+          top={0}
+          left={0}
+          right={0}
+          h="4px"
+          bg={`linear-gradient(90deg, ${color}, #00e5ff)`}
+        />
+
+        <Box p={{ base: 5, md: 6 }}>
+          <HStack justify="space-between" align="flex-start" gap={3}>
+            <Flex
+              w={12}
+              h={12}
+              borderRadius="xl"
+              bg={`${color}18`}
+              border={`1px solid ${color}33`}
+              align="center"
+              justify="center"
+              flexShrink={0}
+            >
+              <IconTicket size={26} color={color} />
+            </Flex>
+
+            <Box
+              px={3}
+              py={1}
+              borderRadius="full"
+              bg={`${color}18`}
+              border={`1px solid ${color}33`}
+            >
+              <Text fontSize="xs" color={color} fontWeight="bold">
+                {statusLabel}
+              </Text>
+            </Box>
+          </HStack>
+
+          <Box mt={5}>
+            <Text color="white" fontWeight="bold" fontSize="xl" lineHeight="1.2">
+              {ticket.ticketType.name}
+            </Text>
+            <Text
+              fontSize="sm"
+              fontFamily="monospace"
+              color="brand.muted"
+              mt={1}
+            >
+              {ticket.ticketCode}
+            </Text>
+          </Box>
+
+          <Separator my={4} borderColor="rgba(255,255,255,0.08)" />
+
+          <HStack gap={2} color="brand.muted" fontSize="sm">
+            <IconCalendar size={16} color="#00e5ff" />
+            <Text>
+              {ticket.purchasedAt
+                ? `Comprada el ${formatDate(ticket.purchasedAt)}`
+                : `Creada el ${formatDate(ticket.createdAt)}`}
+            </Text>
+          </HStack>
+
+          <HStack gap={2} mt={4} color="brand.muted" fontSize="sm">
+            <IconQrcode size={16} color="#ff0f7b" />
+            <Text>
+              {isExpanded ? "Toca para ocultar el QR" : "Toca para ver el QR"}
+            </Text>
+          </HStack>
+        </Box>
+
+        <motion.div
+          initial={false}
+          animate={{
+            height: isExpanded ? "auto" : 0,
+            opacity: isExpanded ? 1 : 0,
+          }}
+          transition={{ duration: reduced ? 0 : 0.35, ease: "easeInOut" }}
+          style={{ overflow: "hidden" }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <Box px={{ base: 5, md: 6 }} pb={{ base: 5, md: 6 }}>
+            <Box
+              bg="rgba(255,255,255,0.03)"
+              borderRadius="xl"
+              border="1px solid rgba(255,255,255,0.08)"
+              p={4}
+            >
+              <TicketQrExpand ticket={ticket} />
+            </Box>
+          </Box>
+        </motion.div>
       </Box>
-    </Box>
+    </motion.div>
   );
 }

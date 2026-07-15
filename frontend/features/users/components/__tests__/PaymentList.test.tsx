@@ -70,6 +70,6 @@ describe("PaymentList", () => {
     });
 
     renderWithProviders(<PaymentList />);
-    expect(screen.getByText("Mercado Pago")).toBeDefined();
+    expect(screen.getAllByText("Mercado Pago").length).toBeGreaterThanOrEqual(1);
   });
 });

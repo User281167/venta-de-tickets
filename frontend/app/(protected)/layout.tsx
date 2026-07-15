@@ -8,12 +8,12 @@ export default function ProtectedLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
+    <Box minH="100dvh" display="flex" flexDirection="column" bg="brand.dark">
       <Navbar />
-      <Box pt={4} minH="90vh" bg="brand.dark">
+      <Box as="main" flex={1} display="flex" flexDirection="column" overflow="hidden">
         {children}
       </Box>
       <Footer />
-    </>
+    </Box>
   );
 }
