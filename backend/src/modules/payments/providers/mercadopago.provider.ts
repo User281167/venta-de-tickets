@@ -49,7 +49,7 @@ export class MercadoPagoProvider implements PaymentProvider {
           failure: input.backUrl,
           pending: input.backUrl,
         },
-        notification_url: `${env.API_URL}/api/payments/webhook`,
+        notification_url: `${env.API_URL}/api/payments/webhook/mercadopago`,
         payer: {
           email: input.payerEmail ?? '',
         },
