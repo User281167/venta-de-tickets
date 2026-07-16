@@ -20,36 +20,39 @@ export const CartQuantitySpinner = memo(function CartQuantitySpinner({
   canDecrement,
 }: CartQuantitySpinnerProps) {
   return (
-    <HStack gap={0}>
+    <HStack gap={0} borderRadius="xl" overflow="hidden">
       <Button
         size="sm"
         variant="outline"
         disabled={!canDecrement}
         onClick={onDecrement}
-        borderColor="brand.muted"
+        borderColor="rgba(255,255,255,0.16)"
         borderRight="none"
-        borderStartRadius="md"
+        borderStartRadius="xl"
         borderEndRadius="0"
         px={2}
-        minW="36px"
-        h="36px"
-        color="brand.light"
-        _disabled={{ opacity: 0.3, cursor: "not-allowed" }}
-        _hover={{ color: "black" }}
+        minW="40px"
+        h="40px"
+        color="white"
+        bg="rgba(255,255,255,0.03)"
+        _disabled={{ opacity: 0.35, cursor: "not-allowed" }}
+        _hover={canDecrement ? { bg: "rgba(255,255,255,0.08)" } : undefined}
+        transition="all 0.2s ease"
       >
         <IconMinus size={16} />
       </Button>
 
       <Text
-        w="44px"
+        w="48px"
         textAlign="center"
         fontSize="md"
-        fontWeight="semibold"
-        color="brand.light"
+        fontWeight="black"
+        color="white"
         borderY="1px"
-        borderColor="brand.muted"
-        lineHeight="36px"
-        h="36px"
+        borderColor="rgba(255,255,255,0.16)"
+        lineHeight="40px"
+        h="40px"
+        bg="rgba(255,255,255,0.03)"
       >
         {quantity}
       </Text>
@@ -59,16 +62,18 @@ export const CartQuantitySpinner = memo(function CartQuantitySpinner({
         variant="outline"
         disabled={!canIncrement}
         onClick={onIncrement}
-        borderColor="brand.muted"
+        borderColor="rgba(255,255,255,0.16)"
         borderLeft="none"
         borderStartRadius="0"
-        borderEndRadius="md"
+        borderEndRadius="xl"
         px={2}
-        minW="36px"
-        h="36px"
-        color="brand.light"
-        _disabled={{ opacity: 0.3, cursor: "not-allowed" }}
-        _hover={{ color: "black" }}
+        minW="40px"
+        h="40px"
+        color="white"
+        bg="rgba(255,255,255,0.03)"
+        _disabled={{ opacity: 0.35, cursor: "not-allowed" }}
+        _hover={canIncrement ? { bg: "rgba(255,255,255,0.08)" } : undefined}
+        transition="all 0.2s ease"
       >
         <IconPlus size={16} />
       </Button>

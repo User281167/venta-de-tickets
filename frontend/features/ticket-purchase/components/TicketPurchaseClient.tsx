@@ -1,9 +1,10 @@
 "use client";
 
-import { Grid, GridItem, Box, Heading, Text, Spinner, Center } from "@chakra-ui/react";
+import { Box, Container, Heading, Spinner, Center, Text, VStack } from "@chakra-ui/react";
 import { useActiveTicketTypes } from "../api/ticket-purchase.queries";
 import { TicketTypeGrid } from "./TicketTypeGrid";
 import { OrderSummary } from "./OrderSummary";
+import { Grid, GridItem } from "@chakra-ui/react";
 
 export function TicketPurchaseClient() {
   const { data: ticketTypes, isLoading, error } = useActiveTicketTypes();
@@ -11,7 +12,12 @@ export function TicketPurchaseClient() {
   if (isLoading) {
     return (
       <Center py={20}>
-        <Spinner color="brand.cyan" size="xl" />
+        <VStack gap={4}>
+          <Spinner color="brand.cyan" size="xl" />
+          <Text color="brand.muted" fontSize="sm">
+            Cargando entradas disponibles...
+          </Text>
+        </VStack>
       </Center>
     );
   }
@@ -38,13 +44,26 @@ export function TicketPurchaseClient() {
 
   return (
     <Box>
-      <Box mb={8}>
-        <Heading as="h1" fontSize="3xl" color="brand.light" mb={2}>
+      <VStack align="start" gap={1} mb={{ base: 6, md: 8 }}>
+        <Text
+          color="brand.cyan"
+          fontSize="sm"
+          fontWeight="black"
+          textTransform="uppercase"
+          letterSpacing="0.15em"
+        >
+          Compra tus entradas
+        </Text>
+        <Heading as="h1" size="2xl" color="white" lineHeight="1.1">
           La Convención
         </Heading>
-      </Box>
+        <Text color="brand.muted" maxW="600px">
+          Selecciona el tipo de entrada que deseas adquirir. Las unidades son
+          limitadas.
+        </Text>
+      </VStack>
 
-      <Grid templateColumns={{ base: "1fr", lg: "2fr 1fr" }} gap={8} alignItems="start">
+      <Grid templateColumns={{ base: "1fr", lg: "2fr 1fr" }} gap={{ base: 6, md: 8 }} alignItems="start">
         <GridItem>
           <TicketTypeGrid ticketTypes={ticketTypes} />
         </GridItem>

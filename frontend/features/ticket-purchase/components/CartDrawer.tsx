@@ -54,13 +54,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
   };
 
   const handleDecrement = (ticketTypeId: string) => {
-    const item = items.find((i) => i.ticketTypeId === ticketTypeId);
-    if (!item) return;
-    if (item.quantity <= 1) {
-      removeItem(ticketTypeId);
-    } else {
-      decrement(ticketTypeId);
-    }
+    decrement(ticketTypeId);
   };
 
   return (

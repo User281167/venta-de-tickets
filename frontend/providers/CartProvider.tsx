@@ -105,13 +105,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const decrement = useCallback((ticketTypeId: string) => {
-    setItems((prev) =>
-      prev.map((i) =>
+    setItems((prev) => {
+      const item = prev.find((i) => i.ticketTypeId === ticketTypeId);
+      if (!item) return prev;
+      if (item.quantity <= 1) {
+        return prev.filter((i) => i.ticketTypeId !== ticketTypeId);
+      }
+      return prev.map((i) =>
         i.ticketTypeId === ticketTypeId
-          ? { ...i, quantity: Math.max(1, i.quantity - 1) }
+          ? { ...i, quantity: i.quantity - 1 }
           : i,
-      ),
-    );
+      );
+    });
   }, []);
 
   const clearCart = useCallback(() => setItems([]), []);
@@ -130,7 +135,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const canDecrement = useCallback(
     (ticketTypeId: string) => {
       const item = items.find((i) => i.ticketTypeId === ticketTypeId);
-      return item ? item.quantity > 1 : false;
+      return item ? item.quantity >= 1 : false;
     },
     [items],
   );
