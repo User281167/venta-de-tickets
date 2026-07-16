@@ -26,7 +26,8 @@ const mockDetail = {
       id: "t1",
       ticketCode: "abc123def456",
       status: "paid",
-      ticketType: { id: "tt1", name: "Entrada General", price: "50.00" },
+      unitPriceCents: 500000,
+      ticketType: { id: "tt1", name: "Entrada General", price: 500000 },
     },
   ],
 };
@@ -78,7 +79,7 @@ describe("PaymentDetail", () => {
 
   it("shows refund button for completed payment", () => {
     renderPage();
-    expect(screen.getByText("Reembolsar")).toBeInTheDocument();
+    expect(screen.getByText("Reembolsar pago")).toBeInTheDocument();
   });
 
   it("renders formatted currency for total", () => {
