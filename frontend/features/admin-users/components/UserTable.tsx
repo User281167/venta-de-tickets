@@ -86,7 +86,7 @@ export function UserTable() {
   const totalPages = data ? Math.ceil(data.total / LIMIT) : 0;
 
   return (
-    <VStack align="stretch" w="full" gap={8}>
+    <VStack align="stretch" w="full" minW={0} gap={8}>
       <motion.div
         initial={reduced ? {} : { opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

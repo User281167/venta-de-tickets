@@ -124,7 +124,7 @@ describe("UserTable", () => {
     const user = userEvent.setup();
     await user.click(screen.getByRole("button", { name: /Vista de tabla/i }));
 
-    expect(screen.getByRole("table")).toBeInTheDocument();
+    expect(screen.getByRole("grid")).toBeInTheDocument();
     expect(screen.getByText("Ana Pérez")).toBeInTheDocument();
     expect(screen.getByText("Carlos Ruiz")).toBeInTheDocument();
   });
@@ -135,10 +135,10 @@ describe("UserTable", () => {
 
     const user = userEvent.setup();
     await user.click(screen.getByRole("button", { name: /Vista de tabla/i }));
-    expect(screen.getByRole("table")).toBeInTheDocument();
+    expect(screen.getByRole("grid")).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: /Vista de tarjetas/i }));
-    expect(screen.queryByRole("table")).not.toBeInTheDocument();
+    expect(screen.queryByRole("grid")).not.toBeInTheDocument();
     expect(screen.getByText("Ana Pérez")).toBeInTheDocument();
   });
 });

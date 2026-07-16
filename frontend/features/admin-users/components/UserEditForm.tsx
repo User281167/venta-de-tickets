@@ -167,7 +167,7 @@ export function UserEditForm({ user, onSave, onCancel }: Props) {
               </Select.Control>
               <Portal>
                 <Select.Positioner>
-                  <Select.Content>
+                  <Select.Content color="black">
                     {ROLE_OPTIONS.items.map((opt) => (
                       <Select.Item item={opt} key={opt.value}>
                         {opt.label}

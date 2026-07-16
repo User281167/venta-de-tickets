@@ -58,9 +58,9 @@ function AdminLayoutInner({ children }: { children: ReactNode }) {
   }
 
   return (
-    <Flex bg="brand.dark">
+    <Flex bg="brand.dark" overflow="hidden" maxW="100vw">
       <AdminSidebar />
-      <Flex flex={1} p={8} minH="100vh">
+      <Flex flex={1} p={8} minH="100vh" minW={0} maxW="100%">
         {children}
       </Flex>
     </Flex>

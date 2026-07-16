@@ -96,7 +96,6 @@ export function TicketQuantityCard({
           <IconButton
             aria-label="Disminuir"
             size="sm"
-            variant="outline"
             color="white"
             borderColor="rgba(255,255,255,0.16)"
             borderRadius="lg"
@@ -128,7 +127,6 @@ export function TicketQuantityCard({
           <IconButton
             aria-label="Aumentar"
             size="sm"
-            variant="outline"
             color="white"
             borderColor="rgba(255,255,255,0.16)"
             borderRadius="lg"
