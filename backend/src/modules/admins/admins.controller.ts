@@ -14,6 +14,8 @@ import {
   createAdminPaymentSchema,
 } from './admins.validators.js';
 
+const NO_RETURN_ROLES = ['super_admin'];
+
 export async function getMe(req: Request, res: Response): Promise<void> {
   const user = req.user!;
 
@@ -28,7 +30,16 @@ export async function listUsers(req: Request, res: Response): Promise<void> {
   const { page, limit, search } = paginationSchema.parse(req.query);
   const result = await adminsService.listUsers(page, limit, search);
 
-  res.json(result);
+  // no enviar
+  const filteredResult = result.data.filter(
+    (user) => !NO_RETURN_ROLES.includes(user.role!),
+  );
+
+
+  res.json({
+    ...result,
+    data: filteredResult,
+  });
 }
 
 export async function createUser(req: Request, res: Response): Promise<void> {
