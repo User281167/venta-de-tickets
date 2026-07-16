@@ -95,13 +95,13 @@ export function UploadPreviewTable({
         </Table.Body>
       </Table.Root>
 
-      <Flex justify="space-between" align="center" mt={4} px={2}>
-        <Text fontSize="sm" color="gray.600">
+      <Flex justify="space-between" align="center" mt={5} px={1} flexWrap="wrap" gap={2}>
+        <Text fontSize="sm" color="brand.muted">
           {validCount} de {totalRows} filas válidas
         </Text>
 
         {invalidCount > 0 && (
-          <Text fontSize="sm" color="red.600">
+          <Text fontSize="sm" color="#ef4444" fontWeight="medium">
             {invalidCount} fila{invalidCount !== 1 ? "s" : ""} con errores
           </Text>
         )}

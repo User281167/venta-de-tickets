@@ -80,7 +80,7 @@ describe("BatchUploadPage", () => {
   it("renders heading and upload zone in idle state", () => {
     renderPage();
 
-    expect(screen.getByText("Carga masiva de usuarios")).toBeInTheDocument();
+    expect(screen.getByText("Carga masiva")).toBeInTheDocument();
     expect(screen.getByText(/arrastra un archivo .xlsx/i)).toBeInTheDocument();
   });
 

@@ -43,7 +43,7 @@ describe("BatchResultSummary", () => {
     );
 
     expect(screen.getByText("Conflictos encontrados")).toBeInTheDocument();
-    expect(screen.getByText("Correos electrónicos en conflicto:")).toBeInTheDocument();
+    expect(screen.getByText("Correos electrónicos en conflicto")).toBeInTheDocument();
     expect(screen.getByText(/user1@test\.com/)).toBeInTheDocument();
     expect(screen.getByText(/user2@test\.com/)).toBeInTheDocument();
   });
@@ -60,7 +60,7 @@ describe("BatchResultSummary", () => {
       { wrapper: TestWrapper },
     );
 
-    expect(screen.getByText("Cédulas en conflicto:")).toBeInTheDocument();
+    expect(screen.getByText("Cédulas en conflicto")).toBeInTheDocument();
     expect(screen.getByText(/12345678/)).toBeInTheDocument();
   });
 
