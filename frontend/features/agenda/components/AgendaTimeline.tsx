@@ -145,10 +145,10 @@ export function AgendaTimeline() {
             </Stack>
           </motion.div>
 
-          <Box position="relative">
+          <Box position="relative" maxW="3xl" mx="auto">
             <Box
               position="absolute"
-              left={{ base: 5, md: "50%" }}
+              left={{ base: 5, md: "84%" }}
               top={0}
               bottom={0}
               w="2px"
@@ -166,7 +166,7 @@ export function AgendaTimeline() {
                 return (
                   <Grid
                     key={`${day.date}-${event.time}`}
-                    templateColumns={{ base: "auto 1fr", md: "1fr auto 1fr" }}
+                    templateColumns={{ base: "auto 1fr", md: "2fr 1fr" }}
                     gap={{ base: 4, md: 8 }}
                     alignItems="center"
                   >
