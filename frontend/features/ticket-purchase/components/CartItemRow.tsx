@@ -1,7 +1,7 @@
 "use client";
 
 import { memo } from "react";
-import { Flex, Text, IconButton } from "@chakra-ui/react";
+import { Flex, Text, IconButton, Box } from "@chakra-ui/react";
 import { IconTrash } from "@tabler/icons-react";
 import { CartQuantitySpinner } from "./CartQuantitySpinner";
 import type { CartItem } from "../schemas/cart.schema";
@@ -24,28 +24,47 @@ export const CartItemRow = memo(function CartItemRow({
   canIncrement,
   canDecrement,
 }: CartItemRowProps) {
+  const lineTotal = item.unitPriceCents * item.quantity;
+
   return (
     <Flex
-      justify="space-between"
-      align="center"
-      wrap="wrap"
+      direction="column"
       gap={3}
-      px={1}
-      py={2}
+      py={4}
       borderBottom="1px solid"
-      borderColor="rgba(174, 184, 216, 0.1)"
+      borderColor="rgba(255,255,255,0.06)"
     >
-      <Flex direction="column" flex="1">
-        <Text fontSize="sm" fontWeight="semibold" color="brand.light" truncate>
-          {item.name}
-        </Text>
+      <Flex justify="space-between" align="flex-start" gap={3}>
+        <Box flex={1} minW={0}>
+          <Text
+            fontSize="md"
+            fontWeight="black"
+            color="white"
+            truncate
+            lineHeight="1.3"
+          >
+            {item.name}
+          </Text>
 
-        <Text fontSize="xs" color="brand.muted">
-          {formatCurrency(item.unitPriceCents * 100)} c/u
-        </Text>
+          <Text fontSize="xs" color="brand.muted" mt={0.5}>
+            {formatCurrency(item.unitPriceCents * 100)} c/u
+          </Text>
+        </Box>
+
+        <IconButton
+          aria-label="Eliminar entrada"
+          variant="ghost"
+          size="sm"
+          color="brand.muted"
+          borderRadius="xl"
+          _hover={{ color: "red.400", bg: "rgba(239,68,68,0.1)" }}
+          onClick={onRemove}
+        >
+          <IconTrash size={18} />
+        </IconButton>
       </Flex>
 
-      <Flex flex="1" justify="space-between" align="center">
+      <Flex justify="space-between" align="center" gap={3}>
         <CartQuantitySpinner
           quantity={item.quantity}
           onIncrement={onIncrement}
@@ -55,25 +74,14 @@ export const CartItemRow = memo(function CartItemRow({
         />
 
         <Text
-          fontSize="sm"
-          fontWeight="bold"
-          color="brand.light"
-          minW="70px"
+          fontSize="md"
+          fontWeight="black"
+          color="white"
           textAlign="right"
+          minW="90px"
         >
-          {formatCurrency(item.unitPriceCents * item.quantity * 100)}
+          {formatCurrency(lineTotal * 100)}
         </Text>
-
-        <IconButton
-          aria-label="Eliminar"
-          variant="ghost"
-          size="xs"
-          color="brand.muted"
-          _hover={{ color: "red.400", bg: "rgba(255,0,0,0.1)" }}
-          onClick={onRemove}
-        >
-          <IconTrash size={16} />
-        </IconButton>
       </Flex>
     </Flex>
   );

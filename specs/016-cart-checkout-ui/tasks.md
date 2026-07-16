@@ -86,11 +86,11 @@
 
 ### Implementation for User Story 3
 
-- [ ] T010 [P] [US3] Rediseñar `frontend/features/ticket-purchase/components/CartItemRow.tsx` con mejor espaciado, precio unitario, subtotal, control de cantidad y botón de eliminar individual
-- [ ] T011 [P] [US3] Rediseñar `frontend/features/ticket-purchase/components/CartDrawer.tsx` con header, lista de ítems, footer con total y CTA COMPRAR, manteniendo `DrawerBackdrop` y `DrawerPositioner`
-- [ ] T012 [US3] Agregar botón "Vaciar carrito" en `frontend/features/ticket-purchase/components/CartDrawer.tsx` que invoque `clearCart` solo después de una confirmación (dialog o alert nativo)
-- [ ] T013 [US3] Actualizar `frontend/features/ticket-purchase/components/__tests__/CartDrawer.test.tsx` para cubrir el nuevo flujo de vaciar carrito y el rediseño
-- [ ] T014 [P] [US3] Actualizar `frontend/features/ticket-purchase/components/__tests__/CartItemRow.test.tsx` si cambian selectores o textos
+- [x] T010 [P] [US3] Rediseñar `frontend/features/ticket-purchase/components/CartItemRow.tsx` con mejor espaciado, precio unitario, subtotal, control de cantidad y botón de eliminar individual
+- [x] T011 [P] [US3] Rediseñar `frontend/features/ticket-purchase/components/CartDrawer.tsx` con header, lista de ítems, footer con total y CTA COMPRAR, manteniendo `DrawerBackdrop` y `DrawerPositioner`
+- [x] T012 [US3] Agregar botón "Vaciar carrito" en `frontend/features/ticket-purchase/components/CartDrawer.tsx` que invoque `clearCart` solo después de una confirmación (dialog o alert nativo)
+- [x] T013 [US3] Actualizar `frontend/features/ticket-purchase/components/__tests__/CartDrawer.test.tsx` para cubrir el nuevo flujo de vaciar carrito y el rediseño
+- [x] T014 [P] [US3] Actualizar `frontend/features/ticket-purchase/components/__tests__/CartItemRow.test.tsx` si cambian selectores o textos
 
 **Checkpoint**: El drawer se ve rediseñado, vaciar carrito funciona con confirmación y los tests pasan.
 

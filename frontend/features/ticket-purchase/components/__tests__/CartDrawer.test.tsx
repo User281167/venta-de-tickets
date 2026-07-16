@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { useEffect } from "react";
-import { render, screen, cleanup } from "@testing-library/react";
+import { render, screen, cleanup, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ChakraProvider } from "@chakra-ui/react";
 import { system } from "@/components/ui/theme";
@@ -172,12 +172,53 @@ describe("CartDrawer", () => {
     expect(mockPush).toHaveBeenCalledWith("/checkout");
   });
 
-  it("disables Comprar button when cart is empty", () => {
+  it("does not render Comprar button when cart is empty", () => {
     render(<CartDrawer open={true} onClose={() => {}} />, {
       wrapper: Wrapper,
     });
 
-    const comprarButton = screen.getByText("COMPRAR");
-    expect(comprarButton).toBeDisabled();
+    expect(screen.queryByText("COMPRAR")).not.toBeInTheDocument();
+  });
+
+  it("shows Vaciar carrito button when cart has items", () => {
+    render(
+      <>
+        <AddItemHelper ticketType={general} />
+        <CartDrawer open={true} onClose={() => {}} />
+      </>,
+      { wrapper: Wrapper },
+    );
+
+    expect(screen.getByText("Vaciar carrito")).toBeInTheDocument();
+  });
+
+  it("opens confirmation dialog and clears cart when Vaciar carrito is clicked", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <>
+        <AddItemHelper ticketType={general} />
+        <CartDrawer open={true} onClose={() => {}} />
+      </>,
+      { wrapper: Wrapper },
+    );
+
+    expect(screen.getByText("General")).toBeInTheDocument();
+
+    const clearButton = screen.getByText("Vaciar carrito");
+    await user.click(clearButton);
+
+    expect(
+      screen.getByText(/Se eliminarán todas las entradas/),
+    ).toBeInTheDocument();
+
+    const dialog = screen.getByRole("dialog");
+    const confirmButton = within(dialog).getByRole("button", {
+      name: "Vaciar carrito",
+    });
+    await user.click(confirmButton);
+
+    expect(screen.queryByText("General")).not.toBeInTheDocument();
+    expect(screen.getByText("No has seleccionado entradas")).toBeInTheDocument();
   });
 });
