@@ -2,9 +2,9 @@
 
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import Link from "next/link";
-import { Box, Text, Button } from "@chakra-ui/react";
+import { Text } from "@chakra-ui/react";
 import { IconCircleX } from "@tabler/icons-react";
+import { CheckoutResultCard } from "@/features/ticket-purchase/components/CheckoutResultCard";
 
 const FAILURE_REASON: Record<string, string> = {
   rejected: "Pago rechazado por el banco",
@@ -22,31 +22,24 @@ function FailureInner() {
     : "No se pudo completar el pago";
 
   return (
-    <Box textAlign="center">
-      <IconCircleX size={64} color="#ff0f7b" />
-      <Text fontSize="2xl" fontWeight="bold" color="brand.light" mt={4}>
-        Pago rechazado
-      </Text>
-
-      <Text fontSize="md" color="brand.muted" mt={2}>
-        {reason}
-      </Text>
-
-      <Text fontSize="sm" color="brand.muted" mt={4}>
-        Puedes intentarlo de nuevo o usar otro medio de pago.
-      </Text>
-
-      <Button
-        asChild
-        mt={6}
-        bg="brand.cyan"
-        color="brand.dark"
-        fontWeight="bold"
-        _hover={{ opacity: 0.9 }}
-      >
-        <Link href="/entradas">Intentar de nuevo</Link>
-      </Button>
-    </Box>
+    <CheckoutResultCard
+      icon={<IconCircleX size={48} color="#ff0f7b" />}
+      title="Pago rechazado"
+      subtitle="No pudimos procesar tu pago"
+      details={
+        <>
+          <Text fontSize="md" color="red.300" fontWeight="semibold">
+            {reason}
+          </Text>
+          <Text fontSize="sm" color="brand.muted" mt={2}>
+            Puedes intentarlo de nuevo o usar otro medio de pago.
+          </Text>
+        </>
+      }
+      primaryAction={{ label: "Intentar de nuevo", href: "/entradas" }}
+      statusColor="#ff0f7b"
+      bgGlow="rgba(255,15,123,0.15)"
+    />
   );
 }
 

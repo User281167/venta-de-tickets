@@ -2,10 +2,10 @@
 
 import { Suspense, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
-import Link from "next/link";
-import { Box, Text, Button } from "@chakra-ui/react";
+import { Flex, Text, VStack } from "@chakra-ui/react";
 import { IconCircleCheck } from "@tabler/icons-react";
 import { useCart } from "@/features/ticket-purchase/hooks/useCart";
+import { CheckoutResultCard } from "@/features/ticket-purchase/components/CheckoutResultCard";
 
 function SuccessInner() {
   const searchParams = useSearchParams();
@@ -22,47 +22,51 @@ function SuccessInner() {
     clearCart();
   }, [clearCart]);
 
-  return (
-    <Box textAlign="center">
-      <IconCircleCheck size={64} color="#00e5ff" />
-
-      <Text fontSize="2xl" fontWeight="bold" color="brand.light" mt={4}>
-        Pago exitoso
-      </Text>
-
+  const details = (
+    <VStack align="stretch" gap={2}>
       {paymentId && (
-        <Text fontSize="sm" color="brand.muted" mt={2}>
-          ID de transacción: {paymentId}
-        </Text>
+        <Flex justify="space-between" fontSize="sm">
+          <Text color="brand.muted">ID de transacción</Text>
+          <Text color="white" fontWeight="semibold" fontFamily="mono">
+            {paymentId}
+          </Text>
+        </Flex>
       )}
 
       {collectionStatus && (
-        <Text fontSize="sm" color="brand.muted">
-          Estado: {collectionStatus}
-        </Text>
+        <Flex justify="space-between" fontSize="sm">
+          <Text color="brand.muted">Estado</Text>
+          <Text color="white" fontWeight="semibold">
+            {collectionStatus}
+          </Text>
+        </Flex>
       )}
 
       {externalRef && (
-        <Text fontSize="sm" color="brand.muted">
-          Referencia: {externalRef}
-        </Text>
+        <Flex justify="space-between" fontSize="sm">
+          <Text color="brand.muted">Referencia</Text>
+          <Text color="white" fontWeight="semibold" fontFamily="mono">
+            {externalRef}
+          </Text>
+        </Flex>
       )}
 
-      <Text fontSize="sm" color="brand.muted" mt={4}>
+      <Text fontSize="sm" color="brand.muted" mt={2}>
         Recibirás tus entradas por correo electrónico.
       </Text>
+    </VStack>
+  );
 
-      <Button
-        asChild
-        mt={6}
-        bg="brand.cyan"
-        color="brand.dark"
-        fontWeight="bold"
-        _hover={{ opacity: 0.9 }}
-      >
-        <Link href="/entradas">Volver a entradas</Link>
-      </Button>
-    </Box>
+  return (
+    <CheckoutResultCard
+      icon={<IconCircleCheck size={48} color="#00e5ff" />}
+      title="Pago exitoso"
+      subtitle="Tu compra se completó correctamente"
+      details={details}
+      primaryAction={{ label: "Volver a entradas", href: "/entradas" }}
+      statusColor="#00e5ff"
+      bgGlow="rgba(0,229,255,0.15)"
+    />
   );
 }
 

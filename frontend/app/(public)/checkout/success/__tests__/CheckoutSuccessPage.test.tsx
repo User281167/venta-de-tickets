@@ -33,7 +33,8 @@ describe("CheckoutSuccessPage", () => {
     render(<CheckoutSuccessPage />, { wrapper: TestWrapper });
 
     expect(screen.getByText("Pago exitoso")).toBeInTheDocument();
-    expect(screen.getByText(/ID de transacción: 123/)).toBeInTheDocument();
+    expect(screen.getByText("ID de transacción")).toBeInTheDocument();
+    expect(screen.getByText("123")).toBeInTheDocument();
   });
 
   it("renders external reference when present", () => {
@@ -45,7 +46,8 @@ describe("CheckoutSuccessPage", () => {
 
     render(<CheckoutSuccessPage />, { wrapper: TestWrapper });
 
-    expect(screen.getByText(/Referencia: abc-123/)).toBeInTheDocument();
+    expect(screen.getByText("Referencia")).toBeInTheDocument();
+    expect(screen.getByText("abc-123")).toBeInTheDocument();
   });
 
   it("renders link back to entradas", () => {

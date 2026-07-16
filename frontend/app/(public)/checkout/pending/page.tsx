@@ -2,48 +2,47 @@
 
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import Link from "next/link";
-import { Box, Text, Button } from "@chakra-ui/react";
+import { Flex, Text, VStack } from "@chakra-ui/react";
 import { IconClock } from "@tabler/icons-react";
+import { CheckoutResultCard } from "@/features/ticket-purchase/components/CheckoutResultCard";
 
 function PendingInner() {
   const searchParams = useSearchParams();
   const collectionStatus = searchParams.get("collection_status");
 
-  return (
-    <Box textAlign="center">
-      <IconClock size={64} color="#ffbf00" />
-      <Text fontSize="2xl" fontWeight="bold" color="brand.light" mt={4}>
-        Pago pendiente
-      </Text>
-
+  const details = (
+    <VStack align="stretch" gap={2}>
       {collectionStatus && (
-        <Text fontSize="sm" color="brand.muted" mt={2}>
-          Estado: {collectionStatus}
-        </Text>
+        <Flex justify="space-between" fontSize="sm">
+          <Text color="brand.muted">Estado</Text>
+          <Text color="white" fontWeight="semibold">
+            {collectionStatus}
+          </Text>
+        </Flex>
       )}
 
-      <Text fontSize="sm" color="brand.muted" mt={4}>
+      <Text fontSize="sm" color="brand.muted" mt={2}>
         El pago está siendo procesado. Recibirás la confirmación por correo
         electrónico una vez se complete.
       </Text>
 
-      <Text fontSize="sm" color="brand.muted" mt={2}>
+      <Text fontSize="sm" color="brand.muted">
         Si pagaste en efectivo, puede tardar hasta 24 horas hábiles en
         confirmarse.
       </Text>
+    </VStack>
+  );
 
-      <Button
-        asChild
-        mt={6}
-        bg="brand.cyan"
-        color="brand.dark"
-        fontWeight="bold"
-        _hover={{ opacity: 0.9 }}
-      >
-        <Link href="/entradas">Volver a entradas</Link>
-      </Button>
-    </Box>
+  return (
+    <CheckoutResultCard
+      icon={<IconClock size={48} color="#ffbf00" />}
+      title="Pago pendiente"
+      subtitle="Estamos esperando la confirmación de Mercado Pago"
+      details={details}
+      primaryAction={{ label: "Volver a entradas", href: "/entradas" }}
+      statusColor="#ffbf00"
+      bgGlow="rgba(255,191,0,0.15)"
+    />
   );
 }
 

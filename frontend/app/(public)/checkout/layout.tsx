@@ -6,8 +6,8 @@ export default function CheckoutStatusLayout({
   children: React.ReactNode;
 }) {
   return (
-    <Box minH="80vh" py={20}>
-      <Container maxW="lg">
+    <Box minH="80vh">
+      <Container>
         {children}
       </Container>
     </Box>

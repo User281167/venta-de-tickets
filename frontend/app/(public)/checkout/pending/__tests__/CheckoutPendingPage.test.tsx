@@ -34,7 +34,8 @@ describe("CheckoutPendingPage", () => {
 
     render(<CheckoutPendingPage />, { wrapper: TestWrapper });
 
-    expect(screen.getByText("Estado: pending")).toBeInTheDocument();
+    expect(screen.getByText("Estado")).toBeInTheDocument();
+    expect(screen.getByText("pending")).toBeInTheDocument();
   });
 
   it("renders back link", () => {

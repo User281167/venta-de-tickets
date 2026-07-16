@@ -104,13 +104,14 @@
 
 ### Implementation for User Story 4
 
-- [ ] T015 [P] [US4] Rediseñar `frontend/app/(public)/checkout/success/page.tsx` con tarjeta centrada, icono de éxito, datos de transacción, mensaje de entradas por correo y CTA
-- [ ] T016 [P] [US4] Rediseñar `frontend/app/(public)/checkout/pending/page.tsx` con tarjeta centrada, icono de reloj, mensaje de procesamiento y CTA
-- [ ] T017 [P] [US4] Rediseñar `frontend/app/(public)/checkout/failure/page.tsx` con tarjeta centrada, icono de error, motivo del rechazo, opciones de reintento y CTA
-- [ ] T018 [P] [US4] Extraer componente compartido opcional en `frontend/features/ticket-purchase/components/CheckoutResultLayout.tsx` si las tres páginas comparten estructura (centrado, tarjeta, tipografía)
-- [ ] T019 [US4] Actualizar tests en `frontend/app/(public)/checkout/success/__tests__/CheckoutSuccessPage.test.tsx`, `frontend/app/(public)/checkout/pending/__tests__/CheckoutPendingPage.test.tsx` y `frontend/app/(public)/checkout/failure/__tests__/CheckoutFailurePage.test.tsx` si cambian textos o selectores
+- [x] T015 [P] [US4] Rediseñar `frontend/app/(public)/checkout/success/page.tsx` con tarjeta centrada, icono de éxito, datos de transacción, mensaje de entradas por correo y CTA
+- [x] T016 [P] [US4] Rediseñar `frontend/app/(public)/checkout/pending/page.tsx` con tarjeta centrada, icono de reloj, mensaje de procesamiento y CTA
+- [x] T017 [P] [US4] Rediseñar `frontend/app/(public)/checkout/failure/page.tsx` con tarjeta centrada, icono de error, motivo del rechazo, opciones de reintento y CTA
+- [x] T018 [P] [US4] Extraer componente compartido en `frontend/features/ticket-purchase/components/CheckoutResultCard.tsx` para las tres páginas de resultado del checkout
+- [x] T019 [US4] Actualizar tests en `frontend/app/(public)/checkout/success/__tests__/CheckoutSuccessPage.test.tsx`, `frontend/app/(public)/checkout/pending/__tests__/CheckoutPendingPage.test.tsx` y `frontend/app/(public)/checkout/failure/__tests__/CheckoutFailurePage.test.tsx` si cambian textos o selectores
+- [x] T020 [P] [US4] Rediseñar `frontend/features/ticket-purchase/components/CheckoutPageClient.tsx` con listado completo de ítems, resumen y botón amarillo de Mercado Pago con logo
 
-**Checkpoint**: Las tres páginas de resultado tienen el nuevo diseño y los tests pasan.
+**Checkpoint**: Las tres páginas de resultado tienen el nuevo diseño, `/checkout` muestra el listado completo y los tests pasan.
 
 ---
 
