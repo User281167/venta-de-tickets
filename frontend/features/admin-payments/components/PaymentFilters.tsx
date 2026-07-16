@@ -7,8 +7,11 @@ import {
   Select,
   Portal,
   createListCollection,
+  Box,
+  Text,
 } from "@chakra-ui/react";
 import { useCallback } from "react";
+import { IconSearch, IconCalendar } from "@tabler/icons-react";
 
 const STATUS_OPTIONS = createListCollection({
   items: [
@@ -31,6 +34,57 @@ interface PaymentFiltersProps {
   onDateToChange: (val: string) => void;
 }
 
+const inputStyles = {
+  bg: "rgba(255,255,255,0.03)",
+  border: "1px solid rgba(255,255,255,0.08)",
+  borderRadius: "xl",
+  color: "white",
+  _placeholder: { color: "brand.muted" },
+  _hover: { borderColor: "rgba(255,255,255,0.16)" },
+  _focus: {
+    borderColor: "brand.cyan",
+    boxShadow: "0 0 12px rgba(0,229,255,0.2)",
+  },
+};
+
+function DateInput({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}) {
+  return (
+    <Field.Root>
+      <Field.Label color="brand.muted" fontSize="sm" mb={1}>
+        {label}
+      </Field.Label>
+      <Box position="relative">
+        <Box
+          position="absolute"
+          left={3}
+          top="50%"
+          transform="translateY(-50%)"
+          pointerEvents="none"
+          zIndex={1}
+        >
+          <IconCalendar size={18} color="#aeb8d8" />
+        </Box>
+        <Input
+          type="date"
+          size="lg"
+          value={value}
+          onChange={onChange}
+          pl={10}
+          {...inputStyles}
+        />
+      </Box>
+    </Field.Root>
+  );
+}
+
 export function PaymentFilters({
   search,
   status,
@@ -46,11 +100,6 @@ export function PaymentFilters({
     [onSearchChange],
   );
 
-  const handleStatus = useCallback(
-    (e: React.ChangeEvent<HTMLSelectElement>) => onStatusChange(e.target.value),
-    [onStatusChange],
-  );
-
   const handleDateFrom = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) =>
       onDateFromChange(e.target.value),
@@ -63,73 +112,118 @@ export function PaymentFilters({
   );
 
   return (
-    <Flex gap={3} wrap="wrap" w="full" align="end" justify="center">
-      <Input
-        flex="1"
-        placeholder="Buscar por nombre, cédula o correo..."
-        value={search}
-        onChange={handleSearch}
-        size="lg"
-      />
-
-      <Field.Root w="180px">
-        <Field.Label color="white">Estado</Field.Label>
-
-        <Select.Root
-          collection={STATUS_OPTIONS}
-          value={[status]}
-          onValueChange={({ value }) => onStatusChange(value[0] ?? "")}
+    <Box
+      className="glass-card"
+      borderRadius="2xl"
+      p={{ base: 4, md: 5 }}
+      w="full"
+    >
+      <Flex
+        gap={3}
+        wrap={{ base: "wrap", lg: "nowrap" }}
+        w="full"
+        align="end"
+      >
+        <Field.Root
+          flex={{ lg: "1.5" }}
+          minW={{ base: "full", md: "260px" }}
         >
-          <Select.HiddenSelect />
+          <Field.Label color="brand.muted" fontSize="sm" mb={1}>
+            Buscar
+          </Field.Label>
+          <Box position="relative" w="full">
+            <Box
+              position="absolute"
+              left={3}
+              top="50%"
+              transform="translateY(-50%)"
+              pointerEvents="none"
+              zIndex={1}
+            >
+              <IconSearch size={18} color="#aeb8d8" />
+            </Box>
+            <Input
+              placeholder="Buscar por nombre, cédula o correo..."
+              value={search}
+              onChange={handleSearch}
+              size="lg"
+              pl={10}
+              {...inputStyles}
+            />
+          </Box>
+        </Field.Root>
 
-          <Select.Control>
-            <Select.Trigger status-trigger="status-trigger">
-              <Select.ValueText placeholder="Estado" />
-            </Select.Trigger>
+        <Flex
+          gap={3}
+          wrap={{ base: "wrap", lg: "nowrap" }}
+          flex={{ lg: "1" }}
+          minW={{ base: "full", md: "auto" }}
+          w="full"
+          align="end"
+        >
+          <Field.Root minW={{ base: "full", md: "140px" }} flex={{ lg: "1" }}>
+            <Field.Label color="brand.muted" fontSize="sm" mb={1}>
+              Estado
+            </Field.Label>
+            <Select.Root
+              collection={STATUS_OPTIONS}
+              value={[status]}
+              onValueChange={({ value }) => onStatusChange(value[0] ?? "")}
+            >
+              <Select.HiddenSelect />
+              <Select.Control>
+                <Select.Trigger
+                  bg="rgba(255,255,255,0.03)"
+                  border="1px solid rgba(255,255,255,0.08)"
+                  borderRadius="xl"
+                  color="white"
+                  h="48px"
+                  px={3}
+                  w="full"
+                  _hover={{ borderColor: "rgba(255,255,255,0.16)" }}
+                  _focus={{
+                    borderColor: "brand.cyan",
+                    boxShadow: "0 0 12px rgba(0,229,255,0.2)",
+                  }}
+                >
+                  <Select.ValueText placeholder="Estado" />
+                </Select.Trigger>
+                <Select.IndicatorGroup>
+                  <Select.Indicator />
+                </Select.IndicatorGroup>
+              </Select.Control>
+              <Portal>
+                <Select.Positioner>
+                  <Select.Content>
+                    {STATUS_OPTIONS.items.map((opt) => (
+                      <Select.Item item={opt} key={opt.value}>
+                        <Text color="black">{opt.label}</Text>
+                        <Select.ItemIndicator />
+                      </Select.Item>
+                    ))}
+                  </Select.Content>
+                </Select.Positioner>
+              </Portal>
+            </Select.Root>
+          </Field.Root>
 
-            <Select.IndicatorGroup>
-              <Select.Indicator />
-            </Select.IndicatorGroup>
-          </Select.Control>
+          <Box minW={{ base: "full", md: "160px" }} flex={{ lg: "1" }}>
+            <DateInput
+              label="Desde"
+              value={dateFrom}
+              onChange={handleDateFrom}
+            />
+          </Box>
 
-          <Portal>
-            <Select.Positioner>
-              <Select.Content>
-                {STATUS_OPTIONS.items.map((opt) => (
-                  <Select.Item item={opt} key={opt.value} color="black">
-                    {opt.label}
-                    <Select.ItemIndicator />
-                  </Select.Item>
-                ))}
-              </Select.Content>
-            </Select.Positioner>
-          </Portal>
-        </Select.Root>
-      </Field.Root>
-
-      <Field.Root w="180px">
-        <Field.Label color="white">Desde</Field.Label>
-
-        <Input
-          type="date"
-          size="lg"
-          value={dateFrom}
-          onChange={handleDateFrom}
-          title="Desde"
-        />
-      </Field.Root>
-
-      <Field.Root w="180px">
-        <Field.Label color="white">Hasta</Field.Label>
-
-        <Input
-          type="date"
-          size="lg"
-          value={dateTo}
-          onChange={handleDateTo}
-          title="Hasta"
-        />
-      </Field.Root>
-    </Flex>
+          <Box minW={{ base: "full", md: "160px" }} flex={{ lg: "1" }}>
+            <DateInput
+              label="Hasta"
+              value={dateTo}
+              onChange={handleDateTo}
+            />
+          </Box>
+        </Flex>
+      </Flex>
+    </Box>
   );
 }
