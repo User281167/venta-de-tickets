@@ -40,5 +40,6 @@ export async function fetchActiveTicketTypes(): Promise<TicketType[]> {
     saleEndsAt: tt.saleEndsAt,
     isSoldOut: tt.quantitySold >= tt.quantityTotal,
     isActive: tt.status === "enabled",
+    status: tt.status as 'enabled' | 'disabled' | 'blocked',
   }));
 }

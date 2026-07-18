@@ -25,6 +25,7 @@ const baseTicket: TicketType = {
   saleEndsAt: null,
   isSoldOut: false,
   isActive: true,
+  status: "enabled",
 };
 
 describe("TicketTypeCard", () => {

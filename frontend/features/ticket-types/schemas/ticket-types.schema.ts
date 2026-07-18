@@ -10,6 +10,7 @@ export const ticketTypeSchema = z.object({
   saleEndsAt: z.string().nullable(),
   isSoldOut: z.boolean(),
   isActive: z.boolean(),
+  status: z.enum(['enabled', 'disabled', 'blocked']),
 });
 
 export const eventWithTicketTypesSchema = z.object({

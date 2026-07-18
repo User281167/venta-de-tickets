@@ -7,6 +7,7 @@ export const cartItemSchema = z.object({
   quantity: z.number().int().min(1),
   maxPerUser: z.number().int().positive().nullable(),
   availableStock: z.number().int().min(0),
+  status: z.enum(['enabled', 'disabled', 'blocked']),
 });
 
 export const cartStateSchema = z.object({

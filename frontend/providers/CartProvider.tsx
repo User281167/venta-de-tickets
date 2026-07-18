@@ -76,6 +76,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
             : i,
         );
       }
+
       return [
         ...prev,
         {
@@ -85,6 +86,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           quantity: 1,
           maxPerUser: ticketType.maxPerUser,
           availableStock: ticketType.availableCount,
+          status: ticketType.status,
         },
       ];
     });
@@ -107,10 +109,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const decrement = useCallback((ticketTypeId: string) => {
     setItems((prev) => {
       const item = prev.find((i) => i.ticketTypeId === ticketTypeId);
+
       if (!item) return prev;
       if (item.quantity <= 1) {
         return prev.filter((i) => i.ticketTypeId !== ticketTypeId);
       }
+
       return prev.map((i) =>
         i.ticketTypeId === ticketTypeId
           ? { ...i, quantity: i.quantity - 1 }
@@ -124,6 +128,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const canIncrement = useCallback(
     (ticketTypeId: string) => {
       const item = items.find((i) => i.ticketTypeId === ticketTypeId);
+
       if (!item) return true;
       if (item.maxPerUser && item.quantity >= item.maxPerUser) return false;
       if (item.quantity >= item.availableStock) return false;

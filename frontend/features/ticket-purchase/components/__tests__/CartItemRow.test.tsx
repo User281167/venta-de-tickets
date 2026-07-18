@@ -13,6 +13,7 @@ const item: CartItem = {
   quantity: 2,
   maxPerUser: 4,
   availableStock: 100,
+  status: "enabled",
 };
 
 function TestWrapper({ children }: { children: React.ReactNode }) {

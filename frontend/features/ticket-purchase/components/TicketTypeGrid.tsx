@@ -13,12 +13,17 @@ interface TicketTypeGridProps {
 export const TicketTypeGrid = memo(function TicketTypeGrid({
   ticketTypes,
 }: TicketTypeGridProps) {
-  const { items, addItem, increment, decrement, canIncrement, canDecrement } = useCart();
+  const { items, addItem, increment, decrement, canIncrement, canDecrement } =
+    useCart();
 
   const getQuantity = (ticketTypeId: string) =>
     items.find((i) => i.ticketTypeId === ticketTypeId)?.quantity ?? 0;
 
-  if (ticketTypes.length === 0) {
+  const filteredTicketTypes = ticketTypes.filter(
+    (tt) => tt.status === "enabled",
+  );
+
+  if (filteredTicketTypes.length === 0) {
     return (
       <Text color="brand.muted" textAlign="center" py={10}>
         No hay tipos de entrada disponibles
@@ -27,8 +32,11 @@ export const TicketTypeGrid = memo(function TicketTypeGrid({
   }
 
   return (
-    <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={{ base: 5, md: 6 }}>
-      {ticketTypes.map((tt) => (
+    <Grid
+      templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
+      gap={{ base: 5, md: 6 }}
+    >
+      {filteredTicketTypes.map((tt) => (
         <TicketTypeCard
           key={tt.id}
           ticketType={tt}

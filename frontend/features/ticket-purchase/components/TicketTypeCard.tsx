@@ -27,7 +27,9 @@ export const TicketTypeCard = memo(function TicketTypeCard({
   canDecrement,
 }: TicketTypeCardProps) {
   const isSoldOut = ticketType.availableCount <= 0;
-  const isLowStock = !isSoldOut && ticketType.availableCount <= LOW_STOCK_THRESHOLD;
+  const isLowStock =
+    !isSoldOut && ticketType.availableCount <= LOW_STOCK_THRESHOLD;
+  const isDisabled = ticketType.status !== "enabled";
 
   return (
     <Flex
@@ -48,10 +50,10 @@ export const TicketTypeCard = memo(function TicketTypeCard({
               boxShadow: "0 20px 40px rgba(0,0,0,0.35)",
             }
       }
-      opacity={isSoldOut ? 0.75 : 1}
+      opacity={isSoldOut || isDisabled ? 0.75 : 1}
       overflow="hidden"
     >
-      {isSoldOut && (
+      {(isSoldOut || isDisabled) && (
         <Box
           position="absolute"
           inset={0}
@@ -66,15 +68,19 @@ export const TicketTypeCard = memo(function TicketTypeCard({
             px={4}
             py={1.5}
             borderRadius="full"
-            bg="rgba(239,68,68,0.15)"
-            border="1px solid rgba(239,68,68,0.35)"
-            color="red.400"
+            bg={isSoldOut ? "rgba(239,68,68,0.15)" : "rgba(255,159,28,0.15)"}
+            border={
+              isSoldOut
+                ? "1px solid rgba(239,68,68,0.35)"
+                : "1px solid rgba(255,159,28,0.35)"
+            }
+            color={isSoldOut ? "red.400" : "brand.orange"}
             fontSize="sm"
             fontWeight="black"
             textTransform="uppercase"
             letterSpacing="0.1em"
           >
-            Agotado
+            {isSoldOut ? "Agotado" : "No disponible"}
           </Badge>
         </Box>
       )}
@@ -85,6 +91,7 @@ export const TicketTypeCard = memo(function TicketTypeCard({
             <Box p={1.5} borderRadius="lg" bg="rgba(0,229,255,0.1)">
               <IconTicket size={18} color="#00e5ff" />
             </Box>
+
             <Text
               fontSize={{ base: "lg", md: "xl" }}
               fontWeight="black"
@@ -130,6 +137,7 @@ export const TicketTypeCard = memo(function TicketTypeCard({
           <Text fontSize="xs" color="brand.muted" mb={0.5}>
             Por persona
           </Text>
+
           <Text
             fontSize={{ base: "2xl", md: "3xl" }}
             fontWeight="black"
@@ -165,10 +173,12 @@ export const TicketTypeCard = memo(function TicketTypeCard({
         <Text fontSize="sm" color="brand.muted">
           {isSoldOut
             ? "No hay unidades disponibles"
-            : `${ticketType.availableCount} disponibles`}
+            : isDisabled
+              ? "No disponible"
+              : `${ticketType.availableCount} disponibles`}
         </Text>
 
-        {isSoldOut ? (
+        {isSoldOut || isDisabled ? (
           <Button
             size="sm"
             variant="outline"
@@ -179,7 +189,7 @@ export const TicketTypeCard = memo(function TicketTypeCard({
             opacity={0.5}
             cursor="not-allowed"
           >
-            Agotado
+            {isSoldOut ? "Agotado" : "No disponible"}
           </Button>
         ) : quantity === 0 ? (
           <Button
