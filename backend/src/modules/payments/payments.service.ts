@@ -7,9 +7,57 @@ import * as paymentsRepo from './payments.repository.js';
 import { getProvider } from './providers/provider.registry.js';
 
 import { logger } from '../../utils/logger.js';
+import { RESERVATION_EXPIRATION_PROVIDER } from '../../shared/config/constants.js';
 
 function generateTicketCode(): string {
   return randomBytes(16).toString('hex');
+}
+
+function validateTicketType(
+  item: { ticketTypeId: string; quantity: number },
+  ticketType: any,
+) {
+  if (ticketType.status !== 'enabled') {
+    logger.warn(
+      `Ticket type not available: ticketTypeId=${item.ticketTypeId}, name=${ticketType.name}`,
+    );
+    throw new ValidationError(
+      'TICKET_TYPE_NOT_AVAILABLE',
+      `Ticket type "${ticketType.name}" is not available`,
+    );
+  }
+
+  if (item.quantity <= 0) {
+    logger.warn(
+      `Invalid quantity: ticketTypeId=${item.ticketTypeId}, quantity=${item.quantity}`,
+    );
+    throw new ValidationError(
+      'INVALID_QUANTITY',
+      `Quantity must be greater than 0`,
+    );
+  }
+
+  if (ticketType.maxPerUser && item.quantity > ticketType.maxPerUser) {
+    logger.warn(
+      `Max per user exceeded: ticketTypeId=${item.ticketTypeId}, quantity=${item.quantity}, maxPerUser=${ticketType.maxPerUser}`,
+    );
+
+    throw new ValidationError(
+      'MAX_PER_USER_EXCEEDED',
+      `Cannot buy more than ${ticketType.maxPerUser} of "${ticketType.name}" per user`,
+    );
+  }
+
+  const available = ticketType.quantityTotal - ticketType.quantitySold;
+  if (item.quantity > available) {
+    logger.warn(
+      `Sold out: ticketTypeId=${item.ticketTypeId}, quantity=${item.quantity}, available=${available}`,
+    );
+    throw new ValidationError(
+      'SOLD_OUT',
+      `Not enough tickets available for "${ticketType.name}"`,
+    );
+  }
 }
 
 export async function createCheckout(
@@ -36,38 +84,9 @@ export async function createCheckout(
       item.ticketTypeId,
     );
 
-    if (ticketType.status !== 'enabled') {
-      logger.warn(
-        `Ticket type not available: ticketTypeId=${item.ticketTypeId}, name=${ticketType.name}`,
-      );
-      throw new ValidationError(
-        'TICKET_TYPE_NOT_AVAILABLE',
-        `Ticket type "${ticketType.name}" is not available`,
-      );
-    }
+    validateTicketType(item, ticketType);
 
-    if (ticketType.maxPerUser && item.quantity > ticketType.maxPerUser) {
-      logger.warn(
-        `Max per user exceeded: ticketTypeId=${item.ticketTypeId}, quantity=${item.quantity}, maxPerUser=${ticketType.maxPerUser}`,
-      );
-
-      throw new ValidationError(
-        'MAX_PER_USER_EXCEEDED',
-        `Cannot buy more than ${ticketType.maxPerUser} of "${ticketType.name}" per user`,
-      );
-    }
-
-    const available = ticketType.quantityTotal - ticketType.quantitySold;
-    if (item.quantity > available) {
-      logger.warn(
-        `Sold out: ticketTypeId=${item.ticketTypeId}, quantity=${item.quantity}, available=${available}`,
-      );
-      throw new ValidationError(
-        'SOLD_OUT',
-        `Not enough tickets available for "${ticketType.name}"`,
-      );
-    }
-
+    // precio en con cents para payment
     const unitPriceCents = Math.round(Number(ticketType.price) * 100);
     subtotalCents += unitPriceCents * item.quantity;
 
@@ -83,14 +102,24 @@ export async function createCheckout(
     });
   }
 
-  const provider = getProvider(providerName);
-
-  const reserveExpiresAt = new Date(Date.now() + 15 * 60 * 1000);
+  const reserveExpiresAt = new Date(Date.now() + RESERVATION_EXPIRATION_PROVIDER);
   const paymentId = randomUUID();
 
-  logger.info(
-    `Creating checkout: paymentId=${paymentId}, userId=${userId}, subtotalCents=${subtotalCents}`,
-  );
+  // 1. DB primero: reserva atómica de TODO el checkout
+  await paymentsRepo.createCheckoutReservation({
+    paymentId,
+    userId,
+    provider: providerName,
+    subtotalCents,
+    totalCents: subtotalCents,
+    reserveExpiresAt,
+    items: checkoutItems,
+    generateTicketCode,
+  });
+
+  // 2. Provider después: si esto falla, los tickets ya reservados
+  //    simplemente expirarán solos vía sweep — no hace falta rollback manual
+  const provider = getProvider(providerName);
 
   const checkoutResult = await provider.createCheckout({
     externalReference: paymentId,
@@ -98,33 +127,6 @@ export async function createCheckout(
     backUrl,
     expiresAt: reserveExpiresAt.toISOString(),
   });
-
-  logger.info(
-    `Checkout created: paymentId=${paymentId}, checkoutUrl=${checkoutResult.checkoutUrl}`,
-  );
-
-  await paymentsRepo.createPaymentRow({
-    paymentId,
-    userId,
-    subtotalCents,
-    totalCents: subtotalCents,
-    provider: providerName,
-  });
-
-  for (const item of checkoutItems) {
-    await paymentsRepo.createCheckoutTransaction({
-      ticketTypeId: item.ticketTypeId,
-      userId,
-      quantity: item.quantity,
-      unitPriceCents: item.unitPriceCents,
-      paymentId,
-      subtotalCents,
-      totalCents: subtotalCents,
-      provider: providerName,
-      reserveExpiresAt,
-      generateTicketCode,
-    });
-  }
 
   logger.info(`Checkout processed: paymentId=${paymentId}`);
 
@@ -144,9 +146,7 @@ export async function processWebhook(
   const provider = getProvider(providerName);
 
   if (!provider.verifySignature(payload, headers)) {
-    logger.warn(
-      `Invalid webhook signature: payload=${JSON.stringify(payload)}`,
-    );
+    logger.warn(`Invalid webhook signature: payload=${JSON.stringify(payload)}`);
 
     throw Object.assign(new Error('Invalid webhook signature'), {
       statusCode: 400,
@@ -155,22 +155,65 @@ export async function processWebhook(
   }
 
   const event = await provider.parseWebhook(payload);
-
   const payment = await paymentsRepo.findByReference(event.reference);
+
   if (!payment) {
     logger.warn(`Payment not found: reference=${event.reference}`);
     throw new NotFoundError('Payment not found');
   }
 
-  if (payment.status !== 'pending') {
-    logger.info(`Payment not pending: status=${payment.status}`);
+  // Estados terminales: ya se procesó antes (reintento normal de proveedor) o quedó cerrado por otra vía.
+  if (payment.status === 'completed') {
+    logger.info(`Payment already completed: paymentId=${payment.id}`);
     return { received: true };
   }
 
+  if (payment.status === 'failed' || payment.status === 'completed_unfulfillable') {
+    if (event.status === 'approved') {
+      // Dinero real llegando tarde sobre algo que ya cerramos: requiere revisión manual.
+      logger.warn(
+        `Late approval on closed payment: paymentId=${payment.id}, currentStatus=${payment.status}, externalId=${event.externalId}`,
+      );
+    }
+
+    return { received: true };
+  }
+
+  // Rama de reclamo: el pago fue barrido a expired antes de que llegara el webhook.
+  if (payment.status === 'expired') {
+    if (event.status !== 'approved') {
+      logger.info(`Declined/other event on expired payment: paymentId=${payment.id}`);
+      return { received: true };
+    }
+
+    const result = await paymentsRepo.reclaimExpiredPayment({
+      paymentId: payment.id,
+      providerTxId: event.externalId,
+      metadata: event.rawPayload as any,
+    });
+
+    if (result.outcome === 'reclaimed') {
+      logger.info(`Reclaimed expired payment: paymentId=${payment.id}, tickets=${result.ticketIds.length}`);
+
+      for (const ticketId of result.ticketIds) {
+        await ticketsService.generateQrForTicket(ticketId);
+      }
+
+      // TODO: notificar al usuario que su pago sí se procesó
+    } else if (result.outcome === 'unfulfillable') {
+      await paymentsRepo.markUnfulfillable(payment.id, event.externalId, event.rawPayload as any);
+      logger.warn(`Payment unfulfillable (sold out on reclaim): paymentId=${payment.id}`);
+      // TODO: notificar a admin (cola de reembolso) y al usuario
+    } else {
+      logger.info(`Reclaim already processed by concurrent webhook: paymentId=${payment.id}`);
+    }
+
+    return { received: true };
+  }
+
+  // Flujo normal: payment sigue pending.
   if (event.status === 'approved') {
-    logger.info(
-      `Approved payment: paymentId=${payment.id}, externalId=${event.externalId}`,
-    );
+    logger.info(`Approved payment: paymentId=${payment.id}, externalId=${event.externalId}`);
 
     const result = await paymentsRepo.processPaymentWebhook({
       paymentId: payment.id,
@@ -179,9 +222,7 @@ export async function processWebhook(
     });
 
     if (result.processed) {
-      const paymentWithTickets = await paymentsRepo.findByIdWithTickets(
-        payment.id,
-      );
+      const paymentWithTickets = await paymentsRepo.findByIdWithTickets(payment.id);
 
       if (paymentWithTickets) {
         for (const ticket of paymentWithTickets.tickets) {
@@ -189,14 +230,10 @@ export async function processWebhook(
         }
       }
 
-      logger.info(
-        `Processed payment: paymentId=${payment.id}, externalId=${event.externalId}`,
-      );
+      logger.info(`Processed payment: paymentId=${payment.id}, externalId=${event.externalId}`);
     }
   } else if (event.status === 'declined') {
-    logger.info(
-      `Declined payment: paymentId=${payment.id}, externalId=${event.externalId}`,
-    );
+    logger.info(`Declined payment: paymentId=${payment.id}, externalId=${event.externalId}`);
     await paymentsRepo.update(payment.id, { status: 'failed' });
   }
 
@@ -314,7 +351,11 @@ export async function createAdminPayment(input: {
   );
 
   let subtotalCents = 0;
-  const ticketsWithPrice: Array<{ ticketTypeId: string; quantity: number; unitPriceCents: number }> = [];
+  const ticketsWithPrice: Array<{
+    ticketTypeId: string;
+    quantity: number;
+    unitPriceCents: number;
+  }> = [];
 
   for (const item of input.tickets) {
     const ticketType = await ticketsService.getTicketTypeById(

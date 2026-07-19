@@ -24,10 +24,12 @@ enum TicketStatus {
 }
 
 enum PaymentStatus {
-  pending
-  completed
-  failed
-  refunded
+  pending                 // en proceso
+  completed               // éxito normal o recuperado
+  failed                  // fallo del proveedor de pago
+  refunded                // reembolso por parte de admin
+  expired                 // webhook del provvedor no notifica en N minutos
+  completed_unfulfillable // webhook notifica tarde y ya no hay entradas disponibles, pendiente de reembolso
 }
 
 enum DiscountType {
