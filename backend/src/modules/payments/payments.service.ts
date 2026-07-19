@@ -7,7 +7,7 @@ import * as paymentsRepo from './payments.repository.js';
 import { getProvider } from './providers/provider.registry.js';
 
 import { logger } from '../../utils/logger.js';
-import { RESERVATION_EXPIRATION_PROVIDER } from '../../shared/config/constants.js';
+import { RESERVATION_EXPIRATION_INTERNAL_MILLIS , RESERVATION_EXPIRATION_PROVIDER_MILLIS } from '../../shared/config/constants.js';
 
 function generateTicketCode(): string {
   return randomBytes(16).toString('hex');
@@ -102,7 +102,8 @@ export async function createCheckout(
     });
   }
 
-  const reserveExpiresAt = new Date(Date.now() + RESERVATION_EXPIRATION_PROVIDER);
+  const reserveProviderExpiresAt = new Date(Date.now() + RESERVATION_EXPIRATION_PROVIDER_MILLIS);
+  const reserveExpiresAt = new Date(Date.now() + RESERVATION_EXPIRATION_INTERNAL_MILLIS );
   const paymentId = randomUUID();
 
   // 1. DB primero: reserva atómica de TODO el checkout
@@ -125,7 +126,7 @@ export async function createCheckout(
     externalReference: paymentId,
     items: checkoutItems,
     backUrl,
-    expiresAt: reserveExpiresAt.toISOString(),
+    expiresAt: reserveProviderExpiresAt.toISOString(),
   });
 
   logger.info(`Checkout processed: paymentId=${paymentId}`);

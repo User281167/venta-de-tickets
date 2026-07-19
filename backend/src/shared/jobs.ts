@@ -1,6 +1,6 @@
 import { sweepExpiredReservations } from "../modules/payments/payments.repository.js";
 import { logger } from "../utils/logger.js";
-import { RESERVATION_EXPIRATION_CRON_MS } from "./config/constants.js";
+import { SWEEP_INTERVAL_MILLIS  } from "./config/constants.js";
 
 let isRunning = false;
 let timer: NodeJS.Timeout | null = null;
@@ -29,8 +29,8 @@ async function runSweep() {
 
 export function startSweepJob() {
   if (timer) return; // evita doble-start si se llama dos veces
-  timer = setInterval(runSweep, RESERVATION_EXPIRATION_CRON_MS);
-  logger.info(`Sweep job started: intervalMs=${RESERVATION_EXPIRATION_CRON_MS}`);
+  timer = setInterval(runSweep, SWEEP_INTERVAL_MILLIS );
+  logger.info(`Sweep job started: intervalMs=${SWEEP_INTERVAL_MILLIS }`);
 }
 
 export function stopSweepJob() {
