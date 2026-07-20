@@ -57,8 +57,9 @@ The `checked_in_at` timestamp on `tickets` + `checker_id` (the admin who process
 // Conceptual shape — captured via existing fields
 type CheckInRecord = {
   ticketId: string;
-  eventName: string;
+  ticketTypeName: string;
   attendeeName: string;
+  attendeeCedula: string | null;
   checkedInAt: Date;
   processedBy: string; // checker admin ID
 };

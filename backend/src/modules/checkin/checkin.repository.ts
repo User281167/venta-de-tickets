@@ -36,48 +36,11 @@ export async function findTicketForScan(
     ticketId: ticket.id,
     status: ticket.status,
     attendeeName: ticket.user.fullName,
-    attendeeCedula: ticket.user.cedula || '',
-    ticketName: ticket.ticketType.name,
+    attendeeCedula: ticket.user.cedula,
+    ticketTypeName: ticket.ticketType.name,
     checkedInAt: ticket.checkedInAt ? ticket.checkedInAt.toISOString() : null,
     allowedActions: [],
   };
-}
-
-export async function findTicketForScanTx(
-  tx: Prisma.TransactionClient,
-  ticketId: string,
-): Promise<{
-  id: string;
-  status: TicketStatus;
-  userId: string;
-  user: { fullName: string; email: string | null; phone: string | null };
-  ticketType: { name: string };
-} | null> {
-  const rows = await tx.$queryRaw<Array<{ id: string; status: TicketStatus }>>`
-    SELECT id, status
-    FROM tickets
-    WHERE id = ${ticketId}::uuid
-    FOR UPDATE
-  `;
-
-  if (rows.length === 0) {
-    return null;
-  }
-
-  return tx.ticket.findUnique({
-    where: { id: ticketId },
-    select: {
-      id: true,
-      status: true,
-      userId: true,
-      user: {
-        select: { fullName: true, cedula: true, email: true, phone: true },
-      },
-      ticketType: {
-        select: { name: true },
-      },
-    },
-  });
 }
 
 async function transitionStatus(
@@ -115,12 +78,52 @@ export async function confirmEntryDirect(
 
 export async function requestConfirmation(
   ticketId: string,
-  _checkerId: string,
-): Promise<boolean> {
+): Promise<
+  | {
+      ok: true;
+      buyer: { fullName: string; email: string | null; phone: string | null };
+    }
+  | { ok: false; reason: 'not_found' | 'not_available' }
+> {
   return prisma.$transaction(async (tx) => {
-    return transitionStatus(tx, ticketId, 'paid', 'pending_confirmation', {
-      confirmationRequestedAt: new Date(),
+    const rows = await tx.$queryRaw<Array<{ id: string }>>`
+      SELECT id FROM tickets WHERE id = ${ticketId}::uuid FOR UPDATE
+    `;
+
+    if (rows.length === 0) {
+      return { ok: false, reason: 'not_found' as const };
+    }
+
+    const ticket = await tx.ticket.findUnique({
+      where: { id: ticketId },
+      select: {
+        status: true,
+        user: {
+          select: { fullName: true, email: true, phone: true },
+        },
+      },
     });
+
+    if (!ticket) {
+      return { ok: false, reason: 'not_found' as const };
+    }
+
+    if (ticket.status !== 'paid') {
+      return { ok: false, reason: 'not_available' as const };
+    }
+
+    await tx.ticket.update({
+      where: { id: ticketId },
+      data: {
+        status: 'pending_confirmation',
+        confirmationRequestedAt: new Date(),
+      },
+    });
+
+    return {
+      ok: true as const,
+      buyer: ticket.user,
+    };
   });
 }
 

@@ -87,7 +87,7 @@ A buyer clicks the confirmation link after 30 minutes. The system informs them t
 
 ### Functional Requirements
 
-- **FR-001**: Checkers must be able to scan a QR code on a ticket and see its current status, event name, attendee name, and any actions they can take
+- **FR-001**: Checkers must be able to scan a QR code on a ticket and see its current status, ticket type name, attendee name, attendee cedula (for ID verification at the door), and any actions they can take
 - **FR-002**: The system must allow checkers to confirm entry directly when the ticket buyer is present and the ticket is in `paid` status
 - **FR-003**: The system must allow checkers to request remote confirmation when the ticket buyer is not present and the ticket is in `paid` status
 - **FR-004**: When a checker requests remote confirmation, the system must send a notification to the buyer with a secure link to confirm or reject

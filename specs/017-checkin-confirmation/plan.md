@@ -71,8 +71,12 @@ src/modules/checkin/
 ├── checkin.service.ts
 ├── checkin.repository.ts
 ├── checkin.validators.ts
-├── checkin.types.ts
-└── messaging.client.ts          # Light interface for messaging (module doesn't exist yet)
+└── checkin.types.ts
+
+src/modules/messaging/
+├── messaging.client.ts          # Console stub — interface owned by this module
+├── messaging.types.ts
+└── index.ts                     # Re-exports the public client + types
 
 src/modules/confirmations/
 ├── confirmations.routes.ts

@@ -43,8 +43,13 @@ paths:
                     enum: [paid, pending_confirmation, confirmed, used, reserved, cancelled, expired]
                   attendeeName:
                     type: string
-                  eventName:
+                  attendeeCedula:
                     type: string
+                    nullable: true
+                    description: ID number of the attendee (cedula). Used for human verification at the door.
+                  ticketTypeName:
+                    type: string
+                    description: Name of the ticket type purchased (e.g. "General", "VIP"). The schema has no separate events table; this field is the closest equivalent to an event label.
                   checkedInAt:
                     type: string
                     format: date-time

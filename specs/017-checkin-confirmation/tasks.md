@@ -38,8 +38,8 @@
 
 - [x] T005 [US1] Create `src/modules/checkin/checkin.repository.ts` with: `findTicketForScan(ticketId)` (no lock), `confirmEntryDirect(ticketId, checkerId)`, `requestConfirmation(ticketId, checkerId)`, `allowEntry(ticketId, checkerId)`, `confirmTicket(ticketId)`, `rejectConfirmation(ticketId)` — fix the bug where `rejectConfirmation` doesn't distinguish success from error (return boolean or affected count)
 - [x] T006 [US1] Create `src/modules/checkin/checkin.service.ts` with `scanTicket(qrToken)` (decode JWT via `QR_JWT_SECRET`, call `findTicketForScan`, compute `allowedActions` via `getAllowedActions`) and `confirmEntryDirect(ticketId, checkerId)` (transition `paid → used`, map affected-rows-zero to `TICKET_NOT_AVAILABLE`)
-- [ ] T007 [US1] Create `src/modules/checkin/checkin.controller.ts` with Express handlers for `POST /scan` and `POST /confirm-entry` — validate body with Zod, call service, map errors to status codes
-- [ ] T008 [US1] Create `src/modules/checkin/checkin.routes.ts` — `Router()` mounting controller handlers, apply `requireRole('checker', 'admin')` middleware
+- [x] T007 [US1] Create `src/modules/checkin/checkin.controller.ts` with Express handlers for `POST /scan` and `POST /confirm-entry` — validate body with Zod, call service, map errors to status codes
+- [x] T008 [US1] Create `src/modules/checkin/checkin.routes.ts` — `Router()` mounting controller handlers, apply `requireRole('checker', 'admin')` middleware
 
 **Checkpoint**: Direct entry flow functional — checker can scan, see ticket info, and confirm entry. MVP deliverable.
 
@@ -53,8 +53,8 @@
 
 ### Implementation for User Story 2
 
-- [ ] T009 [US2] Create `src/modules/checkin/messaging.client.ts` — thin interface `sendConfirmationLink(params): Promise<void>` (stub logs to console until messaging module is built; interface matches `ConfirmationLinkPayload` from research.md)
-- [ ] T010 [US2] Complete `src/modules/checkin/checkin.service.ts`: add `requestConfirmation(ticketId, checkerId)` (transition `paid → pending_confirmation`, generate confirmation JWT signed with `CONFIRMATION_JWT_SECRET`, build confirmation link, call `messaging.client.sendConfirmationLink`, log only `ticketId` — never log the JWT) and `allowEntry(ticketId, checkerId)` (transition `confirmed → used`)
+- [x] T009 [US2] Create `src/modules/messaging/` module — `messaging.types.ts` (`MessagingClient` interface, `ConfirmationLinkPayload`, `MessagingChannel`), `messaging.client.ts` (`ConsoleMessagingClient` stub), `index.ts` re-export. checkin imports via `../messaging/index.js`
+- [x] T010 [US2] Complete `src/modules/checkin/checkin.service.ts`: add `requestConfirmation(ticketId, checkerId)` (transition `paid → pending_confirmation`, generate confirmation JWT signed with `CONFIRMATION_JWT_SECRET`, build confirmation link, call `messaging.client.sendConfirmationLink`, log only `ticketId` — never log the JWT) and `allowEntry(ticketId, checkerId)` (transition `confirmed → used`)
 - [ ] T011 [US2] Create `src/modules/confirmations/confirmations.middleware.ts` — verifies `CONFIRMATION_JWT_SECRET`, checks `purpose: 'confirm'`, attaches decoded `ticketId` to `req`, distinguishes `TokenExpiredError` vs `JsonWebTokenError`
 - [ ] T012 [US2] Create `src/modules/confirmations/confirmations.types.ts` (response types, error codes)
 - [ ] T013 [US2] Create `src/modules/confirmations/confirmations.validators.ts` — Zod schemas for confirm and reject (token required, non-empty string)

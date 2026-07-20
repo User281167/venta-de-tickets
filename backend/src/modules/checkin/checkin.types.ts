@@ -14,8 +14,8 @@ export interface TicketSummary {
   ticketId: string;
   status: TicketStatus;
   attendeeName: string;
-  attendeeCedula: string;
-  ticketName: string;
+  attendeeCedula: string | null;
+  ticketTypeName: string;
   checkedInAt: string | null;
   allowedActions: CheckerAction[];
 }
