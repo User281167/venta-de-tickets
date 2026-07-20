@@ -69,7 +69,7 @@ export function findByIdWithTickets(id: string) {
   });
 }
 
-// Sweep: función interna, recibe tx, reutilizable dentro de otras transacciones ──
+// Sweep: función interna, recibe tx, reutilizable dentro de otras transacciones
 async function sweepExpiredReservationsInternal(
   tx: Prisma.TransactionClient,
 ): Promise<{ ticketsExpired: number; paymentsExpired: number }> {
@@ -119,12 +119,118 @@ async function sweepExpiredReservationsInternal(
   return { ticketsExpired: expiredTickets.length, paymentsExpired };
 }
 
-// Wrapper público: abre su propia transacción, usado por el cron ──
+// Wrapper público: abre su propia transacción, usado por el cron
 export function sweepExpiredReservations() {
   return prisma.$transaction((tx) => sweepExpiredReservationsInternal(tx));
 }
 
-// Checkout: reutiliza la función interna dentro de SU PROPIA transacción ──
+// Checkout: reutiliza la función interna dentro de SU PROPIA transacción
+// 1. Valida un item y descuenta stock (no inserta tickets todavía)
+async function validateAndReserveStock(
+  tx: Prisma.TransactionClient,
+  userId: string,
+  item: { ticketTypeId: string; quantity: number },
+): Promise<void> {
+  const rows = await tx.$queryRaw<
+    Array<{
+      quantity_sold: number;
+      quantity_total: number;
+      status: string;
+      max_per_user: number | null;
+    }>
+  >`
+    SELECT quantity_sold, quantity_total, status, max_per_user
+    FROM ticket_types
+    WHERE id = ${item.ticketTypeId}::uuid
+    FOR UPDATE
+  `;
+
+  const ticketType = rows[0];
+  if (!ticketType) {
+    throw Object.assign(new Error('TICKET_TYPE_NOT_FOUND'), {
+      statusCode: 404,
+    });
+  }
+
+  if (ticketType.status !== 'enabled') {
+    throw Object.assign(new Error('TICKET_TYPE_NOT_AVAILABLE'), {
+      statusCode: 400,
+    });
+  }
+
+  if (ticketType.quantity_sold + item.quantity > ticketType.quantity_total) {
+    throw Object.assign(new Error('SOLD_OUT'), { statusCode: 409 });
+  }
+
+  if (ticketType.max_per_user !== null) {
+    const existingRows = await tx.$queryRaw<Array<{ count: bigint }>>`
+      SELECT count(*)::bigint AS count
+      FROM tickets
+      WHERE user_id = ${userId}::uuid
+        AND ticket_type_id = ${item.ticketTypeId}::uuid
+        AND status NOT IN ('expired', 'cancelled')
+    `;
+
+    const alreadyHeld = Number(existingRows[0].count);
+
+    if (alreadyHeld + item.quantity > ticketType.max_per_user) {
+      throw Object.assign(new Error('MAX_PER_USER_EXCEEDED'), {
+        statusCode: 422,
+        code: 'MAX_PER_USER_EXCEEDED',
+        details: {
+          alreadyHeld,
+          requested: item.quantity,
+          maxPerUser: ticketType.max_per_user,
+        },
+      });
+    }
+  }
+
+  await tx.$executeRaw`
+    UPDATE ticket_types
+    SET quantity_sold = quantity_sold + ${item.quantity}
+    WHERE id = ${item.ticketTypeId}::uuid
+  `;
+}
+
+// 2. Crea el payment row
+async function insertPaymentRow(
+  tx: Prisma.TransactionClient,
+  input: {
+    paymentId: string;
+    userId: string;
+    provider: string;
+    subtotalCents: number;
+    totalCents: number;
+  },
+): Promise<void> {
+  await tx.$executeRaw`
+    INSERT INTO payments (id, user_id, status, subtotal_cents, discount_cents, total_cents, provider, created_at, updated_at)
+    VALUES (${input.paymentId}::uuid, ${input.userId}::uuid, 'pending', ${input.subtotalCents}, 0, ${input.totalCents}, ${input.provider}, now(), now())
+  `;
+}
+
+// 3. Inserta los tickets ya validados
+async function insertReservedTickets(
+  tx: Prisma.TransactionClient,
+  input: {
+    paymentId: string;
+    userId: string;
+    reserveExpiresAt: Date;
+    item: { ticketTypeId: string; quantity: number; unitPriceCents: number };
+    generateTicketCode: () => string;
+  },
+): Promise<void> {
+  for (let i = 0; i < input.item.quantity; i++) {
+    const ticketCode = input.generateTicketCode();
+
+    await tx.$executeRaw`
+      INSERT INTO tickets (id, ticket_type_id, user_id, status, reserve_expires_at, ticket_code, payment_id, unit_price_cents)
+      VALUES (gen_random_uuid(), ${input.item.ticketTypeId}::uuid, ${input.userId}::uuid, 'reserved', ${input.reserveExpiresAt}, ${ticketCode}, ${input.paymentId}::uuid, ${input.item.unitPriceCents})
+    `;
+  }
+}
+
 export async function createCheckoutReservation(input: {
   paymentId: string;
   userId: string;
@@ -140,66 +246,32 @@ export async function createCheckoutReservation(input: {
   generateTicketCode: () => string;
 }) {
   return prisma.$transaction(async (tx) => {
-    // 1. sweep global, reutilizando la misma tx
+    // 1. sweep global
     await sweepExpiredReservationsInternal(tx);
 
-    // 2. crear el payment row
-    await tx.$executeRaw`
-      INSERT INTO payments (id, user_id, status, subtotal_cents, discount_cents, total_cents, provider, created_at, updated_at)
-      VALUES (${input.paymentId}::uuid, ${input.userId}::uuid, 'pending', ${input.subtotalCents}, 0, ${input.totalCents}, ${input.provider}, now(), now())
-    `;
-
-    // 3. validar y reservar cada item, todo dentro de la MISMA transacción
+    // 2. validar TODOS los items y descontar stock (falla rápido si algo no cumple)
     for (const item of input.items) {
-      const rows = (await tx.$queryRaw`
-        SELECT quantity_sold, quantity_total, status, max_per_user
-        FROM ticket_types
-        WHERE id = ${item.ticketTypeId}::uuid
-        FOR UPDATE
-      `) as Array<{
-        quantity_sold: number;
-        quantity_total: number;
-        status: string;
-        maxPerUser: number;
-      }>;
+      await validateAndReserveStock(tx, input.userId, item);
+    }
 
-      const ticketType = rows[0];
-      if (!ticketType) {
-        throw Object.assign(new Error('TICKET_TYPE_NOT_FOUND'), {
-          statusCode: 404,
-        });
-      }
-      if (ticketType.status !== 'enabled') {
-        throw Object.assign(new Error('TICKET_TYPE_NOT_AVAILABLE'), {
-          statusCode: 400,
-        });
-      }
-      if (
-        ticketType.quantity_sold + item.quantity >
-        ticketType.quantity_total
-      ) {
-        throw Object.assign(new Error('SOLD_OUT'), { statusCode: 409 });
-      }
-      if (ticketType.maxPerUser && item.quantity > ticketType.maxPerUser) {
-        throw Object.assign(new Error('MAX_PER_USER_EXCEEDED'), {
-          statusCode: 409,
-        });
-      }
+    // 3. solo si todas las validaciones pasaron, crear el payment
+    await insertPaymentRow(tx, {
+      paymentId: input.paymentId,
+      userId: input.userId,
+      provider: input.provider,
+      subtotalCents: input.subtotalCents,
+      totalCents: input.totalCents,
+    });
 
-      await tx.$executeRaw`
-        UPDATE ticket_types
-        SET quantity_sold = quantity_sold + ${item.quantity}
-        WHERE id = ${item.ticketTypeId}::uuid
-      `;
-
-      for (let i = 0; i < item.quantity; i++) {
-        const ticketCode = input.generateTicketCode();
-
-        await tx.$executeRaw`
-          INSERT INTO tickets (id, ticket_type_id, user_id, status, reserve_expires_at, ticket_code, payment_id, unit_price_cents)
-          VALUES (gen_random_uuid(), ${item.ticketTypeId}::uuid, ${input.userId}::uuid, 'reserved', ${input.reserveExpiresAt}, ${ticketCode}, ${input.paymentId}::uuid, ${item.unitPriceCents})
-        `;
-      }
+    // 4. insertar los tickets de cada item
+    for (const item of input.items) {
+      await insertReservedTickets(tx, {
+        paymentId: input.paymentId,
+        userId: input.userId,
+        reserveExpiresAt: input.reserveExpiresAt,
+        item,
+        generateTicketCode: input.generateTicketCode,
+      });
     }
 
     return { paymentId: input.paymentId };
@@ -617,7 +689,7 @@ export async function refundTransaction(input: {
       });
     }
 
-    if (payment.status !== 'completed') {
+    if (!['completed', 'completed_unfulfillable'].includes(payment.status)) {
       throw Object.assign(new Error('INVALID_PAYMENT_STATUS'), {
         statusCode: 409,
         code: 'INVALID_PAYMENT_STATUS',
@@ -628,16 +700,17 @@ export async function refundTransaction(input: {
       Array<{ id: string; ticket_type_id: string; status: string }>
     >`SELECT id, ticket_type_id, status FROM tickets WHERE payment_id = ${input.paymentId}::uuid`;
 
-    // No revertir stock de tickets que ya fueron usados (ya cumplieron su propósito de entrada)
-    const reclaimable = tickets.filter((t) => t.status !== 'used');
+    // Solo revertir stock de tickets cuyo cupo sigue contabilizado hoy
+    // (paid/confirmed/pending_confirmation). Los 'expired' ya fueron
+    // revertidos por el sweep; los 'used' no se revierten (ya ingresaron).
+    const stockToRevert = tickets.filter((t) =>
+      ['paid', 'confirmed', 'pending_confirmation'].includes(t.status),
+    );
 
-    if (reclaimable.length > 0) {
+    if (stockToRevert.length > 0) {
       const typeCounts = new Map<string, number>();
-      for (const t of reclaimable) {
-        typeCounts.set(
-          t.ticket_type_id,
-          (typeCounts.get(t.ticket_type_id) ?? 0) + 1,
-        );
+      for (const t of stockToRevert) {
+        typeCounts.set(t.ticket_type_id, (typeCounts.get(t.ticket_type_id) ?? 0) + 1);
       }
 
       for (const [typeId, count] of typeCounts) {
@@ -649,10 +722,13 @@ export async function refundTransaction(input: {
       }
     }
 
+    // Marcar como cancelled todo lo que no esté ya 'used' ni 'expired'
+    // (los 'expired' se quedan expired, ya son su propio registro terminal correcto)
     await tx.$executeRaw`
       UPDATE tickets
       SET status = 'cancelled', cancelled_at = now()
       WHERE payment_id = ${input.paymentId}::uuid
+        AND status NOT IN ('used', 'expired', 'cancelled')
     `;
 
     await tx.$executeRaw`

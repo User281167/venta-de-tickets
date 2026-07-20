@@ -107,10 +107,8 @@ export class MercadoPagoProvider implements PaymentProvider {
       );
     }
 
-
     const paymentClient = new Payment(this.client);
     const mpPayment = await paymentClient.get({ id: body.data.id });
-
     const status = this.normalizeStatus(mpPayment.status ?? '');
 
     logger.info(
