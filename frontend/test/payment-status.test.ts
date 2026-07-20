@@ -6,7 +6,7 @@ import {
   STATUS_FILTER_OPTIONS,
   PAYMENT_STATUS_VALUES,
   type PaymentStatus,
-} from "./payment-status";
+} from "@/shared/utils/payment-status";
 
 describe("canRefund", () => {
   it("returns true for completed", () => {

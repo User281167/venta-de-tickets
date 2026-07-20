@@ -21,7 +21,7 @@ import { PaymentDetail } from "./PaymentDetail";
 import { formatCurrency, formatDate } from "@/shared/utils/formats";
 import { PAYMENT_STATUS_LABELS, STATUS_COLORS } from "@/shared/utils/constants";
 
-function ProviderIcon({ provider }: { provider: string }) {
+function ProviderIcon() {
   return (
     <Flex
       w={10}
@@ -82,7 +82,7 @@ export function PaymentRow({ payment }: { payment: PaymentItem }) {
               >
                 <Stack gap={3}>
                   <HStack gap={4}>
-                    <ProviderIcon provider={payment.provider} />
+                    <ProviderIcon />
 
                     <Stack gap={0}>
                       <Text color="white" fontWeight="bold" fontSize="lg">

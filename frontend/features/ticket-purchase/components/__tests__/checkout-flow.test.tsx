@@ -135,18 +135,18 @@ describe("Checkout flow", () => {
   });
 
   it("shows error message and retry button when mutation fails", async () => {
+    const { CheckoutError } = await import("../../api/checkout.api");
     mockMutationState = {
       isError: true,
-      error: new Error("Error de conexión"),
+      error: new CheckoutError("INTERNAL_ERROR", "Error de conexión"),
     };
 
     store["cart-current-event"] = JSON.stringify(CART_ITEMS);
 
     render(<CheckoutPageClient />, { wrapper: Wrapper });
 
-    await screen.findByTestId("error-section");
-    expect(screen.getByText("Error de conexión")).toBeInTheDocument();
-    expect(screen.getByTestId("retry-button")).toBeInTheDocument();
+    expect(await screen.findByText("Error de conexión")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Reintentar" })).toBeInTheDocument();
     expect(screen.queryByTestId("pagar-mp-button")).not.toBeInTheDocument();
   });
 });

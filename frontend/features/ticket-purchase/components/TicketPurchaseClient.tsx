@@ -1,10 +1,9 @@
 "use client";
 
-import { Box, Container, Heading, Spinner, Center, Text, VStack } from "@chakra-ui/react";
+import { Box, Heading, Spinner, Center, Text, VStack, Grid, GridItem } from "@chakra-ui/react";
 import { useActiveTicketTypes } from "../api/ticket-purchase.queries";
 import { TicketTypeGrid } from "./TicketTypeGrid";
 import { OrderSummary } from "./OrderSummary";
-import { Grid, GridItem } from "@chakra-ui/react";
 
 export function TicketPurchaseClient() {
   const { data: ticketTypes, isLoading, error } = useActiveTicketTypes();
