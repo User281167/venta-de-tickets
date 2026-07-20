@@ -36,6 +36,32 @@ const payments: PaymentListRow[] = [
     user: { id: "u2", email: "luis@test.com", fullName: "Luis Gómez" },
     ticketCount: 1,
   },
+  {
+    id: "p3",
+    subtotalCents: 100000,
+    discountCents: 0,
+    totalCents: 100000,
+    status: "completed_unfulfillable",
+    provider: "mercadopago",
+    providerTxId: "mp999",
+    createdAt: "2026-05-10T00:00:00Z",
+    updatedAt: "2026-05-10T00:00:00Z",
+    user: { id: "u3", email: "sofia@test.com", fullName: "Sofía Ruiz" },
+    ticketCount: 0,
+  },
+  {
+    id: "p4",
+    subtotalCents: 80000,
+    discountCents: 0,
+    totalCents: 80000,
+    status: "expired",
+    provider: "mercadopago",
+    providerTxId: null,
+    createdAt: "2026-05-05T00:00:00Z",
+    updatedAt: "2026-05-05T00:00:00Z",
+    user: { id: "u4", email: "tom@test.com", fullName: "Tomás Vega" },
+    ticketCount: 0,
+  },
 ];
 
 function renderTable() {
@@ -65,5 +91,11 @@ describe("PaymentsTable", () => {
     renderTable();
     expect(screen.getByText("2")).toBeInTheDocument();
     expect(screen.getByText("1")).toBeInTheDocument();
+  });
+
+  it("renders labels for new statuses", () => {
+    renderTable();
+    expect(screen.getByText("Pago sin entradas")).toBeInTheDocument();
+    expect(screen.getByText("Expirado")).toBeInTheDocument();
   });
 });

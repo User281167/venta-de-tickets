@@ -18,17 +18,8 @@ import {
 } from "@tabler/icons-react";
 import type { PaymentItem } from "../types/payment.types";
 import { PaymentDetail } from "./PaymentDetail";
-import { formatCurrency } from "@/shared/utils/formats";
-import { PAYMENT_STATUS_LABELS } from "@/shared/utils/constants";
-
-const STATUS_BG: Record<string, string> = {
-  pending: "#eab308",
-  completed: "#22c55e",
-  failed: "#ef4444",
-  refunded: "#6b7280",
-};
-
-const STATUS_LABELS = PAYMENT_STATUS_LABELS;
+import { formatCurrency, formatDate } from "@/shared/utils/formats";
+import { PAYMENT_STATUS_LABELS, STATUS_COLORS } from "@/shared/utils/constants";
 
 function ProviderIcon({ provider }: { provider: string }) {
   return (
@@ -48,8 +39,8 @@ function ProviderIcon({ provider }: { provider: string }) {
 
 export function PaymentRow({ payment }: { payment: PaymentItem }) {
   const reduced = useReducedMotion();
-  const color = STATUS_BG[payment.status] ?? "#6b7280";
-  const statusLabel = STATUS_LABELS[payment.status] ?? payment.status;
+  const color = STATUS_COLORS[payment.status] ?? "#6b7280";
+  const statusLabel = PAYMENT_STATUS_LABELS[payment.status] ?? payment.status;
   const providerLabel =
     payment.provider === "mercadopago" ? "Mercado Pago" : payment.provider;
 
@@ -92,29 +83,32 @@ export function PaymentRow({ payment }: { payment: PaymentItem }) {
                 <Stack gap={3}>
                   <HStack gap={4}>
                     <ProviderIcon provider={payment.provider} />
+
                     <Stack gap={0}>
                       <Text color="white" fontWeight="bold" fontSize="lg">
                         {providerLabel}
                       </Text>
+
                       <HStack gap={2} color="brand.muted" fontSize="sm">
                         <IconCalendar size={14} />
+
                         <Text>
-                          {new Date(payment.createdAt).toLocaleDateString("es-CO", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })}
+                          {formatDate(payment.createdAt)}
                         </Text>
                       </HStack>
                     </Stack>
                   </HStack>
                 </Stack>
 
-                <HStack gap={4} justify={{ base: "space-between", md: "flex-end" }}>
+                <HStack
+                  gap={4}
+                  justify={{ base: "space-between", md: "flex-end" }}
+                >
                   <Box textAlign={{ base: "left", md: "right" }}>
                     <Text fontSize="xs" color="brand.muted">
                       Total
                     </Text>
+
                     <Text color="white" fontWeight="black" fontSize="xl">
                       {formatCurrency(payment.totalCents)}
                     </Text>
@@ -140,9 +134,12 @@ export function PaymentRow({ payment }: { payment: PaymentItem }) {
 
               <HStack gap={2} mt={4} color="brand.muted" fontSize="sm">
                 <IconTicket size={16} color="#ff0f7b" />
+
                 <Text>
                   {payment.tickets.length}{" "}
-                  {payment.tickets.length === 1 ? "entrada asociada" : "entradas asociadas"}
+                  {payment.tickets.length === 1
+                    ? "entrada asociada"
+                    : "entradas asociadas"}
                 </Text>
               </HStack>
             </Box>

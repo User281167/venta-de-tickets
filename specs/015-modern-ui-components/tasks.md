@@ -101,11 +101,27 @@
 
 ### Implementation for User Story 4
 
-- [ ] T024 [P] [US4] Enrich `backend/src/modules/payments/payments.service.ts` so `USER_INFO_INCOMPLETE` throws with `data.missingFields` listing which fields are empty (`cedula`, `fullName`); extend `ValidationError` in `backend/src/shared/errors/ValidationError.ts` to carry optional `data`
-- [ ] T025 [P] [US4] Add `USER_INFO_INCOMPLETE` handling and `missingFields` extraction in `frontend/features/ticket-purchase/api/checkout.api.ts`; extend `CheckoutError` class to carry `missingFields`
-- [ ] T026 [P] [US4] Create `frontend/features/ticket-purchase/components/UserIncompleteDialog.tsx`: Chakra dialog with icon, list of missing fields, primary CTA "Completar perfil" → `/mi-cuenta/perfil`, secondary "Seguir editando"
-- [ ] T027 [P] [US4] Create `frontend/features/ticket-purchase/components/CheckoutErrorDialog.tsx`: generic dialog rendering title, message and CTA based on error code (`SOLD_OUT` / `MAX_PER_USER_EXCEEDED` / `INTERNAL_ERROR` / `UNAUTHORIZED`) with retry action
-- [ ] T028 [US4] Update `frontend/features/ticket-purchase/components/CheckoutPageClient.tsx`: query `useMe()` on mount, compute `missingFields`, disable "Pagar" with helper text when incomplete, replace inline error section with `<UserIncompleteDialog>` and `<CheckoutErrorDialog>` triggered by `mutation.error.code` and `mutation.error.missingFields`
+- [x] T024 [P] [US4] Enrich `backend/src/modules/payments/payments.service.ts` so `USER_INFO_INCOMPLETE` throws with `data.missingFields` listing which fields are empty (`cedula`, `fullName`); extend `ValidationError` in `backend/src/shared/errors/ValidationError.ts` to carry optional `data`
+- [x] T025 [P] [US4] Add `USER_INFO_INCOMPLETE` handling and `missingFields` extraction in `frontend/features/ticket-purchase/api/checkout.api.ts`; extend `CheckoutError` class to carry `missingFields`
+- [x] T026 [P] [US4] Create `frontend/features/ticket-purchase/components/UserIncompleteDialog.tsx`: Chakra dialog with icon, list of missing fields, primary CTA "Completar perfil" → `/mi-cuenta/perfil`, secondary "Seguir editando"
+- [x] T027 [P] [US4] Create `frontend/features/ticket-purchase/components/CheckoutErrorDialog.tsx`: generic dialog rendering title, message and CTA based on error code (`SOLD_OUT` / `MAX_PER_USER_EXCEEDED` / `INTERNAL_ERROR` / `UNAUTHORIZED`) with retry action
+- [x] T028 [US4] Update `frontend/features/ticket-purchase/components/CheckoutPageClient.tsx`: query `useMe()` on mount, compute `missingFields`, disable "Pagar" with helper text when incomplete, replace inline error section with `<UserIncompleteDialog>` and `<CheckoutErrorDialog>` triggered by `mutation.error.code` and `mutation.error.missingFields`
+
+---
+
+## Phase 5.6: User Story 5 - Estados de pago completos (Priority: P2)
+
+**Goal**: Que los seis estados de pago (`pending`, `completed`, `failed`, `refunded`, `expired`, `completed_unfulfillable`) sean visibles y filtrables en toda la UI, y que el reembolso sea posible para `completed_unfulfillable`.
+
+**Independent Test**: Forzar cada estado en fixtures de test y verificar badge, filtro y habilitación del reembolso en `PaymentsTable`, `PaymentDetail` y `PaymentRow`. Backend no requiere cambios (ya acepta los seis estados y el reembolso dual).
+
+### Implementation for User Story 5
+
+- [x] T029 [P] [US5] Create `frontend/shared/utils/payment-status.ts` exporting the `PaymentStatus` union, `STATUS_COLORS` (add `expired` gray, `completed_unfulfillable` amber), `STATUS_LABELS` (add `expired: "Expirado"`, `completed_unfulfillable: "Pago sin entradas"`), `STATUS_FILTER_OPTIONS` (every state plus an "Todos" entry), and `canRefund(status)` helper returning `status === "completed" || status === "completed_unfulfillable"`
+- [x] T030 [P] [US5] Re-export from `frontend/shared/utils/constants.ts` so existing `PAYMENT_STATUS_LABELS` consumers keep working; keep `constants.ts` as the public entry point
+- [x] T031 [P] [US5] Update `frontend/features/admin-payments/components/PaymentFilters.tsx` to consume `STATUS_FILTER_OPTIONS`; add `expired` and `completed_unfulfillable` to the select options
+- [x] T032 [US5] Update `frontend/features/admin-payments/components/PaymentsTable.tsx` and `frontend/features/admin-payments/components/PaymentDetail.tsx` to consume `STATUS_COLORS` and `STATUS_LABELS` from the shared module; in `PaymentDetail.tsx` replace the `data?.status === "completed"` guard with `canRefund(data.status)` and add a warning callout when `status === "completed_unfulfillable"` explaining the unfulfillable case
+- [x] T033 [US5] Update `frontend/features/users/types/payment.types.ts` to extend `PaymentStatus` with `expired` and `completed_unfulfillable`; update `frontend/features/users/components/PaymentRow.tsx` to consume shared `STATUS_COLORS` and add a warning callout inside `frontend/features/users/components/PaymentDetail.tsx` (user) when `status === "completed_unfulfillable"`
 
 ---
 

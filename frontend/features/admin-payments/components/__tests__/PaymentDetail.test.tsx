@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { TestWrapper } from "@/test/test-utils";
-import { PaymentDetail } from "../PaymentDetail";
+import { PaymentDetail } from "../PaymentDetail/PaymentDetail";
 
 vi.mock("next/navigation", () => ({
   useParams: () => ({ id: "p1" }),
@@ -32,9 +32,11 @@ const mockDetail = {
   ],
 };
 
+let currentDetail = mockDetail;
+
 vi.mock("../../api/admin-payments.queries", () => ({
   usePaymentDetail: () => ({
-    data: mockDetail,
+    data: currentDetail,
     isLoading: false,
     isError: false,
   }),
@@ -85,5 +87,33 @@ describe("PaymentDetail", () => {
   it("renders formatted currency for total", () => {
     renderPage();
     expect(screen.getAllByText(/5\.000/).length).toBeGreaterThan(0);
+  });
+
+  it("shows refund button and callout for completed_unfulfillable", () => {
+    currentDetail = {
+      ...mockDetail,
+      status: "completed_unfulfillable",
+      tickets: [],
+    };
+
+    renderPage();
+    expect(
+      screen.getByText("Pago aprobado sin entradas emitidas"),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Reembolsar pago")).toBeInTheDocument();
+  });
+
+  it("hides refund button for pending status", () => {
+    currentDetail = { ...mockDetail, status: "pending" };
+
+    renderPage();
+    expect(screen.queryByText("Reembolsar pago")).not.toBeInTheDocument();
+  });
+
+  it("hides refund button for failed status", () => {
+    currentDetail = { ...mockDetail, status: "failed" };
+
+    renderPage();
+    expect(screen.queryByText("Reembolsar pago")).not.toBeInTheDocument();
   });
 });

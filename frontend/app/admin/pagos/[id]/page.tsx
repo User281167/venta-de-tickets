@@ -1,4 +1,4 @@
-import { PaymentDetail } from "@/features/admin-payments/components/PaymentDetail";
+import { PaymentDetail } from "@/features/admin-payments/components/PaymentDetail/PaymentDetail";
 
 export default function AdminPaymentDetailPage() {
   return <PaymentDetail />;

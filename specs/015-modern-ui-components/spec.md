@@ -112,6 +112,38 @@ Un usuario en el checkout recibe feedback claro y accionable cuando algo impide 
 
 ---
 
+### User Story 5 - Estados completos de pago en UI (Priority: P2)
+
+El sistema expone seis estados de pago (`pending`, `completed`, `failed`, `refunded`, `expired`, `completed_unfulfillable`). La interfaz debe reconocerlos todos, mostrarlos con etiquetas claras, permitir filtrarlos y reflejar la posibilidad de reembolso cuando aplique.
+
+**Why this priority**: El estado `completed_unfulfillable` ya existe en el backend y en la lógica de reembolso, pero la UI lo trata como desconocido: sin badge, sin filtro y sin botón de reembolso. Esto bloquea al admin para encontrar y cerrar pagos en cola de reembolso, y deja al usuario sin visibilidad del estado real de su compra.
+
+**Independent Test**: Crear o simular un pago en cada uno de los seis estados y verificar que la UI muestra la etiqueta y el color correctos en (a) tabla admin, (b) detalle admin, (c) lista de pagos del usuario, y que los filtros y la habilitación del reembolso responden correctamente.
+
+**Acceptance Scenarios**:
+
+1. **Given** un pago con `status = "completed_unfulfillable"`, **When** el admin abre la tabla o el detalle, **Then** ve un badge con etiqueta "Pago sin entradas" y un color distintivo.
+2. **Given** un pago con `status = "expired"`, **When** se renderiza en cualquier vista, **Then** se muestra con etiqueta "Expirado".
+3. **Given** el admin abre los filtros de la tabla de pagos, **When** selecciona el estado, **Then** las opciones incluyen `pending`, `completed`, `failed`, `refunded`, `expired` y `completed_unfulfillable`; el backend devuelve solo los pagos coincidentes.
+4. **Given** un pago está en `completed` o `completed_unfulfillable`, **When** el admin abre el detalle, **Then** el botón "Reembolsar pago" está visible y habilitado; para cualquier otro estado el botón no se muestra.
+5. **Given** un usuario autenticado ve un pago propio con `status = "completed_unfulfillable"`, **When** abre la fila, **Then** ve la información estándar más un aviso explícito indicando que el pago fue aprobado pero no se pudieron emitir entradas y que el equipo se pondrá en contacto para coordinar el reembolso.
+
+**State semantics** (referencia operativa, no funcional para la UI):
+
+- `pending` — en proceso, todavía sin resultado del proveedor.
+- `completed` — éxito normal o recuperado por el sweep.
+- `failed` — el proveedor rechazó el pago.
+- `refunded` — admin procesó un reembolso.
+- `expired` — el webhook del proveedor no llegó dentro del tiempo de reserva.
+- `completed_unfulfillable` — el proveedor aprobó el pago pero el stock ya no alcanza para emitir las entradas; queda pendiente de reembolso manual por el admin.
+
+**Refund eligibility** (referencia):
+
+- Permitido: `completed`, `completed_unfulfillable`.
+- Bloqueado: `pending`, `failed`, `refunded`, `expired` (cada uno tiene su propia vía de cierre).
+
+---
+
 ## Assumptions
 
 - Los endpoints de datos y los contratos de información existentes no cambian; esta funcionalidad consume lo que ya está disponible.

@@ -72,4 +72,27 @@ describe("PaymentList", () => {
     renderWithProviders(<PaymentList />);
     expect(screen.getAllByText("Mercado Pago").length).toBeGreaterThanOrEqual(1);
   });
+
+  it("shows the unfulfillable warning when payment status is completed_unfulfillable", () => {
+    mockUseMyPayments.mockReturnValue({
+      data: {
+        data: [
+          createMockPayment({
+            status: "completed_unfulfillable",
+            tickets: [],
+          }),
+        ],
+        total: 1,
+        page: 1,
+        limit: 20,
+      },
+      isLoading: false,
+      error: null,
+    });
+
+    renderWithProviders(<PaymentList />);
+    expect(
+      screen.getByText("Pago aprobado sin entradas emitidas"),
+    ).toBeInTheDocument();
+  });
 });

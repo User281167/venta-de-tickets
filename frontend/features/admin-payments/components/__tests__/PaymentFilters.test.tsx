@@ -50,4 +50,15 @@ describe("PaymentFilters", () => {
     const dateInputs = screen.getAllByRole("textbox");
     expect(dateInputs.length).toBeGreaterThanOrEqual(1);
   });
+
+  it("includes all six status options plus the all-states entry", () => {
+    setup();
+    expect(screen.getAllByText("Todos los estados").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Pendiente").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Completado").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Fallido").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Reembolsado").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Expirado").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Pago sin entradas").length).toBeGreaterThan(0);
+  });
 });

@@ -12,15 +12,10 @@ import {
 } from "@chakra-ui/react";
 import { useCallback } from "react";
 import { IconSearch, IconCalendar } from "@tabler/icons-react";
+import { STATUS_FILTER_OPTIONS } from "@/shared/utils/payment-status";
 
 const STATUS_OPTIONS = createListCollection({
-  items: [
-    { value: "", label: "Todos los estados" },
-    { value: "pending", label: "Pendiente" },
-    { value: "completed", label: "Completado" },
-    { value: "failed", label: "Fallido" },
-    { value: "refunded", label: "Reembolsado" },
-  ],
+  items: STATUS_FILTER_OPTIONS.map((o) => ({ ...o })),
 });
 
 interface PaymentFiltersProps {

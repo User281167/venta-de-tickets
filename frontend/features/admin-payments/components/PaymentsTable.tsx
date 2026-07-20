@@ -5,15 +5,12 @@ import { useRouter } from "next/navigation";
 import { tableCss } from "@/shared/components/tablecss";
 import type { PaymentListRow } from "../schemas/admin-payments.schema";
 import { useCallback } from "react";
-import { PAYMENT_STATUS_LABELS } from "@/shared/utils/constants";
+import {
+  PAYMENT_STATUS_LABELS,
+  PaymentStatus,
+  STATUS_COLORS,
+} from "@/shared/utils/constants";
 import { formatCurrency, formatDate } from "@/shared/utils/formats";
-
-const STATUS_COLORS: Record<string, string> = {
-  pending: "#eab308",
-  completed: "#22c55e",
-  failed: "#ef4444",
-  refunded: "#6b7280",
-};
 
 export function PaymentsTable({ payments }: { payments: PaymentListRow[] }) {
   const router = useRouter();
@@ -48,8 +45,8 @@ export function PaymentsTable({ payments }: { payments: PaymentListRow[] }) {
 
         <Table.Body>
           {payments.map((p) => {
-            const statusColor = STATUS_COLORS[p.status] ?? "#6b7280";
-            const statusLabel = PAYMENT_STATUS_LABELS[p.status] ?? p.status;
+            const statusColor = STATUS_COLORS[p.status as PaymentStatus] ?? "#6b7280";
+            const statusLabel = PAYMENT_STATUS_LABELS[p.status as PaymentStatus] ?? p.status;
 
             return (
               <Table.Row

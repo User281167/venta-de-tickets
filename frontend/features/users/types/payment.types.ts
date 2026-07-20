@@ -1,4 +1,10 @@
-export type PaymentStatus = "pending" | "completed" | "failed" | "refunded";
+export type PaymentStatus =
+  | "pending"
+  | "completed"
+  | "failed"
+  | "refunded"
+  | "expired"
+  | "completed_unfulfillable";
 
 export type TicketSummary = {
   id: string;
