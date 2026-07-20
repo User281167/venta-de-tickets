@@ -41,7 +41,7 @@ export class MercadoPagoProvider implements PaymentProvider {
           id: item.ticketTypeId,
           title: item.name,
           quantity: item.quantity,
-          unit_price: Math.round(item.unitPriceCents / 100),
+          unit_price: item.unitPriceCents / 100,
         })),
         external_reference: input.externalReference,
         back_urls: {
@@ -50,14 +50,10 @@ export class MercadoPagoProvider implements PaymentProvider {
           pending: input.backUrl,
         },
         notification_url: `${env.API_URL}/api/payments/webhook/mercadopago`,
-        payer: {
-          email: input.payerEmail ?? '',
-        },
+        payer: input.payerEmail ? { email: input.payerEmail } : undefined,
         date_of_expiration: input.expiresAt,
       },
     });
-
-    logger.info(`FULL RES CREATE ${JSON.stringify(result)}`)
 
     logger.info(
       `Checkout created for external mercadopago  reference ${input.externalReference}, providerTxId: ${result.id!}`,
@@ -70,10 +66,6 @@ export class MercadoPagoProvider implements PaymentProvider {
   }
 
   verifySignature(payload: unknown, headers: Record<string, string>): boolean {
-    logger.info(
-      `Verifying signature for mercadopago payload: ${JSON.stringify(payload)}`,
-    );
-
     try {
       const body = payload as { data?: { id?: string } };
       const dataId = body?.data?.id ?? '';
@@ -103,17 +95,18 @@ export class MercadoPagoProvider implements PaymentProvider {
       data?: { id?: string | number };
     };
 
-    logger.info(`Parsing mercadopago webhook payload: ${JSON.stringify(body)}`);
+    logger.info(`Parsing mercadopago webhook payload: reference=${body.data?.id ?? ''}`);
 
     if (body.type !== 'payment' || !body.data?.id) {
       logger.warn(
-        `Invalid webhook payload: expected payment type with data.id: ${JSON.stringify(body)}`,
+        `Invalid webhook payload: expected payment type with data.id: ${body.data?.id}`,
       );
 
       throw new Error(
         'Invalid webhook payload: expected payment type with data.id',
       );
     }
+
 
     const paymentClient = new Payment(this.client);
     const mpPayment = await paymentClient.get({ id: body.data.id });

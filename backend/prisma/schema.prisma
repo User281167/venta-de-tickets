@@ -150,6 +150,7 @@ model Ticket {
   @@index([ticketTypeId])
   @@index([paymentId])
   @@index([status])
+  @@index([status, reserveExpiresAt], map: "idx_tickets_reserved_expiry") //  no soporta índices parciales nativamente
   @@map("tickets")
 }
 

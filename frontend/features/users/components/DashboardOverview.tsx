@@ -204,7 +204,7 @@ function ProfileCompletionCard({
             <IconUser size={24} color="#00e5ff" />
           </Flex>
           <ChakraLink asChild>
-            <NextLink href="/mi-cuenta">
+            <NextLink href="/mi-cuenta/perfil">
               <HStack gap={1} color="brand.cyan" fontSize="sm" fontWeight="bold">
                 <Text>{completion === 100 ? "Ver perfil" : "Completar"}</Text>
                 <IconArrowRight size={16} />

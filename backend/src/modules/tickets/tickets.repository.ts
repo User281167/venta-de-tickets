@@ -103,7 +103,10 @@ const selectTicketForOwner = {
 
 export function findByUserId(userId: string, page: number, limit: number) {
   return prisma.ticket.findMany({
-    where: { userId },
+    where: {
+      userId,
+      status: { not: 'expired' }
+    },
     select: selectTicketForOwner,
     skip: (page - 1) * limit,
     take: limit,
@@ -113,7 +116,10 @@ export function findByUserId(userId: string, page: number, limit: number) {
 
 export function countByUserId(userId: string) {
   return prisma.ticket.count({
-    where: { userId },
+    where: {
+      userId,
+      status: { not: 'expired' }
+    },
   });
 }
 

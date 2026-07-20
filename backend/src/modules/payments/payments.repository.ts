@@ -73,7 +73,7 @@ export function findByIdWithTickets(id: string) {
 async function sweepExpiredReservationsInternal(
   tx: Prisma.TransactionClient,
 ): Promise<{ ticketsExpired: number; paymentsExpired: number }> {
-  const expiredTickets = await tx.$queryRaw`
+  const expiredTickets = (await tx.$queryRaw`
     WITH expired_tickets AS (
       UPDATE tickets
       SET status = 'expired'
@@ -92,14 +92,18 @@ async function sweepExpiredReservationsInternal(
       WHERE tt.id = sub.ticket_type_id
     )
     SELECT id, payment_id FROM expired_tickets
-  ` as Array<{ id: string; payment_id: string | null }>;
+  `) as Array<{ id: string; payment_id: string | null }>;
 
   if (expiredTickets.length === 0) {
     return { ticketsExpired: 0, paymentsExpired: 0 };
   }
 
   const paymentIds = [
-    ...new Set(expiredTickets.map((t) => t.payment_id).filter((id): id is string => id !== null)),
+    ...new Set(
+      expiredTickets
+        .map((t) => t.payment_id)
+        .filter((id): id is string => id !== null),
+    ),
   ];
 
   let paymentsExpired = 0;
@@ -128,7 +132,11 @@ export async function createCheckoutReservation(input: {
   subtotalCents: number;
   totalCents: number;
   reserveExpiresAt: Date;
-  items: Array<{ ticketTypeId: string; quantity: number; unitPriceCents: number }>;
+  items: Array<{
+    ticketTypeId: string;
+    quantity: number;
+    unitPriceCents: number;
+  }>;
   generateTicketCode: () => string;
 }) {
   return prisma.$transaction(async (tx) => {
@@ -143,25 +151,39 @@ export async function createCheckoutReservation(input: {
 
     // 3. validar y reservar cada item, todo dentro de la MISMA transacción
     for (const item of input.items) {
-      const rows = await tx.$queryRaw`
+      const rows = (await tx.$queryRaw`
         SELECT quantity_sold, quantity_total, status, max_per_user
         FROM ticket_types
         WHERE id = ${item.ticketTypeId}::uuid
         FOR UPDATE
-      ` as Array<{ quantity_sold: number; quantity_total: number; status: string; maxPerUser: number }>;
+      `) as Array<{
+        quantity_sold: number;
+        quantity_total: number;
+        status: string;
+        maxPerUser: number;
+      }>;
 
       const ticketType = rows[0];
       if (!ticketType) {
-        throw Object.assign(new Error('TICKET_TYPE_NOT_FOUND'), { statusCode: 404 });
+        throw Object.assign(new Error('TICKET_TYPE_NOT_FOUND'), {
+          statusCode: 404,
+        });
       }
       if (ticketType.status !== 'enabled') {
-        throw Object.assign(new Error('TICKET_TYPE_NOT_AVAILABLE'), { statusCode: 400 });
+        throw Object.assign(new Error('TICKET_TYPE_NOT_AVAILABLE'), {
+          statusCode: 400,
+        });
       }
-      if (ticketType.quantity_sold + item.quantity > ticketType.quantity_total) {
+      if (
+        ticketType.quantity_sold + item.quantity >
+        ticketType.quantity_total
+      ) {
         throw Object.assign(new Error('SOLD_OUT'), { statusCode: 409 });
       }
       if (ticketType.maxPerUser && item.quantity > ticketType.maxPerUser) {
-        throw Object.assign(new Error('MAX_PER_USER_EXCEEDED'), { statusCode: 409 });
+        throw Object.assign(new Error('MAX_PER_USER_EXCEEDED'), {
+          statusCode: 409,
+        });
       }
 
       await tx.$executeRaw`
@@ -205,11 +227,11 @@ export async function reclaimExpiredPayment(input: {
       return { outcome: 'already_processed' as const };
     }
 
-    const tickets = await tx.$queryRaw`
+    const tickets = (await tx.$queryRaw`
       SELECT id, ticket_type_id
       FROM tickets
       WHERE payment_id = ${input.paymentId}::uuid AND status = 'expired'
-    ` as Array<{ id: string; ticket_type_id: string }>;
+    `) as Array<{ id: string; ticket_type_id: string }>;
 
     if (tickets.length === 0) {
       return { outcome: 'unfulfillable' as const };
@@ -217,17 +239,20 @@ export async function reclaimExpiredPayment(input: {
 
     const typeCounts = new Map<string, number>();
     for (const t of tickets) {
-      typeCounts.set(t.ticket_type_id, (typeCounts.get(t.ticket_type_id) ?? 0) + 1);
+      typeCounts.set(
+        t.ticket_type_id,
+        (typeCounts.get(t.ticket_type_id) ?? 0) + 1,
+      );
     }
 
     // Bloquear todos los tipos involucrados, orden estable (por id) para evitar deadlocks
     const typeIds = [...typeCounts.keys()].sort();
-    const typeRows = await tx.$queryRaw`
+    const typeRows = (await tx.$queryRaw`
       SELECT id, quantity_sold, quantity_total
       FROM ticket_types
       WHERE id = ANY(${typeIds}::uuid[])
       FOR UPDATE
-    ` as Array<{ id: string; quantity_sold: number; quantity_total: number }>;
+    `) as Array<{ id: string; quantity_sold: number; quantity_total: number }>;
 
     const typeMap = new Map(typeRows.map((r) => [r.id, r]));
 
@@ -259,11 +284,18 @@ export async function reclaimExpiredPayment(input: {
       WHERE id = ${input.paymentId}::uuid
     `;
 
-    return { outcome: 'reclaimed' as const, ticketIds: tickets.map((t) => t.id) };
+    return {
+      outcome: 'reclaimed' as const,
+      ticketIds: tickets.map((t) => t.id),
+    };
   });
 }
 
-export function markUnfulfillable(paymentId: string, providerTxId: string, metadata: Prisma.InputJsonValue) {
+export function markUnfulfillable(
+  paymentId: string,
+  providerTxId: string,
+  metadata: Prisma.InputJsonValue,
+) {
   return prisma.payment.update({
     where: { id: paymentId },
     data: { status: 'completed_unfulfillable', providerTxId, metadata },
@@ -593,20 +625,20 @@ export async function refundTransaction(input: {
     }
 
     const tickets = await tx.$queryRaw<
-      Array<{ id: string; ticket_type_id: string }>
-    >`SELECT id, ticket_type_id FROM tickets WHERE payment_id = ${input.paymentId}::uuid`;
+      Array<{ id: string; ticket_type_id: string; status: string }>
+    >`SELECT id, ticket_type_id, status FROM tickets WHERE payment_id = ${input.paymentId}::uuid`;
 
-    if (tickets.length > 0) {
+    // No revertir stock de tickets que ya fueron usados (ya cumplieron su propósito de entrada)
+    const reclaimable = tickets.filter((t) => t.status !== 'used');
+
+    if (reclaimable.length > 0) {
       const typeCounts = new Map<string, number>();
-
-      for (const t of tickets) {
+      for (const t of reclaimable) {
         typeCounts.set(
           t.ticket_type_id,
           (typeCounts.get(t.ticket_type_id) ?? 0) + 1,
         );
       }
-
-      await tx.$executeRaw`DELETE FROM tickets WHERE payment_id = ${input.paymentId}::uuid`;
 
       for (const [typeId, count] of typeCounts) {
         await tx.$executeRaw`
@@ -616,6 +648,12 @@ export async function refundTransaction(input: {
         `;
       }
     }
+
+    await tx.$executeRaw`
+      UPDATE tickets
+      SET status = 'cancelled', cancelled_at = now()
+      WHERE payment_id = ${input.paymentId}::uuid
+    `;
 
     await tx.$executeRaw`
       UPDATE payments SET status = 'refunded' WHERE id = ${input.paymentId}::uuid
