@@ -1,7 +1,5 @@
 export type CheckerAction =
-  | 'confirm_entry_direct'
-  | 'request_confirmation'
-  | 'allow_entry';
+  'confirm_entry_direct' | 'request_confirmation' | 'allow_entry';
 
 export type TicketStatus =
   | 'paid'
@@ -16,7 +14,8 @@ export interface TicketSummary {
   ticketId: string;
   status: TicketStatus;
   attendeeName: string;
-  eventName: string;
+  attendeeCedula: string;
+  ticketName: string;
   checkedInAt: string | null;
   allowedActions: CheckerAction[];
 }

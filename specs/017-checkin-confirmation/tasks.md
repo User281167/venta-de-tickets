@@ -36,8 +36,8 @@
 
 ### Implementation for User Story 1
 
-- [ ] T005 [US1] Create `src/modules/checkin/checkin.repository.ts` with: `findTicketForScan(ticketId)` (no lock), `confirmEntryDirect(ticketId, checkerId)`, `requestConfirmation(ticketId, checkerId)`, `allowEntry(ticketId, checkerId)`, `confirmTicket(ticketId)`, `rejectConfirmation(ticketId)` — fix the bug where `rejectConfirmation` doesn't distinguish success from error (return boolean or affected count)
-- [ ] T006 [US1] Create `src/modules/checkin/checkin.service.ts` with `scanTicket(qrToken)` (decode JWT via `QR_JWT_SECRET`, call `findTicketForScan`, compute `allowedActions` via `getAllowedActions`) and `confirmEntryDirect(ticketId, checkerId)` (transition `paid → used`, map affected-rows-zero to `TICKET_NOT_AVAILABLE`)
+- [x] T005 [US1] Create `src/modules/checkin/checkin.repository.ts` with: `findTicketForScan(ticketId)` (no lock), `confirmEntryDirect(ticketId, checkerId)`, `requestConfirmation(ticketId, checkerId)`, `allowEntry(ticketId, checkerId)`, `confirmTicket(ticketId)`, `rejectConfirmation(ticketId)` — fix the bug where `rejectConfirmation` doesn't distinguish success from error (return boolean or affected count)
+- [x] T006 [US1] Create `src/modules/checkin/checkin.service.ts` with `scanTicket(qrToken)` (decode JWT via `QR_JWT_SECRET`, call `findTicketForScan`, compute `allowedActions` via `getAllowedActions`) and `confirmEntryDirect(ticketId, checkerId)` (transition `paid → used`, map affected-rows-zero to `TICKET_NOT_AVAILABLE`)
 - [ ] T007 [US1] Create `src/modules/checkin/checkin.controller.ts` with Express handlers for `POST /scan` and `POST /confirm-entry` — validate body with Zod, call service, map errors to status codes
 - [ ] T008 [US1] Create `src/modules/checkin/checkin.routes.ts` — `Router()` mounting controller handlers, apply `requireRole('checker', 'admin')` middleware
 
