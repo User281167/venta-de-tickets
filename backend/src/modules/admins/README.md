@@ -2,6 +2,42 @@
 
 Solo rol `admin` (Prisma enum) puede acceder.
 
+## Estructura del Módulo
+
+| Archivo | Capa | Responsabilidad |
+|---------|------|----------------|
+| `admins.routes.ts` | Route | Define endpoints, aplica middlewares de autenticación y rol |
+| `admins.controller.ts` | Controller | Valida input (Zod), orquesta servicios, formatea respuesta HTTP |
+| `admins.service.ts` | Service | Lógica de negocio: usuarios (CRUD, batch, roles) y pagos admin |
+| `admins.repository.ts` | Repository | Consultas Prisma sobre tabla `users` |
+| `admins.validators.ts` | Validator | Schemas Zod para cada endpoint |
+| `admins.types.ts` | Types | Tipos compartidos (`AdminRole`, `AdminProfile`) |
+
+### Capa Service
+
+| Método | Input | Output | Dependencias |
+|--------|-------|--------|-------------|
+| `listUsers` | page, limit, search? | `{ data, total, page, limit }` | `adminsRepo.findAll`, `adminsRepo.countAll` |
+| `createUser` | data (email, password, fullName, ...) | user DTO | Supabase Auth + `adminsRepo.upsert` |
+| `batchCreateUsers` | dataArray[] | user DTO[] | `checkUserExists`, `createUser` (loop) |
+| `updateUser` | id, data (role?, cedula?, etc.) | user DTO | `adminsRepo.findById`, `adminsRepo.findByCedula`, Supabase Auth, `adminsRepo.update` |
+| `updateRole` | id, role | user DTO | `adminsRepo.findById`, `adminsRepo.updateRole`, Supabase Auth |
+| `checkUserExists` | userId | boolean | `adminsRepo.findById` |
+| `createAdminPayment` | userId, provider, tickets, adminId | `{ paymentId, ticketIds }` | `paymentsService.createAdminPayment` |
+
+### Capa Repository (Prisma — tabla `users`)
+
+| Método | Query | Uso |
+|--------|-------|-----|
+| `findAll` | `findMany` con skip/take + search | Listar usuarios paginados |
+| `countAll` | `count` con search | Total para paginación |
+| `findById` | `findUnique` por id | Validar existencia |
+| `findByCedula` | `findUnique` por cedula | Validar unicidad de cédula |
+| `findConflicts` | `findMany` con OR emails/cedulas | Batch: detectar duplicados |
+| `updateRole` | `update` con role | Cambiar rol |
+| `upsert` | `upsert` por id | Crear usuario (fallback update) |
+| `update` | `update` con datos parciales | Modificar campos |
+
 ## Rutas: Usuarios
 
 | Método | Ruta | Descripción |
@@ -166,4 +202,33 @@ sequenceDiagram
     S-->>API: { paymentId, ticketIds }
     API-->>FE: 201 { paymentId, provider, subtotalCents, discountCents, totalCents, status, createdBy, ticketIds }
     FE-->>A: "Pago creado exitosamente"
+```
+
+## Arquitectura del Módulo
+
+```mermaid
+graph LR
+    subgraph Route
+        R[admins.routes.ts]
+    end
+    subgraph Controller
+        C[admins.controller.ts]
+    end
+    subgraph Service
+        S[admins.service.ts]
+    end
+    subgraph Repository
+        Repo[admins.repository.ts]
+    end
+    subgraph External
+        Auth[Supabase Auth]
+        DB[(PostgreSQL<br/>users)]
+    end
+
+    R -->|authMiddleware + adminMiddleware + requireRole| C
+    C -->|Zod validation| C
+    C -->|delega| S
+    S -->|CRUD users| Repo
+    S -->|createUser / updateRole| Auth
+    Repo -->|Prisma| DB
 ```
