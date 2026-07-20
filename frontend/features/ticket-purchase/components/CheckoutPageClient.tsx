@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -16,17 +16,41 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import { IconTicket, IconReload, IconAlertCircle } from "@tabler/icons-react";
+import { IconTicket, IconAlertCircle } from "@tabler/icons-react";
 import { useCart } from "../hooks/useCart";
 import { useCreateCheckoutPreference } from "../api/checkout.queries";
+import { CheckoutError } from "../api/checkout.api";
+import { useMe } from "@/features/users/hooks/useProfile";
 import { OrderSummary } from "./OrderSummary";
 import { MpWalletButton } from "./MpWalletButton";
+import { UserIncompleteDialog } from "./UserIncompleteDialog";
+import {
+  CheckoutErrorDialog,
+  type CheckoutErrorCode,
+} from "./CheckoutErrorDialog";
 import { formatCurrency } from "@/shared/utils/formats";
+
+const PROFILE_FIELDS = ["cedula", "fullName"] as const;
+
+function pickMissingFields(user: {
+  cedula: string | null;
+  fullName: string | null;
+}): string[] {
+  return PROFILE_FIELDS.filter((f) => !user[f]);
+}
+
+function isCheckoutError(err: unknown): err is CheckoutError {
+  return err instanceof CheckoutError;
+}
 
 export function CheckoutPageClient() {
   const { items } = useCart();
   const router = useRouter();
   const mutation = useCreateCheckoutPreference();
+  const { data: meData, isLoading: isLoadingMe } = useMe();
+
+  const [profileDialogOpen, setProfileDialogOpen] = useState(false);
+  const [errorDialogOpen, setErrorDialogOpen] = useState(false);
 
   const preferenceId = mutation.data?.preferenceId ?? null;
 
@@ -36,17 +60,62 @@ export function CheckoutPageClient() {
     }
   }, [items, router]);
 
-  const handlePagar = () => {
-    mutation.mutate(items);
-  };
-
-  const handleRetry = () => {
-    mutation.reset();
-  };
+  const missingFields = meData?.user
+    ? pickMissingFields({
+        cedula: meData.user.cedula,
+        fullName: meData.user.fullName,
+      })
+    : [];
+  const isProfileIncomplete = missingFields.length > 0;
 
   if (items.length === 0) return null;
 
   const totalTickets = items.reduce((sum, i) => sum + i.quantity, 0);
+  const err = mutation.error;
+  const isError = mutation.isError;
+  const errorCode: CheckoutErrorCode | "USER_INFO_INCOMPLETE" | null = err
+    ? (err as { code?: string }).code === "USER_INFO_INCOMPLETE"
+      ? "USER_INFO_INCOMPLETE"
+      : (((err as { code?: string }).code as CheckoutErrorCode) ?? "INTERNAL_ERROR")
+    : null;
+  const dialogMissingFields = isCheckoutError(err) ? err.missingFields : missingFields;
+  const dialogMessage = isCheckoutError(err) ? err.message : undefined;
+
+  const handlePagar = () => {
+    if (isProfileIncomplete) {
+      setProfileDialogOpen(true);
+      return;
+    }
+    mutation.mutate(items);
+  };
+
+  const handleDialogRetry = () => {
+    mutation.reset();
+    if (items.length > 0 && !isProfileIncomplete) {
+      mutation.mutate(items);
+    }
+  };
+
+  const handleProfileDialogChange = (open: boolean) => {
+    setProfileDialogOpen(open);
+    if (!open && isError && errorCode === "USER_INFO_INCOMPLETE") {
+      mutation.reset();
+    }
+  };
+
+  const handleErrorDialogChange = (open: boolean) => {
+    setErrorDialogOpen(open);
+    if (!open && isError && errorCode !== "USER_INFO_INCOMPLETE") {
+      mutation.reset();
+    }
+  };
+
+  const pagarDisabled =
+    mutation.isPending || isProfileIncomplete || isLoadingMe;
+
+  const profileDialogForceOpen = isError && errorCode === "USER_INFO_INCOMPLETE";
+  const errorDialogForceOpen =
+    isError && errorCode !== null && errorCode !== "USER_INFO_INCOMPLETE";
 
   return (
     <Box w="full" py={{ base: 6, md: 10 }}>
@@ -165,79 +234,97 @@ export function CheckoutPageClient() {
               )}
 
               {!preferenceId && !mutation.isError && (
-                <Button
-                  w="full"
-                  mt={4}
-                  h="64px"
-                  borderRadius="xl"
-                  bg="#ffe600"
-                  p={2}
-                  onClick={handlePagar}
-                  disabled={mutation.isPending}
-                  data-testid="pagar-mp-button"
-                  _hover={{
-                    transform: mutation.isPending
-                      ? undefined
-                      : "translateY(-2px)",
-                    boxShadow: mutation.isPending
-                      ? undefined
-                      : "0 8px 24px rgba(255,230,0,0.25)",
-                  }}
-                  _active={{
-                    transform: mutation.isPending ? undefined : "translateY(0)",
-                  }}
-                  transition="all 0.2s ease"
-                >
-                  {mutation.isPending ? (
-                    <Flex>
-                      <Spinner size="sm" color="#2d3277" />
-                      <Text ml={2} color="#2d3277">
-                        Creando preferencia de pago...
-                      </Text>
-                    </Flex>
-                  ) : (
-                    <Image
-                      src="/logo-mercado-libre.png"
-                      alt="Mercado Pago"
-                      maxH="64px"
-                      maxW="64px"
-                      h="full"
-                      w="auto"
-                      objectFit="contain"
-                    />
-                  )}
-                </Button>
-              )}
-
-              {mutation.isError && !preferenceId && (
-                <Box mt={4} p={4} borderRadius="xl" data-testid="error-section">
-                  <HStack gap={2} mb={3}>
-                    <IconAlertCircle size={20} color="#ef4444" />
-                    <Text color="red.300" fontSize="sm" fontWeight="semibold">
-                      {mutation.error?.message ?? "Error al procesar el pago"}
-                    </Text>
-                  </HStack>
-
+                <VStack align="stretch" gap={2} mt={4}>
                   <Button
                     w="full"
-                    h="48px"
+                    h="64px"
                     borderRadius="xl"
-                    variant="outline"
-                    color="white"
-                    borderColor="rgba(255,255,255,0.16)"
-                    onClick={handleRetry}
-                    disabled={mutation.isPending}
-                    data-testid="retry-button"
-                    _hover={{ bg: "rgba(255,255,255,0.06)" }}
+                    bg="#ffe600"
+                    p={2}
+                    onClick={handlePagar}
+                    disabled={pagarDisabled}
+                    title={
+                      isProfileIncomplete
+                        ? "Completa tu perfil para pagar"
+                        : undefined
+                    }
+                    data-testid="pagar-mp-button"
+                    _hover={{
+                      transform: pagarDisabled
+                        ? undefined
+                        : "translateY(-2px)",
+                      boxShadow: pagarDisabled
+                        ? undefined
+                        : "0 8px 24px rgba(255,230,0,0.25)",
+                    }}
+                    _active={{
+                      transform: pagarDisabled ? undefined : "translateY(0)",
+                    }}
+                    transition="all 0.2s ease"
                   >
-                    Reintentar
+                    {mutation.isPending ? (
+                      <Flex>
+                        <Spinner size="sm" color="#2d3277" />
+                        <Text ml={2} color="#2d3277">
+                          Creando preferencia de pago...
+                        </Text>
+                      </Flex>
+                    ) : (
+                      <Image
+                        src="/logo-mercado-libre.png"
+                        alt="Mercado Pago"
+                        maxH="64px"
+                        maxW="64px"
+                        h="full"
+                        w="auto"
+                        objectFit="contain"
+                      />
+                    )}
                   </Button>
-                </Box>
+
+                  {isProfileIncomplete && !mutation.isPending && (
+                    <HStack
+                      gap={2}
+                      p={2}
+                      borderRadius="lg"
+                      bg="rgba(245,158,11,0.08)"
+                      border="1px solid rgba(245,158,11,0.2)"
+                    >
+                      <IconAlertCircle size={16} color="#f59e0b" />
+                      <Text
+                        fontSize="xs"
+                        color="amber.200"
+                        lineHeight="1.4"
+                        data-testid="profile-incomplete-hint"
+                      >
+                        Completa tu cédula y nombre para pagar
+                      </Text>
+                    </HStack>
+                  )}
+                </VStack>
               )}
             </Box>
           </GridItem>
         </Grid>
       </Container>
+
+      <UserIncompleteDialog
+        open={profileDialogOpen || profileDialogForceOpen}
+        onOpenChange={handleProfileDialogChange}
+        missingFields={
+          isError && errorCode === "USER_INFO_INCOMPLETE"
+            ? dialogMissingFields
+            : missingFields
+        }
+      />
+
+      <CheckoutErrorDialog
+        open={errorDialogOpen || errorDialogForceOpen}
+        onOpenChange={handleErrorDialogChange}
+        code={errorCode as CheckoutErrorCode | null}
+        message={dialogMessage}
+        onRetry={handleDialogRetry}
+      />
     </Box>
   );
 }

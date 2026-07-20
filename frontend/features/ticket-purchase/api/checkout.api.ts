@@ -20,16 +20,20 @@ const ERROR_MESSAGES: Record<string, string> = {
   MAX_PER_USER_EXCEEDED: "Has excedido el límite por usuario para uno o más tipos de entrada.",
   TICKET_TYPE_NOT_AVAILABLE: "Uno o más tipos de entrada ya no están disponibles.",
   SOLD_OUT: "Uno o más tipos de entrada están agotados.",
+  USER_INFO_INCOMPLETE: "Completa tu perfil para continuar con el pago.",
   UNAUTHORIZED: "Tu sesión expiró. Inicia sesión nuevamente.",
+  INTERNAL_ERROR: "No pudimos procesar el pago. Intenta de nuevo.",
 };
 
 export class CheckoutError extends Error {
   code: string;
+  missingFields: string[];
 
-  constructor(code: string, message: string) {
+  constructor(code: string, message: string, missingFields: string[] = []) {
     super(message);
     this.name = "CheckoutError";
     this.code = code;
+    this.missingFields = missingFields;
   }
 }
 
@@ -68,7 +72,10 @@ export async function createCheckoutPreference(
     const body = await res.json().catch(() => ({}));
     const code = body?.error?.code ?? "INTERNAL_ERROR";
     const msg = ERROR_MESSAGES[code] ?? body?.error?.message ?? `Error ${res.status}`;
-    throw new CheckoutError(code, msg);
+    const missingFields: string[] = Array.isArray(body?.error?.data?.missingFields)
+      ? body.error.data.missingFields
+      : [];
+    throw new CheckoutError(code, msg, missingFields);
   }
 
   return res.json();

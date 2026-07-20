@@ -1,6 +1,6 @@
 # Módulo Me — Información Personal del Cliente
 
-Endpoints agrupados bajo `/api/me`. Actúa como **agregador cliente**: expone rutas propias (info personal) y delega a otros módulos (tickets, pagos). Solo rol `client` puede modificar datos personales.
+Endpoints agrupados bajo `/api/me`. Actúa como **agregador usuario autenticado**: expone rutas propias (info personal) y delega a otros módulos (tickets, pagos). Cualquier rol autenticado (client, admin, checker, super_admin) puede acceder a sus propios datos.
 
 ## Estructura del Módulo
 
@@ -32,11 +32,11 @@ Endpoints agrupados bajo `/api/me`. Actúa como **agregador cliente**: expone ru
 |--------|------|-----------|-------------|---------------|
 | GET | `/api/me` | `authMiddleware` | Usuario actual + privacy consent | me |
 | GET | `/api/me/personal-info` | `authMiddleware` | Obtener info personal (DTO) | me |
-| PUT | `/api/me/personal-info` | `requireRole('client')` | Crear info personal (cédula requerida) | me |
-| PATCH | `/api/me/personal-info` | `requireRole('client')` | Actualizar info personal (cédula inmutable) | me |
-| GET | `/api/me/tickets` | `requireRole('client')` | Listar tickets del cliente (paginado) | tickets |
-| GET | `/api/me/tickets/:id` | `requireRole('client')` | Detalle de un ticket propio | tickets |
-| GET | `/api/me/payments` | `requireRole('client')` | Listar pagos del cliente (paginado) | payments |
+| PUT | `/api/me/personal-info` | `authMiddleware` | Crear info personal (cédula requerida) | me |
+| PATCH | `/api/me/personal-info` | `authMiddleware` | Actualizar info personal (cédula inmutable) | me |
+| GET | `/api/me/tickets` | `authMiddleware` | Listar tickets propios (paginado) | tickets |
+| GET | `/api/me/tickets/:id` | `authMiddleware` | Detalle de un ticket propio | tickets |
+| GET | `/api/me/payments` | `authMiddleware` | Listar pagos propios (paginado) | payments |
 
 ## Códigos de Error
 
@@ -47,7 +47,6 @@ Endpoints agrupados bajo `/api/me`. Actúa como **agregador cliente**: expone ru
 | `VALIDATION_ERROR` | 422 | Datos inválidos (Zod) |
 | `CEDULA_INVALIDATION` | 422 | Cédula ya fue establecida y no se puede modificar |
 | `UNAUTHORIZED` | 401 | JWT faltante o inválido |
-| `FORBIDDEN` | 403 | Rol no es `client` |
 
 ### Heredados de tickets/pagos (delegados)
 
@@ -112,7 +111,7 @@ sequenceDiagram
     participant DB as PostgreSQL
 
     C->>API: PUT/PATCH personal-info
-    API->>API: auth + requireRole('client')
+    API->>API: authMiddleware
     API->>API: Validar Zod (schema según primera vez vs actualización)
     alt Datos inválidos
         API-->>C: 422 VALIDATION_ERROR

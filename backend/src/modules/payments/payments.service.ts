@@ -77,8 +77,16 @@ export async function createCheckout(
     throw new ValidationError('USER_NOT_FOUND', 'User not found');
   }
 
-  if (!user.cedula || !user.fullName) {
-    throw new ValidationError('USER_INFO_INCOMPLETE', 'User info incomplete');
+  const missingFields: string[] = [];
+  if (!user.cedula) missingFields.push('cedula');
+  if (!user.fullName) missingFields.push('fullName');
+
+  if (missingFields.length > 0) {
+    throw new ValidationError(
+      'USER_INFO_INCOMPLETE',
+      'User info incomplete',
+      { missingFields },
+    );
   }
 
   const checkoutItems: Array<{

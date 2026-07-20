@@ -176,7 +176,7 @@ describe('PUT /api/me/personal-info (first time)', () => {
     expect(res.status).toBe(401);
   });
 
-  it('returns 403 FORBIDDEN when role is not client', async () => {
+  it('returns 422 VALIDATION_ERROR when role is not client (missing cedula)', async () => {
     mockNonClientAuth('admin');
 
     const res = await request(app)
@@ -184,8 +184,8 @@ describe('PUT /api/me/personal-info (first time)', () => {
       .set(authHeader())
       .send({ fullName: 'Test' });
 
-    expect(res.status).toBe(403);
-    expect(res.body.error.code).toBe('FORBIDDEN');
+    expect(res.status).toBe(422);
+    expect(res.body.error.code).toBe('VALIDATION_ERROR');
   });
 
   it('returns 422 VALIDATION_ERROR with empty body', async () => {
@@ -263,7 +263,7 @@ describe('PATCH /api/me/personal-info (update)', () => {
     mockClientAuth();
   });
 
-  it('returns 403 FORBIDDEN when role is not client', async () => {
+  it('returns 422 VALIDATION_ERROR when role is not client', async () => {
     mockNonClientAuth('checker');
 
     const res = await request(app)
@@ -271,8 +271,8 @@ describe('PATCH /api/me/personal-info (update)', () => {
       .set(authHeader())
       .send({ fullName: 'New Name' });
 
-    expect(res.status).toBe(403);
-    expect(res.body.error.code).toBe('FORBIDDEN');
+    expect(res.status).toBe(422);
+    expect(res.body.error.code).toBe('VALIDATION_ERROR');
   });
 
   it('returns 422 VALIDATION_ERROR with empty body', async () => {
@@ -378,25 +378,24 @@ describe('GET /api/me/payments', () => {
     expect(res.status).toBe(401);
   });
 
-  it('returns 403 FORBIDDEN when role is not client', async () => {
+  it('returns 200 for admin role', async () => {
     mockNonClientAuth('admin');
 
     const res = await request(app)
       .get('/api/me/payments')
       .set(authHeader());
 
-    expect(res.status).toBe(403);
-    expect(res.body.error.code).toBe('FORBIDDEN');
+    expect(res.status).toBe(200);
   });
 
-  it('returns 403 for checker role', async () => {
+  it('returns 200 for checker role', async () => {
     mockNonClientAuth('checker');
 
     const res = await request(app)
       .get('/api/me/payments')
       .set(authHeader());
 
-    expect(res.status).toBe(403);
+    expect(res.status).toBe(200);
   });
 
   it('returns 200 with paginated payment history', async () => {

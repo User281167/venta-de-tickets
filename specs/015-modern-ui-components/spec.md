@@ -95,6 +95,23 @@ El usuario puede moverse entre la landing, el dashboard y las páginas de detall
 - **SC-005**: La interfaz DEBE visualizarse correctamente en dispositivos móviles, tabletas y escritorios sin scroll horizontal ni elementos cortados.
 - **SC-006**: Las interacciones principales (clics, hovers, foco) DEBEN responder en menos de 100 milisegundos percibidos.
 
+### User Story 4 - Errores de checkout como modales accionables (Priority: P2)
+
+Un usuario en el checkout recibe feedback claro y accionable cuando algo impide completar el pago: perfil incompleto, entradas agotadas, exceso de límite por usuario o fallos de red. Cada error se muestra como un modal con la causa específica y un siguiente paso.
+
+**Why this priority**: Reduce fricción y abandono en el momento más crítico del funnel de compra. Un mensaje genérico "User info incomplete" obliga al usuario a adivinar qué falta.
+
+**Independent Test**: Disparar cada código de error (`USER_INFO_INCOMPLETE`, `SOLD_OUT`, `MAX_PER_USER_EXCEEDED`, error de red) y verificar que el modal correspondiente aparece con su acción correcta.
+
+**Acceptance Scenarios**:
+
+1. **Given** un usuario con cédula o nombre vacío, **When** entra al checkout, **Then** el botón "Pagar" está deshabilitado con tooltip explicando que debe completar su perfil.
+2. **Given** un usuario omite el pre-check y envía el checkout, **When** el backend responde `USER_INFO_INCOMPLETE`, **Then** se abre un modal listando los campos faltantes con CTA "Completar perfil" hacia `/mi-cuenta/perfil`.
+3. **Given** el backend responde `SOLD_OUT` o `MAX_PER_USER_EXCEEDED`, **When** el usuario ve el error, **Then** se muestra un modal con el nombre de la entrada afectada y CTA para ajustar el carrito.
+4. **Given** un fallo de red o error inesperado, **When** ocurre, **Then** se muestra un modal con mensaje neutro y botón "Reintentar" que reintenta la operación.
+
+---
+
 ## Assumptions
 
 - Los endpoints de datos y los contratos de información existentes no cambian; esta funcionalidad consume lo que ya está disponible.

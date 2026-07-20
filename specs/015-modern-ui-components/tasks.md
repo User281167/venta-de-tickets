@@ -93,6 +93,22 @@
 
 ---
 
+## Phase 5.5: User Story 4 - Modales de error en checkout (Priority: P2)
+
+**Goal**: Reemplazar el banner inline genérico del checkout por modales accionables según el código de error, con pre-chequeo del perfil antes de pagar.
+
+**Independent Test**: Forzar cada error (`USER_INFO_INCOMPLETE`, `SOLD_OUT`, `MAX_PER_USER_EXCEEDED`, error de red) y verificar el modal correcto con su acción.
+
+### Implementation for User Story 4
+
+- [ ] T024 [P] [US4] Enrich `backend/src/modules/payments/payments.service.ts` so `USER_INFO_INCOMPLETE` throws with `data.missingFields` listing which fields are empty (`cedula`, `fullName`); extend `ValidationError` in `backend/src/shared/errors/ValidationError.ts` to carry optional `data`
+- [ ] T025 [P] [US4] Add `USER_INFO_INCOMPLETE` handling and `missingFields` extraction in `frontend/features/ticket-purchase/api/checkout.api.ts`; extend `CheckoutError` class to carry `missingFields`
+- [ ] T026 [P] [US4] Create `frontend/features/ticket-purchase/components/UserIncompleteDialog.tsx`: Chakra dialog with icon, list of missing fields, primary CTA "Completar perfil" → `/mi-cuenta/perfil`, secondary "Seguir editando"
+- [ ] T027 [P] [US4] Create `frontend/features/ticket-purchase/components/CheckoutErrorDialog.tsx`: generic dialog rendering title, message and CTA based on error code (`SOLD_OUT` / `MAX_PER_USER_EXCEEDED` / `INTERNAL_ERROR` / `UNAUTHORIZED`) with retry action
+- [ ] T028 [US4] Update `frontend/features/ticket-purchase/components/CheckoutPageClient.tsx`: query `useMe()` on mount, compute `missingFields`, disable "Pagar" with helper text when incomplete, replace inline error section with `<UserIncompleteDialog>` and `<CheckoutErrorDialog>` triggered by `mutation.error.code` and `mutation.error.missingFields`
+
+---
+
 ## Phase 6: Polish & Cross-Cutting Concerns
 
 **Purpose**: Accessibility, performance, and build verification.
