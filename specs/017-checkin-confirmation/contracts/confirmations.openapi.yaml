@@ -1,0 +1,102 @@
+openapi: "3.0.3"
+info:
+  title: Confirmations API
+  version: "1.0.0"
+  description: Buyer confirmation endpoints — no session, authenticated via single-purpose JWT token
+
+servers:
+  - url: /confirmations
+    description: Public API prefix
+
+paths:
+  /confirm:
+    post:
+      summary: Buyer confirms entry authorization
+      operationId: confirm
+      tags: [Confirmations]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token]
+              properties:
+                token:
+                  type: string
+                  description: JWT from confirmation link (sent in body, never logged)
+      responses:
+        "200":
+          description: Confirmed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    enum: [true]
+        "400":
+          description: INVALID_TOKEN — expired, tampered, or malformed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: TICKET_NOT_AVAILABLE — already confirmed or no longer pending
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: VALIDATION_ERROR
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /reject:
+    post:
+      summary: Buyer rejects entry authorization
+      operationId: reject
+      tags: [Confirmations]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token]
+              properties:
+                token:
+                  type: string
+      responses:
+        "200":
+          description: Rejected — ticket returned to paid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    enum: [true]
+        "400":
+          description: INVALID_TOKEN
+        "409":
+          description: TICKET_NOT_AVAILABLE
+        "422":
+          description: VALIDATION_ERROR
+
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          example: INVALID_TOKEN
+        message:
+          type: string
+        details:
+          type: object
