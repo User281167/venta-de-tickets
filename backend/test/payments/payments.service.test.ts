@@ -27,6 +27,10 @@ vi.mock('../../src/modules/payments/payments.repository.js', () => ({
   markUnfulfillable: vi.fn(),
 }));
 
+vi.mock('../../src/modules/me/me.repository.js', () => ({
+  findByUserId: vi.fn(),
+}));
+
 vi.mock('../../src/modules/payments/providers/provider.registry.js', () => ({
   getProvider: vi.fn(() => ({
     createCheckout: mockCreateCheckout,
@@ -37,6 +41,7 @@ vi.mock('../../src/modules/payments/providers/provider.registry.js', () => ({
 
 const ticketsService = await import('../../src/modules/tickets/tickets.service.js');
 const paymentsRepo = await import('../../src/modules/payments/payments.repository.js');
+const meRepo = await import('../../src/modules/me/me.repository.js');
 const { getProvider } = await import('../../src/modules/payments/providers/provider.registry.js');
 const paymentsService = await import('../../src/modules/payments/payments.service.js');
 
@@ -50,6 +55,8 @@ const mockTicketType = {
   status: 'enabled',
 };
 
+const mockUser = { id: 'user-1', cedula: '12345678', fullName: 'Test User' };
+
 describe('payments.service', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -57,8 +64,8 @@ describe('payments.service', () => {
 
   describe('createCheckout', () => {
     it('creates checkout with valid items and returns checkout URL', async () => {
+      vi.mocked(meRepo.findByUserId).mockResolvedValue(mockUser);
       vi.mocked(ticketsService.getTicketTypeById).mockResolvedValue(mockTicketType);
-      mockCreateCheckout.mockResolvedValue({ checkoutUrl: 'https://mp.com/checkout/123' });
       vi.mocked(paymentsRepo.createCheckoutReservation).mockResolvedValue({ paymentId: 'pay-1' });
       mockCreateCheckout.mockResolvedValue({ checkoutUrl: 'https://mp.com/checkout/123', providerTxId: 'pref-123' });
 
@@ -77,66 +84,60 @@ describe('payments.service', () => {
       });
     });
 
-    it('throws ValidationError when ticket type is disabled', async () => {
-      vi.mocked(ticketsService.getTicketTypeById).mockResolvedValue({
-        ...mockTicketType,
-        status: 'disabled',
-      });
+    it('throws ValidationError when user not found', async () => {
+      vi.mocked(meRepo.findByUserId).mockResolvedValue(null);
 
       await expect(
-        paymentsService.createCheckout(
-          'user-1',
-          [{ ticketTypeId: 'tt-1', quantity: 1 }],
-          'https://frontend.com/return',
-          'mercadopago',
-        ),
+        paymentsService.createCheckout('nonexistent', [{ ticketTypeId: 'tt-1', quantity: 1 }], 'https://return.com', 'mercadopago'),
+      ).rejects.toMatchObject({ code: 'USER_NOT_FOUND' });
+    });
+
+    it('throws ValidationError when user info incomplete', async () => {
+      vi.mocked(meRepo.findByUserId).mockResolvedValue({ id: 'user-1', cedula: null, fullName: null });
+
+      await expect(
+        paymentsService.createCheckout('user-1', [{ ticketTypeId: 'tt-1', quantity: 1 }], 'https://return.com', 'mercadopago'),
+      ).rejects.toMatchObject({ code: 'USER_INFO_INCOMPLETE' });
+    });
+
+    it('throws ValidationError when ticket type is disabled', async () => {
+      vi.mocked(meRepo.findByUserId).mockResolvedValue(mockUser);
+      vi.mocked(ticketsService.getTicketTypeById).mockResolvedValue({ ...mockTicketType, status: 'disabled' });
+
+      await expect(
+        paymentsService.createCheckout('user-1', [{ ticketTypeId: 'tt-1', quantity: 1 }], 'https://frontend.com/return', 'mercadopago'),
       ).rejects.toMatchObject({ code: 'TICKET_TYPE_NOT_AVAILABLE' });
     });
 
     it('throws ValidationError when exceeding maxPerUser', async () => {
+      vi.mocked(meRepo.findByUserId).mockResolvedValue(mockUser);
       vi.mocked(ticketsService.getTicketTypeById).mockResolvedValue(mockTicketType);
 
       await expect(
-        paymentsService.createCheckout(
-          'user-1',
-          [{ ticketTypeId: 'tt-1', quantity: 5 }],
-          'https://frontend.com/return',
-          'mercadopago',
-        ),
+        paymentsService.createCheckout('user-1', [{ ticketTypeId: 'tt-1', quantity: 5 }], 'https://frontend.com/return', 'mercadopago'),
       ).rejects.toMatchObject({ code: 'MAX_PER_USER_EXCEEDED' });
     });
 
     it('throws ValidationError when quantity is zero', async () => {
+      vi.mocked(meRepo.findByUserId).mockResolvedValue(mockUser);
       vi.mocked(ticketsService.getTicketTypeById).mockResolvedValue(mockTicketType);
 
       await expect(
-        paymentsService.createCheckout(
-          'user-1',
-          [{ ticketTypeId: 'tt-1', quantity: 0 }],
-          'https://frontend.com/return',
-          'mercadopago',
-        ),
+        paymentsService.createCheckout('user-1', [{ ticketTypeId: 'tt-1', quantity: 0 }], 'https://frontend.com/return', 'mercadopago'),
       ).rejects.toMatchObject({ code: 'INVALID_QUANTITY' });
     });
 
     it('throws ValidationError when exceeding available stock', async () => {
-      vi.mocked(ticketsService.getTicketTypeById).mockResolvedValue({
-        ...mockTicketType,
-        quantitySold: 98,
-        maxPerUser: null,
-      });
+      vi.mocked(meRepo.findByUserId).mockResolvedValue(mockUser);
+      vi.mocked(ticketsService.getTicketTypeById).mockResolvedValue({ ...mockTicketType, quantitySold: 98, maxPerUser: null });
 
       await expect(
-        paymentsService.createCheckout(
-          'user-1',
-          [{ ticketTypeId: 'tt-1', quantity: 5 }],
-          'https://frontend.com/return',
-          'mercadopago',
-        ),
+        paymentsService.createCheckout('user-1', [{ ticketTypeId: 'tt-1', quantity: 5 }], 'https://frontend.com/return', 'mercadopago'),
       ).rejects.toMatchObject({ code: 'SOLD_OUT' });
     });
 
     it('handles multiple ticket types in single request', async () => {
+      vi.mocked(meRepo.findByUserId).mockResolvedValue(mockUser);
       const mockTT1 = { ...mockTicketType, id: 'tt-1', price: 50000, maxPerUser: null };
       const mockTT2 = { ...mockTicketType, id: 'tt-2', name: 'General', price: 25000, maxPerUser: null };
 
@@ -144,7 +145,6 @@ describe('payments.service', () => {
         .mockResolvedValueOnce(mockTT1)
         .mockResolvedValueOnce(mockTT2);
 
-      mockCreateCheckout.mockResolvedValue({ checkoutUrl: 'https://mp.com/checkout/123' });
       vi.mocked(paymentsRepo.createCheckoutReservation).mockResolvedValue({ paymentId: 'pay-1' });
       mockCreateCheckout.mockResolvedValue({ checkoutUrl: 'https://mp.com/checkout/123', providerTxId: 'pref-multi' });
 

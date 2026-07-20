@@ -19,7 +19,7 @@ Núcleo transaccional del sistema. Usa **raw SQL** en el repositorio (no Prisma 
 
 | Método | Input | Output | Transacciones clave |
 |--------|-------|--------|---------------------|
-| `createCheckout` | userId, items, backUrl, provider | `{ paymentId, checkoutUrl, preferenceId }` | **DB→Provider**: reserva atómica en DB, llama proveedor externo. Si provider falla, expiran solos vía sweep |
+| `createCheckout` | userId, items, backUrl, provider | `{ paymentId, checkoutUrl, preferenceId }` | **User validation → DB→Provider**: verifica usuario existe + completo (cedula/fullName), reserva atómica en DB, llama proveedor externo. Si provider falla, expiran solos vía sweep |
 | `processWebhook` | payload, headers, provider | `{ received: true }` | Verifica firma, parsea evento, maneja approved/declined/expired-reclaim |
 | `listMyPayments` | userId, page, limit | `{ data, total, page, limit }` | Consulta simple |
 | `listAllPayments` | filters | `{ data, total, page, limit }` | Filtros admin (status, fechas, búsqueda) |
@@ -86,6 +86,8 @@ Montadas en `me.routes.ts` bajo `/api/me/payments`.
 | Code | Status | Layer | Cause |
 |------|--------|-------|-------|
 | `VALIDATION_ERROR` | 422 | Controller | Invalid request data (Zod) |
+| `USER_NOT_FOUND` | 422 | Service | User not found (checkout) |
+| `USER_INFO_INCOMPLETE` | 422 | Service | User missing cedula/fullName (checkout) |
 | `TICKET_TYPE_NOT_FOUND` | 404 | Repo (tx) | Ticket type UUID no existe |
 | `TICKET_TYPE_NOT_AVAILABLE` | 400 | Service/Repo | Ticket type disabled |
 | `INVALID_QUANTITY` | 422 | Service | Quantity ≤ 0 |
@@ -105,12 +107,20 @@ sequenceDiagram
     participant C as Client
     participant API as POST /checkout
     participant S as Service
+    participant MR as me.repository
     participant Tx as DB Transaction
     participant P as Provider
 
     C->>API: { items, backUrl, provider }
     API->>S: createCheckout(userId, items, backUrl, provider)
-    S->>S: validateTicketType (stock, maxPerUser)
+    S->>MR: findByUserId(userId)
+    MR-->>S: user || null
+    alt user not found
+        S-->>API: 422 USER_NOT_FOUND
+    else missing cedula/fullName
+        S-->>API: 422 USER_INFO_INCOMPLETE
+    end
+    Note over S: validateTicketType (stock, maxPerUser)
     S->>Tx: createCheckoutReservation(paymentId, userId, items)
     Tx->>Tx: sweepExpired first
     Tx->>Tx: FOR UPDATE ticket_types
@@ -192,31 +202,49 @@ graph LR
         Repo[payments.repository.ts]
         Reg[provider.registry.ts]
     end
+
     subgraph providers
         MP[MercadoPagoProvider]
     end
+
     subgraph consumers
+        R2[admins.routes.ts]
         ADM[admins.controller.ts]
+        R3[me.routes.ts]
         ME[me.routes.ts]
     end
+
     subgraph tickets
         TS[tickets.service.ts]
     end
+
+    subgraph me
+        MR[me.repository.ts]
+    end
+
     subgraph External
         DB[(PostgreSQL<br/>payments / tickets / ticket_types)]
         API_MP[Mercado Pago API]
     end
 
     R -->|auth| C
-    R2[admins.routes] -->|delega| ADM
-    R3[me.routes] -->|delega| ME
+    R2 -->|delega| ADM
+    R3 -->|delega| ME
+
     C -->|delega| S
-    S -->|createCheckoutReservation / processWebhook / etc| Repo
+
+    S -->|createCheckoutReservation| Repo
+    S -->|processWebhook| Repo
     S -->|getProvider| Reg
     Reg -->|instancia| MP
     MP -->|HTTP| API_MP
+
+    S -->|validate user| MR
     S -->|generateQrForTicket| TS
-    Repo -->|raw SQL + $transaction| DB
-    ADM -->|listAllPayments / getPaymentDetail / etc| S
+
+    Repo -->|raw SQL + transaction| DB
+
+    ADM -->|listAllPayments| S
+    ADM -->|getPaymentDetail| S
     ME -->|listMyPaymentsHandler| C
 ```

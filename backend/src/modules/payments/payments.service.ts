@@ -8,6 +8,7 @@ import { getProvider } from './providers/provider.registry.js';
 
 import { logger } from '../../utils/logger.js';
 import { RESERVATION_EXPIRATION_INTERNAL_MILLIS , RESERVATION_EXPIRATION_PROVIDER_MILLIS } from '../../shared/config/constants.js';
+import { findByUserId } from '../me/me.repository.js';
 
 function generateTicketCode(): string {
   return randomBytes(16).toString('hex');
@@ -69,6 +70,16 @@ export async function createCheckout(
   logger.info(
     `Creating checkout for user: userId=${userId}, items=${JSON.stringify(items)}`,
   );
+
+  const user = await findByUserId(userId);
+
+  if (!user) {
+    throw new ValidationError('USER_NOT_FOUND', 'User not found');
+  }
+
+  if (!user.cedula || !user.fullName) {
+    throw new ValidationError('USER_INFO_INCOMPLETE', 'User info incomplete');
+  }
 
   const checkoutItems: Array<{
     ticketTypeId: string;
