@@ -15,6 +15,13 @@ const envSchema = z.object({
   QR_JWT_SECRET: z
     .string()
     .min(32, 'QR_JWT_SECRET must be at least 32 characters'),
+  CONFIRMATION_JWT_SECRET: z
+    .string()
+    .min(32, 'CONFIRMATION_JWT_SECRET must be at least 32 characters'),
+  CONFIRMATION_TOKEN_TTL: z.string().default('30m'),
+  CONFIRMATION_LINK_BASE_URL: z
+    .string()
+    .url('CONFIRMATION_LINK_BASE_URL must be a valid URL'),
   API_URL: z.string().url('API_URL must be a valid URL'),
   CORS_ORIGIN: z.string().default('http://localhost:3000'),
   MERCADOPAGO_ACCESS_TOKEN: z
@@ -36,6 +43,9 @@ console.log({
   PORT: !!process.env.PORT,
   NODE_ENV: !!process.env.NODE_ENV,
   QR_JWT_SECRET: !!process.env.QR_JWT_SECRET,
+  CONFIRMATION_JWT_SECRET: !!process.env.CONFIRMATION_JWT_SECRET,
+  CONFIRMATION_TOKEN_TTL: !!process.env.CONFIRMATION_TOKEN_TTL,
+  CONFIRMATION_LINK_BASE_URL: !!process.env.CONFIRMATION_LINK_BASE_URL,
   API_URL: !!process.env.API_URL,
   CORS_ORIGIN: !!process.env.CORS_ORIGIN,
   MERCADOPAGO_ACCESS_TOKEN: !!process.env.MERCADOPAGO_ACCESS_TOKEN,

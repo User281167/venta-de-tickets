@@ -1,7 +1,37 @@
-export type CheckInResult =
-  | { action: 'entered'; ticket: { id: string } }
-  | { action: 'pending_confirmation'; ticket: { id: string } }
-  | { action: 'confirmed_entry'; ticket: { id: string } }
-  | { action: 'already_used'; ticket: { checkedInAt: Date } }
-  | { action: 'wrong_status'; currentStatus: string }
-  | { action: 'not_found' };
+export type CheckerAction =
+  | 'confirm_entry_direct'
+  | 'request_confirmation'
+  | 'allow_entry';
+
+export type TicketStatus =
+  | 'paid'
+  | 'pending_confirmation'
+  | 'confirmed'
+  | 'used'
+  | 'reserved'
+  | 'cancelled'
+  | 'expired';
+
+export interface TicketSummary {
+  ticketId: string;
+  status: TicketStatus;
+  attendeeName: string;
+  eventName: string;
+  checkedInAt: string | null;
+  allowedActions: CheckerAction[];
+}
+
+export function getAllowedActions(status: TicketStatus): CheckerAction[] {
+  switch (status) {
+    case 'paid':
+      return ['confirm_entry_direct', 'request_confirmation'];
+    case 'confirmed':
+      return ['allow_entry'];
+    case 'pending_confirmation':
+    case 'used':
+    case 'reserved':
+    case 'cancelled':
+    case 'expired':
+      return [];
+  }
+}

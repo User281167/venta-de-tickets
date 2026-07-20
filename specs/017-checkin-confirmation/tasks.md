@@ -19,19 +19,10 @@
 
 **Purpose**: Clean slate and environment configuration
 
-- [ ] T001 Delete existing `src/modules/checkin/` entirely (old single-endpoint `POST /internal/checkin` attempt)
-- [ ] T002 [P] Add `CONFIRMATION_JWT_SECRET`, `CONFIRMATION_TOKEN_TTL`, `CONFIRMATION_LINK_BASE_URL` to `src/env.ts` and `.env.example`
-
----
-
-## Phase 2: Foundational
-
-**Purpose**: Type definitions and validation schemas shared across all user stories
-
-**⚠️ CRITICAL**: No user story work can begin until this phase is complete
-
-- [ ] T003 [P] Create `src/modules/checkin/checkin.types.ts` with `TicketSummary` type, `CheckerAction` union, and pure function `getAllowedActions(status): CheckerAction[]`
-- [ ] T004 [P] Create `src/modules/checkin/checkin.validators.ts` with `scanSchema` and `ticketActionSchema` Zod schemas
+- [x] T001 Delete existing `src/modules/checkin/` entirely (old single-endpoint `POST /internal/checkin` attempt)
+- [x] T002 [P] Add `CONFIRMATION_JWT_SECRET`, `CONFIRMATION_TOKEN_TTL`, `CONFIRMATION_LINK_BASE_URL` to `src/env.ts` and `.env.example`
+- [x] T003 [P] Create `src/modules/checkin/checkin.types.ts` with `TicketSummary` type, `CheckerAction` union, and pure function `getAllowedActions(status): CheckerAction[]`
+- [x] T004 [P] Create `src/modules/checkin/checkin.validators.ts` with `scanSchema` and `ticketActionSchema` Zod schemas
 
 **Checkpoint**: Foundation ready — types and validators available for all stories
 
