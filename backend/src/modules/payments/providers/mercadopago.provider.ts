@@ -41,7 +41,7 @@ export class MercadoPagoProvider implements PaymentProvider {
           id: item.ticketTypeId,
           title: item.name,
           quantity: item.quantity,
-          unit_price: item.unitPriceCents / 100,
+          unit_price: Math.round(item.unitPriceCents / 100),
         })),
         external_reference: input.externalReference,
         back_urls: {

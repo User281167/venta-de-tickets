@@ -147,7 +147,7 @@ describe('MercadoPagoProvider', () => {
       expect(callBody.items[0].unit_price).toBe(100);
     });
 
-    it('handles missing payerEmail', async () => {
+    it('omits payer when payerEmail not provided', async () => {
       mockPreferenceCreate.mockResolvedValue({
         id: 'pref-3',
         init_point: 'https://checkout.url',
@@ -159,7 +159,7 @@ describe('MercadoPagoProvider', () => {
       });
 
       const callBody = mockPreferenceCreate.mock.calls[0][0].body;
-      expect(callBody.payer.email).toBe('');
+      expect(callBody.payer).toBeUndefined();
     });
   });
 

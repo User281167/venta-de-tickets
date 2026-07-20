@@ -18,12 +18,13 @@ vi.mock('../../src/modules/tickets/tickets.service.js', () => ({
 }));
 
 vi.mock('../../src/modules/payments/payments.repository.js', () => ({
-  createPaymentRow: vi.fn(),
-  createCheckoutTransaction: vi.fn(),
+  createCheckoutReservation: vi.fn(),
   processPaymentWebhook: vi.fn(),
   findByIdWithTickets: vi.fn(),
   findByReference: vi.fn(),
   update: vi.fn(),
+  reclaimExpiredPayment: vi.fn(),
+  markUnfulfillable: vi.fn(),
 }));
 
 vi.mock('../../src/modules/payments/providers/provider.registry.js', () => ({
@@ -58,7 +59,8 @@ describe('payments.service', () => {
     it('creates checkout with valid items and returns checkout URL', async () => {
       vi.mocked(ticketsService.getTicketTypeById).mockResolvedValue(mockTicketType);
       mockCreateCheckout.mockResolvedValue({ checkoutUrl: 'https://mp.com/checkout/123' });
-      vi.mocked(paymentsRepo.createCheckoutTransaction).mockResolvedValue({ paymentId: 'pay-1' });
+      vi.mocked(paymentsRepo.createCheckoutReservation).mockResolvedValue({ paymentId: 'pay-1' });
+      mockCreateCheckout.mockResolvedValue({ checkoutUrl: 'https://mp.com/checkout/123', providerTxId: 'pref-123' });
 
       const result = await paymentsService.createCheckout(
         'user-1',
@@ -71,6 +73,7 @@ describe('payments.service', () => {
       expect(result).toMatchObject({
         paymentId: expect.any(String),
         checkoutUrl: 'https://mp.com/checkout/123',
+        preferenceId: 'pref-123',
       });
     });
 
@@ -103,6 +106,19 @@ describe('payments.service', () => {
       ).rejects.toMatchObject({ code: 'MAX_PER_USER_EXCEEDED' });
     });
 
+    it('throws ValidationError when quantity is zero', async () => {
+      vi.mocked(ticketsService.getTicketTypeById).mockResolvedValue(mockTicketType);
+
+      await expect(
+        paymentsService.createCheckout(
+          'user-1',
+          [{ ticketTypeId: 'tt-1', quantity: 0 }],
+          'https://frontend.com/return',
+          'mercadopago',
+        ),
+      ).rejects.toMatchObject({ code: 'INVALID_QUANTITY' });
+    });
+
     it('throws ValidationError when exceeding available stock', async () => {
       vi.mocked(ticketsService.getTicketTypeById).mockResolvedValue({
         ...mockTicketType,
@@ -129,7 +145,8 @@ describe('payments.service', () => {
         .mockResolvedValueOnce(mockTT2);
 
       mockCreateCheckout.mockResolvedValue({ checkoutUrl: 'https://mp.com/checkout/123' });
-      vi.mocked(paymentsRepo.createCheckoutTransaction).mockResolvedValue({ paymentId: 'pay-1' });
+      vi.mocked(paymentsRepo.createCheckoutReservation).mockResolvedValue({ paymentId: 'pay-1' });
+      mockCreateCheckout.mockResolvedValue({ checkoutUrl: 'https://mp.com/checkout/123', providerTxId: 'pref-multi' });
 
       const result = await paymentsService.createCheckout(
         'user-1',
@@ -142,7 +159,6 @@ describe('payments.service', () => {
       );
 
       expect(result).toBeDefined();
-      const totalCents = 50000 * 1 + 25000 * 3;
       expect(mockCreateCheckout).toHaveBeenCalledWith(
         expect.objectContaining({
           items: expect.arrayContaining([
@@ -225,6 +241,92 @@ describe('payments.service', () => {
 
       expect(result).toEqual({ received: true });
       expect(paymentsRepo.processPaymentWebhook).not.toHaveBeenCalled();
+      expect(ticketsService.generateQrForTicket).not.toHaveBeenCalled();
+    });
+
+    it('throws NotFoundError when payment does not exist', async () => {
+      mockParseWebhook.mockResolvedValue({
+        reference: 'nonexistent',
+        status: 'approved',
+        externalId: 'mp-tx-000',
+        rawPayload: {},
+      });
+
+      vi.mocked(paymentsRepo.findByReference).mockResolvedValue(null);
+
+      await expect(
+        paymentsService.processWebhook({}, { 'x-signature': 'valid' }, 'mercadopago'),
+      ).rejects.toMatchObject({ code: 'NOT_FOUND' });
+    });
+
+    it('returns with logging when payment failed and late approval arrives', async () => {
+      mockParseWebhook.mockResolvedValue({
+        reference: 'pay-1',
+        status: 'approved',
+        externalId: 'mp-tx-late',
+        rawPayload: {},
+      });
+
+      vi.mocked(paymentsRepo.findByReference).mockResolvedValue({ id: 'pay-1', status: 'failed', provider: 'mercadopago' });
+
+      const result = await paymentsService.processWebhook({}, { 'x-signature': 'valid' }, 'mercadopago');
+
+      expect(result).toEqual({ received: true });
+      expect(paymentsRepo.processPaymentWebhook).not.toHaveBeenCalled();
+    });
+
+    it('returns early when payment expired and event is declined', async () => {
+      mockParseWebhook.mockResolvedValue({
+        reference: 'pay-1',
+        status: 'declined',
+        externalId: 'mp-tx-expired',
+        rawPayload: {},
+      });
+
+      vi.mocked(paymentsRepo.findByReference).mockResolvedValue({ id: 'pay-1', status: 'expired', provider: 'mercadopago' });
+
+      const result = await paymentsService.processWebhook({}, { 'x-signature': 'valid' }, 'mercadopago');
+
+      expect(result).toEqual({ received: true });
+      expect(paymentsRepo.reclaimExpiredPayment).not.toHaveBeenCalled();
+    });
+
+    it('reclaims expired payment when late approval webhook arrives', async () => {
+      mockParseWebhook.mockResolvedValue({
+        reference: 'pay-1',
+        status: 'approved',
+        externalId: 'mp-tx-reclaim',
+        rawPayload: {},
+      });
+
+      vi.mocked(paymentsRepo.findByReference).mockResolvedValue({ id: 'pay-1', status: 'expired', provider: 'mercadopago' });
+      vi.mocked(paymentsRepo.reclaimExpiredPayment).mockResolvedValue({
+        outcome: 'reclaimed',
+        ticketIds: ['ticket-1', 'ticket-2'],
+      });
+
+      const result = await paymentsService.processWebhook({}, { 'x-signature': 'valid' }, 'mercadopago');
+
+      expect(result).toEqual({ received: true });
+      expect(paymentsRepo.reclaimExpiredPayment).toHaveBeenCalled();
+      expect(ticketsService.generateQrForTicket).toHaveBeenCalledTimes(2);
+    });
+
+    it('marks unfulfillable when reclaim fails due to sold out', async () => {
+      mockParseWebhook.mockResolvedValue({
+        reference: 'pay-1',
+        status: 'approved',
+        externalId: 'mp-tx-reclaim-fail',
+        rawPayload: {},
+      });
+
+      vi.mocked(paymentsRepo.findByReference).mockResolvedValue({ id: 'pay-1', status: 'expired', provider: 'mercadopago' });
+      vi.mocked(paymentsRepo.reclaimExpiredPayment).mockResolvedValue({ outcome: 'unfulfillable' });
+
+      const result = await paymentsService.processWebhook({}, { 'x-signature': 'valid' }, 'mercadopago');
+
+      expect(result).toEqual({ received: true });
+      expect(paymentsRepo.markUnfulfillable).toHaveBeenCalled();
       expect(ticketsService.generateQrForTicket).not.toHaveBeenCalled();
     });
 

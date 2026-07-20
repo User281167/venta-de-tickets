@@ -40,7 +40,7 @@ describe('tickets.repository.client', () => {
       const result = await repo.findByUserId('user-1', 1, 20);
 
       expect(mockPrisma.ticket.findMany).toHaveBeenCalledWith({
-        where: { userId: 'user-1' },
+        where: { userId: 'user-1', status: { not: 'expired' } },
         select: expect.any(Object),
         skip: 0,
         take: 20,
@@ -76,7 +76,7 @@ describe('tickets.repository.client', () => {
       const result = await repo.countByUserId('user-1');
 
       expect(mockPrisma.ticket.count).toHaveBeenCalledWith({
-        where: { userId: 'user-1' },
+        where: { userId: 'user-1', status: { not: 'expired' } },
       });
       expect(result).toBe(5);
     });
