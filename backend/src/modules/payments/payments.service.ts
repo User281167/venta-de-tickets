@@ -143,11 +143,11 @@ export async function processWebhook(
   headers: Record<string, string>,
   providerName: string,
 ) {
-  logger.info(`Processing webhook: payload=${JSON.stringify(payload)}`);
+  logger.info(`Processing webhook: providerName=${providerName}`);
   const provider = getProvider(providerName);
 
   if (!provider.verifySignature(payload, headers)) {
-    logger.warn(`Invalid webhook signature: payload=${JSON.stringify(payload)}`);
+    logger.warn(`Invalid webhook signature: providerName=${providerName}`);
 
     throw Object.assign(new Error('Invalid webhook signature'), {
       statusCode: 400,
