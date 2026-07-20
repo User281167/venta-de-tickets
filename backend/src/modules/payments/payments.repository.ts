@@ -575,6 +575,10 @@ export async function createAdminPaymentTransaction(input: {
   }>;
   generateTicketCode: () => string;
 }) {
+  // No se usa API de proveedor para enviar dinero
+  // Admin puede bypass de todos los campos incluso si ticket no esta disponible
+  // Tciket solo requiere que no se supere la cantidad total, no de si esta enable
+
   return prisma.$transaction(async (tx) => {
     const ticketIds: string[] = [];
 
@@ -732,7 +736,16 @@ export async function refundTransaction(input: {
     `;
 
     await tx.$executeRaw`
-      UPDATE payments SET status = 'refunded' WHERE id = ${input.paymentId}::uuid
+      UPDATE payments
+      SET status = 'refunded',
+          metadata = COALESCE(metadata, '{}'::jsonb) || jsonb_build_object(
+            'refund', jsonb_build_object(
+              'reason', ${input.reason}::text,
+              'processedBy', ${input.processedById}::text,
+              'processedAt', now()
+            )
+          )
+      WHERE id = ${input.paymentId}::uuid
     `;
 
     return { paymentId: input.paymentId, status: 'refunded' as const };

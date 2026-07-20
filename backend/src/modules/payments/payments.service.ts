@@ -395,6 +395,10 @@ export async function processRefund(input: {
   reason: string;
   processedById: string;
 }) {
+  // Verificar que el pago existe y está completado
+  // (no se puede revertir un pago que no esté completado)
+  // No se usa API de proveedor para enviar dinero
+  // (requiere que se haga el pago de reembolso manual) esto solo indica a BD interna el estado del pago
   logger.info(
     `Processing refund: paymentId=${input.paymentId} reason=${input.reason} processedById=${input.processedById}`,
   );
