@@ -1,13 +1,32 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const mockCheckInDirect = vi.hoisted(() => vi.fn());
-
 vi.mock('../../src/shared/config/env.js', () => ({
-  env: { QR_JWT_SECRET: 'test-secret-min-32-chars-long-for-jwt!!' },
+  env: {
+    QR_JWT_SECRET: 'test-qr-secret-min-32-chars-long-for-jwt!!',
+    CONFIRMATION_JWT_SECRET: 'test-confirm-secret-min-32-chars-long!!',
+    CONFIRMATION_TOKEN_TTL: '30m',
+    CONFIRMATION_LINK_BASE_URL: 'https://frontend.test',
+  },
 }));
 
+const mockFindTicketForScan = vi.hoisted(() => vi.fn());
+const mockConfirmEntryDirect = vi.hoisted(() => vi.fn());
+const mockAllowEntry = vi.hoisted(() => vi.fn());
+const mockRequestConfirmation = vi.hoisted(() => vi.fn());
+
 vi.mock('../../src/modules/checkin/checkin.repository.js', () => ({
-  checkInDirect: mockCheckInDirect,
+  findTicketForScan: mockFindTicketForScan,
+  confirmEntryDirect: mockConfirmEntryDirect,
+  allowEntry: mockAllowEntry,
+  requestConfirmation: mockRequestConfirmation,
+}));
+
+const mockSendConfirmationLink = vi.hoisted(() => vi.fn());
+
+vi.mock('../../src/modules/messaging/index.js', () => ({
+  messagingClient: {
+    sendConfirmationLink: mockSendConfirmationLink,
+  },
 }));
 
 import jwt from 'jsonwebtoken';
@@ -18,71 +37,229 @@ describe('checkin.service', () => {
     vi.clearAllMocks();
   });
 
-  describe('checkIn', () => {
-    it('returns success with ticket id when check-in succeeds', async () => {
-      const qrToken = jwt.sign({ tid: 'ticket-1', iat: Date.now() }, 'test-secret-min-32-chars-long-for-jwt!!');
-      mockCheckInDirect.mockResolvedValue({ action: 'entered', ticket: { id: 'ticket-1' } });
+  describe('scanTicket', () => {
+    it('returns ticket summary with allowedActions for paid ticket', async () => {
+      const qrToken = jwt.sign(
+        { tid: 'ticket-1' },
+        'test-qr-secret-min-32-chars-long-for-jwt!!',
+      );
+      mockFindTicketForScan.mockResolvedValue({
+        ticketId: 'ticket-1',
+        status: 'paid',
+        attendeeName: 'Maria Garcia',
+        attendeeCedula: '12345678',
+        ticketTypeName: 'General',
+        checkedInAt: null,
+        allowedActions: [],
+      });
 
-      const result = await checkinService.checkIn(qrToken, 'checker-1');
+      const result = await checkinService.scanTicket(qrToken);
 
-      expect(result).toEqual({ success: true, ticket: { id: 'ticket-1' } });
-      expect(mockCheckInDirect).toHaveBeenCalledWith('ticket-1', 'checker-1');
+      expect(result.allowedActions).toEqual([
+        'confirm_entry_direct',
+        'request_confirmation',
+      ]);
+    });
+
+    it('returns empty allowedActions for used ticket', async () => {
+      const qrToken = jwt.sign(
+        { tid: 'ticket-1' },
+        'test-qr-secret-min-32-chars-long-for-jwt!!',
+      );
+      mockFindTicketForScan.mockResolvedValue({
+        ticketId: 'ticket-1',
+        status: 'used',
+        attendeeName: 'Maria',
+        attendeeCedula: '12345678',
+        ticketTypeName: 'General',
+        checkedInAt: '2026-07-20T15:00:00.000Z',
+        allowedActions: [],
+      });
+
+      const result = await checkinService.scanTicket(qrToken);
+
+      expect(result.allowedActions).toEqual([]);
+    });
+
+    it('returns allow_entry for confirmed ticket', async () => {
+      const qrToken = jwt.sign(
+        { tid: 'ticket-1' },
+        'test-qr-secret-min-32-chars-long-for-jwt!!',
+      );
+      mockFindTicketForScan.mockResolvedValue({
+        ticketId: 'ticket-1',
+        status: 'confirmed',
+        attendeeName: 'Maria',
+        attendeeCedula: '12345678',
+        ticketTypeName: 'General',
+        checkedInAt: null,
+        allowedActions: [],
+      });
+
+      const result = await checkinService.scanTicket(qrToken);
+
+      expect(result.allowedActions).toEqual(['allow_entry']);
     });
 
     it('throws INVALID_QR when JWT signature is invalid', async () => {
-      const tamperedToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.invalid.signature';
-
-      await expect(checkinService.checkIn(tamperedToken, 'checker-1')).rejects.toMatchObject({
+      await expect(
+        checkinService.scanTicket('not-a-jwt'),
+      ).rejects.toMatchObject({
         statusCode: 400,
         code: 'INVALID_QR',
       });
-      expect(mockCheckInDirect).not.toHaveBeenCalled();
-    });
-
-    it('throws INVALID_QR when JWT payload has no tid', async () => {
-      const qrToken = jwt.sign({ foo: 'bar' }, 'test-secret-min-32-chars-long-for-jwt!!');
-
-      mockCheckInDirect.mockResolvedValue({ action: 'not_found' });
-      await expect(checkinService.checkIn(qrToken, 'checker-1')).rejects.toThrow('Ticket not found');
     });
 
     it('throws NOT_FOUND when ticket does not exist', async () => {
-      const qrToken = jwt.sign({ tid: 'nonexistent', iat: Date.now() }, 'test-secret-min-32-chars-long-for-jwt!!');
-      mockCheckInDirect.mockResolvedValue({ action: 'not_found' });
+      const qrToken = jwt.sign(
+        { tid: 'nonexistent' },
+        'test-qr-secret-min-32-chars-long-for-jwt!!',
+      );
+      mockFindTicketForScan.mockResolvedValue(null);
 
-      await expect(checkinService.checkIn(qrToken, 'checker-1')).rejects.toMatchObject({
+      await expect(checkinService.scanTicket(qrToken)).rejects.toMatchObject({
         statusCode: 404,
         code: 'NOT_FOUND',
       });
     });
+  });
 
-    it('throws TICKET_NOT_AVAILABLE (409) when ticket already used', async () => {
-      const qrToken = jwt.sign({ tid: 'ticket-1', iat: Date.now() }, 'test-secret-min-32-chars-long-for-jwt!!');
-      mockCheckInDirect.mockResolvedValue({ action: 'already_used', ticket: { checkedInAt: new Date() } });
+  describe('confirmEntryDirect', () => {
+    it('resolves when repo returns true', async () => {
+      mockConfirmEntryDirect.mockResolvedValue(true);
 
-      await expect(checkinService.checkIn(qrToken, 'checker-1')).rejects.toMatchObject({
-        statusCode: 409,
-        code: 'TICKET_NOT_AVAILABLE',
-        currentStatus: 'used',
-      });
+      await expect(
+        checkinService.confirmEntryDirect('ticket-1', 'checker-1'),
+      ).resolves.toBeUndefined();
     });
 
-    it('throws TICKET_NOT_AVAILABLE (409) when ticket has wrong status', async () => {
-      const qrToken = jwt.sign({ tid: 'ticket-1', iat: Date.now() }, 'test-secret-min-32-chars-long-for-jwt!!');
-      mockCheckInDirect.mockResolvedValue({ action: 'wrong_status', currentStatus: 'reserved' });
+    it('throws ConflictError when repo returns false (race lost)', async () => {
+      mockConfirmEntryDirect.mockResolvedValue(false);
 
-      await expect(checkinService.checkIn(qrToken, 'checker-1')).rejects.toMatchObject({
+      await expect(
+        checkinService.confirmEntryDirect('ticket-1', 'checker-1'),
+      ).rejects.toMatchObject({
         statusCode: 409,
-        code: 'TICKET_NOT_AVAILABLE',
-        currentStatus: 'reserved',
+        code: 'CONFLICT',
       });
     });
+  });
 
-    it('throws INVALID_QR when JWT is empty string', async () => {
-      await expect(checkinService.checkIn('', 'checker-1')).rejects.toMatchObject({
-        statusCode: 400,
-        code: 'INVALID_QR',
+  describe('race condition: two concurrent confirm-entry on same ticket', () => {
+    it('exactly one resolves, the other rejects with 409', async () => {
+      let callCount = 0;
+      mockConfirmEntryDirect.mockImplementation(async () => {
+        callCount += 1;
+        if (callCount === 1) return true;
+        return false;
       });
+
+      const results = await Promise.allSettled([
+        checkinService.confirmEntryDirect('ticket-1', 'checker-A'),
+        checkinService.confirmEntryDirect('ticket-1', 'checker-B'),
+      ]);
+
+      const fulfilled = results.filter((r) => r.status === 'fulfilled');
+      const rejected = results.filter((r) => r.status === 'rejected');
+
+      expect(fulfilled).toHaveLength(1);
+      expect(rejected).toHaveLength(1);
+      expect((rejected[0] as PromiseRejectedResult).reason).toMatchObject({
+        statusCode: 409,
+        code: 'CONFLICT',
+      });
+      expect(mockConfirmEntryDirect).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('requestConfirmation', () => {
+    it('sends confirmation link when repo returns ok with buyer contact', async () => {
+      mockRequestConfirmation.mockResolvedValue({
+        ok: true,
+        buyer: {
+          fullName: 'Maria Garcia',
+          email: 'maria@example.com',
+          phone: null,
+        },
+      });
+      mockSendConfirmationLink.mockResolvedValue(undefined);
+
+      await checkinService.requestConfirmation('ticket-1', 'checker-1');
+
+      expect(mockSendConfirmationLink).toHaveBeenCalledTimes(1);
+      const payload = mockSendConfirmationLink.mock.calls[0][0];
+      expect(payload.channel).toBe('email');
+      expect(payload.buyerContact).toBe('maria@example.com');
+      expect(payload.ticketId).toBe('ticket-1');
+      expect(payload.confirmationUrl).toMatch(/^https:\/\/frontend\.test\/confirmaciones\?token=/);
+    });
+
+    it('uses whatsapp when buyer has no email but has phone', async () => {
+      mockRequestConfirmation.mockResolvedValue({
+        ok: true,
+        buyer: {
+          fullName: 'Maria',
+          email: null,
+          phone: '+573001234567',
+        },
+      });
+      mockSendConfirmationLink.mockResolvedValue(undefined);
+
+      await checkinService.requestConfirmation('ticket-1', 'checker-1');
+
+      expect(mockSendConfirmationLink.mock.calls[0][0].channel).toBe('whatsapp');
+      expect(mockSendConfirmationLink.mock.calls[0][0].buyerContact).toBe('+573001234567');
+    });
+
+    it('does not send link when buyer has no contact info', async () => {
+      mockRequestConfirmation.mockResolvedValue({
+        ok: true,
+        buyer: { fullName: 'Maria', email: null, phone: null },
+      });
+
+      await checkinService.requestConfirmation('ticket-1', 'checker-1');
+
+      expect(mockSendConfirmationLink).not.toHaveBeenCalled();
+    });
+
+    it('throws NotFoundError when repo returns not_found', async () => {
+      mockRequestConfirmation.mockResolvedValue({
+        ok: false,
+        reason: 'not_found',
+      });
+
+      await expect(
+        checkinService.requestConfirmation('ticket-1', 'checker-1'),
+      ).rejects.toMatchObject({ statusCode: 404, code: 'NOT_FOUND' });
+    });
+
+    it('throws ConflictError when repo returns not_available', async () => {
+      mockRequestConfirmation.mockResolvedValue({
+        ok: false,
+        reason: 'not_available',
+      });
+
+      await expect(
+        checkinService.requestConfirmation('ticket-1', 'checker-1'),
+      ).rejects.toMatchObject({ statusCode: 409, code: 'CONFLICT' });
+    });
+  });
+
+  describe('allowEntry', () => {
+    it('resolves when repo returns true', async () => {
+      mockAllowEntry.mockResolvedValue(true);
+
+      await expect(
+        checkinService.allowEntry('ticket-1', 'checker-1'),
+      ).resolves.toBeUndefined();
+    });
+
+    it('throws ConflictError when repo returns false', async () => {
+      mockAllowEntry.mockResolvedValue(false);
+
+      await expect(
+        checkinService.allowEntry('ticket-1', 'checker-1'),
+      ).rejects.toMatchObject({ statusCode: 409, code: 'CONFLICT' });
     });
   });
 });

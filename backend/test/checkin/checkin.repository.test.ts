@@ -1,16 +1,22 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const { mockTx, mockPrisma } = vi.hoisted(() => {
+  const ticketMock = {
+    findUnique: vi.fn(),
+    update: vi.fn(),
+    updateMany: vi.fn(),
+  };
+
   const tx = {
     $queryRaw: vi.fn(),
-    $executeRaw: vi.fn(),
+    ticket: ticketMock,
   };
 
   return {
     mockTx: tx,
     mockPrisma: {
-      $transaction: vi.fn((fn: Function) => fn(tx)),
-      $queryRaw: vi.fn(),
+      $transaction: vi.fn((fn: (tx: typeof tx) => unknown) => fn(tx)),
+      ticket: ticketMock,
     },
   };
 });
@@ -26,257 +32,156 @@ describe('checkin.repository', () => {
     vi.clearAllMocks();
   });
 
-  describe('checkInDirect', () => {
-    it('returns entered when ticket is paid', async () => {
-      mockTx.$queryRaw.mockResolvedValue([{ id: 'ticket-1', status: 'paid', checked_in_at: null }]);
-      mockTx.$executeRaw.mockResolvedValue([1]);
+  describe('confirmEntryDirect', () => {
+    it('returns true when transition affects 1 row', async () => {
+      mockPrisma.ticket.updateMany.mockResolvedValue({ count: 1 });
 
-      const result = await repo.checkInDirect('ticket-1', 'checker-1');
+      const result = await repo.confirmEntryDirect('ticket-1', 'checker-1');
 
-      expect(result).toEqual({ action: 'entered', ticket: { id: 'ticket-1' } });
-      expect(mockTx.$executeRaw).toHaveBeenCalled();
+      expect(result).toBe(true);
+      expect(mockPrisma.ticket.updateMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { id: 'ticket-1', status: 'paid' },
+          data: expect.objectContaining({
+            status: 'used',
+            checkedInBy: 'checker-1',
+          }),
+        }),
+      );
     });
 
-    it('returns not_found when ticket does not exist', async () => {
-      mockTx.$queryRaw.mockResolvedValue([]);
+    it('returns false when transition affects 0 rows (race lost)', async () => {
+      mockPrisma.ticket.updateMany.mockResolvedValue({ count: 0 });
 
-      const result = await repo.checkInDirect('nonexistent', 'checker-1');
+      const result = await repo.confirmEntryDirect('ticket-1', 'checker-1');
 
-      expect(result).toEqual({ action: 'not_found' });
-      expect(mockTx.$executeRaw).not.toHaveBeenCalled();
-    });
-
-    it('returns already_used when ticket already used', async () => {
-      mockTx.$queryRaw.mockResolvedValue([{ id: 'ticket-1', status: 'used', checked_in_at: new Date() }]);
-
-      const result = await repo.checkInDirect('ticket-1', 'checker-1');
-
-      expect(result).toEqual({ action: 'already_used', ticket: { checkedInAt: expect.any(Date) } });
-      expect(mockTx.$executeRaw).not.toHaveBeenCalled();
-    });
-
-    it('returns wrong_status when ticket is reserved', async () => {
-      mockTx.$queryRaw.mockResolvedValue([{ id: 'ticket-1', status: 'reserved', checked_in_at: null }]);
-
-      const result = await repo.checkInDirect('ticket-1', 'checker-1');
-
-      expect(result).toEqual({ action: 'wrong_status', currentStatus: 'reserved' });
-      expect(mockTx.$executeRaw).not.toHaveBeenCalled();
-    });
-
-    it('returns wrong_status when ticket is pending_confirmation', async () => {
-      mockTx.$queryRaw.mockResolvedValue([{ id: 'ticket-1', status: 'pending_confirmation', checked_in_at: null }]);
-
-      const result = await repo.checkInDirect('ticket-1', 'checker-1');
-
-      expect(result).toEqual({ action: 'wrong_status', currentStatus: 'pending_confirmation' });
-    });
-
-    it('returns wrong_status when ticket is confirmed', async () => {
-      mockTx.$queryRaw.mockResolvedValue([{ id: 'ticket-1', status: 'confirmed', checked_in_at: null }]);
-
-      const result = await repo.checkInDirect('ticket-1', 'checker-1');
-
-      expect(result).toEqual({ action: 'wrong_status', currentStatus: 'confirmed' });
-    });
-
-    it('returns wrong_status when ticket is cancelled', async () => {
-      mockTx.$queryRaw.mockResolvedValue([{ id: 'ticket-1', status: 'cancelled', checked_in_at: null }]);
-
-      const result = await repo.checkInDirect('ticket-1', 'checker-1');
-
-      expect(result).toEqual({ action: 'wrong_status', currentStatus: 'cancelled' });
-    });
-
-    it('returns wrong_status when ticket is expired', async () => {
-      mockTx.$queryRaw.mockResolvedValue([{ id: 'ticket-1', status: 'expired', checked_in_at: null }]);
-
-      const result = await repo.checkInDirect('ticket-1', 'checker-1');
-
-      expect(result).toEqual({ action: 'wrong_status', currentStatus: 'expired' });
+      expect(result).toBe(false);
     });
   });
 
   describe('requestConfirmation', () => {
-    it('returns pending_confirmation when ticket is paid', async () => {
-      mockTx.$queryRaw.mockResolvedValue([{ id: 'ticket-1', status: 'paid', checked_in_at: null }]);
-      mockTx.$executeRaw.mockResolvedValue([1]);
+    it('locks the row, transitions paid -> pending_confirmation, returns buyer contact', async () => {
+      mockTx.$queryRaw.mockResolvedValue([{ id: 'ticket-1' }]);
+      mockTx.ticket.findUnique.mockResolvedValue({
+        status: 'paid',
+        user: {
+          fullName: 'Maria Garcia',
+          email: 'maria@example.com',
+          phone: '+573001234567',
+        },
+      });
+      mockTx.ticket.update.mockResolvedValue({ id: 'ticket-1' });
 
-      const result = await repo.requestConfirmation('ticket-1', 'checker-1');
+      const result = await repo.requestConfirmation('ticket-1');
 
-      expect(result).toEqual({ action: 'pending_confirmation', ticket: { id: 'ticket-1' } });
+      expect(mockTx.$queryRaw).toHaveBeenCalled();
+      expect(result).toEqual({
+        ok: true,
+        buyer: {
+          fullName: 'Maria Garcia',
+          email: 'maria@example.com',
+          phone: '+573001234567',
+        },
+      });
     });
 
-    it('returns not_found when ticket does not exist', async () => {
+    it('returns not_found when FOR UPDATE finds no row', async () => {
       mockTx.$queryRaw.mockResolvedValue([]);
 
-      const result = await repo.requestConfirmation('nonexistent', 'checker-1');
+      const result = await repo.requestConfirmation('nonexistent');
 
-      expect(result).toEqual({ action: 'not_found' });
+      expect(result).toEqual({ ok: false, reason: 'not_found' });
+      expect(mockTx.ticket.findUnique).not.toHaveBeenCalled();
+      expect(mockTx.ticket.update).not.toHaveBeenCalled();
     });
 
-    it('returns already_used when ticket already used', async () => {
-      mockTx.$queryRaw.mockResolvedValue([{ id: 'ticket-1', status: 'used', checked_in_at: new Date() }]);
+    it('returns not_available when ticket status is not paid', async () => {
+      mockTx.$queryRaw.mockResolvedValue([{ id: 'ticket-1' }]);
+      mockTx.ticket.findUnique.mockResolvedValue({
+        status: 'confirmed',
+        user: { fullName: 'x', email: null, phone: null },
+      });
 
-      const result = await repo.requestConfirmation('ticket-1', 'checker-1');
+      const result = await repo.requestConfirmation('ticket-1');
 
-      expect(result).toEqual({ action: 'already_used', ticket: { checkedInAt: expect.any(Date) } });
-    });
-
-    it('returns wrong_status when ticket is not paid', async () => {
-      mockTx.$queryRaw.mockResolvedValue([{ id: 'ticket-1', status: 'reserved', checked_in_at: null }]);
-
-      const result = await repo.requestConfirmation('ticket-1', 'checker-1');
-
-      expect(result).toEqual({ action: 'wrong_status', currentStatus: 'reserved' });
-    });
-
-    it('returns wrong_status when update affected 0 rows (race condition)', async () => {
-      mockTx.$queryRaw.mockResolvedValue([{ id: 'ticket-1', status: 'paid', checked_in_at: null }]);
-      mockTx.$executeRaw.mockResolvedValue(0);
-
-      const result = await repo.requestConfirmation('ticket-1', 'checker-1');
-
-      expect(result).toEqual({ action: 'wrong_status', currentStatus: 'paid' });
-    });
-  });
-
-  describe('confirmTicket', () => {
-    it('returns confirmed_entry when ticket is pending_confirmation', async () => {
-      mockTx.$queryRaw.mockResolvedValue([{ id: 'ticket-1', status: 'pending_confirmation', checked_in_at: null }]);
-      mockTx.$executeRaw.mockResolvedValue([1]);
-
-      const result = await repo.confirmTicket('ticket-1');
-
-      expect(result).toEqual({ action: 'confirmed_entry', ticket: { id: 'ticket-1' } });
-    });
-
-    it('returns not_found when ticket does not exist', async () => {
-      mockTx.$queryRaw.mockResolvedValue([]);
-
-      const result = await repo.confirmTicket('nonexistent');
-
-      expect(result).toEqual({ action: 'not_found' });
-    });
-
-    it('returns already_used when ticket already used', async () => {
-      mockTx.$queryRaw.mockResolvedValue([{ id: 'ticket-1', status: 'used', checked_in_at: new Date() }]);
-
-      const result = await repo.confirmTicket('ticket-1');
-
-      expect(result).toEqual({ action: 'already_used', ticket: { checkedInAt: expect.any(Date) } });
-    });
-
-    it('returns wrong_status when ticket is not pending_confirmation', async () => {
-      mockTx.$queryRaw.mockResolvedValue([{ id: 'ticket-1', status: 'paid', checked_in_at: null }]);
-
-      const result = await repo.confirmTicket('ticket-1');
-
-      expect(result).toEqual({ action: 'wrong_status', currentStatus: 'paid' });
-    });
-
-    it('returns wrong_status when update affected 0 rows (race condition)', async () => {
-      mockTx.$queryRaw.mockResolvedValue([{ id: 'ticket-1', status: 'pending_confirmation', checked_in_at: null }]);
-      mockTx.$executeRaw.mockResolvedValue(0);
-
-      const result = await repo.confirmTicket('ticket-1');
-
-      expect(result).toEqual({ action: 'wrong_status', currentStatus: 'pending_confirmation' });
-    });
-  });
-
-  describe('rejectConfirmation', () => {
-    it('reverts ticket from pending_confirmation to paid', async () => {
-      mockTx.$queryRaw.mockResolvedValue([{ id: 'ticket-1', status: 'pending_confirmation', checked_in_at: null }]);
-      mockTx.$executeRaw.mockResolvedValue([1]);
-
-      const result = await repo.rejectConfirmation('ticket-1');
-
-      expect(result).toEqual({ action: 'wrong_status', currentStatus: 'paid' });
-      expect(mockTx.$executeRaw).toHaveBeenCalled();
-    });
-
-    it('returns not_found when ticket does not exist', async () => {
-      mockTx.$queryRaw.mockResolvedValue([]);
-
-      const result = await repo.rejectConfirmation('nonexistent');
-
-      expect(result).toEqual({ action: 'not_found' });
-    });
-
-    it('returns wrong_status when ticket is not pending_confirmation', async () => {
-      mockTx.$queryRaw.mockResolvedValue([{ id: 'ticket-1', status: 'paid', checked_in_at: null }]);
-
-      const result = await repo.rejectConfirmation('ticket-1');
-
-      expect(result).toEqual({ action: 'wrong_status', currentStatus: 'paid' });
-      expect(mockTx.$executeRaw).not.toHaveBeenCalled();
+      expect(result).toEqual({ ok: false, reason: 'not_available' });
+      expect(mockTx.ticket.update).not.toHaveBeenCalled();
     });
   });
 
   describe('allowEntry', () => {
-    it('returns entered when ticket is confirmed', async () => {
-      mockTx.$queryRaw.mockResolvedValue([{ id: 'ticket-1', status: 'confirmed', checked_in_at: null }]);
-      mockTx.$executeRaw.mockResolvedValue([1]);
+    it('returns true on confirmed -> used', async () => {
+      mockPrisma.ticket.updateMany.mockResolvedValue({ count: 1 });
 
       const result = await repo.allowEntry('ticket-1', 'checker-1');
 
-      expect(result).toEqual({ action: 'entered', ticket: { id: 'ticket-1' } });
+      expect(result).toBe(true);
+      expect(mockPrisma.ticket.updateMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { id: 'ticket-1', status: 'confirmed' },
+        }),
+      );
     });
 
-    it('returns not_found when ticket does not exist', async () => {
-      mockTx.$queryRaw.mockResolvedValue([]);
-
-      const result = await repo.allowEntry('nonexistent', 'checker-1');
-
-      expect(result).toEqual({ action: 'not_found' });
-    });
-
-    it('returns already_used when ticket already used', async () => {
-      mockTx.$queryRaw.mockResolvedValue([{ id: 'ticket-1', status: 'used', checked_in_at: new Date() }]);
+    it('returns false when transition affects 0 rows', async () => {
+      mockPrisma.ticket.updateMany.mockResolvedValue({ count: 0 });
 
       const result = await repo.allowEntry('ticket-1', 'checker-1');
 
-      expect(result).toEqual({ action: 'already_used', ticket: { checkedInAt: expect.any(Date) } });
-    });
-
-    it('returns wrong_status when ticket is paid (not confirmed)', async () => {
-      mockTx.$queryRaw.mockResolvedValue([{ id: 'ticket-1', status: 'paid', checked_in_at: null }]);
-
-      const result = await repo.allowEntry('ticket-1', 'checker-1');
-
-      expect(result).toEqual({ action: 'wrong_status', currentStatus: 'paid' });
-    });
-
-    it('returns wrong_status when ticket is pending_confirmation', async () => {
-      mockTx.$queryRaw.mockResolvedValue([{ id: 'ticket-1', status: 'pending_confirmation', checked_in_at: null }]);
-
-      const result = await repo.allowEntry('ticket-1', 'checker-1');
-
-      expect(result).toEqual({ action: 'wrong_status', currentStatus: 'pending_confirmation' });
+      expect(result).toBe(false);
     });
   });
 
-  describe('findByPendingConfirmationAndConfirmed', () => {
-    it('returns pending and confirmed tickets ordered by confirmation_requested_at', async () => {
-      const expectedRows = [
-        { id: 'ticket-1', ticket_code: 'TC001', status: 'pending_confirmation', confirmation_requested_at: new Date() },
-        { id: 'ticket-2', ticket_code: 'TC002', status: 'confirmed', confirmation_requested_at: null },
-      ];
-      mockPrisma.$queryRaw.mockResolvedValue(expectedRows);
+  describe('confirmTicket', () => {
+    it('returns true on pending_confirmation -> confirmed', async () => {
+      mockPrisma.ticket.updateMany.mockResolvedValue({ count: 1 });
 
-      const result = await repo.findByPendingConfirmationAndConfirmed();
+      const result = await repo.confirmTicket('ticket-1');
 
-      expect(result).toEqual(expectedRows);
-      expect(mockPrisma.$queryRaw).toHaveBeenCalled();
+      expect(result).toBe(true);
+      expect(mockPrisma.ticket.updateMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { id: 'ticket-1', status: 'pending_confirmation' },
+          data: { status: 'confirmed' },
+        }),
+      );
     });
 
-    it('returns empty array when no matching tickets', async () => {
-      mockPrisma.$queryRaw.mockResolvedValue([]);
+    it('returns false when transition affects 0 rows', async () => {
+      mockPrisma.ticket.updateMany.mockResolvedValue({ count: 0 });
 
-      const result = await repo.findByPendingConfirmationAndConfirmed();
+      const result = await repo.confirmTicket('ticket-1');
 
-      expect(result).toEqual([]);
+      expect(result).toBe(false);
+    });
+  });
+
+  describe('rejectConfirmation', () => {
+    it('returns true on pending_confirmation -> paid', async () => {
+      mockTx.ticket.findUnique.mockResolvedValue({ status: 'pending_confirmation' });
+      mockTx.ticket.updateMany.mockResolvedValue({ count: 1 });
+
+      const result = await repo.rejectConfirmation('ticket-1');
+
+      expect(result).toBe(true);
+    });
+
+    it('returns false when ticket does not exist', async () => {
+      mockTx.ticket.findUnique.mockResolvedValue(null);
+
+      const result = await repo.rejectConfirmation('nonexistent');
+
+      expect(result).toBe(false);
+      expect(mockTx.ticket.updateMany).not.toHaveBeenCalled();
+    });
+
+    it('returns false when ticket is not in pending_confirmation', async () => {
+      mockTx.ticket.findUnique.mockResolvedValue({ status: 'paid' });
+
+      const result = await repo.rejectConfirmation('ticket-1');
+
+      expect(result).toBe(false);
+      expect(mockTx.ticket.updateMany).not.toHaveBeenCalled();
     });
   });
 });

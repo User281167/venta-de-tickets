@@ -71,7 +71,7 @@
 **Purpose**: Mount both routers in main app and finalize
 
 - [x] T017 Mount `checkin.routes` on `/internal/checkin` and `confirmations.routes` on `/confirmations` in main Express app (`src/app.ts` or equivalent entry point)
-- [ ] T018 Write Vitest race condition test: two concurrent `confirm-entry` requests on the same ticket → first returns 200, second returns 409 `TICKET_NOT_AVAILABLE` (use `Promise.all` to fire both simultaneously)
+- [x] T018 Write Vitest race condition test: two concurrent `confirm-entry` requests on the same ticket → first returns 200, second returns 409 `TICKET_NOT_AVAILABLE` (use `Promise.all` to fire both simultaneously)
 
 **Checkpoint**: All endpoints wired and verified.
 
@@ -79,7 +79,7 @@
 
 ## Phase 6: Documentation
 
-- [ ] T019 Update `docs/spec-tickets-lifecycle.md` to include `pending_confirmation ⇄ paid ⇄ confirmed` transitions in state diagram
+- [x] T019 Update `docs/spec-tickets-lifecycle.md` to include `pending_confirmation ⇄ paid ⇄ confirmed` transitions in state diagram
 
 ---
 
