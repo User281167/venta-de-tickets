@@ -13,7 +13,7 @@ interface Props {
 
 type ScannerState = "loading" | "scanning" | "denied" | "unsupported" | "error";
 
-export function QrScannerScan({ onScan, paused, onResume }: Props) {
+export function QrScanner({ onScan, paused, onResume }: Props) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const scannerRef = useRef<QrScanner | null>(null);
   const lastScanRef = useRef<string | null>(null);
@@ -27,11 +27,6 @@ export function QrScannerScan({ onScan, paused, onResume }: Props) {
 
     const video = videoRef.current;
     if (!video) return;
-
-    if (!QrScanner.hasCamera) {
-      setState("unsupported");
-      return;
-    }
 
     const scanner = new QrScanner(
       video,
@@ -58,9 +53,9 @@ export function QrScannerScan({ onScan, paused, onResume }: Props) {
     QrScanner.hasCamera()
       .then((hasCamera) => {
         if (!hasCamera) {
-          setState("unsupported");
           scanner.destroy();
           scannerRef.current = null;
+          setState("unsupported");
           return;
         }
 
