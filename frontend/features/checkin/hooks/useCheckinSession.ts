@@ -16,7 +16,6 @@ export function useCheckinSession() {
     null,
   );
   const [lastScannedToken, setLastScannedToken] = useState<string | null>(null);
-  const [isScanning, setIsScanning] = useState(true);
   const [lastAction, setLastAction] = useState<CheckerAction | null>(null);
 
   const scan = useCallback(
@@ -24,14 +23,13 @@ export function useCheckinSession() {
       if (qrToken === lastScannedToken) return;
 
       setLastScannedToken(qrToken);
-      setIsScanning(false);
 
       try {
         const ticket = await scanMutation.mutateAsync({ qrToken });
         setCurrentTicket(ticket);
         setLastAction(null);
       } catch {
-        setIsScanning(true);
+        // error surfaced via scanMutation.error + toast in <CheckinSection>
       }
     },
     [lastScannedToken, scanMutation],
@@ -40,16 +38,17 @@ export function useCheckinSession() {
   const clearSession = useCallback(() => {
     setCurrentTicket(null);
     setLastScannedToken(null);
-    setIsScanning(true);
     setLastAction(null);
   }, []);
 
-  const resumeScanner = useCallback(() => {
-    setCurrentTicket(null);
-    setLastScannedToken(null);
-    setIsScanning(true);
-    setLastAction(null);
-  }, []);
+  const setTicketStatus = useCallback(
+    (status: TicketSummary["status"], allowedActions: CheckerAction[] = []) => {
+      setCurrentTicket((prev) =>
+        prev ? { ...prev, status, allowedActions } : prev,
+      );
+    },
+    [],
+  );
 
   const handleActionSuccess = useCallback(
     (action: CheckerAction): ActionResult => {
@@ -66,13 +65,12 @@ export function useCheckinSession() {
 
   return {
     currentTicket,
-    isScanning,
     isScanningRequest: scanMutation.isPending,
     error: scanMutation.error,
     lastAction,
     scan,
     clearSession,
-    resumeScanner,
+    setTicketStatus,
     handleActionSuccess,
   };
 }

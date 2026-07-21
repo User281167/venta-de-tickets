@@ -3,17 +3,15 @@
 import { useEffect, useRef, useState } from "react";
 import QrScanner from "qr-scanner";
 import { Box, Button, HStack, Input, Stack, Text } from "@chakra-ui/react";
-import { IconCamera, IconKeyboard, IconRefresh } from "@tabler/icons-react";
+import { IconCamera, IconKeyboard } from "@tabler/icons-react";
 
 interface Props {
   onScan: (text: string) => void;
-  paused: boolean;
-  onResume: () => void;
 }
 
 type ScannerState = "loading" | "scanning" | "denied" | "unsupported" | "error";
 
-export function QrScanCamera({ onScan, paused, onResume }: Props) {
+export function QrScanCamera({ onScan }: Props) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const scannerRef = useRef<QrScanner | null>(null);
   const lastScanRef = useRef<string | null>(null);
@@ -23,7 +21,7 @@ export function QrScanCamera({ onScan, paused, onResume }: Props) {
   const [manualValue, setManualValue] = useState("");
 
   useEffect(() => {
-    if (paused || manualMode) return;
+    if (manualMode) return;
 
     const video = videoRef.current;
     if (!video) return;
@@ -79,13 +77,7 @@ export function QrScanCamera({ onScan, paused, onResume }: Props) {
       scanner.destroy();
       scannerRef.current = null;
     };
-  }, [paused, manualMode, onScan]);
-
-  const handleResume = () => {
-    lastScanRef.current = null;
-    setState("loading");
-    onResume();
-  };
+  }, [manualMode, onScan]);
 
   const handleManualSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -189,22 +181,6 @@ export function QrScanCamera({ onScan, paused, onResume }: Props) {
           </Box>
         )}
 
-        {paused && state === "scanning" && (
-          <Box
-            position="absolute"
-            inset={0}
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            bg="rgba(2,4,20,0.6)"
-            pointerEvents="none"
-          >
-            <Text color="white" fontWeight="bold">
-              Escaneo en pausa
-            </Text>
-          </Box>
-        )}
-
         {(state === "denied" ||
           state === "unsupported" ||
           state === "error") && (
@@ -234,7 +210,7 @@ export function QrScanCamera({ onScan, paused, onResume }: Props) {
         )}
       </Box>
 
-      <HStack gap={2} p={4} justify="space-between">
+      <HStack gap={2} p={4} justify="flex-end">
         <Button
           size="sm"
           variant="outline"
@@ -246,20 +222,6 @@ export function QrScanCamera({ onScan, paused, onResume }: Props) {
           <IconKeyboard size={16} />
           Ingreso manual
         </Button>
-
-        {paused && (
-          <Button
-            size="sm"
-            bg="brand.cyan"
-            color="brand.dark"
-            fontWeight="bold"
-            _hover={{ bg: "#00cfe6" }}
-            onClick={handleResume}
-          >
-            <IconRefresh size={16} />
-            Escanear otro
-          </Button>
-        )}
       </HStack>
     </Box>
   );

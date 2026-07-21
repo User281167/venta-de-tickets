@@ -2,15 +2,27 @@
 
 import { Button, HStack, Spinner } from "@chakra-ui/react";
 import { IconCheck, IconMessage, IconShieldCheck } from "@tabler/icons-react";
-import {
-  useAllowEntry,
-  useConfirmEntry,
-  useRequestConfirmation,
-} from "../api/checkin.queries";
-import type { CheckerAction, TicketSummary } from "../schemas/checkin.schema";
+import type { UseMutationResult } from "@tanstack/react-query";
+import type {
+  CheckerAction,
+  TicketActionInput,
+  TicketSummary,
+} from "../schemas/checkin.schema";
+
+interface ActionMutation {
+  isPending: boolean;
+  mutate: UseMutationResult<
+    void,
+    Error,
+    TicketActionInput
+  >["mutate"];
+}
 
 interface Props {
   ticket: TicketSummary;
+  confirmEntry: ActionMutation;
+  requestConfirmation: ActionMutation;
+  allowEntry: ActionMutation;
   onSuccess: (action: CheckerAction) => void;
 }
 
@@ -20,11 +32,13 @@ const ORDER: CheckerAction[] = [
   "allow_entry",
 ];
 
-export function ActionButtons({ ticket, onSuccess }: Props) {
-  const confirmEntry = useConfirmEntry();
-  const requestConfirmation = useRequestConfirmation();
-  const allowEntry = useAllowEntry();
-
+export function ActionButtons({
+  ticket,
+  confirmEntry,
+  requestConfirmation,
+  allowEntry,
+  onSuccess,
+}: Props) {
   const isPending =
     confirmEntry.isPending ||
     requestConfirmation.isPending ||

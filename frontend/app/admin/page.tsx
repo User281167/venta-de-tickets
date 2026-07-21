@@ -19,17 +19,50 @@ import {
 } from "@tabler/icons-react";
 import { motion, useReducedMotion } from "framer-motion";
 import NextLink from "next/link";
-import { useAdmin } from "@/features/admin-auth/hooks/useAdmin";
+import { useAuth } from "@/providers/AuthProvider";
 
-const QUICK_LINKS = [
-  { href: "/admin/ticket-types", label: "Tipos de entrada", icon: IconTicket, color: "#00e5ff" },
-  { href: "/admin/usuarios", label: "Usuarios", icon: IconUsers, color: "#7c3cff" },
-  { href: "/admin/pagos", label: "Pagos", icon: IconCurrencyDollar, color: "#ff0f7b" },
-  { href: "#", label: "Check-in", icon: IconQrcode, color: "#00d5b8", disabled: true },
+type QuickLink = {
+  href: string;
+  label: string;
+  icon: typeof IconTicket;
+  color: string;
+};
+
+const QUICK_LINKS: QuickLink[] = [
+  {
+    href: "/admin/ticket-types",
+    label: "Tipos de entrada",
+    icon: IconTicket,
+    color: "#00e5ff",
+  },
+  {
+    href: "/admin/usuarios",
+    label: "Usuarios",
+    icon: IconUsers,
+    color: "#7c3cff",
+  },
+  {
+    href: "/admin/pagos",
+    label: "Pagos",
+    icon: IconCurrencyDollar,
+    color: "#ff0f7b",
+  },
+  {
+    href: "/admin/checkin",
+    label: "Check-in",
+    icon: IconQrcode,
+    color: "#00d5b8",
+  },
 ];
 
+const ROLE_LABEL: Record<string, string> = {
+  super_admin: "Super administrador",
+  admin: "Administrador",
+  checker: "Validador",
+};
+
 export default function AdminDashboard() {
-  const { admin, isLoading } = useAdmin();
+  const { user, role, isLoading } = useAuth();
   const reduced = useReducedMotion();
 
   if (isLoading) {
@@ -40,11 +73,8 @@ export default function AdminDashboard() {
     );
   }
 
-  const roleLabel: Record<string, string> = {
-    super_admin: "Super administrador",
-    admin: "Administrador",
-    checker: "Validador",
-  };
+  const roleText = role ? (ROLE_LABEL[role] ?? role) : "sin rol asignado";
+  const email = user?.email ?? "";
 
   return (
     <Container maxW="5xl" px={{ base: 4, md: 6 }} py={{ base: 8, md: 12 }}>
@@ -109,9 +139,9 @@ export default function AdminDashboard() {
             </HStack>
 
             <Text color="brand.muted" fontSize="lg" maxW="600px" lineHeight="1.7">
-              Hola{admin?.email ? `, ${admin.email}` : ""}. Has ingresado como{" "}
+              Hola{email ? `, ${email}` : ""}. Has ingresado como{" "}
               <Text as="span" color="white" fontWeight="bold">
-                {roleLabel[admin?.role ?? ""] ?? admin?.role}
+                {roleText}
               </Text>
               . Selecciona una sección para gestionar el evento.
             </Text>
@@ -130,52 +160,43 @@ export default function AdminDashboard() {
           <SimpleGrid columns={{ base: 1, sm: 2, lg: 4 }} gap={4}>
             {QUICK_LINKS.map((link) => {
               const Icon = link.icon;
-              const content = (
+              return (
                 <Box
-                  className="glass-card"
+                  key={link.href}
+                  asChild
                   borderRadius="2xl"
-                  p={5}
                   transition="all 0.25s ease"
-                  opacity={link.disabled ? 0.6 : 1}
-                  cursor={link.disabled ? "not-allowed" : "pointer"}
-                  _hover={
-                    link.disabled
-                      ? {}
-                      : {
-                          transform: "translateY(-4px)",
-                          borderColor: link.color,
-                          boxShadow: `0 12px 32px ${link.color}22`,
-                        }
-                  }
+                  _hover={{
+                    transform: "translateY(-4px)",
+                    borderColor: link.color,
+                    boxShadow: `0 12px 32px ${link.color}22`,
+                  }}
                 >
-                  <Flex
-                    w={12}
-                    h={12}
-                    borderRadius="xl"
-                    bg={`${link.color}15`}
-                    border={`1px solid ${link.color}30`}
-                    align="center"
-                    justify="center"
-                    mb={4}
-                  >
-                    <Icon size={24} color={link.color} />
-                  </Flex>
-                  <Text color="white" fontWeight="bold" fontSize="lg">
-                    {link.label}
-                  </Text>
-                  {link.disabled && (
-                    <Text fontSize="xs" color="brand.muted" mt={1}>
-                      Próximamente
-                    </Text>
-                  )}
-                </Box>
-              );
-
-              return link.disabled ? (
-                <Box key={link.label}>{content}</Box>
-              ) : (
-                <Box key={link.label} asChild>
-                  <NextLink href={link.href}>{content}</NextLink>
+                  <NextLink href={link.href}>
+                    <Box
+                      className="glass-card"
+                      borderRadius="2xl"
+                      p={5}
+                      transition="all 0.25s ease"
+                      cursor="pointer"
+                    >
+                      <Flex
+                        w={12}
+                        h={12}
+                        borderRadius="xl"
+                        bg={`${link.color}15`}
+                        border={`1px solid ${link.color}30`}
+                        align="center"
+                        justify="center"
+                        mb={4}
+                      >
+                        <Icon size={24} color={link.color} />
+                      </Flex>
+                      <Text color="white" fontWeight="bold" fontSize="lg">
+                        {link.label}
+                      </Text>
+                    </Box>
+                  </NextLink>
                 </Box>
               );
             })}
