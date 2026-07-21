@@ -13,6 +13,7 @@ import {
 } from './modules/tickets/tickets.routes.js';
 import { paymentsRouter } from './modules/payments/index.js';
 import { checkinRouter } from './modules/checkin/index.js';
+import { confirmationsRouter } from './modules/confirmations/confirmations.routes.js';
 
 import { logger } from './utils/logger.js';
 
@@ -42,6 +43,7 @@ app.use('/api/tickets', ticketsRouter);
 app.use('/api/admin/tickets', adminTicketsRouter);
 app.use('/api/users', usersRouter);
 app.use('/api', paymentsRouter);
-app.use('/api', checkinRouter);
+app.use('/internal/checkin', checkinRouter);
+app.use('/confirmations', confirmationsRouter);
 
 app.use(errorHandler);

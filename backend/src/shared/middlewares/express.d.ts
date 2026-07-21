@@ -8,6 +8,9 @@ declare global {
         email: string;
         role: string | null;
       };
+      confirmation?: {
+        ticketId: string;
+      };
       log: Logger;
     }
   }

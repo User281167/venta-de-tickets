@@ -3,20 +3,15 @@ import jwt, { type JwtPayload } from 'jsonwebtoken';
 import { env } from '../../shared/config/env.js';
 import { NotFoundError } from '../../shared/errors/NotFoundError.js';
 import { ConflictError } from '../../shared/errors/ConflictError.js';
+import { InvalidQrError } from '../../shared/errors/InvalidQrError.js';
 import { logger } from '../../utils/logger.js';
 
 import * as checkinRepo from './checkin.repository.js';
-import { messagingClient, type MessagingChannel } from '../messaging/index.js';
+import {
+  messagingClient,
+  type MessagingChannel,
+} from '../messaging/index.js';
 import { getAllowedActions, type TicketSummary } from './checkin.types.js';
-
-class InvalidQrError extends Error {
-  statusCode = 400;
-  code = 'INVALID_QR' as const;
-  constructor(message = 'Invalid QR token') {
-    super(message);
-    this.name = 'InvalidQrError';
-  }
-}
 
 function decodeQrToken(qrToken: string): string {
   try {

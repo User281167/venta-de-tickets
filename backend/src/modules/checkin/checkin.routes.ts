@@ -11,3 +11,5 @@ checkinRouter.use(authMiddleware, requireRole('checker', 'admin'));
 
 checkinRouter.post('/scan', ctrl.scan);
 checkinRouter.post('/confirm-entry', ctrl.confirmEntry);
+checkinRouter.post('/request-confirmation', ctrl.requestConfirmationHandler);
+checkinRouter.post('/allow-entry', ctrl.allowEntryHandler);

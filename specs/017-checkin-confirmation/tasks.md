@@ -55,12 +55,12 @@
 
 - [x] T009 [US2] Create `src/modules/messaging/` module — `messaging.types.ts` (`MessagingClient` interface, `ConfirmationLinkPayload`, `MessagingChannel`), `messaging.client.ts` (`ConsoleMessagingClient` stub), `index.ts` re-export. checkin imports via `../messaging/index.js`
 - [x] T010 [US2] Complete `src/modules/checkin/checkin.service.ts`: add `requestConfirmation(ticketId, checkerId)` (transition `paid → pending_confirmation`, generate confirmation JWT signed with `CONFIRMATION_JWT_SECRET`, build confirmation link, call `messaging.client.sendConfirmationLink`, log only `ticketId` — never log the JWT) and `allowEntry(ticketId, checkerId)` (transition `confirmed → used`)
-- [ ] T011 [US2] Create `src/modules/confirmations/confirmations.middleware.ts` — verifies `CONFIRMATION_JWT_SECRET`, checks `purpose: 'confirm'`, attaches decoded `ticketId` to `req`, distinguishes `TokenExpiredError` vs `JsonWebTokenError`
-- [ ] T012 [US2] Create `src/modules/confirmations/confirmations.types.ts` (response types, error codes)
-- [ ] T013 [US2] Create `src/modules/confirmations/confirmations.validators.ts` — Zod schemas for confirm and reject (token required, non-empty string)
-- [ ] T014 [US2] Create `src/modules/confirmations/confirmations.service.ts` with `confirm(ticketId)` (transition `pending_confirmation → confirmed` via `checkin.repository.confirmTicket`) and `reject(ticketId)` (transition `pending_confirmation → paid` via `checkin.repository.rejectConfirmation`)
-- [ ] T015 [US2] Create `src/modules/confirmations/confirmations.controller.ts` with handlers for `POST /confirm` and `POST /reject` — parse token from body, verify via middleware, extract `ticketId`, call service, map errors
-- [ ] T016 [US2] Create `src/modules/confirmations/confirmations.routes.ts` — `Router()` mounting controller handlers (no session auth — authenticated by confirmation JWT middleware)
+- [x] T011 [US2] Create `src/modules/confirmations/confirmations.middleware.ts` — verifies `CONFIRMATION_JWT_SECRET`, checks `purpose: 'confirm'`, attaches decoded `ticketId` to `req`, distinguishes `TokenExpiredError` vs `JsonWebTokenError`
+- [x] T012 [US2] Create `src/modules/confirmations/confirmations.types.ts` (response types, error codes)
+- [x] T013 [US2] Create `src/modules/confirmations/confirmations.validators.ts` — Zod schemas for confirm and reject (token required, non-empty string)
+- [x] T014 [US2] Create `src/modules/confirmations/confirmations.service.ts` with `confirm(ticketId)` (transition `pending_confirmation → confirmed` via `checkin.repository.confirmTicket`) and `reject(ticketId)` (transition `pending_confirmation → paid` via `checkin.repository.rejectConfirmation`)
+- [x] T015 [US2] Create `src/modules/confirmations/confirmations.controller.ts` with handlers for `POST /confirm` and `POST /reject` — parse token from body, verify via middleware, extract `ticketId`, call service, map errors
+- [x] T016 [US2] Create `src/modules/confirmations/confirmations.routes.ts` — `Router()` mounting controller handlers (no session auth — authenticated by confirmation JWT middleware)
 
 **Checkpoint**: Full remote confirmation flow works — scan → request → buyer confirms/rejects → scan again → allow entry.
 
@@ -70,7 +70,7 @@
 
 **Purpose**: Mount both routers in main app and finalize
 
-- [ ] T017 Mount `checkin.routes` on `/internal/checkin` and `confirmations.routes` on `/confirmations` in main Express app (`src/app.ts` or equivalent entry point)
+- [x] T017 Mount `checkin.routes` on `/internal/checkin` and `confirmations.routes` on `/confirmations` in main Express app (`src/app.ts` or equivalent entry point)
 - [ ] T018 Write Vitest race condition test: two concurrent `confirm-entry` requests on the same ticket → first returns 200, second returns 409 `TICKET_NOT_AVAILABLE` (use `Promise.all` to fire both simultaneously)
 
 **Checkpoint**: All endpoints wired and verified.
