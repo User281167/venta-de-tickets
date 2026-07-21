@@ -90,6 +90,10 @@ export function isAdminRole(r: string | null): boolean {
   return r !== null && ADMIN_ROLES.has(r);
 }
 
+export function isCheckerRole(r: string | null): boolean {
+  return r === "checker";
+}
+
 export function useAuth(): AuthContextValue {
   const context = useContext(AuthContext);
 

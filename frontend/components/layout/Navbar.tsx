@@ -16,6 +16,7 @@ import {
 import {
   IconLogout,
   IconMenu2,
+  IconQrcode,
   IconShield,
   IconUser,
   IconX,
@@ -25,7 +26,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "@/features/auth/api/auth.client";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { SkeletonButton } from "@/shared/components/SkeletonButton";
-import { isAdminRole } from "@/providers/AuthProvider";
+import { isAdminRole, isCheckerRole } from "@/providers/AuthProvider";
 import { CartFab } from "@/features/ticket-purchase/components/CartFab";
 import { CartDrawer } from "@/features/ticket-purchase/components/CartDrawer";
 import { useCart } from "@/features/ticket-purchase/hooks/useCart";
@@ -119,6 +120,21 @@ export function Navbar() {
                     <NextLink href="/admin">
                       <IconShield size={18} />
                       Admin
+                    </NextLink>
+                  </Button>
+                )}
+
+                {isCheckerRole(role) && (
+                  <Button
+                    asChild
+                    variant="ghost"
+                    color="white"
+                    _hover={{ bg: "rgba(255,255,255,0.2)" }}
+                    hideBelow="md"
+                  >
+                    <NextLink href="/admin/checkin">
+                      <IconQrcode size={18} />
+                      Check-in
                     </NextLink>
                   </Button>
                 )}
@@ -247,6 +263,21 @@ export function Navbar() {
                       <NextLink href="/admin">
                         <IconShield size={18} />
                         Admin
+                      </NextLink>
+                    </Button>
+                  )}
+
+                  {isCheckerRole(role) && (
+                    <Button
+                      asChild
+                      variant="ghost"
+                      color="white"
+                      w="full"
+                      onClick={() => setOpen(false)}
+                    >
+                      <NextLink href="/admin/checkin">
+                        <IconQrcode size={18} />
+                        Check-in
                       </NextLink>
                     </Button>
                   )}
