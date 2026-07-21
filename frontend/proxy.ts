@@ -1,6 +1,9 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+// Roles that can reach any /admin/* route (including checker-specific
+// pages like /admin/checkin). `checker` must be present so door staff can
+// access the scan flow; `client` is denied and redirected to "/".
 const ADMIN_ROLES = new Set(["super_admin", "admin", "checker"]);
 
 export async function proxy(request: NextRequest) {

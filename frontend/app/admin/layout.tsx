@@ -10,11 +10,16 @@ import { useEffect, type ReactNode } from "react";
 
 const queryClient = new QueryClient();
 
+// Paths inside /admin/* that are restricted to a subset of ADMIN_ROLES.
+// `/admin/checkin` is intentionally NOT listed — it must be reachable by
+// `checker` (and `admin` for support) so the door-staff
+// scan flow works. Add an entry here only if a new sub-page needs to be
+// hidden from `checker`.
 const ROLE_RESTRICTED_PATHS: Record<string, string[]> = {
-  "/admin/ticket-types": ["super_admin", "admin"],
-  "/admin/usuarios": ["super_admin", "admin"],
-  "/admin/usuarios/carga-masiva": ["super_admin", "admin"],
-  "/admin/pagos": ["super_admin", "admin"],
+  "/admin/ticket-types": ["admin"],
+  "/admin/usuarios": ["admin"],
+  "/admin/usuarios/carga-masiva": ["admin"],
+  "/admin/pagos": ["admin"],
 };
 
 function AdminLayoutInner({ children }: { children: ReactNode }) {
