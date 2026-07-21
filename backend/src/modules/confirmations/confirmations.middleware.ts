@@ -1,9 +1,11 @@
 import type { Request, Response, NextFunction } from 'express';
-import jwt, { TokenExpiredError, JsonWebTokenError } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
 import { env } from '../../shared/config/env.js';
 import { InvalidTokenError } from '../../shared/errors/InvalidTokenError.js';
 import type { ConfirmationTokenPayload } from './confirmations.types.js';
+
+const { TokenExpiredError, JsonWebTokenError } = jwt;
 
 export function verifyConfirmationToken(token: string): string {
   try {
