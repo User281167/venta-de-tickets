@@ -1,5 +1,5 @@
 <!-- SPECKIT START -->
-Current plan: specs/017-checkin-confirmation/plan.md
+Current plan: specs/018-transactional-emails/plan.md
 <!-- SPECKIT END -->
 
 # AGENT.md
