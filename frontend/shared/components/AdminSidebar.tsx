@@ -7,7 +7,6 @@ import {
   HStack,
   IconButton,
   Link as ChakraLink,
-  Separator,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -40,6 +39,12 @@ const ALL_LINKS: SidebarLink[] = [
   { href: "/", label: "Home", icon: <IconHome size={20} /> },
   { href: "/admin", label: "Panel", icon: <IconDashboard size={20} /> },
   {
+    href: "/admin/checkin",
+    label: "Check-in",
+    icon: <IconQrcode size={20} />,
+    roles: ["super_admin", "admin", "checker"] as const,
+  },
+  {
     href: "/admin/ticket-types",
     label: "Tipos de entrada",
     icon: <IconTicket size={20} />,
@@ -65,8 +70,6 @@ const ALL_LINKS: SidebarLink[] = [
   },
 ];
 
-const FUTURE_LINKS = [{ label: "Check-in", disabled: true }] as const;
-
 export function AdminSidebar() {
   const pathname = usePathname();
   const router = useRouter();
@@ -85,11 +88,6 @@ export function AdminSidebar() {
   function handleNav() {
     setMobileOpen(false);
   }
-
-  const futureIcons: Record<string, ReactNode> = {
-    Tickets: <IconTicket size={18} />,
-    "Check-in": <IconQrcode size={18} />,
-  };
 
   const sidebarContent = (
     <>
@@ -130,27 +128,6 @@ export function AdminSidebar() {
             </ChakraLink>
           );
         })}
-
-        {FUTURE_LINKS.length > 0 && (
-          <>
-            <Separator my={3} borderColor="gray.200" />
-            {FUTURE_LINKS.map((link) => (
-              <HStack
-                key={link.label}
-                px={4}
-                py={2}
-                borderRadius="md"
-                color="gray.400"
-                cursor="not-allowed"
-                fontSize="sm"
-                gap={3}
-              >
-                {futureIcons[link.label]}
-                <Text fontStyle="italic">{link.label} (próximamente)</Text>
-              </HStack>
-            ))}
-          </>
-        )}
       </VStack>
 
       <Button

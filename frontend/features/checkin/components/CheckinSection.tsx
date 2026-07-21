@@ -10,7 +10,7 @@ import type { CheckerAction } from "../schemas/checkin.schema";
 
 import { ActionButtons } from "./ActionButtons";
 import { ConfirmationPendingOverlay } from "./ConfirmationPendingOverlay";
-import { QrScanner } from "./QrScanner";
+import { QrScanCamera } from "./QrScanner";
 import { TicketSummaryCard } from "./TicketSummaryCard";
 import { useCheckinSession } from "../hooks/useCheckinSession";
 
@@ -137,7 +137,7 @@ export function CheckinSection() {
         </Stack>
 
         <Box position="relative">
-          <QrScanner
+          <QrScanCamera
             onScan={scan}
             paused={!isScanning || isScanningRequest}
             onResume={resumeScanner}
