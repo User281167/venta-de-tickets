@@ -30,6 +30,8 @@ const envSchema = z.object({
   MERCADOPAGO_WEBHOOK_SECRET: z
     .string()
     .min(1, 'MERCADOPAGO_WEBHOOK_SECRET is required'),
+  RESEND_API_KEY: z.string().min(1, 'RESEND_API_KEY is required'),
+  EMAIL_FROM: z.string().min(1, 'EMAIL_FROM is required'),
 });
 
 const dbURL = new URL(process.env.DATABASE_URL ?? '');
@@ -50,6 +52,8 @@ console.log({
   CORS_ORIGIN: !!process.env.CORS_ORIGIN,
   MERCADOPAGO_ACCESS_TOKEN: !!process.env.MERCADOPAGO_ACCESS_TOKEN,
   MERCADOPAGO_WEBHOOK_SECRET: !!process.env.MERCADOPAGO_WEBHOOK_SECRET,
+  RESEND_API_KEY: !!process.env.RESEND_API_KEY,
+  EMAIL_FROM: !!process.env.EMAIL_FROM,
   host: dbURL.hostname,
   port: dbURL.port,
   database: dbURL.pathname,
