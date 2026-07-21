@@ -54,3 +54,37 @@ export async function setPersonalInfoHandler(
 
   res.json(info);
 }
+
+export async function confirmMyTicketHandler(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  const { id } = req.params;
+
+  if (!id) {
+    res.status(422).json({
+      error: { code: 'VALIDATION_ERROR', message: 'Ticket id is required' },
+    });
+    return;
+  }
+
+  const result = await meService.confirmMyTicket(id, req.user!.id);
+  res.json({ success: true, result });
+}
+
+export async function rejectMyTicketHandler(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  const { id } = req.params;
+
+  if (!id) {
+    res.status(422).json({
+      error: { code: 'VALIDATION_ERROR', message: 'Ticket id is required' },
+    });
+    return;
+  }
+
+  const result = await meService.rejectMyTicket(id, req.user!.id);
+  res.json({ success: true, result });
+}

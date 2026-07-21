@@ -36,6 +36,8 @@ Endpoints agrupados bajo `/api/me`. Actúa como **agregador usuario autenticado*
 | PATCH | `/api/me/personal-info` | `authMiddleware` | Actualizar info personal (cédula inmutable) | me |
 | GET | `/api/me/tickets` | `authMiddleware` | Listar tickets propios (paginado) | tickets |
 | GET | `/api/me/tickets/:id` | `authMiddleware` | Detalle de un ticket propio | tickets |
+| POST | `/api/me/tickets/:id/confirm` | `authMiddleware` | Confirmar ticket | tickets |
+| POST | `/api/me/tickets/:id/reject` | `authMiddleware` | Rechazar ticket | tickets |
 | GET | `/api/me/payments` | `authMiddleware` | Listar pagos propios (paginado) | payments |
 
 ## Códigos de Error
@@ -181,4 +183,3 @@ graph LR
     C -->|getPrivacyStatus| US
     C -->|getPersonalInfo / setPersonalInfo| S
     S -->|findByUserId / upsert| Repo
-

@@ -1,21 +1,16 @@
 "use client";
 
-import {
-  Box,
-  Flex,
-  HStack,
-  Separator,
-  Text,
-} from "@chakra-ui/react";
+import { Box, Flex, HStack, Separator, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import {
-  IconCalendar,
-  IconQrcode,
-  IconTicket,
-} from "@tabler/icons-react";
+import { IconCalendar, IconQrcode, IconTicket } from "@tabler/icons-react";
+import { toast } from "sonner";
+import { ApiError } from "../api/users.client";
+import { useConfirmMyTicket, useRejectMyTicket } from "../hooks/useMyTickets";
 import type { TicketItem } from "../types/ticket.types";
 import { TicketQrExpand } from "./TicketQrExpand";
+import { TicketActionsMenu } from "./TicketActionsMenu";
+import { ConfirmTicketDialog } from "./ConfirmTicketDialog";
 import { formatDate } from "@/shared/utils/formats";
 
 const STATUS_BG: Record<string, string> = {
@@ -38,13 +33,59 @@ const STATUS_LABELS: Record<string, string> = {
   expired: "Expirada",
 };
 
+const ACTION_ERROR_MESSAGES: Record<string, string> = {
+  NOT_FOUND: "Ticket no encontrado",
+  CONFLICT: "El ticket ya cambió de estado. Vuelve a intentarlo.",
+  UNAUTHORIZED: "Tu sesión expiró. Inicia sesión nuevamente.",
+  FORBIDDEN: "No tienes permiso para esta acción.",
+  VALIDATION_ERROR: "Datos inválidos.",
+  NETWORK_ERROR: "No se pudo conectar con el servidor.",
+};
+
 const statusColor = (status: string) => STATUS_BG[status] ?? "#6b7280";
+
+type DialogMode = "confirm" | "reject";
+
+function messageFromError(err: unknown): string {
+  if (err instanceof ApiError) {
+    return ACTION_ERROR_MESSAGES[err.code] ?? err.message;
+  }
+  if (err instanceof Error) return err.message;
+  return "Error desconocido";
+}
 
 export function TicketCard({ ticket }: { ticket: TicketItem }) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [dialogMode, setDialogMode] = useState<DialogMode | null>(null);
   const reduced = useReducedMotion();
   const color = statusColor(ticket.status);
   const statusLabel = STATUS_LABELS[ticket.status] ?? ticket.status;
+
+  const confirmMutation = useConfirmMyTicket();
+  const rejectMutation = useRejectMyTicket();
+  const isPending = confirmMutation.isPending || rejectMutation.isPending;
+
+  const openDialog = (mode: DialogMode) => setDialogMode(mode);
+  const closeDialog = () => {
+    if (!isPending) setDialogMode(null);
+  };
+
+  const runAction = (mode: DialogMode) => {
+    const mutation = mode === "confirm" ? confirmMutation : rejectMutation;
+    const onSuccessMsg =
+      mode === "confirm" ? "Ingreso confirmado" : "Ingreso rechazado";
+
+    mutation.mutate(ticket.id, {
+      onSuccess: () => {
+        toast.success(onSuccessMsg);
+        setDialogMode(null);
+        setIsExpanded(false);
+      },
+      onError: (err) => {
+        toast.error(messageFromError(err));
+      },
+    });
+  };
 
   return (
     <motion.div
@@ -80,7 +121,17 @@ export function TicketCard({ ticket }: { ticket: TicketItem }) {
           bg={`linear-gradient(90deg, ${color}, #00e5ff)`}
         />
 
-        <Box p={{ base: 5, md: 6 }}>
+        <TicketActionsMenu
+          ticket={ticket}
+          onConfirm={(id) => {
+            if (id === ticket.id) openDialog("confirm");
+          }}
+          onReject={(id) => {
+            if (id === ticket.id) openDialog("reject");
+          }}
+        />
+
+        <Box p={{ base: 5, md: 6 }} pr={{ base: 12, md: 14 }}>
           <HStack justify="space-between" align="flex-start" gap={3}>
             <Flex
               w={12}
@@ -109,7 +160,12 @@ export function TicketCard({ ticket }: { ticket: TicketItem }) {
           </HStack>
 
           <Box mt={5}>
-            <Text color="white" fontWeight="bold" fontSize="xl" lineHeight="1.2">
+            <Text
+              color="white"
+              fontWeight="bold"
+              fontSize="xl"
+              lineHeight="1.2"
+            >
               {ticket.ticketType.name}
             </Text>
             <Text
@@ -163,6 +219,16 @@ export function TicketCard({ ticket }: { ticket: TicketItem }) {
           </Box>
         </motion.div>
       </Box>
+
+      <ConfirmTicketDialog
+        open={dialogMode !== null}
+        mode={dialogMode}
+        ticket={ticket}
+        isPending={isPending}
+        onClose={closeDialog}
+        onConfirm={() => runAction("confirm")}
+        onReject={() => runAction("reject")}
+      />
     </motion.div>
   );
 }

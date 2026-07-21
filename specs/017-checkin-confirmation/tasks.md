@@ -301,11 +301,54 @@ With multiple developers (after all 6 backend phases done):
 
 ---
 
+## Phase 13: Foundational (Client-Side Confirmation) — Blocking All Client-Confirm Stories
+
+**Purpose**: Backend endpoint + frontend API client + tanstack hooks for the client to confirm/reject their own pending tickets from the dashboard. Reuses the existing `checkin.repository.confirmTicket` / `rejectConfirmation` transitions so no new state machine.
+
+> **Scope note**: this phase covers the **in-app** confirmation path. The existing `pay`/`email`/`whatsapp` confirmation UI for the link-based flow is out of scope (already implemented in spec 017 via the `confirmations` module's `/confirm` + `/reject` routes; `pay` is the integrated MercadoPago webhook; email/WhatsApp link rendering is a `messaging` module concern not built yet).
+
+- [x] T041 [P] Add `POST /api/me/tickets/:id/confirm` and `POST /api/me/tickets/:id/reject` routes to `backend/src/modules/me/me.routes.ts` (after the existing `meRouter.get('/tickets/:id', ...)` line). Use `me.controller.confirmMyTicketHandler` and `me.controller.rejectMyTicketHandler` controllers. Both are protected by the existing `meRouter.use(authMiddleware)`.
+- [x] T042 Add `confirmMyTicket(ticketId, userId)` and `rejectMyTicket(ticketId, userId)` to `backend/src/modules/me/me.service.ts` — load the ticket by id, assert `ticket.buyerId === userId` else throw `NotFoundError` (don't leak existence to other users), assert `ticket.status === 'pending_confirmation'` else throw `ConflictError('Ticket is no longer pending confirmation')`, then call `checkinRepo.confirmTicket(ticketId)` / `checkinRepo.rejectConfirmation(ticketId)` and return `{ success: true, result: 'confirmed' | 'rejected' }`. Log the action with `userId` + `ticketId`.
+- [x] T043 Add `confirmMyTicketHandler` and `rejectMyTicketHandler` controllers to `backend/src/modules/me/me.controller.ts` — parse `:id` from `req.params`, call the service with `req.user!.id`, catch `NotFoundError` → 404, `ConflictError` → 409, anything else → next. Return `res.json({ success: true, result })`.
+- [x] T044 [P] Add `confirmMyTicket(id)` and `rejectMyTicket(id)` to `frontend/features/users/api/tickets.client.ts` using the existing `apiFetch` helper: `POST /api/me/tickets/${id}/confirm` and `POST /api/me/tickets/${id}/reject`. Both return `Promise<{ success: true; result: 'confirmed' | 'rejected' }>`.
+- [x] T045 [P] Add `useConfirmMyTicket()` and `useRejectMyTicket()` mutation hooks to `frontend/features/users/hooks/useMyTickets.ts` (file rename is OK if the existing single hook expands). Use `useMutation` from TanStack. Each `onSuccess` calls `queryClient.invalidateQueries({ queryKey: ['my-tickets'] })` so the list re-fetches with the new status.
+- [x] T046 Extend `frontend/features/users/schemas/ticket.schema.ts` with `confirmTicketResponseSchema` (parses `{ success: true, result: 'confirmed' | 'rejected' }`) and export the inferred type. Use it in the client to validate the response.
+
+**Checkpoint**: backend endpoint works (curl with session token), frontend API client + hooks importable, types parse cleanly.
+
+---
+
+## Phase 14: User Story 1 — Confirm ticket from client UI (Priority: P1) 🎯
+
+**Goal**: A buyer viewing their tickets list in `/mi-cuenta/entradas` can see a dropdown menu on each ticket in `pending_confirmation` status with two options: "Confirmar ingreso" and "Rechazar ingreso". Clicking either calls the new endpoint and refreshes the list.
+
+**Why this priority**: This is the requested flow — the buyer is already in their account and wants to authorize the entry without going to email/WhatsApp. Eliminates a click round-trip.
+
+**Independent Test**: Log in as a buyer with a ticket in `pending_confirmation` status. Open `/mi-cuenta/entradas`. The card shows a "..." button. Click it → dropdown opens with two options. Click "Confirmar ingreso" → spinner → success toast → card status changes to "Confirmada" (status re-fetched). For a different ticket, click "Rechazar ingreso" → spinner → toast → status changes to "Pagada". For a ticket in any other status, the dropdown button is not shown.
+
+### Implementation for User Story 1
+
+- [x] T047 [P] [US1] Create `frontend/features/users/components/TicketActionsMenu.tsx` (client component) — props: `ticket: TicketItem`, `onConfirm: (id: string) => void`, `onReject: (id: string) => void`. Uses Chakra `<Menu>` (root, trigger, listbox, item) with `IconDots` as the trigger icon. Two `<MenuItem>`s: "Confirmar ingreso" (brand-cyan icon) and "Rechazar ingreso" (red icon). Only render the menu when `ticket.status === 'pending_confirmation'` (otherwise return `null`). Wrap each click in `onClick` that calls the prop callback.
+- [x] T048 [P] [US1] Create `frontend/features/users/components/ConfirmTicketDialog.tsx` (client component) — props: `open: boolean`, `mode: 'confirm' | 'reject'`, `ticket: TicketItem`, `onClose: () => void`, `onConfirm: () => void`, `onReject: () => void`. Chakra `<Dialog>` with brand-cyan border (confirm) or red border (reject). Title: "Confirmar ingreso" / "Rechazar ingreso". Body: copy explaining the consequence ("Vas a autorizar el ingreso del portador del QR" / "El portador del QR no podrá ingresar; el ticket volverá a estado Pagado"). Footer: "Cancelar" outline button + primary button "Confirmar" (cyan) or "Rechazar" (red). The primary button is disabled while `useConfirmMyTicket().isPending` / `useRejectMyTicket().isPending` and shows a `Spinner`. On success, calls the relevant prop and closes the dialog.
+- [x] T049 [US1] Extend `frontend/features/users/components/TicketCard.tsx` to render the new actions. Add a "..." menu button at the top-right of the card (next to the status badge) when `status === 'pending_confirmation'`. Add state for the dialog: `dialogMode: 'confirm' | 'reject' | null`. Click a menu item → opens the dialog with that mode. Render `<ConfirmTicketDialog>` when `dialogMode` is set. Use `useConfirmMyTicket` / `useRejectMyTicket` and invalidate `['my-tickets']` on success. Show `sonner` toast: "Ingreso confirmado" / "Ingreso rechazado" on success; `sonner.error` with backend `code` mapping on failure (`TICKET_NOT_AVAILABLE` → "El ticket ya cambió de estado", `NOT_FOUND` → "Ticket no encontrado", `UNAUTHORIZED` → "Sesión expirada").
+- [x] T050 [US1] Add error handling for stale `pending_confirmation` state in `TicketCard.tsx`: if the optimistic check fails (e.g., another device already confirmed), the toast informs the checker and the list re-fetches so the card UI reflects reality.
+
+**Checkpoint**: Full confirm/reject flow works end-to-end from the buyer dashboard. Cards in other statuses have no menu.
+
+---
+
+## Phase 15: Polish & Cross-Cutting Concerns (Client-Side Confirmation)
+
+- [x] T051 [P] Verify `pnpm tsc --noEmit -p tsconfig.json` and `pnpm lint` pass for the new files (backend `me.service.ts` + `me.controller.ts` + `me.routes.ts`; frontend `TicketActionsMenu.tsx` + `ConfirmTicketDialog.tsx` + `TicketCard.tsx` + `tickets.client.ts` + `useMyTickets.ts`).
+- [x] T052 [P] Add Vitest + Testing Library test in `frontend/features/users/components/__tests__/TicketActionsMenu.test.tsx` — mock the callbacks, assert menu only renders for `pending_confirmation` tickets, assert both menu items fire the correct callback.
+
+---
+
 ## Summary
 
 | Metric | Count |
 |--------|-------|
-| Total tasks | 40 |
+| Total tasks | 52 |
 | Backend Setup (Phase 1) | 2 |
 | Backend Foundational (Phase 2) | 2 |
 | Backend US1 — Direct entry (Phase 3) | 4 |
@@ -318,10 +361,14 @@ With multiple developers (after all 6 backend phases done):
 | Frontend US3 — Action buttons (Phase 10) | 3 |
 | Frontend US4 — Navbar (Phase 11) | 3 |
 | Frontend Polish (Phase 12) | 3 |
-| Parallel tasks ([P]) | 17 |
-| Test tasks | 3 (1 backend + 2 frontend) |
+| Client-Confirm Foundational (Phase 13) | 6 |
+| Client-Confirm US1 — Confirm from UI (Phase 14) | 4 |
+| Client-Confirm Polish (Phase 15) | 2 |
+| Parallel tasks ([P]) | 22 |
+| Test tasks | 4 (1 backend + 3 frontend) |
 | Backend MVP scope | Phase 3 (4 tasks) |
 | Frontend MVP scope | Phase 9 (5 tasks, read-only) |
+| Client-Confirm MVP scope | Phase 14 (4 tasks) |
 
 **Independent test criteria**:
 

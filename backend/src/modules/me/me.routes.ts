@@ -15,6 +15,8 @@ meRouter.patch('/personal-info', meController.setPersonalInfoHandler);
 
 meRouter.get('/tickets', ticketController.listMyTicketsHandler);
 meRouter.get('/tickets/:id', ticketController.getMyTicketByIdHandler);
+meRouter.post('/tickets/:id/confirm', meController.confirmMyTicketHandler);
+meRouter.post('/tickets/:id/reject', meController.rejectMyTicketHandler);
 meRouter.get('/payments', paymentController.listMyPaymentsHandler);
 
 export { meRouter };
