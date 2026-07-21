@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reembolso en proceso</title>
+</head>
+<body style="margin:0;padding:0;background:#020414;font-family:'Segoe UI',Helvetica,Arial,sans-serif;color:#e6ecff;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#020414;padding:32px 16px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background:linear-gradient(180deg,#0a0f2c 0%,#020414 100%);border:1px solid rgba(255,200,0,0.2);border-radius:16px;overflow:hidden;box-shadow:0 0 40px rgba(255,200,0,0.08);">
+
+          <!-- Header gradient bar -->
+          <tr>
+            <td style="height:4px;background:linear-gradient(90deg,#ffc800 0%,#ff8a00 100%);font-size:0;line-height:0;">&nbsp;</td>
+          </tr>
+
+          <!-- Top brand row -->
+          <tr>
+            <td style="padding:28px 32px 8px 32px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td align="left">
+                    <img src="{{frontendUrl}}/utp-logo.png" alt="UTP" width="56" height="56" style="display:block;border:0;outline:none;text-decoration:none;" />
+                  </td>
+                  <td align="right" style="color:#aeb8d8;font-size:12px;letter-spacing:2px;text-transform:uppercase;">
+                    La Convención del Futuro
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Hero title -->
+          <tr>
+            <td style="padding:24px 32px 8px 32px;">
+              <h1 style="margin:0;color:#ffffff;font-size:36px;line-height:1.05;font-weight:900;letter-spacing:-0.5px;text-transform:uppercase;">
+                <span style="background:linear-gradient(90deg,#ffc800,#ff8a00);-webkit-background-clip:text;background-clip:text;color:transparent;">Reembolso en proceso</span>
+              </h1>
+              <p style="margin:12px 0 0 0;color:#aeb8d8;font-size:15px;line-height:1.5;">
+                Hola <strong style="color:#ffffff;">{{customerName}}</strong>, recibimos tu pago de <strong style="color:#00e5ff;">{{eventName}}</strong> correctamente, pero las entradas ya no estaban disponibles al momento de asignarlas. Vamos a reembolsarte el dinero.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Divider -->
+          <tr>
+            <td style="padding:16px 32px 0 32px;">
+              <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(255,200,0,0.3),transparent);font-size:0;line-height:0;">&nbsp;</div>
+            </td>
+          </tr>
+
+          <!-- Amount card -->
+          <tr>
+            <td style="padding:24px 32px 8px 32px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,200,0,0.06);border:1px solid rgba(255,200,0,0.2);border-radius:12px;">
+                <tr>
+                  <td style="padding:20px 24px;">
+                    <p style="margin:0;color:#aeb8d8;font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:700;">Monto a reembolsar</p>
+                    <p style="margin:8px 0 0 0;color:#ffffff;font-size:32px;font-weight:900;line-height:1;">{{amount}}</p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Timeline -->
+          <tr>
+            <td style="padding:16px 32px 8px 32px;">
+              <p style="margin:0 0 12px 0;color:#aeb8d8;font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:700;">Qué sigue</p>
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="padding:6px 0;color:#ffffff;font-size:14px;line-height:1.5;">1. Nuestro equipo de administración está gestionando el reembolso.</td>
+                </tr>
+                <tr>
+                  <td style="padding:6px 0;color:#ffffff;font-size:14px;line-height:1.5;">2. Te enviaremos un correo de confirmación cuando se procese el reembolso al método de pago original.</td>
+                </tr>
+                <tr>
+                  <td style="padding:6px 0;color:#aeb8d8;font-size:14px;line-height:1.5;">3. El tiempo de procesamiento depende de tu entidad bancaria.</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Details -->
+          <tr>
+            <td style="padding:16px 32px 8px 32px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="padding:8px 0;color:#aeb8d8;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;width:40%;">ID de pago</td>
+                  <td style="padding:8px 0;color:#ffffff;font-size:13px;font-weight:600;text-align:right;font-family:monospace;">{{paymentId}}</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 0;color:#aeb8d8;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;">Fecha</td>
+                  <td style="padding:8px 0;color:#ffffff;font-size:15px;font-weight:600;text-align:right;">{{paymentDate}}</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- CTA -->
+          <tr>
+            <td align="center" style="padding:24px 32px 8px 32px;">
+              <a href="{{frontendUrl}}/mi-cuenta/pagos" style="display:inline-block;padding:14px 32px;background:linear-gradient(90deg,#00e5ff 0%,#0969ff 100%);color:#ffffff;text-decoration:none;font-weight:800;font-size:14px;letter-spacing:1.5px;text-transform:uppercase;border-radius:10px;box-shadow:0 0 24px rgba(0,229,255,0.35);">
+                Ver mis pagos
+              </a>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding:24px 32px 28px 32px;">
+              <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(0,229,255,0.3),transparent);font-size:0;line-height:0;">&nbsp;</div>
+              <p style="margin:16px 0 4px 0;color:#7a85a8;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;text-align:center;font-weight:700;">
+                Universidad Tecnológica de Pereira
+              </p>
+              <p style="margin:0;color:#7a85a8;font-size:11px;line-height:1.5;text-align:center;">
+                Pereira, Risaralda — Colombia · 22, 23 y 24 de octubre de 2026
+              </p>
+              <p style="margin:12px 0 0 0;color:#5a6486;font-size:10px;line-height:1.5;text-align:center;">
+                Este es un correo automático, por favor no respondas a este mensaje.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

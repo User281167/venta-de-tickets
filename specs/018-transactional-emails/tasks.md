@@ -24,9 +24,9 @@
 
 **Purpose**: Install email SDK and configure environment
 
-- [ ] T001 Install `resend` npm package in `backend/package.json`
-- [ ] T002 [P] Add `RESEND_API_KEY` and `EMAIL_FROM` to `backend/.env` (example values for dev)
-- [ ] T003 [P] Add `RESEND_API_KEY` and `EMAIL_FROM` to `backend/src/shared/config/env.ts` schema
+- [x] T001 Install `resend` npm package in `backend/package.json`
+- [x] T002 [P] Add `RESEND_API_KEY` and `EMAIL_FROM` to `backend/.env.example`
+- [x] T003 [P] Add `RESEND_API_KEY` and `EMAIL_FROM` to `backend/src/shared/config/env.ts` schema
 
 ---
 
@@ -36,10 +36,10 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T004 Create `EmailProvider` interface in `backend/src/modules/messaging/channels/email-provider.interface.ts`
-- [ ] T005 [P] Implement `ResendProvider` in `backend/src/modules/messaging/channels/resend.provider.ts` (import Resend SDK, implement `send()` with try/catch + logger.error)
-- [ ] T006 [P] Create provider registry in `backend/src/modules/messaging/channels/channel.registry.ts` with `getEmailProvider(): EmailProvider` (mirror `provider.registry.ts` pattern)
-- [ ] T007 [P] Create `renderTemplate()` function in `backend/src/modules/messaging/templates/render-template.ts` (read `.html` file, replace `{{var}}` placeholders, return string)
+- [x] T004 Create `EmailProvider` interface in `backend/src/modules/messaging/channels/email-provider.interface.ts`
+- [x] T005 [P] Implement `ResendProvider` in `backend/src/modules/messaging/channels/resend.provider.ts` (import Resend SDK, implement `send()` with try/catch + logger.error)
+- [x] T006 [P] Create provider registry in `backend/src/modules/messaging/channels/channel.registry.ts` with `getEmailProvider(): EmailProvider` (mirror `provider.registry.ts` pattern)
+- [x] T007 [P] Create `renderTemplate()` function in `backend/src/modules/messaging/templates/render-template.ts` (read `.html` file, replace `{{var}}` placeholders, return string)
 
 **Checkpoint**: Foundation ready — user story implementation can now begin in parallel
 
@@ -53,10 +53,10 @@
 
 ### Implementation for User Story 1
 
-- [ ] T008 [P] [US1] Create `payment-confirmed.html` template in `backend/src/modules/messaging/templates/` with fields: `customerName`, `amount`, `eventName`, `paymentDate`
-- [ ] T009 [US1] Create `messaging.service.ts` in `backend/src/modules/messaging/` with `sendPaymentConfirmation(payment)` method (fire-and-forget, uses getEmailProvider + renderTemplate)
-- [ ] T010 [US1] Export `messagingService` from `backend/src/modules/messaging/index.ts`
-- [ ] T011 [US1] Integrate `messagingService.sendPaymentConfirmation()` into `backend/src/modules/payments/payments.service.ts` — call after `markAsPaid` DB commit with `void` prefix
+- [x] T008 [P] [US1] Create `payment-confirmed.html` template in `backend/src/modules/messaging/templates/` with fields: `customerName`, `amount`, `eventName`, `paymentDate`
+- [x] T009 [US1] Create `messaging.service.ts` in `backend/src/modules/messaging/` with `sendPaymentConfirmation(payment)` method (fire-and-forget, uses getEmailProvider + renderTemplate)
+- [x] T010 [US1] Export `messagingService` from `backend/src/modules/messaging/index.ts`
+- [x] T011 [US1] Integrate `messagingService.sendPaymentConfirmation()` into `backend/src/modules/payments/payments.service.ts` — call after `markAsPaid` DB commit with `void` prefix
 
 **Checkpoint**: Payment confirmed email sends when payment is approved
 

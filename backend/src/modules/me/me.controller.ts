@@ -68,7 +68,8 @@ export async function confirmMyTicketHandler(
     return;
   }
 
-  const result = await meService.confirmMyTicket(id, req.user!.id);
+  const ticketId = id[0] ?? id;
+  const result = await meService.confirmMyTicket(ticketId, req.user!.id);
   res.json({ success: true, result });
 }
 
@@ -85,6 +86,7 @@ export async function rejectMyTicketHandler(
     return;
   }
 
-  const result = await meService.rejectMyTicket(id, req.user!.id);
+  const ticketId = id[0] ?? id;
+  const result = await meService.rejectMyTicket(ticketId, req.user!.id);
   res.json({ success: true, result });
 }

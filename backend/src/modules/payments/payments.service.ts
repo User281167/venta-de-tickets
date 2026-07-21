@@ -5,6 +5,7 @@ import { ValidationError } from '../../shared/errors/ValidationError.js';
 import * as ticketsService from '../tickets/tickets.service.js';
 import * as paymentsRepo from './payments.repository.js';
 import { getProvider } from './providers/provider.registry.js';
+import { messagingService } from '../messaging/messaging.service.js';
 
 import { logger } from '../../utils/logger.js';
 import { RESERVATION_EXPIRATION_INTERNAL_MILLIS , RESERVATION_EXPIRATION_PROVIDER_MILLIS } from '../../shared/config/constants.js';
@@ -219,11 +220,11 @@ export async function processWebhook(
         await ticketsService.generateQrForTicket(ticketId);
       }
 
-      // TODO: notificar al usuario que su pago sí se procesó
+      void notifyPaymentConfirmed(payment.id);
     } else if (result.outcome === 'unfulfillable') {
       await paymentsRepo.markUnfulfillable(payment.id, event.externalId, event.rawPayload as any);
       logger.warn(`Payment unfulfillable (sold out on reclaim): paymentId=${payment.id}`);
-      // TODO: notificar a admin (cola de reembolso) y al usuario
+      void notifyPaymentUnfulfillable(payment.id);
     } else {
       logger.info(`Reclaim already processed by concurrent webhook: paymentId=${payment.id}`);
     }
@@ -250,11 +251,13 @@ export async function processWebhook(
         }
       }
 
+      void notifyPaymentConfirmed(payment.id);
       logger.info(`Processed payment: paymentId=${payment.id}, externalId=${event.externalId}`);
     }
   } else if (event.status === 'declined') {
     logger.info(`Declined payment: paymentId=${payment.id}, externalId=${event.externalId}`);
     await paymentsRepo.update(payment.id, { status: 'failed' });
+    void notifyPaymentFailed(payment.id, 'El proveedor de pagos rechazó la transacción.');
   }
 
   return { received: true };
@@ -429,4 +432,78 @@ export async function processRefund(input: {
   );
 
   return refund;
+}
+
+async function notifyPaymentConfirmed(paymentId: string) {
+  try {
+    const payment = await paymentsRepo.findPaymentByIdWithUser(paymentId);
+    if (!payment || !payment.user) {
+      logger.warn(
+        `Cannot send payment confirmation email: paymentId=${paymentId} or user missing`,
+      );
+      return;
+    }
+
+    await messagingService.sendPaymentConfirmation({
+      customerName: payment.user.fullName,
+      customerEmail: payment.user.email,
+      totalCents: payment.totalCents,
+      paidAt: payment.updatedAt,
+    });
+  } catch (err) {
+    logger.error(
+      { err: (err as Error).message, paymentId },
+      '[payments] payment confirmation email dispatch failed',
+    );
+  }
+}
+
+async function notifyPaymentFailed(paymentId: string, reason: string) {
+  try {
+    const payment = await paymentsRepo.findPaymentByIdWithUser(paymentId);
+    if (!payment || !payment.user) {
+      logger.warn(
+        `Cannot send payment failed email: paymentId=${paymentId} or user missing`,
+      );
+      return;
+    }
+
+    await messagingService.sendPaymentFailed({
+      customerName: payment.user.fullName,
+      customerEmail: payment.user.email,
+      totalCents: payment.totalCents,
+      failedAt: payment.updatedAt,
+      reason,
+    });
+  } catch (err) {
+    logger.error(
+      { err: (err as Error).message, paymentId },
+      '[payments] payment failed email dispatch failed',
+    );
+  }
+}
+
+async function notifyPaymentUnfulfillable(paymentId: string) {
+  try {
+    const payment = await paymentsRepo.findPaymentByIdWithUser(paymentId);
+    if (!payment || !payment.user) {
+      logger.warn(
+        `Cannot send unfulfillable email: paymentId=${paymentId} or user missing`,
+      );
+      return;
+    }
+
+    await messagingService.sendPaymentUnfulfillable({
+      customerName: payment.user.fullName,
+      customerEmail: payment.user.email,
+      totalCents: payment.totalCents,
+      paymentId: payment.id,
+      occurredAt: payment.updatedAt,
+    });
+  } catch (err) {
+    logger.error(
+      { err: (err as Error).message, paymentId },
+      '[payments] unfulfillable email dispatch failed',
+    );
+  }
 }
