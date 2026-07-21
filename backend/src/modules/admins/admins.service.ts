@@ -5,6 +5,7 @@ import * as adminsRepo from './admins.repository.js';
 import * as paymentsService from '../payments/payments.service.js';
 
 import { logger } from '../../utils/logger.js';
+import { notifyPaymentConfirmed } from '../messaging/index.js';
 
 const ROLES = ['admin', 'checker', 'client'];
 const NO_ALLOWED_ROLES = ['super_admin'];
@@ -177,6 +178,7 @@ export async function createAdminPayment(
   });
 
   logger.info(`Admin payment created: paymentId=${result.paymentId}`);
+  void notifyPaymentConfirmed(result.paymentId);
 
   return result;
 }

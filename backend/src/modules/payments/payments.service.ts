@@ -5,7 +5,12 @@ import { ValidationError } from '../../shared/errors/ValidationError.js';
 import * as ticketsService from '../tickets/tickets.service.js';
 import * as paymentsRepo from './payments.repository.js';
 import { getProvider } from './providers/provider.registry.js';
-import { messagingService } from '../messaging/messaging.service.js';
+import {
+  notifyPaymentConfirmed,
+  notifyPaymentFailed,
+  notifyPaymentRefunded,
+  notifyPaymentUnfulfillable,
+} from '../messaging/notifications/payment-notifications.js';
 
 import { logger } from '../../utils/logger.js';
 import { RESERVATION_EXPIRATION_INTERNAL_MILLIS , RESERVATION_EXPIRATION_PROVIDER_MILLIS } from '../../shared/config/constants.js';
@@ -405,6 +410,8 @@ export async function createAdminPayment(input: {
     await ticketsService.generateQrForTicket(ticketId);
   }
 
+  void notifyPaymentConfirmed(result.paymentId);
+
   logger.info(
     `Admin payment created: paymentId=${result.paymentId}, ticketCount=${result.ticketIds.length}`,
   );
@@ -427,83 +434,14 @@ export async function processRefund(input: {
 
   const refund = await paymentsRepo.refundTransaction(input);
 
+  void notifyPaymentRefunded({
+    paymentId: input.paymentId,
+    reason: input.reason,
+  });
+
   logger.info(
     `Refund processed: paymentId=${input.paymentId}, status=${refund.status}`,
   );
 
   return refund;
-}
-
-async function notifyPaymentConfirmed(paymentId: string) {
-  try {
-    const payment = await paymentsRepo.findPaymentByIdWithUser(paymentId);
-    if (!payment || !payment.user) {
-      logger.warn(
-        `Cannot send payment confirmation email: paymentId=${paymentId} or user missing`,
-      );
-      return;
-    }
-
-    await messagingService.sendPaymentConfirmation({
-      customerName: payment.user.fullName,
-      customerEmail: payment.user.email,
-      totalCents: payment.totalCents,
-      paidAt: payment.updatedAt,
-    });
-  } catch (err) {
-    logger.error(
-      { err: (err as Error).message, paymentId },
-      '[payments] payment confirmation email dispatch failed',
-    );
-  }
-}
-
-async function notifyPaymentFailed(paymentId: string, reason: string) {
-  try {
-    const payment = await paymentsRepo.findPaymentByIdWithUser(paymentId);
-    if (!payment || !payment.user) {
-      logger.warn(
-        `Cannot send payment failed email: paymentId=${paymentId} or user missing`,
-      );
-      return;
-    }
-
-    await messagingService.sendPaymentFailed({
-      customerName: payment.user.fullName,
-      customerEmail: payment.user.email,
-      totalCents: payment.totalCents,
-      failedAt: payment.updatedAt,
-      reason,
-    });
-  } catch (err) {
-    logger.error(
-      { err: (err as Error).message, paymentId },
-      '[payments] payment failed email dispatch failed',
-    );
-  }
-}
-
-async function notifyPaymentUnfulfillable(paymentId: string) {
-  try {
-    const payment = await paymentsRepo.findPaymentByIdWithUser(paymentId);
-    if (!payment || !payment.user) {
-      logger.warn(
-        `Cannot send unfulfillable email: paymentId=${paymentId} or user missing`,
-      );
-      return;
-    }
-
-    await messagingService.sendPaymentUnfulfillable({
-      customerName: payment.user.fullName,
-      customerEmail: payment.user.email,
-      totalCents: payment.totalCents,
-      paymentId: payment.id,
-      occurredAt: payment.updatedAt,
-    });
-  } catch (err) {
-    logger.error(
-      { err: (err as Error).message, paymentId },
-      '[payments] unfulfillable email dispatch failed',
-    );
-  }
 }

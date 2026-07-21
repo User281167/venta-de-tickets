@@ -94,10 +94,36 @@ export async function sendPaymentUnfulfillable(input: {
   );
 }
 
+export async function sendPaymentRefunded(input: {
+  customerName: string;
+  customerEmail: string;
+  totalCents: number;
+  paymentId: string;
+  reason: string;
+  refundedAt: Date;
+}): Promise<void> {
+  const html = renderTemplate('payment-refunded', {
+    frontendUrl: env.CONFIRMATION_LINK_BASE_URL,
+    customerName: input.customerName,
+    amount: formatCop(input.totalCents),
+    eventName: EVENT_NAME,
+    paymentId: input.paymentId,
+    reason: input.reason,
+    refundDate: formatDate(input.refundedAt),
+  });
+
+  await getEmailProvider().send(
+    input.customerEmail,
+    `Reembolso confirmado — ${EVENT_NAME}`,
+    html,
+  );
+}
+
 export const messagingService = {
   sendPaymentConfirmation,
   sendPaymentFailed,
   sendPaymentUnfulfillable,
+  sendPaymentRefunded,
 };
 
 logger.info('[messaging] service initialized');
