@@ -5,6 +5,7 @@ import {
   setPersonalInfoSchema,
   updatePersonalInfoSchema,
 } from './me.validators.js';
+import { is } from 'zod/v4/locales';
 
 export async function meHandler(req: Request, res: Response): Promise<void> {
   const privacyStatus = await usersService.getPrivacyStatus(req.user!.id);
@@ -68,8 +69,8 @@ export async function confirmMyTicketHandler(
     return;
   }
 
-  const ticketId = id[0] ?? id;
-  const result = await meService.confirmMyTicket(ticketId, req.user!.id);
+  const tiketId = Array.isArray(id) ? id[0] : id;
+  const result = await meService.confirmMyTicket(tiketId, req.user!.id);
   res.json({ success: true, result });
 }
 
@@ -86,7 +87,7 @@ export async function rejectMyTicketHandler(
     return;
   }
 
-  const ticketId = id[0] ?? id;
-  const result = await meService.rejectMyTicket(ticketId, req.user!.id);
+  const tiketId = Array.isArray(id) ? id[0] : id;
+  const result = await meService.rejectMyTicket(tiketId, req.user!.id);
   res.json({ success: true, result });
 }

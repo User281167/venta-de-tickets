@@ -13,3 +13,5 @@ process.env.FRONTEND_URL = 'https://frontend.test';
 process.env.API_URL = 'https://api.test';
 process.env.MERCADOPAGO_ACCESS_TOKEN = 'test-mp-access-token';
 process.env.MERCADOPAGO_WEBHOOK_SECRET = 'test-mp-webhook-secret';
+process.env.RESEND_API_KEY = 'test-resend-api-key';
+process.env.EMAIL_FROM = 'noreply@test.local';

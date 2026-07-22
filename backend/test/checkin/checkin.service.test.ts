@@ -22,11 +22,13 @@ vi.mock('../../src/modules/checkin/checkin.repository.js', () => ({
 }));
 
 const mockSendConfirmationLink = vi.hoisted(() => vi.fn());
+const mockNotifyTicketConfirmation = vi.hoisted(() => vi.fn());
 
 vi.mock('../../src/modules/messaging/index.js', () => ({
   messagingClient: {
     sendConfirmationLink: mockSendConfirmationLink,
   },
+  notifyTicketConfirmation: mockNotifyTicketConfirmation,
 }));
 
 import jwt from 'jsonwebtoken';
