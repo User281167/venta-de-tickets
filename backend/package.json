@@ -7,14 +7,15 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "prisma:generate": "prisma generate",
-    "build": "pnpm prisma:generate && tsc",
+    "build": "pnpm prisma:generate && tsc && pnpm copy-templates",
     "start": "node dist/server.js",
     "postinstall": "prisma generate",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "format": "prettier . --write"
+    "format": "prettier . --write",
+    "copy-templates": "copyfiles -u 2 \"src/modules/messaging/templates/**/*.html\" dist/modules"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -46,6 +47,7 @@
     "@types/supertest": "^7.2.0",
     "@typescript-eslint/eslint-plugin": "^8.62.1",
     "@typescript-eslint/parser": "^8.62.1",
+    "copyfiles": "2.4.1",
     "dotenv": "^17.4.2",
     "eslint": "^10.6.0",
     "eslint-config-prettier": "^10.1.8",
