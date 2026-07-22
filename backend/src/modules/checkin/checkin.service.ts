@@ -9,6 +9,7 @@ import { logger } from '../../utils/logger.js';
 import * as checkinRepo from './checkin.repository.js';
 import {
   messagingClient,
+  notifyTicketConfirmation,
   type MessagingChannel,
 } from '../messaging/index.js';
 import { getAllowedActions, type TicketSummary } from './checkin.types.js';
@@ -112,6 +113,7 @@ export async function requestConfirmation(
 
   const token = signConfirmationToken(ticketId);
   const confirmationUrl = `${env.CONFIRMATION_LINK_BASE_URL}/confirmaciones?token=${token}`;
+  const qrImageUrl = `${env.CONFIRMATION_LINK_BASE_URL}/mi-cuenta/entradas/${ticketId}`;
 
   await messagingClient.sendConfirmationLink({
     ticketId,
@@ -120,6 +122,15 @@ export async function requestConfirmation(
     buyerContact: buyer.contact,
     confirmationUrl,
   });
+
+  if (buyer.channel === 'email') {
+    void notifyTicketConfirmation({
+      ticketId,
+      customerName: result.buyer.fullName,
+      customerEmail: buyer.contact,
+      qrImageUrl,
+    });
+  }
 
   logger.info(
     `Checkin request-confirmation: ticketId=${ticketId} checkerId=${checkerId}`,

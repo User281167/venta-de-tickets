@@ -70,9 +70,9 @@
 
 ### Implementation for User Story 2
 
-- [ ] T012 [P] [US2] Create `ticket-confirmed.html` template in `backend/src/modules/messaging/templates/` with fields: `customerName`, `eventName`, `qrImageUrl`, `ticketId`
-- [ ] T013 [US2] Add `sendTicketConfirmation(ticket)` method to `messaging.service.ts` in `backend/src/modules/messaging/messaging.service.ts`
-- [ ] T014 [US2] Integrate `messagingService.sendTicketConfirmation()` into `backend/src/modules/tickets/tickets.service.ts` — call after `confirm` DB commit with `void` prefix
+- [x] T012 [P] [US2] Create `ticket-confirmed.html` template in `backend/src/modules/messaging/templates/` with fields: `customerName`, `eventName`, `qrImageUrl`, `ticketId`
+- [x] T013 [US2] Add `sendTicketConfirmation(ticket)` method to `messaging.service.ts` in `backend/src/modules/messaging/messaging.service.ts`
+- [x] T014 [US2] Integrate `messagingService.sendTicketConfirmation()` into `backend/src/modules/tickets/tickets.service.ts` — call after `confirm` DB commit with `void` prefix
 
 **Checkpoint**: Ticket confirmed email sends when ticket transitions to confirmed
 

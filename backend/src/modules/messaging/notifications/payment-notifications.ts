@@ -118,3 +118,19 @@ export async function notifyPaymentRefunded(input: {
     );
   }
 }
+
+export async function notifyTicketConfirmation(input: {
+  ticketId: string;
+  customerName: string;
+  customerEmail: string;
+  qrImageUrl: string;
+}): Promise<void> {
+  try {
+    await messagingService.sendTicketConfirmation(input);
+  } catch (err) {
+    logger.error(
+      { err: (err as Error).message, ticketId: input.ticketId },
+      '[messaging:notify] ticket confirmation dispatch failed',
+    );
+  }
+}

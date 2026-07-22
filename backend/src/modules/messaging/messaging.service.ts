@@ -119,11 +119,33 @@ export async function sendPaymentRefunded(input: {
   );
 }
 
+export async function sendTicketConfirmation(input: {
+  customerName: string;
+  customerEmail: string;
+  ticketId: string;
+  qrImageUrl: string;
+}): Promise<void> {
+  const html = renderTemplate('ticket-confirmed', {
+    frontendUrl: env.CONFIRMATION_LINK_BASE_URL,
+    customerName: input.customerName,
+    eventName: EVENT_NAME,
+    ticketId: input.ticketId,
+    qrImageUrl: input.qrImageUrl,
+  });
+
+  await getEmailProvider().send(
+    input.customerEmail,
+    `Confirma tu entrada — ${EVENT_NAME}`,
+    html,
+  );
+}
+
 export const messagingService = {
   sendPaymentConfirmation,
   sendPaymentFailed,
   sendPaymentUnfulfillable,
   sendPaymentRefunded,
+  sendTicketConfirmation,
 };
 
 logger.info('[messaging] service initialized');
