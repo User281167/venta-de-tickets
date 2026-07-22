@@ -124,6 +124,7 @@ export async function notifyTicketConfirmation(input: {
   customerName: string;
   customerEmail: string;
   qrImageUrl: string;
+  confirmationUrl: string;
 }): Promise<void> {
   try {
     await messagingService.sendTicketConfirmation(input);

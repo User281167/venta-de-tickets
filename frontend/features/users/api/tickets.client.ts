@@ -1,6 +1,7 @@
 import { apiFetch } from "./users.client";
 import { confirmTicketResponseSchema } from "../schemas/ticket.schema";
 import type { ConfirmTicketResponse } from "../schemas/ticket.schema";
+import { ticketItemSchema } from "../schemas/ticket.schema";
 import type { TicketListResponse } from "../types/ticket.types";
 
 export function fetchMyTickets(
@@ -9,6 +10,12 @@ export function fetchMyTickets(
 ): Promise<TicketListResponse> {
   return apiFetch<TicketListResponse>(
     `/api/me/tickets?page=${page}&limit=${limit}`,
+  );
+}
+
+export function fetchMyTicketById(ticketId: string) {
+  return apiFetch(`/api/me/tickets/${ticketId}`).then((raw) =>
+    ticketItemSchema.parse(raw),
   );
 }
 

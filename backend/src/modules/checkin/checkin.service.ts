@@ -129,6 +129,7 @@ export async function requestConfirmation(
       customerName: result.buyer.fullName,
       customerEmail: buyer.contact,
       qrImageUrl,
+      confirmationUrl,
     });
   }
 

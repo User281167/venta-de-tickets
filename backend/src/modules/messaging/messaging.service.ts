@@ -124,6 +124,7 @@ export async function sendTicketConfirmation(input: {
   customerEmail: string;
   ticketId: string;
   qrImageUrl: string;
+  confirmationUrl: string;
 }): Promise<void> {
   const html = renderTemplate('ticket-confirmed', {
     frontendUrl: env.CONFIRMATION_LINK_BASE_URL,
@@ -131,6 +132,7 @@ export async function sendTicketConfirmation(input: {
     eventName: EVENT_NAME,
     ticketId: input.ticketId,
     qrImageUrl: input.qrImageUrl,
+    confirmationUrl: input.confirmationUrl,
   });
 
   await getEmailProvider().send(

@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   confirmMyTicket,
+  fetchMyTicketById,
   fetchMyTickets,
   rejectMyTicket,
 } from "../api/tickets.client";
@@ -14,6 +15,14 @@ export function useMyTickets(page = 1, limit = 20) {
   return useQuery<TicketListResponse>({
     queryKey: [...TICKETS_KEY, page, limit] as const,
     queryFn: () => fetchMyTickets(page, limit),
+  });
+}
+
+export function useMyTicketById(ticketId: string) {
+  return useQuery({
+    queryKey: [...TICKETS_KEY, ticketId] as const,
+    queryFn: () => fetchMyTicketById(ticketId),
+    enabled: Boolean(ticketId),
   });
 }
 
