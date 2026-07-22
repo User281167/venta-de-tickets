@@ -5,8 +5,17 @@ import { ChakraProvider, defaultSystem } from "@chakra-ui/react";
 import { TicketList } from "../TicketList";
 import { createMockTicketList } from "./mock-tickets";
 
+const mockUseConfirmMyTicket = vi.hoisted(() =>
+  vi.fn(() => ({ mutateAsync: vi.fn(), isPending: false })),
+);
+const mockUseRejectMyTicket = vi.hoisted(() =>
+  vi.fn(() => ({ mutateAsync: vi.fn(), isPending: false })),
+);
+
 vi.mock("../../hooks/useMyTickets", () => ({
   useMyTickets: vi.fn(),
+  useConfirmMyTicket: mockUseConfirmMyTicket,
+  useRejectMyTicket: mockUseRejectMyTicket,
 }));
 
 import { useMyTickets } from "../../hooks/useMyTickets";

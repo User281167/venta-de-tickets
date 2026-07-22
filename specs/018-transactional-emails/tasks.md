@@ -98,11 +98,11 @@
 
 **Purpose**: Manual verification and cleanup
 
-- [ ] T018 Add `messaging.service.ts` export to `backend/src/modules/messaging/index.ts` (verify all 3 methods exported)
-- [ ] T019 Manual test: force payment approval in Mercado Pago sandbox → verify `payment-confirmed` email received
-- [ ] T020 Manual test: confirm a ticket → verify `ticket-confirmed` email with QR URL received
-- [ ] T021 Manual test: cancel a ticket → verify `ticket-cancelled` email received
-- [ ] T022 Run `npm run typecheck` and `npm run lint` in backend/ to verify no type/lint errors
+- [x] T018 Add `messaging.service.ts` export to `backend/src/modules/messaging/index.ts` (verify all 3 methods exported)
+- [x] T019 Manual test: force payment approval in Mercado Pago sandbox → verify `payment-confirmed` email received
+- [x] T020 Manual test: confirm a ticket → verify `ticket-confirmed` email with QR URL received
+- [x] T021 Manual test: cancel a ticket → verify `ticket-cancelled` email received
+- [x] T022 Run `npm run typecheck` and `npm run lint` in backend/ to verify no type/lint errors
 
 ---
 
