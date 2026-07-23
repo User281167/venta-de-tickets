@@ -20,13 +20,13 @@ Núcleo transaccional del sistema. Usa **raw SQL** en el repositorio (no Prisma 
 | Método | Input | Output | Transacciones clave |
 |--------|-------|--------|---------------------|
 | `createCheckout` | userId, items, backUrl, provider | `{ paymentId, checkoutUrl, preferenceId }` | **User validation → DB→Provider**: verifica usuario existe + completo (cedula/fullName), reserva atómica en DB, llama proveedor externo. Si provider falla, expiran solos vía sweep |
-| `processWebhook` | payload, headers, provider | `{ received: true }` | Verifica firma, parsea evento, maneja approved/declined/expired-reclaim |
+| `processWebhook` | payload, headers, provider | `{ received: true }` | Verifica firma, parsea evento, maneja approved/declined/expired-reclaim. Dispara `notifyPaymentConfirmation` (approved/reclaim) o `notifyPaymentFailed` (declined) y `notifyPaymentUnfulfillable` si el reclaim no encontró cupo |
 | `listMyPayments` | userId, page, limit | `{ data, total, page, limit }` | Consulta simple |
 | `listAllPayments` | filters | `{ data, total, page, limit }` | Filtros admin (status, fechas, búsqueda) |
 | `getPaymentDetail` | paymentId | Payment con user + tickets | Admin |
 | `getPaymentStatus` | paymentId, userId, role | Payment + tickets con QR | Owner/admin |
-| `createAdminPayment` | userId, provider, tickets, adminId | `{ paymentId, ticketIds }` | **Transacción completa**: bypass stock check, INSERT payment+tickets, genera QR |
-| `processRefund` | paymentId, reason, processedById | `{ paymentId, status }` | **Transacción**: FOR UPDATE, revierte stock, marca tickets cancelled, payment refunded |
+| `createAdminPayment` | userId, provider, tickets, adminId | `{ paymentId, ticketIds }` | **Transacción completa**: bypass stock check, INSERT payment+tickets, genera QR. Dispara `notifyPaymentConfirmation` al final |
+| `processRefund` | paymentId, reason, processedById | `{ paymentId, status }` | **Transacción**: FOR UPDATE, revierte stock, marca tickets cancelled, payment refunded. Dispara `notifyPaymentRefunded` (1 email) + `notifyTicketCancellation` (1 email por ticket cancelado) |
 
 ### Capa Repository — Transacciones
 
@@ -48,6 +48,7 @@ Núcleo transaccional del sistema. Usa **raw SQL** en el repositorio (no Prisma 
 | `findAllByUserId` / `countByUserId` | `findMany` / `count` por userId | Historial cliente |
 | `findAllPaymentsFiltered` / `countAllPaymentsFiltered` | `findMany` / `count` con filtros | Listado admin |
 | `findPaymentByIdWithUser` | `findUnique` + include user + tickets + ticketType | Detalle admin |
+| `findPaymentWithUser` | `findUnique` + include user + tickets | `notifyPaymentRefunded` (necesita lista de tickets cancelados) |
 | `markUnfulfillable` | `update` status | Reclaim fallido |
 
 ## Routes
@@ -97,6 +98,21 @@ Montadas en `me.routes.ts` bajo `/api/me/payments`.
 | `NOT_FOUND` | 404 | Service/Repo | Payment/ticket/user not found |
 | `FORBIDDEN` | 403 | Service | Not owner/admin |
 | `INVALID_PAYMENT_STATUS` | 409 | Repo (tx) | Refund attempted on non-completed payment |
+
+## Notificaciones
+
+`payments.service` dispara emails vía `messaging/notifications/payment-notifications.ts`. Todos son fire-and-forget (no await, try/catch interno):
+
+| Trigger | Email | Recipient |
+|---------|-------|-----------|
+| `processWebhook` (approved o reclaim exitoso) | `payment-confirmed.html` | Buyer |
+| `processWebhook` (declined) | `payment-failed.html` | Buyer |
+| `processWebhook` (reclaim sin cupo) | `payment-unfulfillable.html` | Buyer |
+| `createAdminPayment` (manual/gift) | `payment-confirmed.html` | Buyer (userId) |
+| `processRefund` (1x) | `payment-refunded.html` | Buyer |
+| `processRefund` (N por ticket cancelado) | `ticket-cancelled.html` | Buyer |
+
+Las notificaciones se ejecutan **después** del commit de la transacción. Un fallo en Resend no afecta el estado del pago.
 
 ## Diagrama de Transacciones
 
@@ -155,15 +171,26 @@ sequenceDiagram
         S->>Tx: reclaimExpiredPayment()
         Tx->>Tx: FOR UPDATE payment + ticket_types
         Tx->>Tx: verify stock available (all-or-nothing)
-        Tx->>Tx: re-stock + tickets → paid + payment → completed
-        Tx-->>S: { outcome: 'reclaimed', ticketIds }
-        S->>TS: generateQrForTicket (por cada ticket)
+        alt stock disponible
+            Tx->>Tx: re-stock + tickets → paid + payment → completed
+            Tx-->>S: { outcome: 'reclaimed', ticketIds }
+            S->>TS: generateQrForTicket (por cada ticket)
+            S->>MC: notifyPaymentConfirmation [fire-and-forget]
+        else stock insuficiente
+            Tx->>Tx: payment → completed_unfulfillable
+            Tx-->>S: { outcome: 'unfulfillable' }
+            S->>MC: notifyPaymentUnfulfillable [fire-and-forget]
+        end
     else payment pending
         S->>Tx: processPaymentWebhook()
         Tx->>Tx: UPDATE payment → completed (WHERE status=pending)
         Tx->>Tx: UPDATE tickets → paid
         Tx-->>S: { processed: true }
         S->>TS: generateQrForTicket (por cada ticket)
+        S->>MC: notifyPaymentConfirmation [fire-and-forget]
+    else payment declined
+        S->>Tx: markDeclined (tickets → expired, stock revertido)
+        S->>MC: notifyPaymentFailed [fire-and-forget]
     end
     API-->>MP: 200 { received: true }
 ```
@@ -187,6 +214,10 @@ sequenceDiagram
     Tx->>Tx: UPDATE tickets → cancelled (except used/expired)
     Tx->>Tx: UPDATE payment → refunded + metadata
     Tx-->>S: { paymentId, status: 'refunded' }
+    S->>MC: notifyPaymentRefunded [fire-and-forget, 1 email al comprador]
+    loop por cada ticket cancelado
+        S->>MC: notifyTicketCancellation [fire-and-forget]
+    end
     S-->>API: 201
     API-->>A: { paymentId, status: 'refunded' }
 ```
@@ -222,6 +253,10 @@ graph LR
         MR[me.repository.ts]
     end
 
+    subgraph messaging
+        NOT[payment-notifications]
+    end
+
     subgraph External
         DB[(PostgreSQL<br/>payments / tickets / ticket_types)]
         API_MP[Mercado Pago API]
@@ -241,6 +276,7 @@ graph LR
 
     S -->|validate user| MR
     S -->|generateQrForTicket| TS
+    S -->|notify* fire-and-forget| NOT
 
     Repo -->|raw SQL + transaction| DB
 

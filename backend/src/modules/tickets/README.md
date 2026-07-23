@@ -27,7 +27,8 @@ Sirve como **proveedor de servicio** para `me` (rutas de tickets del cliente) y 
 | `updateTicketType` | id, data (parcial) | `TicketTypeDTO` | `ticketsRepo.findById`, `ticketsRepo.update` |
 | `generateQrForTicket` | ticketId | qrToken (JWT string) | `jwt.sign` + `ticketsRepo.updateQrToken` |
 | `listMyTickets` | userId, page, limit | `{ data, total, page, limit }` | `ticketsRepo.findByUserId`, `ticketsRepo.countByUserId` |
-| `getMyTicketById` | ticketId, userId | ticket DTO o throw | `ticketsRepo.findOwnedById` |
+| `getMyTicketById` | ticketId, userId | ticket DTO o throw | `ticketsRepo.findOwnedById` (UUID lookup) |
+| `getMyTicketByCode` | ticketCode, userId | ticket DTO o throw | `ticketsRepo.findOwnedByCode` (ticketCode lookup, 32 hex) |
 
 ### Capa Repository
 
@@ -43,7 +44,8 @@ Sirve como **proveedor de servicio** para `me` (rutas de tickets del cliente) y 
 | `updateQrToken` | `ticket` | `update` por id con qrToken | Guardar QR JWT |
 | `findByUserId` | `ticket` | `findMany` por userId (status ≠ expired) | Tickets del cliente |
 | `countByUserId` | `ticket` | `count` por userId (status ≠ expired) | Total del cliente |
-| `findOwnedById` | `ticket` | `findFirst` por id + userId | Detalle de ticket propio |
+| `findOwnedById` | `ticket` | `findFirst` por id + userId | Detalle de ticket propio (UUID) |
+| `findOwnedByCode` | `ticket` | `findFirst` por ticketCode + userId | Detalle de ticket propio (código público, 32 hex) |
 
 ## Rutas Públicas
 
@@ -71,14 +73,14 @@ Montadas bajo `/api/me/tickets`. Requieren JWT + rol `client`. Manejadas por `ti
 | Método | Ruta | Descripción |
 |--------|------|-------------|
 | GET | `/api/me/tickets?page=&limit=` | Listar tickets del cliente (excluye expirados) |
-| GET | `/api/me/tickets/:id` | Detalle de un ticket propio |
+| GET | `/api/me/tickets/:id` | Detalle de un ticket propio (acepta UUID o ticketCode de 32 hex) |
 
 ## Códigos de Error
 
 | Código | Status | Causa |
 |--------|--------|-------|
-| `VALIDATION_ERROR` | 422 | Precio ≤ 0, cantidad ≤ 0, cantidad < vendidas, UUID inválido, body vacío, status inválido |
-| `NOT_FOUND` | 404 | ID de entrada no existe |
+| `VALIDATION_ERROR` | 422 | Precio ≤ 0, cantidad ≤ 0, cantidad < vendidas, UUID inválido (en CRUD admin), body vacío, status inválido |
+| `NOT_FOUND` | 404 | ID de entrada no existe; o ticket del cliente (UUID o ticketCode) no encontrado o no pertenece al usuario |
 | `FORBIDDEN` | 403 | Rol no es `admin` |
 | `UNAUTHORIZED` | 401 | Token JWT faltante o inválido |
 
@@ -98,7 +100,7 @@ Montadas bajo `/api/me/tickets`. Requieren JWT + rol `client`. Manejadas por `ti
 |----------|-------------|-----------|
 | `payments.service.ts` | `ticketsService.generateQrForTicket` | Generar QR tras pago exitoso o reclaim |
 | `me.routes.ts` | `ticketsController.listMyTicketsHandler` | Delegación de ruta `/api/me/tickets` |
-| `me.routes.ts` | `ticketsController.getMyTicketByIdHandler` | Delegación de ruta `/api/me/tickets/:id` |
+| `me.routes.ts` | `ticketsController.getMyTicketByIdHandler` | Delegación de ruta `/api/me/tickets/:id` (acepta UUID o ticketCode) |
 
 ## Flujos
 

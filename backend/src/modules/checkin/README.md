@@ -21,7 +21,7 @@ Cada ticket se procesa individualmente — un comprador con N tickets = N escane
 |--------|-------|--------|-------------|
 | `scanTicket` | qrToken | `TicketSummary` con `allowedActions` calculadas | `jwt.verify` (QR_JWT_SECRET) + `checkinRepo.findTicketForScan` + `getAllowedActions` |
 | `confirmEntryDirect` | ticketId, checkerId | void o `ConflictError` | `checkinRepo.confirmEntryDirect` |
-| `requestConfirmation` | ticketId, checkerId | void o `NotFoundError`/`ConflictError` | `checkinRepo.requestConfirmation` (tx con `FOR UPDATE`) + `jwt.sign` (CONFIRMATION_JWT_SECRET) + `messagingClient.sendConfirmationLink` |
+| `requestConfirmation` | ticketId, checkerId | void o `NotFoundError`/`ConflictError` | `checkinRepo.requestConfirmation` (tx con `FOR UPDATE`) + `jwt.sign` (CONFIRMATION_JWT_SECRET) + `messagingService.sendTicketConfirmation` (solo cuando `buyer.channel === 'email'`) |
 | `allowEntry` | ticketId, checkerId | void o `ConflictError` | `checkinRepo.allowEntry` |
 
 ### Capa Repository
@@ -89,8 +89,12 @@ sequenceDiagram
     DB-->>Repo: ok
     Repo-->>API: { ok: true, buyer }
     API->>API: jwt.sign({ tid, purpose: 'confirm' })
-    API->>MC: sendConfirmationLink({ ... })
-    MC-->>B: email/WhatsApp con link
+    alt buyer.channel === 'email'
+        API->>MC: messagingService.sendTicketConfirmation({ email, fullName, ticketCode, confirmationUrl, qrImageUrl })
+        MC-->>B: email con link {{confirmationUrl}}
+    else buyer.channel === 'whatsapp'
+        Note over MC: stub legacy WhatsApp fuera de scope
+    end
 
     B->>API: POST /confirmations/confirm { token } (en body)
     API->>Repo: confirmTicket(ticketId)
@@ -151,7 +155,8 @@ graph LR
     end
 
     subgraph messaging
-        MC[messaging.client.ts]
+        MS[messagingService]
+        NOT[payment-notifications]
     end
 
     subgraph confirmations
@@ -176,7 +181,7 @@ graph LR
     S -->|decodeQrToken / signConfirmationToken| T
     S -->|findTicketForScan / transitionStatus| Repo
     S -->|InvalidQrError| ConfErr
-    S -->|sendConfirmationLink| MC
+    S -->|sendTicketConfirmation| MS
     CS -->|confirmTicket / rejectConfirmation| Repo
     Repo -->|prisma.ticket| DB
     Repo -->|FOR UPDATE / WHERE status| DB
@@ -184,9 +189,17 @@ graph LR
 
 ## Dependencias entre Módulos
 
-- `checkin → messaging` (interfaz pública `messagingClient.sendConfirmationLink`)
+- `checkin → messaging` (interfaz pública `messagingService.sendTicketConfirmation`)
 - `confirmations → checkin.repository` (reutiliza `confirmTicket`, `rejectConfirmation` — no duplica lógica de transición)
 - `checkin.repository → confirmations` — **ninguna** (la dependencia va solo en un sentido)
+
+## Notificaciones
+
+`requestConfirmation` dispara el email `ticket-confirmed.html` vía `messagingService.sendTicketConfirmation`. El email incluye:
+- `confirmationUrl`: `{{FRONTEND_URL}}/confirmaciones?token=JWT` (link de un solo uso)
+- `qrImageUrl`: `{{FRONTEND_URL}}/mi-cuenta/entradas/:id` (link al detalle del ticket)
+
+Fire-and-forget: si Resend falla, el ticket ya está en `pending_confirmation` y el checker puede re-escanear. El error se loguea pero no se propaga.
 
 ## Fuera de Alcance
 

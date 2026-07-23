@@ -54,7 +54,7 @@ Endpoints agrupados bajo `/api/me`. Actúa como **agregador usuario autenticado*
 
 | Código | Status | Módulo | Causa |
 |--------|--------|--------|-------|
-| `NOT_FOUND` | 404 | tickets | Ticket no existe o no pertenece al usuario |
+| `NOT_FOUND` | 404 | tickets | Ticket no existe, o el id/código no pertenece al usuario (404 reemplaza el antiguo 422 cuando el id no es UUID) |
 | `FORBIDDEN` | 403 | tickets | Ticket no pertenece al usuario |
 | `NOT_FOUND` | 404 | payments | Pago no encontrado |
 
