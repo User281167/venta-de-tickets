@@ -146,7 +146,7 @@ export function ConfirmacionesInner() {
           </Text>
         </VStack>
 
-        <HStack w="full" gap={3}>
+        <VStack w="full" gap={3}>
           <Button
             w="full"
             h="52px"
@@ -180,7 +180,7 @@ export function ConfirmacionesInner() {
           >
             No, rechazar
           </Button>
-        </HStack>
+        </VStack>
 
         <Text fontSize="xs" color="brand.muted" mt={1}>
           Este link es de un solo uso y caduca pronto.

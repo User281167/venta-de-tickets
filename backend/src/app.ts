@@ -44,6 +44,6 @@ app.use('/api/admin/tickets', adminTicketsRouter);
 app.use('/api/users', usersRouter);
 app.use('/api', paymentsRouter);
 app.use('/internal/checkin', checkinRouter);
-app.use('/confirmations', confirmationsRouter);
+app.use('/api/confirmations', confirmationsRouter);
 
 app.use(errorHandler);
