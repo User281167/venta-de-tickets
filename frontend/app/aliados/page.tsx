@@ -14,6 +14,7 @@ import { PaletteSection } from "@/features/sponsor/components/PaletteSection";
 import { TypographySection } from "@/features/sponsor/components/TypographySection";
 import { SloganSection } from "@/features/sponsor/components/SloganSection";
 import { CtaSection } from "@/features/sponsor/components/CtaSection";
+import { CierreSection } from "@/features/sponsor/components/CierreSection";
 
 export default function AliadosPage() {
   return (
@@ -28,6 +29,7 @@ export default function AliadosPage() {
         <BeneficiosSection />
         <AsociacionSection />
         <ImpactoSocialSection />
+        <CierreSection />
         <PillarsSection />
         <LogoSection />
         <PaletteSection />
