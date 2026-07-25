@@ -1,5 +1,24 @@
 @import "tailwindcss";
 
+@source "../app/**/*.{ts,tsx}";
+@source "../components/**/*.{ts,tsx}";
+@source "../features/**/*.{ts,tsx}";
+
+@layer base {
+  #__next, body, .tailwind-scope {
+    isolation: isolate;
+  }
+}
+
+@layer utilities {
+  .tw-important {
+    position: fixed !important;
+    inset-inline: 0 !important;
+    top: 0 !important;
+    z-index: 50 !important;
+  }
+}
+
 @font-face {
     font-family: "Good Times";
     src: url("/fonts/GoodTimes.woff2") format("woff2"),
@@ -24,6 +43,7 @@
     --color-brand-cyan: #00e5ff;
     --color-brand-teal: #00d5b8;
     --color-brand-orange: #ff9f1c;
+    --color-cyan-neon: #7dd3fc;
 
     --color-utp-noche: #0F1226;
     --color-utp-artico: #F0F4F5;
@@ -88,6 +108,23 @@ body {
     }
 }
 
+@keyframes floatLarge {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-14px);
+    }
+}
+
+.animate-float {
+    animation: float 4s ease-in-out infinite;
+}
+
+.animate-float-large {
+    animation: floatLarge 5s ease-in-out infinite;
+}
+
 .animate-fade-in-up {
     animation: fadeInUp 0.7s ease-out forwards;
 }
@@ -146,4 +183,123 @@ body {
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
+}
+
+@keyframes auroraFloat {
+    0%, 100% {
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+    33% {
+        transform: translate3d(8vw, -6vh, 0) scale(1.05);
+    }
+    66% {
+        transform: translate3d(-6vw, 6vh, 0) scale(0.95);
+    }
+}
+
+.aurora-blob {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(40px);
+    pointer-events: none;
+    will-change: transform;
+    animation: auroraFloat 18s ease-in-out infinite;
+}
+
+@keyframes gridPan {
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: 60px 60px;
+    }
+}
+
+.grid-overlay {
+    background-image:
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: gridPan 30s linear infinite;
+}
+
+@keyframes particleRise {
+    0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100vh) translateX(20px);
+        opacity: 0;
+    }
+}
+
+.particle {
+    position: absolute;
+    bottom: 0;
+    border-radius: 9999px;
+    pointer-events: none;
+    will-change: transform, opacity;
+    animation-name: particleRise;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+@keyframes floatSlow {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.animate-float-slow {
+    animation: floatSlow 6s ease-in-out infinite;
+}
+
+@keyframes revealUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.reveal {
+    opacity: 0;
+}
+
+.reveal.in {
+    animation: revealUp 0.8s ease-out forwards;
+}
+
+.text-gradient {
+    background: linear-gradient(100deg, #7dd3fc 0%, #a78bfa 35%, #f0abfc 65%, #fdba74 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.glass {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+.glass-strong {
+    background: rgba(15, 18, 38, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
 }

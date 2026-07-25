@@ -1,72 +1,15 @@
 "use client";
 
-import {
-  Box,
-  Container,
-  HStack,
-  Image,
-  Text,
-  chakra,
-} from "@chakra-ui/react";
-import NextLink from "next/link";
 import { useEffect, useState } from "react";
-
-const LOGO = "/logos-la-u/Horizontal - letras blancas.png";
 
 const NAV_ITEMS = [
   { label: "Por qué", href: "#por-que" },
-  { label: "U del Futuro", href: "#u-del-futuro" },
+  { label: "U del Futuro", href: "#futuro" },
   { label: "Experiencias", href: "#experiencias" },
   { label: "Asociación", href: "#asociacion" },
 ];
 
-const NavLink = chakra(NextLink, {
-  base: {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    rounded: "full",
-    px: 3.5,
-    py: 1.5,
-    fontFamily: "body",
-    fontWeight: "400",
-    fontSize: "sm",
-    letterSpacing: "0.01em",
-    color: "whiteAlpha.700",
-    transition: "background 0.2s, color 0.2s",
-    _hover: {
-      bg: "whiteAlpha.100",
-      color: "white",
-    },
-  },
-});
-
-const CtaLink = chakra(NextLink, {
-  base: {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    rounded: "full",
-    px: 6,
-    py: 1.5,
-    fontFamily: "body",
-    fontWeight: "600",
-    fontSize: "sm",
-    color: "utp.noche",
-    bg: "utp.artico",
-    transition: "all 0.2s",
-    _hover: { bg: "white", transform: "translateY(-1px)" },
-  },
-});
-
-const LogoLink = chakra(NextLink, {
-  base: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 3,
-    flexShrink: 0,
-  },
-});
+const WHATSAPP = "https://wa.me/3113167816";
 
 export function SponsorNavbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -79,77 +22,64 @@ export function SponsorNavbar() {
   }, []);
 
   return (
-    <Box
-      as="nav"
-      position="sticky"
-      top={0}
-      left={0}
-      right={0}
-      zIndex={1000}
-      transition="all 0.3s ease"
-      bg={scrolled ? "rgba(15, 18, 38, 0.45)" : "transparent"}
-      backdropFilter={scrolled ? "blur(18px)" : "none"}
-      borderBottomWidth={scrolled ? "1px" : "0px"}
-      borderColor="transparent"
+    <header
+      className={`!fixed !inset-x-0 !top-0 !z-[200] !transition-all !duration-500 ${
+        scrolled ? "!py-3" : "!py-4"
+      }`}
     >
-      <Container maxW="7xl" py={3}>
-        <Box
-          rounded="full"
-          bg={scrolled ? "whiteAlpha.50" : "transparent"}
-          backdropFilter={scrolled ? "blur(20px)" : "blur(6px)"}
-          borderWidth="1px"
-          borderColor="whiteAlpha.200"
-          px={{ base: 3, md: 4 }}
-          py={{ base: 1.5, md: 1.5 }}
+      <div className="!mx-auto !max-w-7xl !px-4 sm:!px-6">
+        <nav
+          className={`!flex !items-center !justify-between !gap-3 !rounded-full !border !px-3 !py-2 sm:!gap-6 sm:!px-6 ${
+            scrolled
+              ? "!bg-white/[0.04] !border-white/10 !backdrop-blur-xl"
+              : "!bg-white/[0.06] !border-white/10 !backdrop-blur-lg"
+          } !transition-all !duration-500`}
+          style={{
+            WebkitBackdropFilter: scrolled
+              ? "blur(20px) saturate(140%)"
+              : "blur(14px) saturate(130%)",
+            backdropFilter: scrolled
+              ? "blur(20px) saturate(140%)"
+              : "blur(14px) saturate(130%)",
+          }}
         >
-          <HStack justify="space-between" align="center" gap={4}>
-            <HStack gap={4} flexShrink={0}>
-              <LogoLink href="/aliados" aria-label="Inicio aliados">
-                <Image
-                  src={LOGO}
-                  alt="La U del futuro"
-                  h={{ base: "36px", md: "44px" }}
-                  w="auto"
-                  objectFit="contain"
-                />
-                <Text
-                  display={{ base: "none", lg: "block" }}
-                  fontFamily="body"
-                  fontWeight="500"
-                  fontSize="2xs"
-                  letterSpacing="0.16em"
-                  textTransform="uppercase"
-                  color="whiteAlpha.700"
-                  whiteSpace="nowrap"
-                  pl={3}
-                  borderLeftWidth="1px"
-                  borderColor="whiteAlpha.200"
-                >
-                  UTP · 22, 23 y 24 de octubre
-                </Text>
-              </LogoLink>
-            </HStack>
+          <a
+            href="#top"
+            className="!flex !items-center !gap-3 !shrink-0"
+            aria-label="Inicio aliados"
+          >
+            <img
+              src="/logos-la-u/Horizontal - letras blancas.png"
+              alt="La U del Futuro"
+              className="!h-8 !w-auto sm:!h-9"
+            />
+            <span className="!hidden !text-xs !font-medium !tracking-[0.2em] !text-white/50 !uppercase lg:!inline">
+              UTP · 22, 23 y 24 de octubre
+            </span>
+          </a>
 
-            <HStack
-              as="nav"
-              gap={1}
-              display={{ base: "none", md: "flex" }}
-              flex={1}
-              justify="center"
-            >
-              {NAV_ITEMS.map((item) => (
-                <NavLink key={item.href} href={item.href}>
-                  {item.label}
-                </NavLink>
-              ))}
-            </HStack>
+          <div className="!hidden !items-center !gap-1 lg:!flex">
+            {NAV_ITEMS.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className="!rounded-full !px-4 !py-2 !text-sm !text-white/70 !transition hover:!bg-white/5 hover:!text-white"
+              >
+                {item.label}
+              </a>
+            ))}
+          </div>
 
-            <CtaLink href="#aliados" flexShrink={0}>
-              Ser Aliado
-            </CtaLink>
-          </HStack>
-        </Box>
-      </Container>
-    </Box>
+          <a
+            href={WHATSAPP}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="!inline-flex !items-center !justify-center !rounded-full !bg-white !px-5 !py-2 !text-sm !font-semibold !text-black !shrink-0 !transition hover:!bg-white/90"
+          >
+            Ser Aliado
+          </a>
+        </nav>
+      </div>
+    </header>
   );
 }
