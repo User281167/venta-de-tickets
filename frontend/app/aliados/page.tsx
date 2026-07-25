@@ -10,7 +10,6 @@ import { CtaSection } from "@/features/sponsor/components/CtaSection";
 export default function AliadosPage() {
   return (
     <>
-      <SponsorNavbar />
       <main>
         <SponsorHero />
         <PillarsSection />
