@@ -7,6 +7,7 @@ import { ExperienciasSection } from "@/features/sponsor/components/ExperienciasS
 import { UbicacionesSection } from "@/features/sponsor/components/UbicacionesSection";
 import { BeneficiosSection } from "@/features/sponsor/components/BeneficiosSection";
 import { AsociacionSection } from "@/features/sponsor/components/AsociacionSection";
+import { ImpactoSocialSection } from "@/features/sponsor/components/ImpactoSocialSection";
 import { PillarsSection } from "@/features/sponsor/components/PillarsSection";
 import { LogoSection } from "@/features/sponsor/components/LogoSection";
 import { PaletteSection } from "@/features/sponsor/components/PaletteSection";
@@ -26,6 +27,7 @@ export default function AliadosPage() {
         <UbicacionesSection />
         <BeneficiosSection />
         <AsociacionSection />
+        <ImpactoSocialSection />
         <PillarsSection />
         <LogoSection />
         <PaletteSection />

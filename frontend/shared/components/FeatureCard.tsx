@@ -1,6 +1,13 @@
 import type { ReactNode, HTMLAttributes } from "react";
 
 export type FeatureColor = "cyan" | "violet" | "blue" | "magenta" | "orange" | "verde";
+export type FeaturePadding = "sm" | "md" | "lg";
+
+const PADDING = {
+  "sm": "!p-2",
+  "md": "!p-4 !sm:p-2",
+  "lg": "!p-6 !sm:p-8",
+}
 
 type FeatureCardProps = HTMLAttributes<HTMLDivElement> & {
   icon: ReactNode;
@@ -10,6 +17,7 @@ type FeatureCardProps = HTMLAttributes<HTMLDivElement> & {
   badge?: ReactNode;
   shadow?: boolean;
   topBorder?: boolean;
+  space?: FeaturePadding;
 };
 
 const COLOR_VARS: Record<FeatureColor, { token: string; rgb: string }> = {
@@ -66,14 +74,16 @@ export function FeatureCard({
   shadow = false,
   topBorder = false,
   className = "",
+  space = "lg",
   ...rest
 }: FeatureCardProps) {
   const c = COLOR_VARS[color];
+  const padding = PADDING[space]
 
   return (
     <div
       {...rest}
-      className={`group reveal !relative !flex !h-full !flex-col !overflow-hidden !rounded-3xl glass !p-6 !transition !duration-500 hover:!-translate-y-1 sm:!p-8 ${TW_BORDER[color]} ${TW_BG[color]} ${
+      className={`group reveal !relative !flex !h-full !flex-col !overflow-hidden !rounded-3xl glass !transition !duration-500 hover:!-translate-y-1 ${padding} ${TW_BORDER[color]} ${TW_BG[color]} ${
         shadow
           ? "!border !bg-gradient-to-b"
           : "!border !border-white/10 !bg-gradient-to-b from-white/[0.03] to-transparent"
