@@ -1,202 +1,195 @@
 ﻿"use client";
 
-import {
-  Box,
-  Button,
-  Container,
-  Flex,
-  Heading,
-  HStack,
-  Image,
-  Separator,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
+import NextLink from "next/link";
 import {
   IconArrowRight,
   IconCalendar,
   IconMapPin,
   IconUser,
 } from "@tabler/icons-react";
-import NextLink from "next/link";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { AnimatedSection } from "@/shared/components/AnimatedSection";
+import { AuroraBackground } from "@/shared/components/AuroraBackground";
+import { GradientText } from "@/shared/components/GradientText";
+import { useRevealAll } from "@/features/sponsor/hooks/useRevealAll";
+
+const LOGO = "/logos-la-u/Vertical - letras blancas.png";
 
 export function HeroSection() {
+  useRevealAll();
   const { user } = useAuth();
+  const ctaHref = user ? "/mi-cuenta" : "/registro";
+  const ctaLabel = user ? "Ir a mi cuenta" : "Inscríbete ahora";
+  const CtaIcon = user ? IconUser : IconArrowRight;
 
   return (
-    <Box
+    <section
       id="hero"
-      minH={{ base: "calc(100vh - 24px)", lg: "92vh" }}
-      display="flex"
-      alignItems="center"
-      backgroundImage="url(/header.png)"
-      backgroundSize="cover"
-      backgroundPosition={{ base: "58% center", lg: "center" }}
-      position="relative"
-      overflow="hidden"
-      _before={{
-        content: '""',
-        position: "absolute",
-        inset: 0,
-        bg: {
-          base: "linear-gradient(90deg, rgba(2,4,20,0.94), rgba(2,4,20,0.62))",
-          lg: "linear-gradient(90deg, rgba(2,4,20,0.52), rgba(2,4,20,0.12))",
-        },
-      }}
+      className="!relative !flex !min-h-screen !items-center !overflow-hidden !bg-black"
     >
-      <Container
-        maxW="7xl"
-        px={{ base: 4, md: 6 }}
-        position="relative"
-        zIndex={1}
-      >
-        <AnimatedSection direction="up" delay={0} duration={0.6}>
-          <Stack
-            gap={{ base: 6, md: 8 }}
-            maxW={{ base: "full", md: "720px" }}
-          >
-          <Flex
-            gap={{ base: 4, md: 6 }}
-            flexDir={{ base: "column", md: "row" }}
-            align={{ md: "flex-end" }}
-          >
-            <Image
-              src="/la-u.png"
-              alt="La U"
-              w={{ base: "40", md: "sm" }}
-              className="animate-float"
-              transition="transform 0.3s ease"
-              _hover={{ transform: "scale(1.03)" }}
-            />
+      <AuroraBackground imageOpacity={50} particleCount={30} />
 
-            <Stack gap={2}>
-              <Heading
-                as="h1"
-                fontSize={{ base: "4xl", md: "6xl", lg: "7xl" }}
-                color="white"
-                lineHeight="0.95"
-                fontWeight="black"
-                textTransform="uppercase"
+      <div className="!relative !z-10 !mx-auto !w-full !max-w-7xl !px-4 sm:!px-6">
+        <div className="!grid !gap-10 lg:!grid-cols-[1.1fr_1fr] lg:!items-center">
+          <div className="!flex !flex-col !gap-6">
+            <span
+              className="reveal !inline-flex !w-fit !items-center !gap-2 !rounded-2xl glass !px-4 !py-1.5 !text-xs !font-medium !uppercase !tracking-[0.2em] !text-white/80"
+              data-reveal-index="0"
+            >
+              <span className="!h-1.5 !w-1.5 !rounded-full !bg-cyan-neon !shadow-[0_0_10px_var(--color-cyan-neon)]" />
+              XXIV Convención de Egresados · UTP 2026
+            </span>
+
+            <h1
+              className="reveal !text-4xl !font-semibold !leading-[1.02] !tracking-tight !text-white sm:!text-5xl md:!text-6xl lg:!text-[4.5rem]"
+              data-reveal-index="1"
+            >
+              <GradientText>La U</GradientText> del{" "}
+              <GradientText>Futuro</GradientText>{" "}
+              <span className="!text-white">conecta</span>{" "}
+              <span className="!text-white">talento,</span>{" "}
+              <span className="!text-white">impulsa</span>{" "}
+              <span className="!text-white">el mañana.</span>
+            </h1>
+
+            <p
+              className="reveal !max-w-xl !text-base !leading-relaxed !text-white/75 sm:!text-lg"
+              data-reveal-index="2"
+            >
+              La XXIV Convención de Egresados de la Universidad Tecnológica
+              de Pereira reúne a empresarios, líderes, egresados, gobierno,
+              academia e innovadores para construir y vivir juntos la
+              Universidad del futuro.
+            </p>
+
+            <div
+              className="reveal !flex !flex-wrap !items-center !gap-4 !pt-2"
+              data-reveal-index="3"
+            >
+              <NextLink
+                href={ctaHref}
+                className="group !relative !inline-flex !items-center !gap-2 !overflow-hidden !rounded-full !px-7 !py-3.5 !text-sm !font-semibold !text-black !transition-transform !duration-300 hover:!scale-[1.03]"
+                style={{
+                  background:
+                    "linear-gradient(100deg, #7dd3fc 0%, #a78bfa 35%, #f0abfc 65%, #fdba74 100%)",
+                  boxShadow:
+                    "0 0 40px oklch(0.65 0.22 300 / 0.35), 0 0 80px oklch(0.7 0.22 200 / 0.25)",
+                }}
               >
-                del futuro
-              </Heading>
+                <span className="!relative !z-10">{ctaLabel}</span>
+                <CtaIcon
+                  size={18}
+                  className="!relative !z-10 !transition-transform group-hover:!translate-x-0.5 group-hover:!-translate-y-0.5"
+                />
+                <span
+                  className="!absolute !inset-0 !-translate-x-full !bg-gradient-to-r !from-transparent !via-white/40 !to-transparent !transition-transform !duration-700 group-hover:!translate-x-full"
+                  aria-hidden="true"
+                />
+              </NextLink>
 
-              <Text
-                fontSize={{ base: "lg", md: "2xl" }}
-                color="white"
-                textTransform="uppercase"
-                lineHeight="1.35"
+              <NextLink
+                href="/entradas"
+                className="!inline-flex !items-center !justify-center !rounded-full !border !border-white/15 !bg-white/5 !px-6 !py-3 !text-sm !font-semibold !text-white !transition hover:!bg-white/10"
               >
-                Conectamos{" "}
-                <Box as="span" color="brand.pink">
-                  talento
-                </Box>
-                , impulsamos el{" "}
-                <Box as="span" color="brand.cyan">
-                  futuro
-                </Box>
-              </Text>
-            </Stack>
-          </Flex>
+                Ver entradas
+              </NextLink>
+            </div>
+          </div>
 
-          <Separator maxW="360px" borderColor="brand.cyan" opacity={0.8} />
-
-          <Stack gap={5} color="white" maxW="sm">
-            <HStack gap={4} align="center">
-              <Box
-                p={2.5}
-                borderRadius="full"
-                bg="rgba(255,15,123,0.12)"
-                border="1px solid rgba(255,15,123,0.25)"
+          <div className="!flex !flex-col !gap-4">
+            <div
+              className="reveal !flex !items-center !justify-center"
+              data-reveal-index="4"
+            >
+              <div
+                className="animate-float-large will-change-transform"
+                style={{
+                  filter:
+                    "drop-shadow(0 0 50px oklch(0.6 0.24 300 / 0.45))",
+                }}
               >
-                <IconCalendar stroke={1} size={40} color="#ff0f7b" />
-              </Box>
+                <img
+                  src={LOGO}
+                  alt="La U del Futuro — XXIV Convención de Egresados UTP 2026"
+                  className="!h-44 !w-auto sm:!h-52 md:!h-60"
+                  loading="eager"
+                />
+              </div>
+            </div>
 
-              <Stack gap={0}>
-                <Text fontSize={{ base: "2xl", md: "4xl" }} fontWeight="black">
+            <div
+              className="reveal !flex !items-center !gap-4 !rounded-2xl glass !px-5 !py-4"
+              data-reveal-index="5"
+              style={{
+                background: "rgba(15, 18, 38, 0.45)",
+                WebkitBackdropFilter: "blur(14px) saturate(140%)",
+                backdropFilter: "blur(14px) saturate(140%)",
+              }}
+            >
+              <span
+                className="!flex !h-11 !w-11 !shrink-0 !items-center !justify-center !rounded-full"
+                style={{
+                  background: "rgba(255, 15, 123, 0.12)",
+                  border: "1px solid rgba(255, 15, 123, 0.3)",
+                }}
+              >
+                <IconCalendar size={22} color="#ff0f7b" />
+              </span>
+              <div>
+                <div className="!text-xl !font-semibold !text-white sm:!text-2xl">
                   22, 23 y 24
-                </Text>
+                </div>
+                <div className="!text-sm !text-white/70">
+                  de octubre de <span style={{ color: "#00e5ff" }}>2026</span>
+                </div>
+              </div>
+            </div>
 
-                <Text fontSize={{ base: "lg", md: "2xl" }} fontWeight="bold">
-                  de octubre de{" "}
-                  <Box as="span" color="brand.cyan">
-                    2026
-                  </Box>
-                </Text>
-              </Stack>
-            </HStack>
-
-            <HStack gap={4} align="center">
-              <Box
-                p={2.5}
-                borderRadius="full"
-                bg="rgba(0,229,255,0.12)"
-                border="1px solid rgba(0,229,255,0.25)"
-              >
-                <IconMapPin stroke={1} size={40} color="#00e5ff" />
-              </Box>
-
-              <Text fontSize={{ base: "md", md: "lg" }} fontWeight="medium">
-                Universidad Tecnológica de Pereira
-                <br />
-                Pereira, Risaralda - Colombia
-              </Text>
-            </HStack>
-
-            {user ? (
-              <Button
-                asChild
-                w="full"
-                alignSelf="flex-start"
-                size={{ base: "md", md: "lg" }}
-                px={{ base: 6, md: 8 }}
-                minH="54px"
-                bg="linear-gradient(90deg, #00e5ff 0%, #0969ff 100%)"
-                color="white"
-                borderRadius="10px"
-                fontWeight="black"
-                boxShadow="0 0 34px rgba(0,229,255,0.35)"
-                transition="all 0.25s ease"
-                _hover={{
-                  transform: "translateY(-2px)",
-                  boxShadow: "0 0 42px rgba(0,229,255,0.42)",
+            <div
+              className="reveal !flex !items-center !gap-4 !rounded-2xl glass !px-5 !py-4"
+              data-reveal-index="6"
+              style={{
+                background: "rgba(15, 18, 38, 0.45)",
+                WebkitBackdropFilter: "blur(14px) saturate(140%)",
+                backdropFilter: "blur(14px) saturate(140%)",
+              }}
+            >
+              <span
+                className="!flex !h-11 !w-11 !shrink-0 !items-center !justify-center !rounded-full"
+                style={{
+                  background: "rgba(0, 229, 255, 0.12)",
+                  border: "1px solid rgba(0, 229, 255, 0.3)",
                 }}
               >
-                <NextLink href="/mi-cuenta">
-                  IR A MI CUENTA <IconUser size={24} />
-                </NextLink>
-              </Button>
-            ) : (
-              <Button
-                asChild
-                w="full"
-                alignSelf="flex-start"
-                size={{ base: "md", md: "lg" }}
-                px={{ base: 6, md: 8 }}
-                minH="54px"
-                bg="linear-gradient(90deg, #ff0f7b 0%, #0969ff 100%)"
-                color="white"
-                borderRadius="10px"
-                fontWeight="black"
-                boxShadow="0 0 34px rgba(255,15,123,0.35)"
-                className="animate-pulse-glow"
-                transition="all 0.25s ease"
-                _hover={{
-                  transform: "translateY(-2px)",
-                  boxShadow: "0 0 42px rgba(0,229,255,0.42)",
-                }}
-              >
-                <NextLink href="/registro">
-                  INSCRÍBETE AHORA <IconArrowRight size={24} />
-                </NextLink>
-              </Button>
-            )}
-          </Stack>
-        </Stack>
-        </AnimatedSection>
-      </Container>
-    </Box>
+                <IconMapPin size={22} color="#00e5ff" />
+              </span>
+              <div>
+                <div className="!text-sm !font-semibold !text-white">
+                  Universidad Tecnológica de Pereira
+                </div>
+                <div className="!text-xs !text-white/70">
+                  Pereira, Risaralda · Colombia
+                </div>
+              </div>
+            </div>
+
+            <div
+              className="reveal !flex !flex-wrap !items-center !gap-x-4 !gap-y-1 !rounded-2xl glass !px-5 !py-3 !text-[10px] !font-medium !uppercase !tracking-[0.22em] !text-white/50"
+              data-reveal-index="7"
+              style={{
+                background: "rgba(15, 18, 38, 0.45)",
+                WebkitBackdropFilter: "blur(14px) saturate(140%)",
+                backdropFilter: "blur(14px) saturate(140%)",
+              }}
+            >
+              <span>Innovación</span>
+              <span className="!h-1 !w-1 !rounded-full !bg-white/30" />
+              <span>Inteligencia Artificial</span>
+              <span className="!h-1 !w-1 !rounded-full !bg-white/30" />
+              <span>Smart Campus</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
