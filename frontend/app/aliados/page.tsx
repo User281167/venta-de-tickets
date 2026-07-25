@@ -1,6 +1,7 @@
 import { SponsorNavbar } from "@/features/sponsor/components/Navbar";
 import { SponsorHero } from "@/features/sponsor/components/Hero";
 import { ImpactSection } from "@/features/sponsor/components/ImpactSection";
+import { PorQueSection } from "@/features/sponsor/components/PorQueSection";
 import { PillarsSection } from "@/features/sponsor/components/PillarsSection";
 import { LogoSection } from "@/features/sponsor/components/LogoSection";
 import { PaletteSection } from "@/features/sponsor/components/PaletteSection";
@@ -14,6 +15,7 @@ export default function AliadosPage() {
       <main>
         <SponsorHero />
         <ImpactSection />
+        <PorQueSection />
         <PillarsSection />
         <LogoSection />
         <PaletteSection />

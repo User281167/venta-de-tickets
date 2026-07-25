@@ -3,7 +3,7 @@ import { createSystem, defaultConfig, defineConfig } from "@chakra-ui/react";
 const config = defineConfig({
   globalCss: {
     body: {
-      bg: "brand.dark",
+      bg: "#000000",
       color: "brand.light",
       fontFamily: "body",
     },
@@ -18,8 +18,10 @@ const config = defineConfig({
         brand: {
           light: { value: "#f7f8ff" },
           muted: { value: "#aeb8d8" },
-          dark: { value: "#020414" },
-          panel: { value: "#070a22" },
+          "blue-dark": { value: "#020414" },
+          "blue-panel": { value: "#070a22" },
+          dark: { value: "#000000" },
+          panel: { value: "#0a0a0a" },
           pink: { value: "#ff0f7b" },
           violet: { value: "#7c3cff" },
           blue: { value: "#0969ff" },
@@ -28,7 +30,7 @@ const config = defineConfig({
           orange: { value: "#ff9f1c" },
         },
         utp: {
-          noche: { value: "#0F1226" },
+          noche: { value: "#000000" },
           artico: { value: "#F0F4F5" },
           azul: { value: "#00C2FF" },
           naranja: { value: "#E94E1B" },
@@ -51,6 +53,8 @@ const config = defineConfig({
         "brand.muted": { value: "{colors.brand.muted}" },
         "brand.dark": { value: "{colors.brand.dark}" },
         "brand.panel": { value: "{colors.brand.panel}" },
+        "brand.blue-dark": {value: "{colors.brand.blue-dark}"},
+        "brand.blue-panel": {value: "{colors.brand.blue-panel}"},
         "brand.pink": { value: "{colors.brand.pink}" },
         "brand.violet": { value: "{colors.brand.violet}" },
         "brand.blue": { value: "{colors.brand.blue}" },
