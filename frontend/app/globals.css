@@ -1,5 +1,18 @@
 @import "tailwindcss";
 
+@font-face {
+    font-family: "Good Times";
+    src: url("/fonts/GoodTimes.woff2") format("woff2"),
+         url("/fonts/GoodTimes.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+:root {
+    --font-good-times: "Good Times", "Montserrat Alternates", "Bebas Neue", system-ui, sans-serif;
+}
+
 @theme {
     --color-brand-light: #f7f8ff;
     --color-brand-muted: #aeb8d8;
@@ -11,6 +24,13 @@
     --color-brand-cyan: #00e5ff;
     --color-brand-teal: #00d5b8;
     --color-brand-orange: #ff9f1c;
+
+    --color-utp-noche: #0F1226;
+    --color-utp-artico: #F0F4F5;
+    --color-utp-azul: #00C2FF;
+    --color-utp-naranja: #E94E1B;
+    --color-utp-magenta: #A01060;
+    --color-utp-verde: #39FF63;
 }
 
 html {
