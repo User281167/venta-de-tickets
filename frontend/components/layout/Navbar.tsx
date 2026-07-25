@@ -1,28 +1,17 @@
 "use client";
 
-import { useState } from "react";
-import {
-  Box,
-  Button,
-  Container,
-  Flex,
-  HStack,
-  IconButton,
-  Image,
-  Link as ChakraLink,
-  Stack,
-  VStack,
-} from "@chakra-ui/react";
+import { useState, useEffect, useRef } from "react";
+import NextLink from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import {
   IconLogout,
   IconMenu2,
   IconQrcode,
   IconShield,
   IconUser,
+  IconChevronDown,
   IconX,
 } from "@tabler/icons-react";
-import NextLink from "next/link";
-import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "@/features/auth/api/auth.client";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { SkeletonButton } from "@/shared/components/SkeletonButton";
@@ -31,310 +20,338 @@ import { CartFab } from "@/features/ticket-purchase/components/CartFab";
 import { CartDrawer } from "@/features/ticket-purchase/components/CartDrawer";
 import { useCart } from "@/features/ticket-purchase/hooks/useCart";
 
-const NAV_ITEMS = [
-  { label: "INICIO", href: "/#hero" },
-  { label: "LA CONVENCIÓN", href: "/#convencion" },
-  { label: "AGENDA", href: "/agenda" },
-  { label: "ACTIVIDADES", href: "/#actividades" },
-  { label: "PONENTES", href: "/#speakers" },
+type NavItem = { label: string; href: string };
+
+const CENTER_ITEMS: NavItem[] = [
   { label: "ENTRADAS", href: "/entradas" },
-  { label: "CONTACTO", href: "/#contacto" },
 ];
 
+const MORE_ITEMS: NavItem[] = [
+  { label: "Inicio", href: "/#hero" },
+  { label: "La Convención", href: "/#convencion" },
+  { label: "Agenda", href: "/agenda" },
+  { label: "Actividades", href: "/#actividades" },
+  { label: "Ponentes", href: "/#speakers" },
+  { label: "Aliados", href: "/aliados" },
+  { label: "Contacto", href: "/#contacto" },
+];
+
+const POPOVER_STYLE = {
+  background: "rgba(15, 18, 38, 0.85)",
+  WebkitBackdropFilter: "blur(20px) saturate(140%)",
+  backdropFilter: "blur(20px) saturate(140%)",
+} as const;
+
 export function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
-  const pathname = usePathname();
-  const isAuthPage = pathname === "/login" || pathname === "/registro";
+  const [moreOpen, setMoreOpen] = useState(false);
+  const [userOpen, setUserOpen] = useState(false);
+  const moreRef = useRef<HTMLDivElement | null>(null);
+  const userRef = useRef<HTMLDivElement | null>(null);
+
+  const isAuthPage = useIsAuthPage();
   const { user, role, isLoading } = useAuth();
   const { totalItems } = useCart();
   const router = useRouter();
 
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 0);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      if (moreRef.current && !moreRef.current.contains(e.target as Node)) {
+        setMoreOpen(false);
+      }
+      if (userRef.current && !userRef.current.contains(e.target as Node)) {
+        setUserOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
+  }, []);
+
   const handleLogout = async () => {
     await signOut();
+    setUserOpen(false);
     router.push("/");
   };
 
+  const closeMobile = () => setOpen(false);
+  const closeMore = () => setMoreOpen(false);
+  const closeUser = () => setUserOpen(false);
+
   return (
-    <Box
-      as="nav"
-      position="sticky"
-      top={0}
-      left={0}
-      right={0}
-      zIndex={1000}
-      bg="rgba(2, 4, 20, 0.76)"
-      color="brand.light"
-      borderBottomWidth="1px"
-      borderColor="rgba(255,255,255,0.08)"
-      backdropFilter="blur(18px)"
-      transition="all 0.25s ease"
+    <header
+      className={`!fixed !inset-x-0 !top-0 !z-[200] !transition-all !duration-500 ${
+        scrolled ? "!py-3" : "!py-4"
+      }`}
     >
-      <Container maxW="8xl" px={{ base: 4, md: 6 }}>
-        <Flex h={16} align="center" justify="space-between">
-          <ChakraLink asChild _hover={{ textDecoration: "none" }}>
-            <NextLink href="/">
-              <Image src="/utp-logo.png" alt="UTP" h="42px" w="auto" />
+      <div className="!mx-auto !max-w-7xl !px-4 sm:!px-6">
+        <nav
+          className={`!flex !items-center !gap-2 !rounded-full !border !border-white/10 !px-3 !py-2 sm:!gap-3 sm:!px-5 ${
+            scrolled ? "!bg-white/[0.04]" : "!bg-white/[0.06]"
+          } !transition-all !duration-500`}
+          style={{
+            WebkitBackdropFilter: scrolled
+              ? "blur(20px) saturate(140%)"
+              : "blur(14px) saturate(130%)",
+            backdropFilter: scrolled
+              ? "blur(20px) saturate(140%)"
+              : "blur(14px) saturate(130%)",
+          }}
+        >
+          <NextLink href="/" className="!flex !shrink-0 !items-center" aria-label="UTP">
+            <img
+              src="/utp-logo.png"
+              alt="Universidad Tecnológica de Pereira"
+              className="!h-9 !w-auto sm:!h-10"
+            />
+          </NextLink>
+
+          {CENTER_ITEMS.map((item) => (
+            <NextLink
+              key={item.href + item.label}
+              href={item.href}
+              className="!hidden !rounded-full !px-4 !py-2 !text-sm !text-white/70 !transition hover:!bg-white/5 hover:!text-white md:!inline-flex"
+            >
+              {item.label}
             </NextLink>
-          </ChakraLink>
+          ))}
 
-          <HStack gap={7} hideBelow="xl">
-            {NAV_ITEMS.map((item) => {
-              const isActive = !item.href.includes("#") && item.href === pathname;
-              return (
-                <ChakraLink
-                  asChild
-                  key={item.href + item.label}
-                  textDecoration="none"
-                  color={isActive ? "brand.cyan" : "brand.light"}
-                  fontSize="xs"
-                  fontWeight="bold"
-                  borderBottom="2px solid"
-                  borderColor={isActive ? "brand.cyan" : "transparent"}
-                  transition="all 0.2s ease"
-                  _hover={{
-                    borderColor: "brand.pink",
-                    transform: "translateY(-2px)",
-                    boxShadow: "0 0 42px rgba(0,229,255,0.42)",
-                  }}
-                >
-                  <NextLink href={item.href}>{item.label}</NextLink>
-                </ChakraLink>
-              );
-            })}
-          </HStack>
+          <div ref={moreRef} className="!relative !hidden md:!block">
+            <button
+              type="button"
+              onClick={() => setMoreOpen((v) => !v)}
+              aria-expanded={moreOpen}
+              aria-haspopup="menu"
+              className="!inline-flex !items-center !gap-1 !rounded-full !px-4 !py-2 !text-sm !text-white/70 !transition hover:!bg-white/5 hover:!text-white"
+            >
+              <span>Más</span>
+              <IconChevronDown
+                size={14}
+                className={`!transition-transform ${moreOpen ? "!rotate-180" : ""}`}
+              />
+            </button>
 
-          <HStack gap={3}>
-            {isLoading ? (
-              <SkeletonButton count={2} />
-            ) : user ? (
-              <>
-                {isAdminRole(role) && (
-                  <Button
-                    asChild
-                    variant="ghost"
-                    color="white"
-                    _hover={{ bg: "rgba(255,255,255,0.2)" }}
-                    hideBelow="md"
+            {moreOpen && (
+              <div
+                role="menu"
+                className="!absolute !left-0 !top-full !z-30 !mt-2 !min-w-[220px] !rounded-2xl !border !border-white/10 !p-1.5 !shadow-2xl"
+                style={POPOVER_STYLE}
+              >
+                {MORE_ITEMS.map((item) => (
+                  <NextLink
+                    key={item.href + item.label}
+                    href={item.href}
+                    role="menuitem"
+                    onClick={closeMore}
+                    className="!block !rounded-xl !px-3 !py-2 !text-sm !text-white/75 !transition hover:!bg-white/10 hover:!text-white"
                   >
-                    <NextLink href="/admin">
-                      <IconShield size={18} />
-                      Admin
-                    </NextLink>
-                  </Button>
-                )}
-
-                {isCheckerRole(role) && (
-                  <Button
-                    asChild
-                    variant="ghost"
-                    color="white"
-                    _hover={{ bg: "rgba(255,255,255,0.2)" }}
-                    hideBelow="md"
-                  >
-                    <NextLink href="/admin/checkin">
-                      <IconQrcode size={18} />
-                      Check-in
-                    </NextLink>
-                  </Button>
-                )}
-
-                <Button
-                  asChild
-                  variant="outline"
-                  color="white"
-                  _hover={{ bg: "rgba(255,255,255,0.2)" }}
-                  borderColor="brand.cyan"
-                  hideBelow="md"
-                >
-                  <NextLink href="/mi-cuenta">
-                    <IconUser size={18} />
-                    Mi Perfil
+                    {item.label}
                   </NextLink>
-                </Button>
+                ))}
+              </div>
+            )}
+          </div>
 
-                <Button
-                  variant="ghost"
-                  color="white"
-                  _hover={{ bg: "rgba(255,255,255,0.2)" }}
-                  hideBelow="md"
+          <div className="!ml-auto !flex !items-center !gap-2">
+            <CartFab itemCount={totalItems} onClick={() => setCartOpen(true)} />
 
-                  onClick={handleLogout}
+            {isLoading ? (
+              <SkeletonButton count={1} />
+            ) : user ? (
+              <div ref={userRef} className="!relative !hidden md:!block">
+                <button
+                  type="button"
+                  onClick={() => setUserOpen((v) => !v)}
+                  aria-expanded={userOpen}
+                  aria-haspopup="menu"
+                  className="!inline-flex !items-center !justify-center !rounded-full !border !border-white/10 !p-2 !text-white/85 !transition hover:!bg-white/10 hover:!text-white"
+                  aria-label="Menú de usuario"
                 >
-                  <IconLogout size={18} />
-                </Button>
-              </>
+                  <IconUser size={18} />
+                </button>
+
+                {userOpen && (
+                  <div
+                    role="menu"
+                    className="!absolute !right-0 !top-full !z-30 !mt-2 !min-w-[220px] !rounded-2xl !border !border-white/10 !p-1.5 !shadow-2xl"
+                    style={POPOVER_STYLE}
+                  >
+                    <div className="!px-3 !pt-2 !pb-1 !text-[11px] !font-medium !uppercase !tracking-[0.18em] !text-white/40">
+                      Sesión iniciada
+                    </div>
+                    {isAdminRole(role) && (
+                      <NextLink
+                        href="/admin"
+                        role="menuitem"
+                        onClick={closeUser}
+                        className="!flex !items-center !gap-2 !rounded-xl !px-3 !py-2 !text-sm !text-white/85 !transition hover:!bg-white/10 hover:!text-white"
+                      >
+                        <IconShield size={16} />
+                        Admin
+                      </NextLink>
+                    )}
+                    {isCheckerRole(role) && (
+                      <NextLink
+                        href="/admin/checkin"
+                        role="menuitem"
+                        onClick={closeUser}
+                        className="!flex !items-center !gap-2 !rounded-xl !px-3 !py-2 !text-sm !text-white/85 !transition hover:!bg-white/10 hover:!text-white"
+                      >
+                        <IconQrcode size={16} />
+                        Check-in
+                      </NextLink>
+                    )}
+                    <NextLink
+                      href="/mi-cuenta"
+                      role="menuitem"
+                      onClick={closeUser}
+                      className="!flex !items-center !gap-2 !rounded-xl !px-3 !py-2 !text-sm !text-white/85 !transition hover:!bg-white/10 hover:!text-white"
+                    >
+                      <IconUser size={16} />
+                      Mi Perfil
+                    </NextLink>
+                    <div className="!my-1 !h-px !bg-white/10" />
+                    <button
+                      type="button"
+                      onClick={handleLogout}
+                      role="menuitem"
+                      className="!flex !w-full !items-center !gap-2 !rounded-xl !px-3 !py-2 !text-left !text-sm !text-white/85 !transition hover:!bg-white/10 hover:!text-white"
+                    >
+                      <IconLogout size={16} />
+                      Cerrar sesión
+                    </button>
+                  </div>
+                )}
+              </div>
             ) : (
               !isAuthPage && (
                 <>
-                  <Button
-                    asChild
-                    border="1px solid transparent"
-                    hideBelow="sm"
-                    bg={`
-                    linear-gradient(#020414, #020414) padding-box,
-                    linear-gradient(90deg, #ff0f7b, #00e5ff) border-box
-                  `}
-                    _hover={{
-                      borderColor: "brand.pink",
-                      transform: "translateY(-2px)",
-                      boxShadow: "0 0 42px rgba(0,229,255,0.42)",
-                    }}
-                    color="white"
-                    fontWeight="bold"
+                  <NextLink
+                    href="/login"
+                    className="!hidden !items-center !justify-center !rounded-full !border !border-white/10 !px-5 !py-2 !text-sm !font-semibold !text-white/85 !transition hover:!bg-white/10 hover:!text-white sm:!inline-flex"
                   >
-                    <NextLink href="/login">INICIAR SESIÓN</NextLink>
-                  </Button>
-
-                  <Button
-                    asChild
-                    border="1px solid transparent"
-                    hideBelow="sm"
-                    size="md"
-                    bg={`
-                    linear-gradient(#020414, #020414) padding-box,
-                    linear-gradient(90deg, #ff0f7b, #00e5ff) border-box
-                  `}
-                    _hover={{
-                      borderColor: "brand.pink",
-                      transform: "translateY(-2px)",
-                      boxShadow: "0 0 42px rgba(0,229,255,0.42)",
-                    }}
-                    color="white"
-                    fontWeight="bold"
+                    Iniciar sesión
+                  </NextLink>
+                  <NextLink
+                    href="/registro"
+                    className="!hidden !items-center !justify-center !rounded-full !bg-white !px-5 !py-2 !text-sm !font-semibold !text-black !transition hover:!bg-white/90 sm:!inline-flex"
                   >
-                    <NextLink href="/registro">INSCRÍBETE</NextLink>
-                  </Button>
+                    Inscríbete
+                  </NextLink>
                 </>
               )
             )}
 
-            <CartFab itemCount={totalItems} onClick={() => setCartOpen(true)} />
-
-            <IconButton
-              aria-label="Menu"
-              color="white"
-              size="md"
-              hideFrom="xl"
-              onClick={() => setOpen(!open)}
-              variant="ghost"
+            <button
+              type="button"
+              onClick={() => setOpen((v) => !v)}
+              className="!inline-flex !items-center !justify-center !rounded-full !border !border-white/10 !p-2 !text-white/85 !transition hover:!bg-white/10 hover:!text-white md:!hidden"
+              aria-label="Menú"
+              aria-expanded={open}
             >
-              {open ? <IconX size={24} /> : <IconMenu2 size={24} />}
-            </IconButton>
-          </HStack>
-        </Flex>
-
-        <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
+              {open ? <IconX size={18} /> : <IconMenu2 size={18} />}
+            </button>
+          </div>
+        </nav>
 
         {open && (
-          <Box hideFrom="xl" py="4">
-            <Stack gap={3}>
-              {NAV_ITEMS.map((item) => {
-              const isActive = !item.href.includes("#") && item.href === pathname;
-                return (
-                  <ChakraLink
-                    asChild
-                    key={item.href + item.label}
-                    fontWeight="bold"
-                    color={isActive ? "brand.cyan" : "white"}
-                    borderLeft={isActive ? "3px solid" : "none"}
-                    borderColor="brand.cyan"
-                    pl={isActive ? 3 : 0}
-                  >
-                    <NextLink href={item.href} onClick={() => setOpen(false)}>
-                      {item.label}
-                    </NextLink>
-                  </ChakraLink>
-                );
-              })}
+          <div
+            className="!mt-2 !overflow-hidden !rounded-2xl !border !border-white/10 !p-2"
+            style={POPOVER_STYLE}
+          >
+            <div className="!flex !flex-col">
+              {[...CENTER_ITEMS, ...MORE_ITEMS].map((item) => (
+                <NextLink
+                  key={item.href + item.label}
+                  href={item.href}
+                  onClick={closeMobile}
+                  className="!rounded-xl !px-3 !py-2 !text-sm !text-white/80 !transition hover:!bg-white/10 hover:!text-white"
+                >
+                  {item.label}
+                </NextLink>
+              ))}
 
               {isLoading ? (
-                <SkeletonButton count={2} />
+                <div className="!p-2">
+                  <SkeletonButton count={2} />
+                </div>
               ) : user ? (
                 <>
                   {isAdminRole(role) && (
-                    <Button
-                      asChild
-                      variant="ghost"
-                      color="white"
-                      w="full"
-                      onClick={() => setOpen(false)}
+                    <NextLink
+                      href="/admin"
+                      onClick={closeMobile}
+                      className="!rounded-xl !px-3 !py-2 !text-sm !text-white/80 !transition hover:!bg-white/10 hover:!text-white"
                     >
-                      <NextLink href="/admin">
-                        <IconShield size={18} />
-                        Admin
-                      </NextLink>
-                    </Button>
-                  )}
-
-                  {isCheckerRole(role) && (
-                    <Button
-                      asChild
-                      variant="ghost"
-                      color="white"
-                      w="full"
-                      onClick={() => setOpen(false)}
-                    >
-                      <NextLink href="/admin/checkin">
-                        <IconQrcode size={18} />
-                        Check-in
-                      </NextLink>
-                    </Button>
-                  )}
-
-                  <Button
-                    asChild
-                    variant="outline"
-                    w="full"
-                    color="white"
-                    onClick={() => setOpen(false)}
-                  >
-                    <NextLink href="/mi-cuenta">
-                      <IconUser size={18} />
-                      Mi Perfil
+                      Admin
                     </NextLink>
-                  </Button>
-
-                  <Button
-                    variant="ghost"
-                    color="white"
-                    w="full"
+                  )}
+                  {isCheckerRole(role) && (
+                    <NextLink
+                      href="/admin/checkin"
+                      onClick={closeMobile}
+                      className="!rounded-xl !px-3 !py-2 !text-sm !text-white/80 !transition hover:!bg-white/10 hover:!text-white"
+                    >
+                      Check-in
+                    </NextLink>
+                  )}
+                  <NextLink
+                    href="/mi-cuenta"
+                    onClick={closeMobile}
+                    className="!rounded-xl !px-3 !py-2 !text-sm !text-white/80 !transition hover:!bg-white/10 hover:!text-white"
+                  >
+                    Mi Perfil
+                  </NextLink>
+                  <button
+                    type="button"
                     onClick={() => {
-                      setOpen(false);
+                      closeMobile();
                       handleLogout();
                     }}
+                    className="!rounded-xl !px-3 !py-2 !text-left !text-sm !text-white/80 !transition hover:!bg-white/10 hover:!text-white"
                   >
-                    <IconLogout size={18} />
-                    Cerrar sesion
-                  </Button>
+                    Cerrar sesión
+                  </button>
                 </>
               ) : (
                 !isAuthPage && (
-                  <VStack gap={2} pt={2}>
-                    <Button asChild variant="outline" w="full" color="white">
-                      <NextLink href="/login">Iniciar sesion</NextLink>
-                    </Button>
-
-                    <Button
-                      asChild
-                      w="full"
-                      hideFrom="sm"
-                      border="1px solid transparent"
-                      bg={`
-                        linear-gradient(#020414, #020414) padding-box,
-                        linear-gradient(90deg, #ff0f7b, #00e5ff) border-box
-                      `}
-                      color="white"
+                  <>
+                    <NextLink
+                      href="/login"
+                      onClick={closeMobile}
+                      className="!rounded-xl !px-3 !py-2 !text-sm !text-white/80 !transition hover:!bg-white/10 hover:!text-white"
                     >
-                      <NextLink href="/registro">Registrarse</NextLink>
-                    </Button>
-                  </VStack>
+                      Iniciar sesión
+                    </NextLink>
+                    <NextLink
+                      href="/registro"
+                      onClick={closeMobile}
+                      className="!rounded-xl !bg-white !px-3 !py-2 !text-center !text-sm !font-semibold !text-black !transition hover:!bg-white/90"
+                    >
+                      Inscríbete
+                    </NextLink>
+                  </>
                 )
               )}
-            </Stack>
-          </Box>
+            </div>
+          </div>
         )}
-      </Container>
-    </Box>
+      </div>
+
+      <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
+    </header>
   );
+}
+
+function useIsAuthPage(): boolean {
+  const pathname = usePathname();
+  return pathname === "/login" || pathname === "/registro";
 }

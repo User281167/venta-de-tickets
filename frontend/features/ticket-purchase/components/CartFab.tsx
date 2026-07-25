@@ -1,7 +1,7 @@
 "use client";
 
 import { memo } from "react";
-import { Button, Box} from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { IconShoppingCart } from "@tabler/icons-react";
 
 interface CartFabProps {
@@ -14,45 +14,37 @@ export const CartFab = memo(function CartFab({
   onClick,
 }: CartFabProps) {
   return (
-    <Button
+    <button
+      type="button"
       onClick={onClick}
-      position="relative"
-      variant="solid"
-      bg="rgba(2, 4, 20, 0.85)"
-      border="2px solid"
-      borderColor="brand.cyan"
-      color="brand.light"
-      backdropFilter="blur(8px)"
-      _hover={{ bg: "rgba(0, 229, 255, 0.15)", transform: "translateY(-2px)" }}
-      _active={{ transform: "translateY(0)" }}
-      transition="all 0.2s"
-      px={3}
-      py={2}
-      minW="auto"
-      h="auto"
+      aria-label="Carrito"
+      className="!relative !inline-flex !items-center !justify-center !rounded-full !border !border-white/10 !bg-white/[0.04] !p-2 !text-white/85 !transition hover:!bg-white/10 hover:!text-white"
     >
-      <IconShoppingCart size={20} />
+      <IconShoppingCart size={18} />
 
       <Box
         position="absolute"
-        top="-6px"
-        right="-6px"
+        top="-4px"
+        right="-4px"
         bg="brand.pink"
         color="white"
-        fontSize="xs"
+        fontSize="10px"
         fontWeight="bold"
-        minW="20px"
-        h="20px"
+        minW="18px"
+        h="18px"
         borderRadius="full"
         display="flex"
         alignItems="center"
         justifyContent="center"
         lineHeight="1"
-        boxShadow={itemCount > 0 ? "0 0 6px rgba(255, 15, 123, 0.5)" : undefined}
+        px="4px"
+        boxShadow={
+          itemCount > 0 ? "0 0 6px rgba(255, 15, 123, 0.5)" : undefined
+        }
         visibility={itemCount > 0 ? "visible" : "hidden"}
       >
         {itemCount > 99 ? "99+" : itemCount}
       </Box>
-    </Button>
+    </button>
   );
 });
