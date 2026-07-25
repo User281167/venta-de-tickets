@@ -1,6 +1,6 @@
-import { Footer } from "@/components/layout/Footer";
 import { Box } from "@chakra-ui/react";
 import { SponsorNavbar } from "@/features/sponsor/components/Navbar";
+import { SponsorFooter } from "@/features/sponsor/components/Footer";
 
 export default function PublicLayout({
   children,
@@ -11,7 +11,7 @@ export default function PublicLayout({
     <>
       <SponsorNavbar />
       <Box minH="100vh">{children}</Box>
-      <Footer />
+      <SponsorFooter />
     </>
   );
 }

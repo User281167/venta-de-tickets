@@ -30,12 +30,12 @@ export default function AliadosPage() {
         <AsociacionSection />
         <ImpactoSocialSection />
         <CierreSection />
-        <PillarsSection />
-        <LogoSection />
-        <PaletteSection />
-        <TypographySection />
-        <SloganSection />
-        <CtaSection />
+        {/*<PillarsSection />*/}
+        {/*<LogoSection />*/}
+        {/*<PaletteSection />*/}
+        {/*<TypographySection />*/}
+        {/*<SloganSection />*/}
+        {/*<CtaSection />*/}
       </main>
     </>
   );
