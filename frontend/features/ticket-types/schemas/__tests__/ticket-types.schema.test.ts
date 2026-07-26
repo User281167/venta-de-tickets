@@ -1,7 +1,6 @@
 import { describe, it, expect } from "vitest";
 import {
   ticketTypeSchema,
-  eventWithTicketTypesSchema,
   adminTicketTypeSchema,
   createTicketTypeSchema,
   updateTicketTypeSchema,
@@ -53,48 +52,6 @@ describe("ticketTypeSchema (public)", () => {
     const result = ticketTypeSchema.safeParse({
       ...validTicketType,
       price: "free",
-    });
-    expect(result.success).toBe(false);
-  });
-});
-
-describe("eventWithTicketTypesSchema", () => {
-  it("accepts valid event with ticket types", () => {
-    const result = eventWithTicketTypesSchema.safeParse({
-      id: "550e8400-e29b-41d4-a716-446655440000",
-      title: "La Convención 2026",
-      description: "El evento del año",
-      eventDate: "2026-07-15T20:00:00.000Z",
-      doorsOpenAt: "2026-07-15T18:00:00.000Z",
-      saleEndsAt: null,
-      location: "Centro de Eventos, Medellín",
-      status: "published",
-      ticketTypes: [validTicketType],
-    });
-    expect(result.success).toBe(true);
-  });
-
-  it("accepts event with empty ticket types", () => {
-    const result = eventWithTicketTypesSchema.safeParse({
-      id: "550e8400-e29b-41d4-a716-446655440000",
-      title: "La Convención 2026",
-      description: null,
-      eventDate: "2026-07-15T20:00:00.000Z",
-      doorsOpenAt: null,
-      saleEndsAt: null,
-      location: null,
-      status: "published",
-      ticketTypes: [],
-    });
-    expect(result.success).toBe(true);
-  });
-
-  it("rejects missing title", () => {
-    const result = eventWithTicketTypesSchema.safeParse({
-      id: "550e8400-e29b-41d4-a716-446655440000",
-      eventDate: "2026-07-15T20:00:00.000Z",
-      status: "published",
-      ticketTypes: [],
     });
     expect(result.success).toBe(false);
   });
