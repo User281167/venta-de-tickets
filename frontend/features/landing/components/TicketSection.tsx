@@ -25,18 +25,26 @@ export function TicketSection() {
       style={{ background: "#000000" }}
     >
       <div
-        className="!pointer-events-none !absolute !-top-32 !left-1/2 !h-[640px] !w-[640px] !-translate-x-1/2 !rounded-full !opacity-50 !blur-3xl"
+        className="!pointer-events-none !absolute !-top-40 !left-1/2 !h-[720px] !w-[720px] !-translate-x-1/2 !rounded-full !blur-3xl"
         style={{
           background:
-            "radial-gradient(circle, rgba(255,15,123,0.18) 0%, transparent 70%)",
+            "radial-gradient(circle, rgba(255,15,123,0.55) 0%, rgba(255,15,123,0.22) 30%, transparent 70%)",
         }}
         aria-hidden="true"
       />
       <div
-        className="!pointer-events-none !absolute !-bottom-32 !right-0 !h-[420px] !w-[420px] !rounded-full !opacity-50 !blur-3xl"
+        className="!pointer-events-none !absolute !-bottom-40 !right-[-10%] !h-[560px] !w-[560px] !rounded-full !blur-3xl"
         style={{
           background:
-            "radial-gradient(circle, rgba(0,194,255,0.16) 0%, transparent 70%)",
+            "radial-gradient(circle, rgba(0,194,255,0.5) 0%, rgba(160,16,96,0.25) 30%, transparent 70%)",
+        }}
+        aria-hidden="true"
+      />
+      <div
+        className="!pointer-events-none !absolute !left-[-8%] !top-1/3 !h-[420px] !w-[420px] !rounded-full !blur-3xl"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(124,60,255,0.42) 0%, transparent 70%)",
         }}
         aria-hidden="true"
       />
