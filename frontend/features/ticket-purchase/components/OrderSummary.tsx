@@ -2,15 +2,33 @@
 
 import { memo } from "react";
 import { useRouter } from "next/navigation";
-import { Box, Flex, Text, Separator, Button, VStack, Badge, HStack } from "@chakra-ui/react";
+import { motion, type Variants } from "framer-motion";
+import {
+  IconShoppingCart,
+  IconTicket,
+  IconArrowRight,
+} from "@tabler/icons-react";
 import { useCart } from "../hooks/useCart";
 import { useAuth } from "@/providers/AuthProvider";
 import { formatCurrency } from "@/shared/utils/formats";
-import { IconShoppingCart, IconTicket, IconArrowRight } from "@tabler/icons-react";
 
 interface OrderSummaryProps {
   hideComprar?: boolean;
 }
+
+const VIEWPORT = { once: true, margin: "-10% 0px -10% 0px" } as const;
+
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 24 },
+  show: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: i * 0.08 },
+  }),
+};
+
+const PRIMARY_BORDER =
+  "linear-gradient(100deg, #ff0f7b 0%, #a78bfa 35%, #00e5ff 65%, #fdba74 100%)";
 
 export const OrderSummary = memo(function OrderSummary({
   hideComprar,
@@ -28,164 +46,146 @@ export const OrderSummary = memo(function OrderSummary({
   };
 
   const totalTickets = items.reduce((sum, i) => sum + i.quantity, 0);
+  const isEmpty = items.length === 0;
 
   return (
-    <Box
-      bg="brand.panel"
-      borderRadius="2xl"
-      p={{ base: 5, md: 6 }}
-      border="1px solid"
-      borderColor="rgba(255,255,255,0.08)"
-      position="sticky"
-      top={{ base: 4, md: 8 }}
-      boxShadow="0 20px 40px rgba(0,0,0,0.25)"
+    <motion.aside
+      initial="hidden"
+      whileInView="show"
+      viewport={VIEWPORT}
+      variants={fadeUp}
+      custom={0}
+      className="!relative !overflow-hidden !rounded-3xl glass !p-6 sm:!p-7"
+      style={{
+        background: "rgba(15, 18, 38, 0.45)",
+        WebkitBackdropFilter: "blur(14px) saturate(140%)",
+        backdropFilter: "blur(14px) saturate(140%)",
+      }}
     >
-      <HStack gap={3} mb={5}>
-        <Box p={2} borderRadius="xl" bg="rgba(124,60,255,0.12)">
-          <IconShoppingCart size={22} color="#7c3cff" />
-        </Box>
-        <Text fontSize="xl" fontWeight="black" color="white">
-          Resumen del pedido
-        </Text>
-      </HStack>
+      <div
+        className="!pointer-events-none !absolute !-right-20 !-top-20 !h-48 !w-48 !rounded-full !opacity-40 !blur-3xl"
+        style={{ background: "oklch(0.7 0.22 280)" }}
+        aria-hidden="true"
+      />
 
-      {items.length === 0 ? (
-        <VStack align="center" gap={4} py={8} textAlign="center">
-          <Box p={3} borderRadius="full" bg="rgba(255,255,255,0.04)">
-            <IconTicket size={32} color="brand.muted" />
-          </Box>
-          <VStack gap={1}>
-            <Text fontSize="md" fontWeight="semibold" color="white">
-              Tu carrito está vacío
-            </Text>
-            <Text fontSize="sm" color="brand.muted">
-              Selecciona tus entradas para ver el resumen
-            </Text>
-          </VStack>
-        </VStack>
-      ) : (
-        <VStack align="stretch" gap={0}>
-          <VStack align="stretch" gap={3} mb={4}>
-            {items.map((item) => (
-              <Flex
-                key={item.ticketTypeId}
-                justify="space-between"
-                align="center"
-                gap={3}
-              >
-                <HStack gap={3} flex={1} minW={0}>
-                  <Badge
-                    px={2}
-                    py={0.5}
-                    borderRadius="md"
-                    bg="rgba(0,229,255,0.1)"
-                    color="brand.cyan"
-                    fontSize="xs"
-                    fontWeight="black"
-                    minW="32px"
-                    textAlign="center"
+      <div className="!relative">
+        <div className="!mb-5 !flex !items-center !gap-3">
+          <div
+            className="!flex !h-11 !w-11 !items-center !justify-center !rounded-2xl"
+            style={{
+              background: "rgba(124, 60, 255, 0.18)",
+              border: "1px solid rgba(124, 60, 255, 0.4)",
+            }}
+          >
+            <IconShoppingCart size={20} color="#a78bfa" />
+          </div>
+
+          <h2 className="!text-xl !font-black !text-white">Resumen del pedido</h2>
+        </div>
+
+        {isEmpty ? (
+          <div className="!flex !flex-col !items-center !gap-3 !py-8 !text-center">
+            <div
+              className="!flex !h-14 !w-14 !items-center !justify-center !rounded-full"
+              style={{ background: "rgba(255,255,255,0.05)" }}
+            >
+              <IconTicket size={28} color="rgba(255,255,255,0.4)" />
+            </div>
+
+            <div>
+              <h3 className="!text-base !font-semibold !text-white">
+                Tu carrito está vacío
+              </h3>
+
+              <p className="!text-sm !text-white/55">
+                Selecciona tus entradas para ver el resumen
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="!flex !flex-col !gap-1">
+            <div className="!flex !flex-col !gap-3">
+              {items.map((item) => (
+                <div
+                  key={item.ticketTypeId}
+                  className="!flex !items-center !gap-3"
+                >
+                  <span
+                    className="!inline-flex !min-w-[40px] !items-center !justify-center !rounded-lg !px-2 !py-1 !text-xs !font-black"
+                    style={{
+                      background: "rgba(0,229,255,0.12)",
+                      border: "1px solid rgba(0,229,255,0.3)",
+                      color: "#7dd3fc",
+                    }}
                   >
                     x{item.quantity}
-                  </Badge>
+                  </span>
 
-                  <Box minW={0}>
-                    <Text
-                      fontSize="sm"
-                      fontWeight="semibold"
-                      color="white"
-                      truncate
-                    >
+                  <div className="!min-w-0 !flex-1">
+                    <p className="!truncate !text-sm !font-semibold !text-white">
                       {item.name}
-                    </Text>
-                    <Text fontSize="xs" color="brand.muted">
+                    </p>
+
+                    <p className="!text-xs !text-white/50">
                       {formatCurrency(item.unitPriceCents * 100)} c/u
-                    </Text>
-                  </Box>
-                </HStack>
+                    </p>
+                  </div>
 
-                <Text
-                  fontSize="sm"
-                  fontWeight="black"
-                  color="white"
-                  textAlign="right"
-                  minW="80px"
-                >
-                  {formatCurrency(item.unitPriceCents * item.quantity * 100)}
-                </Text>
-              </Flex>
-            ))}
-          </VStack>
+                  <p className="!min-w-[90px] !text-right !text-sm !font-black !text-white">
+                    {formatCurrency(item.unitPriceCents * item.quantity * 100)}
+                  </p>
+                </div>
+              ))}
+            </div>
 
-          <Separator borderColor="rgba(255,255,255,0.08)" mb={4} />
+            <div
+              className="!my-4 !h-px"
+              style={{ background: "rgba(255,255,255,0.08)" }}
+            />
 
-          <Flex justify="space-between" align="center" mb={1}>
-            <Text fontSize="sm" color="brand.muted">
-              {totalTickets} entrada{totalTickets !== 1 ? "s" : ""}
-            </Text>
-            <Text fontSize="xs" color="brand.muted">
-              IVA incluido
-            </Text>
-          </Flex>
+            <div className="!mb-1 !flex !items-center !justify-between">
+              <p className="!text-sm !text-white/55">
+                {totalTickets} entrada{totalTickets !== 1 ? "s" : ""}
+              </p>
 
-          <Flex justify="space-between" align="center" mb={5}>
-            <Text fontSize="lg" fontWeight="black" color="white">
-              Total
-            </Text>
-            <Text
-              fontSize="2xl"
-              fontWeight="black"
-              color="brand.cyan"
-              lineHeight="1"
-            >
-              {formatCurrency(subtotalCents * 100)}
-            </Text>
-          </Flex>
-        </VStack>
-      )}
+              <p className="!text-xs !text-white/45">IVA incluido</p>
+            </div>
 
-      {!hideComprar && (
-        <Button
-          w="full"
-          disabled={items.length === 0}
-          onClick={handleBuy}
-          border="1px solid transparent"
-          bg={`
-            linear-gradient(#020414, #020414) padding-box,
-            linear-gradient(90deg, #ff0f7b, #00e5ff) border-box
-          `}
-          color="white"
-          fontWeight="black"
-          fontSize="md"
-          borderRadius="xl"
-          h="48px"
-          _hover={
-            items.length > 0
-              ? {
-                  transform: "translateY(-2px)",
-                  boxShadow: "0 0 24px rgba(0,229,255,0.35)",
-                }
-              : undefined
-          }
-          _active={
-            items.length > 0
-              ? {
-                  transform: "translateY(0)",
-                }
-              : undefined
-          }
-          _disabled={{
-            opacity: 0.4,
-            cursor: "not-allowed",
-          }}
-          transition="all 0.2s ease"
-          opacity={items.length === 0 ? 0.5 : 1}
-        >
-          <HStack gap={2}>
-            <Text>COMPRAR</Text>
-            {items.length > 0 && <IconArrowRight size={18} />}
-          </HStack>
-        </Button>
-      )}
-    </Box>
+            <div className="!flex !items-center !justify-between">
+              <p className="!text-lg !font-black !text-white">Total</p>
+              <p
+                className="!text-2xl !font-black"
+                style={{
+                  background: PRIMARY_BORDER,
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                  color: "transparent",
+                }}
+              >
+                {formatCurrency(subtotalCents * 100)}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {!hideComprar && (
+          <button
+            type="button"
+            disabled={isEmpty}
+            onClick={handleBuy}
+            className="!mt-6 !flex !w-full !items-center !justify-center !gap-2 !rounded-xl !border !px-5 !py-3.5 !text-sm !font-bold !text-white !transition !duration-300 disabled:!cursor-not-allowed disabled:!opacity-50 cursor-pointer hover:-translate-y-0.5 hover:shadow-lg/20 shadow-brand-blue"
+            style={{
+              background: isEmpty
+                ? "rgba(255,255,255,0.04)"
+                : "rgba(15, 18, 38, 0.6)",
+              borderColor: "rgba(255, 15, 123, 0.4)",
+            }}
+          >
+            <span>COMPRAR</span>
+            {!isEmpty && <IconArrowRight size={18} />}
+          </button>
+        )}
+      </div>
+    </motion.aside>
   );
 });

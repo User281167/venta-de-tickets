@@ -1,7 +1,6 @@
 "use client";
 
 import { memo } from "react";
-import { Grid, Text } from "@chakra-ui/react";
 import { TicketTypeCard } from "./TicketTypeCard";
 import { useCart } from "../hooks/useCart";
 import type { TicketType } from "@/features/ticket-types/schemas/ticket-types.schema";
@@ -25,17 +24,14 @@ export const TicketTypeGrid = memo(function TicketTypeGrid({
 
   if (filteredTicketTypes.length === 0) {
     return (
-      <Text color="brand.muted" textAlign="center" py={10}>
+      <p className="!py-10 !text-center !text-white/60">
         No hay tipos de entrada disponibles
-      </Text>
+      </p>
     );
   }
 
   return (
-    <Grid
-      templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
-      gap={{ base: 5, md: 6 }}
-    >
+    <div className="!grid !grid-cols-1 !gap-5 md:!grid-cols-2">
       {filteredTicketTypes.map((tt) => (
         <TicketTypeCard
           key={tt.id}
@@ -53,6 +49,6 @@ export const TicketTypeGrid = memo(function TicketTypeGrid({
           canIncrement={canIncrement(tt.id)}
         />
       ))}
-    </Grid>
+    </div>
   );
 });
