@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import NextLink from "next/link";
 
 const NAV_ITEMS = [
   { label: "Por qué", href: "#por-que" },
@@ -70,14 +71,29 @@ export function SponsorNavbar() {
             ))}
           </div>
 
-          <a
-            href={WHATSAPP}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="!inline-flex !items-center !justify-center !rounded-full !bg-white !px-5 !py-2 !text-sm !font-semibold !text-black !shrink-0 !transition hover:!bg-white/90"
-          >
-            Ser Aliado
-          </a>
+          <div className="flex gap-2">
+            <NextLink
+              href="/"
+              className="!rounded-full !border !px-7 !py-3 !text-xs !font-bold !uppercase !tracking-wide !text-white !transition !duration-300 hover:!scale-[1.03] hover:!shadow-[0_0_28px_rgba(255,15,123,0.35)]"
+              style={{
+                background: "rgba(15, 18, 38, 0.45)",
+                WebkitBackdropFilter: "blur(14px) saturate(140%)",
+                backdropFilter: "blur(14px) saturate(140%)",
+                borderColor: "rgba(255, 255, 255, 0.4)",
+              }}
+            >
+              La Convención
+            </NextLink>
+
+            <a
+              href={WHATSAPP}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="!inline-flex !items-center !justify-center !rounded-full !bg-white !px-5 !py-2 !text-sm !font-semibold !text-black !shrink-0 !transition hover:!bg-white/90"
+            >
+              Ser Aliado
+            </a>
+          </div>
         </nav>
       </div>
     </header>
