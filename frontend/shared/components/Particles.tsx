@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { generateParticles } from "@/features/sponsor/hooks/particles";
 
-export function Particles({ count = 30 }: { count: number }) {
+export function Particles({ count = 30 }: { count?: number }) {
   const particles = useMemo(() => generateParticles(count), []);
 
   return (
