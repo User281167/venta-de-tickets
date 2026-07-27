@@ -39,7 +39,7 @@ export function AgendaTimeline() {
         <VStack gap={10} align="stretch">
           <Stack gap={4} textAlign="center" mb={4}>
             <Text
-              color="brand.cyan"
+              color="utp.azul"
               fontSize="sm"
               fontWeight="black"
               textTransform="uppercase"

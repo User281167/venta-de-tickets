@@ -160,7 +160,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                       <Text
                         fontSize="2xl"
                         fontWeight="black"
-                        color="brand.cyan"
+                        color="utp.azul"
                         lineHeight="1"
                       >
                         {formatCurrency(subtotalCents * 100)}

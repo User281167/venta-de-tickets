@@ -166,7 +166,7 @@ export function CheckinSection() {
           <>
             <Stack gap={1}>
               <Text
-                color="brand.cyan"
+                color="utp.azul"
                 fontSize="xs"
                 fontWeight="black"
                 textTransform="uppercase"
@@ -195,7 +195,7 @@ export function CheckinSection() {
                   borderRadius="2xl"
                   pointerEvents="none"
                 >
-                  <Spinner size="lg" color="brand.cyan" />
+                  <Spinner size="lg" color="utp.azul" />
                 </Center>
               )}
             </Box>
@@ -204,7 +204,7 @@ export function CheckinSection() {
           <>
             <Stack gap={1}>
               <Text
-                color="brand.cyan"
+                color="utp.azul"
                 fontSize="xs"
                 fontWeight="black"
                 textTransform="uppercase"

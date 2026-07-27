@@ -79,7 +79,7 @@ export function PaymentsList() {
       >
         <Stack gap={1}>
           <Text
-            color="brand.cyan"
+            color="utp.azul"
             fontSize="sm"
             fontWeight="black"
             textTransform="uppercase"

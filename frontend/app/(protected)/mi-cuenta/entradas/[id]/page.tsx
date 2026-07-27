@@ -81,7 +81,7 @@ export default function EntradaDetallePage({
           >
             <HStack gap={1} justify="center">
               <IconArrowLeft size={16} />
-              <Text color="brand.cyan" fontWeight="bold" fontSize="sm">
+              <Text color="utp.azul" fontWeight="bold" fontSize="sm">
                 Volver a mis entradas
               </Text>
             </HStack>

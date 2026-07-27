@@ -93,7 +93,7 @@ export function TicketList() {
         >
           <Stack gap={1}>
             <Text
-              color="brand.cyan"
+              color="utp.azul"
               fontSize="sm"
               fontWeight="black"
               textTransform="uppercase"
@@ -113,7 +113,7 @@ export function TicketList() {
             bg="rgba(0,229,255,0.08)"
             border="1px solid rgba(0,229,255,0.16)"
           >
-            <Text color="brand.cyan" fontWeight="bold">
+            <Text color="utp.azul" fontWeight="bold">
               {data.total} {data.total === 1 ? "entrada" : "entradas"}
             </Text>
           </Box>

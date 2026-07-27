@@ -66,7 +66,7 @@ export function ConfirmationSentModal({ open, onClose }: Props) {
 
             <DialogHeader pt={6}>
               <Stack gap={2} align="center" textAlign="center" w="full">
-                <HStack gap={2} color="brand.cyan">
+                <HStack gap={2} color="utp.azul">
                   <IconMail size={28} aria-hidden />
                 </HStack>
 
@@ -91,7 +91,7 @@ export function ConfirmationSentModal({ open, onClose }: Props) {
                   w="full"
                 >
                   <HStack gap={3} color="brand.light">
-                    <Box color="brand.cyan">
+                    <Box color="utp.azul">
                       <IconMail size={18} aria-hidden />
                     </Box>
                     <Text fontSize="sm" textAlign="left">

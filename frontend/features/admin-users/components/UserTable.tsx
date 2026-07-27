@@ -100,7 +100,7 @@ export function UserTable() {
         >
           <Box>
             <Text
-              color="brand.cyan"
+              color="utp.azul"
               fontSize="sm"
               fontWeight="black"
               textTransform="uppercase"

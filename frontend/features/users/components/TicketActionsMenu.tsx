@@ -52,7 +52,7 @@ export function TicketActionsMenu({ ticket, onConfirm, onReject }: Props) {
                 color="white"
               >
                 <Box display="flex" alignItems="center" gap={2}>
-                  <Box color="brand.cyan">
+                  <Box color="utp.azul">
                     <IconCheck size={16} />
                   </Box>
 

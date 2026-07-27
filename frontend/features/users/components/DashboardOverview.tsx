@@ -205,7 +205,7 @@ function ProfileCompletionCard({
           </Flex>
           <ChakraLink asChild>
             <NextLink href="/mi-cuenta/perfil">
-              <HStack gap={1} color="brand.cyan" fontSize="sm" fontWeight="bold">
+              <HStack gap={1} color="utp.azul" fontSize="sm" fontWeight="bold">
                 <Text>{completion === 100 ? "Ver perfil" : "Completar"}</Text>
                 <IconArrowRight size={16} />
               </HStack>
@@ -336,7 +336,7 @@ export function DashboardOverview() {
       <Stack gap={10}>
         <Stack gap={2}>
           <Text
-            color="brand.cyan"
+            color="utp.azul"
             fontSize="sm"
             fontWeight="black"
             textTransform="uppercase"
@@ -350,6 +350,24 @@ export function DashboardOverview() {
           <Text color="brand.muted" maxW="600px">
             Aquí encuentras un vistazo de tus entradas, pagos y progreso de perfil.
           </Text>
+
+          <Button
+            asChild
+            bg="white"
+            color="black"
+            borderRadius="xl"
+            px={6}
+            fontWeight="bold"
+            _hover={{ bg: "utp.artico" }}
+            maxW="60"
+          >
+            <NextLink href="/entradas">
+              <HStack gap={2}>
+                <IconTicket size={18} />
+                <Text>Consigue tu entrada</Text>
+              </HStack>
+            </NextLink>
+          </Button>
         </Stack>
 
         <Grid templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }} gap={6}>

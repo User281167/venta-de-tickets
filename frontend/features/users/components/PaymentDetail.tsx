@@ -63,7 +63,7 @@ export function PaymentDetail({ payment }: { payment: PaymentItem }) {
         mb={payment.tickets.length > 0 ? 5 : 0}
       >
         <HStack gap={3}>
-          <Box color="brand.cyan">
+          <Box color="utp.azul">
             <IconId size={20} />
           </Box>
 
@@ -79,7 +79,7 @@ export function PaymentDetail({ payment }: { payment: PaymentItem }) {
         </HStack>
 
         <HStack gap={3}>
-          <Box color="brand.cyan">
+          <Box color="utp.azul">
             <IconCreditCard size={20} />
           </Box>
 
@@ -97,7 +97,7 @@ export function PaymentDetail({ payment }: { payment: PaymentItem }) {
         </HStack>
 
         <HStack gap={3}>
-          <Box color="brand.cyan">
+          <Box color="utp.azul">
             <IconReceipt size={20} />
           </Box>
 
@@ -113,7 +113,7 @@ export function PaymentDetail({ payment }: { payment: PaymentItem }) {
         </HStack>
 
         <HStack gap={3}>
-          <Box color="brand.cyan">
+          <Box color="utp.azul">
             <IconReceipt size={20} />
           </Box>
 
