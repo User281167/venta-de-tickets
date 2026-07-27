@@ -17,6 +17,10 @@ export const metadata: Metadata = {
   title: "La Convención 2026",
   description:
     "Una experiencia única con expertos en tecnología, emprendimiento e innovación dentro del campus universitario.",
+  icon: [
+    { url: "/favicon.ico", media: "(prefers-color-scheme: light)" },
+    { url: "/favicon.ico", media: "(prefers-color-scheme: dark)" },
+  ],
 };
 
 export default function RootLayout({

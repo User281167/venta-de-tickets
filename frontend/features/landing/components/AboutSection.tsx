@@ -1,160 +1,201 @@
-﻿import {
-  Box,
-  Container,
-  Grid,
-  Heading,
-  SimpleGrid,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
+﻿"use client";
+
+import { motion, type Variants } from "framer-motion";
+import NextImage from "next/image";
 import {
-  IconRocket,
+  IconUsersGroup,
+  IconCalendarEvent,
   IconSparkles,
-  IconUsers,
   IconWorld,
 } from "@tabler/icons-react";
-import NextImage from "next/image";
-import { AnimatedSection } from "@/shared/components/AnimatedSection";
+import {
+  HighlightStatCard,
+  type HighlightStatColor,
+} from "@/shared/components/HighlightStatCard";
 
-const IMPACT = [
-  { icon: IconUsers, value: "+4.000", label: "Egresados reunidos" },
+const VIEWPORT = { once: true, margin: "-10% 0px -10% 0px" } as const;
+
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 24 },
+  show: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: i * 0.08 },
+  }),
+};
+
+const HERO_IMAGE = "/conferencia-1.jpg";
+
+type Stat = {
+  value: string;
+  label: string;
+  color: HighlightStatColor;
+  icon: React.ReactNode;
+};
+
+const STATS: Stat[] = [
   {
-    icon: IconRocket,
+    value: "+4.000",
+    label: "Egresados reunidos",
+    color: "magenta",
+    icon: <IconUsersGroup size={20} stroke={2} />,
+  },
+  {
     value: "+30",
     label: "Actividades académicas y culturales",
+    color: "blue",
+    icon: <IconCalendarEvent size={20} stroke={2} />,
   },
   {
-    icon: IconSparkles,
     value: "Innovación",
     label: "e inteligencia colectiva",
+    color: "cyan",
+    icon: <IconSparkles size={20} stroke={2} />,
   },
-  { icon: IconWorld, value: "Impacto", label: "para el presente y el futuro" },
+  {
+    value: "Impacto",
+    label: "para el presente y el futuro",
+    color: "orange",
+    icon: <IconWorld size={20} stroke={2} />,
+  },
 ];
 
 export function AboutSection() {
   return (
-    <Box
-      id="convencion"
-      py={{ base: 16, md: 24 }}
-      bg="linear-gradient(180deg, #020414 0%, #050719 48%, #020414 100%)"
-      borderTopWidth="1px"
-      borderColor="rgba(255,255,255,0.07)"
-      position="relative"
-      overflow="hidden"
+    <section
+      id="encuentro"
+      className="!relative !overflow-hidden !py-16 sm:!py-24"
+      style={{ background: "#000000" }}
     >
-      <Container maxW="8xl" px={{ base: 4, md: 6 }}>
-        <AnimatedSection direction="up" delay={0} duration={0.6}>
-          <Grid
-            templateColumns={{ base: "1fr", lg: "1.1fr 0.9fr" }}
-            gap={{ base: 12, lg: 16 }}
-            alignItems="center"
+      <div
+        className="!pointer-events-none !absolute !-top-40 !left-[-10%] !h-[640px] !w-[640px] !rounded-full !blur-3xl"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(255,15,123,0.4) 0%, rgba(255,15,123,0.18) 30%, transparent 70%)",
+        }}
+        aria-hidden="true"
+      />
+      <div
+        className="!pointer-events-none !absolute !-bottom-40 !right-[-10%] !h-[600px] !w-[600px] !rounded-full !blur-3xl"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(0,194,255,0.42) 0%, rgba(160,16,96,0.2) 30%, transparent 70%)",
+        }}
+        aria-hidden="true"
+      />
+
+      <div className="!relative !z-10 !mx-auto !w-full !max-w-7xl !px-4 sm:!px-6">
+        <div className="!grid !grid-cols-1 !items-center !gap-10 lg:!grid-cols-[1.1fr_1fr] lg:!gap-14">
+          <motion.div
+            initial="hidden"
+            whileInView="show"
+            viewport={VIEWPORT}
+            variants={fadeUp}
+            custom={0}
+            className="!relative !overflow-hidden !rounded-3xl glass"
+            style={{
+              background: "rgba(15, 18, 38, 0.45)",
+              WebkitBackdropFilter: "blur(14px) saturate(140%)",
+              backdropFilter: "blur(14px) saturate(140%)",
+            }}
           >
-          <Box
-            position="relative"
-            borderRadius="2xl"
-            overflow="hidden"
-            h={{ base: "320px", md: "480px" }}
-          >
-            <NextImage
-              src="/conferencia-1.jpg"
-              alt="Auditorio de la Universidad Tecnológica de Pereira"
-              fill
-              style={{ objectFit: "cover" }}
-            />
-            <Box
-              position="absolute"
-              inset={0}
-              bg="linear-gradient(180deg, transparent 40%, rgba(2,4,20,0.8) 100%)"
-            />
-            <Box
-              position="absolute"
-              bottom={6}
-              left={6}
-              right={6}
-              p={4}
-              borderRadius="xl"
-              className="glass-card"
+            <div className="!relative !aspect-[4/3] !w-full">
+              <NextImage
+                src={HERO_IMAGE}
+                alt="Asistentes en una conferencia de la Convención"
+                fill
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                style={{ objectFit: "cover" }}
+              />
+              <div className="!absolute !inset-0 !bg-gradient-to-t !from-black !via-black/40 !to-transparent" />
+            </div>
+
+            <div className="!absolute !inset-x-0 !bottom-0 !z-10 !p-6 sm:!p-8">
+              <motion.div
+                initial="hidden"
+                whileInView="show"
+                viewport={VIEWPORT}
+                variants={fadeUp}
+                custom={1}
+                className="!inline-flex !w-fit !flex-col !gap-1 !rounded-2xl !border !p-5 sm:!p-6"
+                style={{
+                  background: "rgba(15, 18, 38, 0.55)",
+                  WebkitBackdropFilter: "blur(14px) saturate(140%)",
+                  backdropFilter: "blur(14px) saturate(140%)",
+                  borderColor: "rgba(255, 15, 123, 0.4)",
+                }}
+              >
+                <span className="!text-lg !font-black !text-white sm:!text-xl">
+                  Tres días de inspiración
+                </span>
+                <span className="!text-sm !text-white/65">
+                  Pereira, Colombia
+                </span>
+              </motion.div>
+            </div>
+          </motion.div>
+
+          <div className="!flex !flex-col !gap-8">
+            <motion.div
+              initial="hidden"
+              whileInView="show"
+              viewport={VIEWPORT}
+              variants={fadeUp}
+              custom={0}
+              className="!flex !flex-col !gap-5"
             >
-              <Text color="white" fontWeight="bold" fontSize="lg">
-                Tres días de inspiración
-              </Text>
-              <Text color="brand.muted" fontSize="sm">
-                Pereira, Colombia
-              </Text>
-            </Box>
-          </Box>
+              <span
+                className="!w-fit !text-xs !font-black !uppercase !tracking-[0.22em]"
+                style={{
+                  background:
+                    "linear-gradient(100deg, #7dd3fc 0%, #a78bfa 35%, #f0abfc 65%, #fdba74 100%)",
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                  color: "transparent",
+                }}
+              >
+                La Convención
+              </span>
 
-          <Stack gap={6}>
-            <Text
-              textTransform="uppercase"
-              backgroundImage="linear-gradient(90deg, var(--chakra-colors-brand-violet), var(--chakra-colors-brand-pink), var(--chakra-colors-brand-cyan))"
-              backgroundClip="text"
-              color="transparent"
-              fontSize={{ base: "lg", md: "2xl" }}
-              fontWeight="bold"
-            >
-              La convención
-            </Text>
+              <h2 className="!text-4xl !font-black !uppercase !leading-[1.02] !tracking-tight !text-white sm:!text-5xl">
+                Un encuentro que transforma{" "}
+                <span
+                  style={{
+                    background:
+                      "linear-gradient(100deg, #7dd3fc 0%, #a78bfa 35%, #f0abfc 65%, #fdba74 100%)",
+                    WebkitBackgroundClip: "text",
+                    backgroundClip: "text",
+                    color: "transparent",
+                  }}
+                >
+                  generaciones
+                </span>
+              </h2>
 
-            <Heading
-              color="white"
-              fontSize={{ base: "2xl", md: "4xl" }}
-              lineHeight="1.1"
-            >
-              Un encuentro que transforma generaciones
-            </Heading>
+              <p className="!text-base !leading-relaxed !text-white/70 sm:!text-lg">
+                Tres días para reconectar, aprender, inspirarnos y aportar
+                al desarrollo del país desde el corazón de nuestra
+                Universidad. Expertos nacionales e internacionales,
+                actividades académicas, culturales y espacios de
+                networking en un solo lugar.
+              </p>
+            </motion.div>
 
-            <Text
-              color="brand.muted"
-              fontSize={{ base: "md", md: "lg" }}
-              lineHeight="1.8"
-            >
-              Tres días para reconectar, aprender, inspirarnos y aportar al
-              desarrollo del país desde el corazón de nuestra Universidad.
-              Expertos nacionales e internacionales, actividades académicas,
-              culturales y espacios de networking en un solo lugar.
-            </Text>
-
-            <SimpleGrid columns={{ base: 2, md: 2 }} gap={4}>
-              {IMPACT.map((item) => {
-                const ImpactIcon = item.icon;
-                return (
-                  <Stack
-                    key={item.value}
-                    align="center"
-                    textAlign="center"
-                    gap={3}
-                    p={5}
-                    borderRadius="xl"
-                    className="glass-card"
-                    transition="all 0.25s ease"
-                    _hover={{
-                      transform: "translateY(-4px)",
-                      borderColor: "brand.pink",
-                      boxShadow: "0 0 24px rgba(255,15,123,0.16)",
-                    }}
-                  >
-                    <ImpactIcon
-                      size={44}
-                      stroke={1}
-                      color={item.value === "+4.000" ? "#ff0f7b" : "#00e5ff"}
-                    />
-
-                    <Text color="white" fontSize="xl" fontWeight="black">
-                      {item.value}
-                    </Text>
-
-                    <Text color="brand.muted" fontSize="sm">
-                      {item.label}
-                    </Text>
-                  </Stack>
-                );
-              })}
-            </SimpleGrid>
-          </Stack>
-          </Grid>
-        </AnimatedSection>
-      </Container>
-    </Box>
+            <div className="!grid !grid-cols-1 !gap-4 sm:!grid-cols-2">
+              {STATS.map((stat, i) => (
+                <HighlightStatCard
+                  key={stat.label}
+                  value={stat.value}
+                  label={stat.label}
+                  color={stat.color}
+                  icon={stat.icon}
+                  data-reveal-index={String(i + 1)}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }

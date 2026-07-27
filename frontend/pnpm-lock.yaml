@@ -56,6 +56,9 @@ importers:
       react-dom:
         specifier: 19.2.4
         version: 19.2.4(react@19.2.4)
+      react-wavify:
+        specifier: 1.12.0
+        version: 1.12.0(react@19.2.4)
       read-excel-file:
         specifier: 9.3.1
         version: 9.3.1
@@ -2603,6 +2606,11 @@ packages:
 
   react-is@17.0.2:
     resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
+
+  react-wavify@1.12.0:
+    resolution: {integrity: sha512-o8ksvP3lYbclXUn/vLCVIuZEkPlDgF0uZ+Ck482T6Wxh4vVwQstAPrGib5Tkb/mdHiHitacz81qYTM3d1aZF9g==}
+    peerDependencies:
+      react: ^0.13.0 || ^0.14.0 || >=15
 
   react@19.2.4:
     resolution: {integrity: sha512-9nfp2hYpCwOjAN+8TZFGhtWEwgvWHXqESH8qT89AT/lWklpLON22Lc8pEtnpsZz7VmawabSU0gCjnj8aC0euHQ==}
@@ -6048,6 +6056,10 @@ snapshots:
   react-is@16.13.1: {}
 
   react-is@17.0.2: {}
+
+  react-wavify@1.12.0(react@19.2.4):
+    dependencies:
+      react: 19.2.4
 
   react@19.2.4: {}
 

@@ -1,16 +1,29 @@
 ﻿"use client";
 
-import {
-  Accordion,
-  Box,
-  Container,
-  Heading,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
-import { AnimatedSection } from "@/shared/components/AnimatedSection";
+import { useState } from "react";
+import NextLink from "next/link";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
+import { IconChevronDown } from "@tabler/icons-react";
+import { Particles } from "@/shared/components/Particles";
 
-const FAQ_ITEMS = [
+const VIEWPORT = { once: true, margin: "-10% 0px -10% 0px" } as const;
+
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 24 },
+  show: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: i * 0.08 },
+  }),
+};
+
+type Faq = {
+  value: string;
+  question: string;
+  answer: React.ReactNode;
+};
+
+const FAQ_ITEMS: Faq[] = [
   {
     value: "publico",
     question: "¿Quién puede asistir?",
@@ -24,12 +37,6 @@ const FAQ_ITEMS = [
       "La convención se realizará el 22, 23 y 24 de octubre de 2026 en la Universidad Tecnológica de Pereira.",
   },
   {
-    value: "certificado",
-    question: "¿Recibiré certificado?",
-    answer:
-      "Las actividades académicas con registro habilitado podrán entregar certificado digital según modalidad y asistencia.",
-  },
-  {
     value: "entradas",
     question: "¿Cómo aseguro mi cupo?",
     answer:
@@ -38,87 +45,175 @@ const FAQ_ITEMS = [
   {
     value: "aliados",
     question: "¿Puedo ser aliado o patrocinador?",
-    answer:
-      "Sí. Escríbenos a través del formulario de contacto y nuestro equipo te orientará sobre las oportunidades de alianza.",
+    answer: (
+      <>
+        Sí. Conoce los planes y modalidades de alianza en nuestra{" "}
+        <NextLink
+          href="/aliados"
+          className="!font-semibold !text-white !underline !decoration-[#ff0f7b] !underline-offset-4 !transition hover:!decoration-[#00e5ff]"
+        >
+          página de aliados
+        </NextLink>
+        , o escríbenos a{" "}
+        <a
+          href="mailto:egresados@utp.edu.co"
+          className="!font-semibold !text-white !underline !decoration-[#ff0f7b] !underline-offset-4 !transition hover:!decoration-[#00e5ff]"
+        >
+          egresados@utp.edu.co
+        </a>
+        .
+      </>
+    ),
   },
 ];
 
+const GRADIENT_TEXT = {
+  backgroundImage:
+    "linear-gradient(100deg, #7dd3fc 0%, #a78bfa 35%, #f0abfc 65%, #fdba74 100%)",
+  WebkitBackgroundClip: "text",
+  backgroundClip: "text",
+  color: "transparent",
+} as const;
+
 export function FaqSection() {
+  const [open, setOpen] = useState<string | null>(null);
+
   return (
-    <Box
-      py={{ base: 16, md: 24 }}
-      bg="linear-gradient(180deg, #020414 0%, #050719 48%, #020414 100%)"
-      position="relative"
-      overflow="hidden"
+    <section
+      id="faq"
+      className="!relative !overflow-hidden !py-16 sm:!py-24"
+      style={{ background: "#000000" }}
     >
-      <Box
-        position="absolute"
-        top="50%"
-        left="50%"
-        transform="translate(-50%, -50%)"
-        w="700px"
-        h="700px"
-        borderRadius="full"
-        bg="radial-gradient(circle, rgba(0,229,255,0.06) 0%, transparent 70%)"
-        pointerEvents="none"
+      <div
+        className="!pointer-events-none !absolute !left-1/2 !top-1/2 !h-[700px] !w-[700px] !-translate-x-1/2 !-translate-y-1/2 !rounded-full !blur-3xl"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(124,60,255,0.18) 0%, rgba(124,60,255,0.08) 40%, transparent 70%)",
+        }}
+        aria-hidden="true"
+      />
+      <div
+        className="!pointer-events-none !absolute !top-3 !left-[5%] !h-[500px] !w-[500px] !rounded-full !blur-3xl"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(0,194,255,0.22) 0%, transparent 70%)",
+        }}
+        aria-hidden="true"
+      />
+      <div
+        className="!pointer-events-none !absolute !-bottom-40 !right-[-10%] !h-[500px] !w-[500px] !rounded-full !blur-3xl"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(255,15,123,0.18) 0%, transparent 70%)",
+        }}
+        aria-hidden="true"
       />
 
-      <Container maxW="860px" px={{ base: 4, md: 6 }} position="relative" zIndex={1}>
-        <AnimatedSection direction="up" delay={0} duration={0.6}>
-          <Stack gap={4} align="center" textAlign="center" mb={14}>
-          <Text
-            color="brand.pink"
-            fontSize="sm"
-            fontWeight="black"
-            textTransform="uppercase"
-            letterSpacing="0.15em"
+      <Particles />
+
+      <div className="!relative !z-10 !mx-auto !w-full !max-w-3xl !px-4 sm:!px-6">
+        <motion.div
+          initial="hidden"
+          whileInView="show"
+          viewport={VIEWPORT}
+          variants={fadeUp}
+          custom={0}
+          className="!mb-12 !flex !flex-col !items-center !gap-4 !text-center"
+        >
+          <span
+            className="!text-xs !font-black !uppercase !tracking-[0.22em]"
+            style={GRADIENT_TEXT}
           >
             Información clave
-          </Text>
-          <Heading color="white" fontSize={{ base: "3xl", md: "5xl" }} lineHeight="1.1">
-            Preguntas frecuentes
-          </Heading>
-        </Stack>
-        </AnimatedSection>
+          </span>
 
-        <AnimatedSection direction="up" delay={0} duration={0.6}>
-          <Accordion.Root defaultValue={[]} collapsible>
-          {FAQ_ITEMS.map((item) => (
-            <Accordion.Item
-              key={item.value}
-              value={item.value}
-              borderBottomWidth={1}
-              borderColor="rgba(255,255,255,0.1)"
-              py={2}
-              className="glass-card"
-              my={3}
-              borderRadius="xl"
-              px={{ base: 4, md: 6 }}
-              transition="all 0.2s ease"
-              _hover={{
-                borderColor: "rgba(255,255,255,0.18)",
-              }}
-            >
-              <Accordion.ItemTrigger cursor="pointer" py={4}>
-                <Box flex={1} textAlign="start">
-                  <Text fontWeight="black" color="white" fontSize={{ base: "md", md: "lg" }}>
+          <h2 className="!max-w-3xl !text-4xl !font-black !uppercase !leading-[1.05] !tracking-tight !text-white sm:!text-5xl md:!text-6xl">
+            Preguntas <span style={GRADIENT_TEXT}>frecuentes</span>
+          </h2>
+        </motion.div>
+
+        <div className="!flex !flex-col !gap-4">
+          {FAQ_ITEMS.map((item, i) => {
+            const isOpen = open === item.value;
+            return (
+              <motion.div
+                key={item.value}
+                initial="hidden"
+                whileInView="show"
+                viewport={VIEWPORT}
+                variants={fadeUp}
+                custom={i + 1}
+                className="!relative !overflow-hidden !rounded-2xl glass"
+                style={{
+                  background: "rgba(15, 18, 38, 0.5)",
+                  WebkitBackdropFilter: "blur(14px) saturate(140%)",
+                  backdropFilter: "blur(14px) saturate(140%)",
+                  borderColor: isOpen
+                    ? "rgba(255, 15, 123, 0.5)"
+                    : "rgba(255,255,255,0.1)",
+                  transition: "border-color 0.3s ease",
+                }}
+              >
+                <div
+                  className="!pointer-events-none !absolute !-right-16 !-top-16 !h-32 !w-32 !rounded-full !opacity-40 !blur-3xl"
+                  style={{
+                    background: "oklch(0.55 0.24 320)",
+                  }}
+                  aria-hidden="true"
+                />
+
+                <button
+                  type="button"
+                  onClick={() => setOpen(isOpen ? null : item.value)}
+                  aria-expanded={isOpen}
+                  className="!relative !flex !w-full !items-center !justify-between !gap-4 !px-5 !py-5 !text-left !transition sm:!px-6"
+                >
+                  <span className="!text-base !font-bold !text-white sm:!text-lg">
                     {item.question}
-                  </Text>
-                </Box>
-                <Accordion.ItemIndicator color="brand.cyan" />
-              </Accordion.ItemTrigger>
-              <Accordion.ItemContent pb={4}>
-                <Accordion.ItemBody>
-                  <Text color="brand.muted" lineHeight="1.7" fontSize={{ base: "sm", md: "md" }}>
-                    {item.answer}
-                  </Text>
-                </Accordion.ItemBody>
-              </Accordion.ItemContent>
-            </Accordion.Item>
-          ))}
-          </Accordion.Root>
-        </AnimatedSection>
-      </Container>
-    </Box>
+                  </span>
+                  <span
+                    className="!flex !h-9 !w-9 !shrink-0 !items-center !justify-center !rounded-full"
+                    style={{
+                      background: isOpen
+                        ? "rgba(255, 15, 123, 0.15)"
+                        : "rgba(255,255,255,0.05)",
+                      border: isOpen
+                        ? "1px solid rgba(255,15,123,0.4)"
+                        : "1px solid rgba(255,255,255,0.1)",
+                      transition: "all 0.3s ease",
+                    }}
+                  >
+                    <IconChevronDown
+                      size={18}
+                      stroke={2.5}
+                      className={`!text-white !transition-transform !duration-300 ${
+                        isOpen ? "!rotate-180" : ""
+                      }`}
+                    />
+                  </span>
+                </button>
+
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      key="content"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                      className="!relative !overflow-hidden"
+                    >
+                      <div className="!px-5 !pb-5 !pt-1 !text-sm !leading-relaxed !text-white/70 sm:!px-6 sm:!text-base">
+                        {item.answer}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
   );
 }

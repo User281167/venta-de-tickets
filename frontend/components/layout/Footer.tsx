@@ -1,20 +1,5 @@
-﻿import {
-  Box,
-  Button,
-  Container,
-  Flex,
-  Grid,
-  HStack,
-  Image,
-  Link as ChakraLink,
-  Separator,
-  Stack,
-  Text,
-  Field,
-  Input,
-} from "@chakra-ui/react";
+﻿import NextLink from "next/link";
 import {
-  IconArrowRight,
   IconBrandFacebook,
   IconBrandInstagram,
   IconBrandLinkedin,
@@ -25,8 +10,6 @@ import {
   IconPhone,
   IconWorld,
 } from "@tabler/icons-react";
-import NextLink from "next/link";
-import React from "react";
 
 const QUICK_LINKS = [
   { label: "La Convención", href: "/#convencion" },
@@ -35,273 +18,247 @@ const QUICK_LINKS = [
   { label: "Ponentes", href: "/#speakers" },
   { label: "Entradas", href: "/#entradas" },
   { label: "Contacto", href: "/#contacto" },
+  { label: "Aliados", href: "/aliados" },
 ];
 
-function FooterHeading({ children }: { children: React.ReactNode }) {
+const GRADIENT_TEXT = {
+  backgroundImage:
+    "linear-gradient(100deg, #7dd3fc 0%, #a78bfa 35%, #f0abfc 65%, #fdba74 100%)",
+  WebkitBackgroundClip: "text",
+  backgroundClip: "text",
+  color: "transparent",
+} as const;
+
+function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <Text
-      fontSize="xs"
-      fontWeight="black"
-      color="brand.cyan"
-      textTransform="uppercase"
-      letterSpacing="0.12em"
+    <span
+      className="!text-[11px] !font-black !uppercase !tracking-[0.22em]"
+      style={GRADIENT_TEXT}
     >
       {children}
-    </Text>
+    </span>
+  );
+}
+
+function SocialLink({
+  href,
+  label,
+  children,
+}: {
+  href: string;
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={label}
+      className="!inline-flex !h-9 !w-9 !items-center !justify-center !rounded-full !border !border-white/10 !bg-white/[0.04] !text-white/70 !transition !duration-300 hover:!border-white/30 hover:!bg-white/10 hover:!text-white"
+    >
+      {children}
+    </a>
   );
 }
 
 export function Footer() {
   return (
-    <Box
+    <footer
       id="contacto"
-      as="footer"
-      bg="#030615"
-      color="white"
-      pt={{ base: 12, md: 16 }}
-      pb={8}
-      borderTopWidth="1px"
-      borderColor="rgba(255,255,255,0.08)"
+      className="!relative !overflow-hidden !pt-12 !pb-6 md:!pt-16"
+      style={{ background: "#030615" }}
     >
-      <Container maxW="8xl" px={{ base: 4, md: 6 }}>
-        <Grid
-          templateColumns={{ base: "1fr", sm: "1fr 1fr", lg: "repeat(5, 1fr)" }}
-          gap={{ base: 10, lg: 8 }}
-          alignItems="start"
-        >
-          <Stack gap={5} align="flex-start">
-            <FooterHeading>Organiza</FooterHeading>
+      <div
+        className="!pointer-events-none !absolute !-top-40 !left-[-10%] !h-[640px] !w-[640px] !rounded-full !opacity-100 !blur-3xl"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(255,15,123,0.45) 0%, rgba(255,15,123,0.18) 35%, transparent 70%)",
+        }}
+        aria-hidden="true"
+      />
+      <div
+        className="!pointer-events-none !absolute !-bottom-40 !right-[-10%] !h-[600px] !w-[600px] !rounded-full !opacity-100 !blur-3xl"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(0,194,255,0.4) 0%, rgba(160,16,96,0.2) 35%, transparent 70%)",
+        }}
+        aria-hidden="true"
+      />
+      <div
+        className="!pointer-events-none !absolute !left-1/2 !top-1/2 !h-[420px] !w-[420px] !-translate-x-1/2 !-translate-y-1/2 !rounded-full !opacity-100 !blur-3xl"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(124,60,255,0.32) 0%, transparent 70%)",
+        }}
+        aria-hidden="true"
+      />
 
-            <Image src="/utp-logo.png" alt="UTP" h="46px" w="auto" />
-
-            <HStack gap={3}>
-              <ChakraLink
+      <div className="!relative !z-10 !mx-auto !max-w-7xl !px-4 sm:!px-6">
+        <div className="!grid !grid-cols-1 !gap-10 sm:!grid-cols-2 lg:!grid-cols-4">
+          <div className="!flex !flex-col !items-start !gap-4">
+            <Eyebrow>Organiza</Eyebrow>
+            <img
+              src="/utp-logo.png"
+              alt="Universidad Tecnológica de Pereira"
+              className="!h-12 !w-auto"
+              loading="lazy"
+            />
+            <div className="!flex !flex-wrap !gap-2 !pt-1">
+              <SocialLink
                 href="https://instagram.com/UTPereira"
-                aria-label="Instagram"
-                color="brand.light"
-                _hover={{ color: "brand.cyan" }}
+                label="Instagram"
               >
-                <IconBrandInstagram size={22} />
-              </ChakraLink>
-
-              <ChakraLink
+                <IconBrandInstagram size={18} />
+              </SocialLink>
+              <SocialLink
                 href="https://www.facebook.com/UTPereira"
-                aria-label="Facebook"
-                color="brand.light"
-                _hover={{ color: "brand.cyan" }}
+                label="Facebook"
               >
-                <IconBrandFacebook size={22} />
-              </ChakraLink>
-
-              <ChakraLink
+                <IconBrandFacebook size={18} />
+              </SocialLink>
+              <SocialLink
                 href="https://www.youtube.com/UTPereira"
-                aria-label="Youtube"
-                color="brand.light"
-                _hover={{ color: "brand.cyan" }}
+                label="YouTube"
               >
-                <IconBrandYoutube size={22} />
-              </ChakraLink>
-
-              <ChakraLink
-                href="https://x.com/UTPereira"
-                aria-label="X"
-                color="brand.light"
-                _hover={{ color: "brand.cyan" }}
-              >
-                <IconBrandX size={22} />
-              </ChakraLink>
-
-              <ChakraLink
+                <IconBrandYoutube size={18} />
+              </SocialLink>
+              <SocialLink href="https://x.com/UTPereira" label="X">
+                <IconBrandX size={18} />
+              </SocialLink>
+              <SocialLink
                 href="https://www.linkedin.com/school/universidad-tecnol-gica-de-pereira/"
-                aria-label="LinkedIn"
-                color="brand.light"
-                _hover={{ color: "brand.cyan" }}
+                label="LinkedIn"
               >
-                <IconBrandLinkedin size={22} />
-              </ChakraLink>
-            </HStack>
-          </Stack>
+                <IconBrandLinkedin size={18} />
+              </SocialLink>
+            </div>
+          </div>
 
-          <Stack gap={4} align="flex-start">
-            <FooterHeading>Con el apoyo de</FooterHeading>
-
-            <HStack gap={3} align="flex-start">
-              <Image src="/ASE-icon.png" w="48px" h="48px" objectFit="contain" />
-
-              <Stack gap={1} align="flex-start">
-                <Text fontWeight="black" color="white" lineHeight="1.2">
+          <div className="!flex !flex-col !items-start !gap-4">
+            <Eyebrow>Con el apoyo de</Eyebrow>
+            <div className="!flex !items-start !gap-3">
+              <img
+                src="/ASE-icon.png"
+                alt="ASE UTP"
+                className="!h-12 !w-12 !object-contain"
+                loading="lazy"
+              />
+              <div className="!flex !flex-col !items-start !gap-1">
+                <span className="!text-sm !font-black !text-white">
                   ASE UTP
-                </Text>
-
-                <Text fontSize="xs" color="brand.muted" lineHeight="1.5" maxW="180px">
+                </span>
+                <span className="!text-xs !leading-snug !text-white/55">
                   Asociación de Egresados Universidad Tecnológica de Pereira
-                </Text>
-
-                <HStack gap={2} pt={1}>
-                  <ChakraLink
+                </span>
+                <div className="!flex !gap-2 !pt-1">
+                  <SocialLink
                     href="https://egresados.utp.edu.co/"
-                    aria-label="egresados-web"
-                    color="brand.light"
-                    _hover={{ color: "brand.cyan" }}
+                    label="Sitio web"
                   >
-                    <IconWorld size={18} />
-                  </ChakraLink>
-
-                  <ChakraLink
+                    <IconWorld size={16} />
+                  </SocialLink>
+                  <SocialLink
                     href="https://www.instagram.com/aseutp/"
-                    aria-label="Instagram"
-                    color="brand.light"
-                    _hover={{ color: "brand.cyan" }}
+                    label="Instagram"
                   >
-                    <IconBrandInstagram size={18} />
-                  </ChakraLink>
-
-                  <ChakraLink
-                    href="https://www.facebook.com/EgresadosUTP?mibextid=ZbWKwL"
-                    aria-label="Facebook"
-                    color="brand.light"
-                    _hover={{ color: "brand.cyan" }}
+                    <IconBrandInstagram size={16} />
+                  </SocialLink>
+                  <SocialLink
+                    href="https://www.facebook.com/EgresadosUTP"
+                    label="Facebook"
                   >
-                    <IconBrandFacebook size={18} />
-                  </ChakraLink>
+                    <IconBrandFacebook size={16} />
+                  </SocialLink>
+                </div>
+              </div>
+            </div>
+          </div>
 
-                  <ChakraLink
-                    href="https://www.facebook.com/aseutpe?mibextid=ZbWKwL"
-                    aria-label="Facebook"
-                    color="brand.light"
-                    _hover={{ color: "brand.cyan" }}
+          <div className="!flex !flex-col !items-start !gap-4">
+            <Eyebrow>Enlaces rápidos</Eyebrow>
+            <ul className="!flex !flex-col !gap-2">
+              {QUICK_LINKS.map((link) => (
+                <li key={link.href + link.label}>
+                  <NextLink
+                    href={link.href}
+                    className="!text-sm !text-white/65 !transition hover:!text-white"
                   >
-                    <IconBrandFacebook size={18} />
-                  </ChakraLink>
-                </HStack>
-              </Stack>
-            </HStack>
-          </Stack>
-
-          <Stack gap={3} align="flex-start">
-            <FooterHeading>Enlaces rápidos</FooterHeading>
-
-            {QUICK_LINKS.map((link) => (
-              <ChakraLink
-                key={link.href}
-                asChild
-                fontSize="sm"
-                color="brand.muted"
-                _hover={{ color: "brand.pink" }}
-              >
-                <NextLink href={link.href}>{link.label}</NextLink>
-              </ChakraLink>
-            ))}
-          </Stack>
-
-          <Stack gap={3} align="flex-start">
-            <FooterHeading>Información</FooterHeading>
-
-            <HStack gap={2} color="brand.muted" align="flex-start">
-              <Box pt={0.5}>
-                <IconMapPin size={16} />
-              </Box>
-              <Text fontSize="sm">Universidad Tecnológica de Pereira</Text>
-            </HStack>
-
-            <HStack gap={2} color="brand.muted" align="flex-start">
-              <Box pt={0.5}>
-                <IconMail size={16} />
-              </Box>
-              <Text fontSize="sm">egresados@utp.edu.co, aseutp@utp.edu.co</Text>
-            </HStack>
-
-            <HStack gap={2} color="brand.muted" align="flex-start">
-              <Box pt={0.5}>
-                <IconPhone size={16} />
-              </Box>
-              <Text fontSize="sm">+57 606 313 7110 - 313 7533</Text>
-            </HStack>
-          </Stack>
-
-          <Box asChild w="full">
-            <form className="max-w-xs">
-              <Stack gap={4} align="flex-start">
-                <FooterHeading>Boletín</FooterHeading>
-
-                <Text fontSize="sm" color="brand.muted">
-                  Recibe novedades de La Convención.
-                </Text>
-
-                <Flex gap="2" align="center" w="full">
-                  <IconMail size={24} color="rgba(255,255,255,0.6)" />
-
-                  <Field.Root flex={1}>
-                    <Input
-                      type="email"
-                      placeholder="correo@ejemplo.com"
-                      color="white"
-                      bg="rgba(255,255,255,0.03)"
-                      border="1px solid rgba(255,255,255,0.08)"
-                      borderRadius="xl"
-                      _placeholder={{ color: "rgba(255,255,255,0.5)" }}
-                      _hover={{ borderColor: "rgba(255,255,255,0.16)" }}
-                      _focus={{
-                        borderColor: "brand.cyan",
-                        boxShadow: "0 0 12px rgba(0,229,255,0.2)",
-                      }}
-                    />
-                  </Field.Root>
-                </Flex>
-
-                <Button
-                  type="submit"
-                  bg="linear-gradient(90deg, #ff0f7b, #0969ff)"
-                  color="white"
-                  fontWeight="black"
-                  borderRadius="xl"
-                  w="full"
-                  _hover={{ transform: "translateY(-2px)" }}
-                >
-                  <NextLink href="/registro" className="flex gap-2">
-                    Suscribirme <IconArrowRight size={18} />
+                    {link.label}
                   </NextLink>
-                </Button>
-              </Stack>
-            </form>
-          </Box>
-        </Grid>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-        <Separator my={8} borderColor="rgba(255,255,255,0.08)" />
-
-        <Box
-          display="flex"
-          flexDirection={{ base: "column", sm: "row" }}
-          justifyContent="space-between"
-          alignItems="center"
-          gap={4}
-        >
-          <Text fontSize="xs" color="brand.muted" textAlign="center">
-            &copy; {new Date().getFullYear()} Universidad Tecnológica de Pereira
-            - ASE UTP.
-          </Text>
-
-          <HStack gap={4}>
-            <ChakraLink
-              asChild
-              fontSize="xs"
-              color="brand.muted"
-              _hover={{ color: "brand.cyan" }}
+          <div className="!flex !flex-col !items-start !gap-4">
+            <Eyebrow>Información</Eyebrow>
+            <div className="!flex !items-start !gap-2 !text-sm !text-white/65">
+              <IconMapPin
+                size={16}
+                className="!mt-0.5 !shrink-0 !text-white/55"
+              />
+              <span>Universidad Tecnológica de Pereira</span>
+            </div>
+            <a
+              href="mailto:egresados@utp.edu.co"
+              className="!flex !items-start !gap-2 !text-sm !text-white/65 !transition hover:!text-white"
             >
-              <NextLink href="/privacidad">Política de privacidad</NextLink>
-            </ChakraLink>
-
-            <ChakraLink
-              asChild
-              fontSize="xs"
-              color="brand.muted"
-              _hover={{ color: "brand.cyan" }}
+              <IconMail
+                size={16}
+                className="!mt-0.5 !shrink-0 !text-white/55"
+              />
+              <span>egresados@utp.edu.co</span>
+            </a>
+            <a
+              href="mailto:aseutp@utp.edu.co"
+              className="!flex !items-start !gap-2 !text-sm !text-white/65 !transition hover:!text-white"
             >
-              <NextLink href="/terminos">Términos y condiciones</NextLink>
-            </ChakraLink>
-          </HStack>
-        </Box>
-      </Container>
-    </Box>
+              <IconMail
+                size={16}
+                className="!mt-0.5 !shrink-0 !text-white/55"
+              />
+              <span>aseutp@utp.edu.co</span>
+            </a>
+            <a
+              href="tel:+576063137110"
+              className="!flex !items-start !gap-2 !text-sm !text-white/65 !transition hover:!text-white"
+            >
+              <IconPhone
+                size={16}
+                className="!mt-0.5 !shrink-0 !text-white/55"
+              />
+              <span>+57 606 313 7110 - 313 7533</span>
+            </a>
+          </div>
+        </div>
+
+        <div
+          className="!my-8 !h-px"
+          style={{ background: "rgba(255,255,255,0.08)" }}
+        />
+
+        <div className="!flex !flex-col !items-center !justify-between !gap-4 sm:!flex-row">
+          <span className="!text-xs !text-white/50">
+            &copy; {new Date().getFullYear()} Universidad Tecnológica de
+            Pereira - ASE UTP.
+          </span>
+          <div className="!flex !gap-5 !text-xs !text-white/50">
+            <NextLink
+              href="/privacidad"
+              className="!transition hover:!text-white"
+            >
+              Política de privacidad
+            </NextLink>
+            <NextLink
+              href="/terminos"
+              className="!transition hover:!text-white"
+            >
+              Términos y condiciones
+            </NextLink>
+          </div>
+        </div>
+      </div>
+    </footer>
   );
 }

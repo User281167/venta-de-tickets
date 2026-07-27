@@ -1,16 +1,6 @@
 "use client";
 
 import {
-  Box,
-  Button,
-  Flex,
-  Heading,
-  HStack,
-  Badge,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
-import {
   IconTicket,
   IconUser,
   IconCircleCheck,
@@ -25,10 +15,50 @@ interface TicketTypeCardProps {
   ticketType: TicketType;
 }
 
+type Status = "inactive" | "soldout" | "low" | "available";
+
+const STATUS_BG: Record<Status, string> = {
+  inactive: "rgba(107, 114, 128, 0.18)",
+  soldout: "rgba(239, 68, 68, 0.18)",
+  low: "rgba(255, 159, 28, 0.18)",
+  available: "rgba(57, 255, 99, 0.18)",
+};
+
+const STATUS_BORDER: Record<Status, string> = {
+  inactive: "rgba(255,255,255,0.12)",
+  soldout: "rgba(239, 68, 68, 0.4)",
+  low: "rgba(255, 159, 28, 0.4)",
+  available: "rgba(57, 255, 99, 0.4)",
+};
+
+const STATUS_TEXT: Record<Status, string> = {
+  inactive: "rgba(255,255,255,0.6)",
+  soldout: "#fca5a5",
+  low: "#fdba74",
+  available: "#86efac",
+};
+
+const TOP_BORDER: Record<Status, string> = {
+  inactive: "linear-gradient(90deg, #6b7280, #374151)",
+  low: "linear-gradient(90deg, #ff9f1c, #ff0f7b)",
+  available: "linear-gradient(90deg, #ff0f7b, #00e5ff)",
+  soldout: "linear-gradient(90deg, #ef4444, #6b7280)",
+};
+
+const GLOW_BG: Record<Status, string> = {
+  inactive: "oklch(0.6 0 0)",
+  soldout: "oklch(0.6 0.22 25)",
+  low: "oklch(0.78 0.18 45)",
+  available: "oklch(0.7 0.22 280)",
+};
+
+const PRIMARY_BTN =
+  "linear-gradient(100deg, #ff0f7b 0%, #a78bfa 35%, #00e5ff 65%, #fdba74 100%)";
+
 export function TicketTypeCard({ ticketType }: TicketTypeCardProps) {
   const { user } = useAuth();
 
-  const status = !ticketType.isActive
+  const status: Status = !ticketType.isActive
     ? "inactive"
     : ticketType.isSoldOut
       ? "soldout"
@@ -36,191 +66,149 @@ export function TicketTypeCard({ ticketType }: TicketTypeCardProps) {
         ? "low"
         : "available";
 
-  const badgeConfig = {
-    inactive: { color: "gray", label: "No disponible", icon: IconAlertCircle },
-    soldout: { color: "red", label: "Agotado", icon: IconAlertCircle },
-    low: { color: "orange", label: `${ticketType.availableCount} disponibles`, icon: IconAlertCircle },
-    available: { color: "green", label: `${ticketType.availableCount} disponibles`, icon: IconCircleCheck },
+  const badgeConfig: Record<
+    Status,
+    { label: string; icon: typeof IconCircleCheck }
+  > = {
+    inactive: { label: "No disponible", icon: IconAlertCircle },
+    soldout: { label: "Agotado", icon: IconAlertCircle },
+    low: {
+      label: `${ticketType.availableCount} disponibles`,
+      icon: IconAlertCircle,
+    },
+    available: {
+      label: `${ticketType.availableCount} disponibles`,
+      icon: IconCircleCheck,
+    },
   };
 
   const badge = badgeConfig[status];
   const StatusIcon = badge.icon;
+  const priceLabel = formatCurrency(Number(ticketType.price * 100));
+  const canBuy = status === "available" || status === "low";
 
   return (
-    <Flex
-      direction="column"
-      borderRadius="2xl"
-      p={{ base: 5, md: 6 }}
-      bg="linear-gradient(145deg, rgba(7,10,34,0.95), rgba(2,4,20,0.98))"
-      border="1px solid rgba(255,255,255,0.08)"
-      boxShadow="0 8px 32px rgba(0,0,0,0.35)"
-      _hover={{
-        transform: "translateY(-6px)",
-        boxShadow: "0 16px 48px rgba(0,229,255,0.14)",
-        borderColor: "brand.cyan",
+    <div
+      className="!relative !flex !h-full !flex-col !overflow-hidden !rounded-3xl glass !p-6 !transition !duration-300 hover:!-translate-y-1 sm:!p-7"
+      style={{
+        background: "rgba(15, 18, 38, 0.45)",
+        WebkitBackdropFilter: "blur(14px) saturate(140%)",
+        backdropFilter: "blur(14px) saturate(140%)",
       }}
-      transition="all 0.25s ease"
-      h="full"
-      position="relative"
-      overflow="hidden"
     >
-      <Box
-        position="absolute"
-        top={0}
-        left={0}
-        right={0}
-        h="4px"
-        bg={
-          status === "available"
-            ? "linear-gradient(90deg, #ff0f7b, #00e5ff)"
-            : status === "low"
-              ? "linear-gradient(90deg, #ff9f1c, #ff0f7b)"
-              : "linear-gradient(90deg, #6b7280, #374151)"
-        }
+      <div
+        className="!absolute !inset-x-0 !top-0 !h-1"
+        style={{ background: TOP_BORDER[status] }}
       />
 
-      <VStack gap={5} align="stretch" flex={1} pt={2}>
-        <HStack justify="space-between" align="flex-start">
-          <Box
-            p={2.5}
-            borderRadius="xl"
-            bg="rgba(255,15,123,0.1)"
-            border="1px solid rgba(255,15,123,0.2)"
-          >
-            <IconTicket size={28} color="#ff0f7b" />
-          </Box>
+      <div
+        className="!pointer-events-none !absolute !-right-16 !-top-16 !h-40 !w-40 !rounded-full !opacity-40 !blur-3xl"
+        style={{ background: GLOW_BG[status] }}
+        aria-hidden="true"
+      />
 
-          <Badge
-            colorPalette={badge.color}
-            size="md"
-            px={2.5}
-            py={1}
-            borderRadius="full"
-            display="flex"
-            alignItems="center"
-            gap={1}
+      <div className="!relative !flex !flex-1 !flex-col !gap-5 !pt-2">
+        <div className="!flex !items-start !justify-between !gap-3">
+          <div
+            className="!flex !h-12 !w-12 !items-center !justify-center !rounded-2xl"
+            style={{
+              background: "rgba(255, 15, 123, 0.12)",
+              border: "1px solid rgba(255, 15, 123, 0.3)",
+            }}
+          >
+            <IconTicket size={26} color="#ff0f7b" />
+          </div>
+
+          <span
+            className="!inline-flex !items-center !gap-1.5 !rounded-full !px-3 !py-1 !text-xs !font-semibold"
+            style={{
+              background: STATUS_BG[status],
+              border: `1px solid ${STATUS_BORDER[status]}`,
+              color: STATUS_TEXT[status],
+            }}
           >
             <StatusIcon size={14} />
             {badge.label}
-          </Badge>
-        </HStack>
+          </span>
+        </div>
 
-        <Box>
-          <Heading as="h3" size="lg" color="white" mb={1}>
+        <div>
+          <h3 className="!text-2xl !font-black !uppercase !tracking-wide !text-white">
             {ticketType.name}
-          </Heading>
-
-          <Heading
-            as="span"
-            size="2xl"
-            className="gradient-text"
-            fontWeight="black"
+          </h3>
+          <div
+            className="!mt-1 !text-3xl !font-black"
+            style={{
+              background:
+                "linear-gradient(90deg, #ff0f7b 0%, #a78bfa 50%, #00e5ff 100%)",
+              WebkitBackgroundClip: "text",
+              backgroundClip: "text",
+              color: "transparent",
+            }}
           >
-            {formatCurrency(Number(ticketType.price * 100))}
-          </Heading>
-        </Box>
+            {priceLabel}
+          </div>
+        </div>
 
         {ticketType.description && (
-          <Text fontSize="sm" color="brand.muted" lineHeight="1.7">
+          <p className="!text-sm !leading-relaxed !text-white/60">
             {ticketType.description}
-          </Text>
+          </p>
         )}
 
-        <VStack gap={1} align="stretch" mt="auto">
-          {ticketType.maxPerUser && (
-            <HStack gap={2} color="brand.muted" fontSize="xs">
-              <IconUser size={14} />
-              <Text>Máx. {ticketType.maxPerUser} por persona</Text>
-            </HStack>
-          )}
-        </VStack>
-      </VStack>
+        {ticketType.maxPerUser && (
+          <div className="!mt-auto !flex !items-center !gap-2 !text-xs !text-white/55">
+            <IconUser size={14} />
+            <span>Máx. {ticketType.maxPerUser} por persona</span>
+          </div>
+        )}
+      </div>
 
-      {!ticketType.isActive ? (
-        <Button
-          disabled
-          variant="outline"
-          size="lg"
-          w="full"
-          mt={6}
-          borderColor="whiteAlpha.200"
-          color="whiteAlpha.500"
-          _hover={{}}
-        >
-          <HStack gap={2}>
+      <div className="!mt-6">
+        {!ticketType.isActive || status === "soldout" || status === "inactive" ? (
+          <button
+            type="button"
+            disabled
+            className="!flex !w-full !items-center !justify-center !gap-2 !rounded-xl !border !border-white/10 !bg-white/5 !px-5 !py-3 !text-sm !font-bold !text-white/45"
+          >
             <IconTicket size={18} />
-            <Text>No disponible</Text>
-          </HStack>
-        </Button>
-      ) : ticketType.isSoldOut ? (
-        <Button
-          disabled
-          size="lg"
-          w="full"
-          mt={6}
-          bg="rgba(239,68,68,0.15)"
-          color="red.300"
-          border="1px solid rgba(239,68,68,0.3)"
-          _hover={{}}
-        >
-          <HStack gap={2}>
+            {status === "soldout" ? "Agotado" : "No disponible"}
+          </button>
+        ) : user ? (
+          <NextLink
+            href="/entradas"
+            className="group !relative !flex !w-full !items-center !justify-center !gap-2 !overflow-hidden !rounded-xl !px-5 !py-3 !text-sm !font-bold !text-black !transition-transform !duration-300 hover:!scale-[1.02]"
+            style={{
+              background: PRIMARY_BTN,
+              boxShadow:
+                "0 0 24px oklch(0.65 0.22 300 / 0.35), 0 0 48px oklch(0.7 0.22 200 / 0.2)",
+            }}
+          >
+            <span className="!relative !z-10">Ver ubicación y comprar</span>
+            <IconTicket
+              size={18}
+              className="!relative !z-10 !transition-transform group-hover:!translate-x-0.5 group-hover:!-translate-y-0.5"
+            />
+            <span
+              className="!absolute !inset-0 !-translate-x-full !bg-gradient-to-r !from-transparent !via-white/40 !to-transparent !transition-transform !duration-700 group-hover:!translate-x-full"
+              aria-hidden="true"
+            />
+          </NextLink>
+        ) : (
+          <NextLink
+            href="/login?redirect=/"
+            className="!flex !w-full !items-center !justify-center !gap-2 !rounded-xl !border !border-white/15 !bg-white/5 !px-5 !py-3 !text-sm !font-bold !text-white !transition hover:!bg-white/10"
+          >
             <IconTicket size={18} />
-            <Text>Agotado</Text>
-          </HStack>
-        </Button>
-      ) : user ? (
-        <Button
-          asChild
-          size="lg"
-          w="full"
-          mt={6}
-          minH="52px"
-          bg="linear-gradient(90deg, #ff0f7b 0%, #0969ff 100%)"
-          color="white"
-          fontWeight="bold"
-          borderRadius="xl"
-          transition="all 0.25s ease"
-          _hover={{
-            transform: "translateY(-2px)",
-            boxShadow: "0 0 28px rgba(255,15,123,0.35)",
-          }}
-        >
-          <NextLink href="/entradas">
-            <HStack gap={2}>
-              <IconTicket size={18} />
-              <Text>Ver ubicación y comprar</Text>
-            </HStack>
+            Inicia sesión para comprar
           </NextLink>
-        </Button>
-      ) : (
-        <Button
-          asChild
-          size="lg"
-          w="full"
-          mt={6}
-          minH="52px"
-          border="2px solid transparent"
-          bg={`
-            linear-gradient(#020414, #020414) padding-box,
-            linear-gradient(90deg, #ff0f7b, #00e5ff) border-box
-          `}
-          color="white"
-          fontWeight="bold"
-          borderRadius="xl"
-          transition="all 0.25s ease"
-          _hover={{
-            transform: "translateY(-2px)",
-            boxShadow: "0 0 28px rgba(0,229,255,0.28)",
-          }}
-        >
-          <NextLink href="/login?redirect=/">
-            <HStack gap={2}>
-              <IconTicket size={18} />
-              <Text>Inicia sesión para comprar</Text>
-            </HStack>
-          </NextLink>
-        </Button>
-      )}
-    </Flex>
+        )}
+        {!user && canBuy && (
+          <p className="!mt-2 !text-center !text-[10px] !uppercase !tracking-[0.2em] !text-white/40">
+            {ticketType.availableCount} cupos disponibles
+          </p>
+        )}
+      </div>
+    </div>
   );
 }

@@ -3,9 +3,9 @@
 import { memo } from "react";
 import { Flex, Text, IconButton, Box } from "@chakra-ui/react";
 import { IconTrash } from "@tabler/icons-react";
-import { CartQuantitySpinner } from "./CartQuantitySpinner";
 import type { CartItem } from "../schemas/cart.schema";
 import { formatCurrency } from "@/shared/utils/formats";
+import { QuantitySpinner } from "@/shared/components/QuantitySpinner";
 
 interface CartItemRowProps {
   item: CartItem;
@@ -65,7 +65,7 @@ export const CartItemRow = memo(function CartItemRow({
       </Flex>
 
       <Flex justify="space-between" align="center" gap={3}>
-        <CartQuantitySpinner
+        <QuantitySpinner
           quantity={item.quantity}
           onIncrement={onIncrement}
           onDecrement={onDecrement}

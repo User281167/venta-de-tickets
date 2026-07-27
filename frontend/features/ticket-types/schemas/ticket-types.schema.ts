@@ -13,18 +13,6 @@ export const ticketTypeSchema = z.object({
   status: z.enum(['enabled', 'disabled', 'blocked']),
 });
 
-export const eventWithTicketTypesSchema = z.object({
-  id: z.string().uuid(),
-  title: z.string(),
-  description: z.string().nullable(),
-  eventDate: z.string(),
-  doorsOpenAt: z.string().nullable(),
-  saleEndsAt: z.string().nullable(),
-  location: z.string().nullable(),
-  status: z.string(),
-  ticketTypes: z.array(ticketTypeSchema),
-});
-
 export const adminTicketTypeSchema = z.object({
   id: z.string().uuid(),
   name: z.string(),
@@ -59,7 +47,6 @@ export const updateTicketTypeSchema = z.object({
 });
 
 export type TicketType = z.infer<typeof ticketTypeSchema>;
-export type EventWithTicketTypes = z.infer<typeof eventWithTicketTypesSchema>;
 export type AdminTicketType = z.infer<typeof adminTicketTypeSchema>;
 export type CreateTicketTypeInput = z.infer<typeof createTicketTypeSchema>;
 export type UpdateTicketTypeInput = z.infer<typeof updateTicketTypeSchema>;

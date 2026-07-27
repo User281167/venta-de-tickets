@@ -1,22 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  Box,
-  Button,
-  Container,
-  Flex,
-  Grid,
-  GridItem,
-  Heading,
-  HStack,
-  Image,
-  Spinner,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
+import { motion, type Variants } from "framer-motion";
+import NextImage from "next/image";
 import { useRouter } from "next/navigation";
-import { IconTicket, IconAlertCircle } from "@tabler/icons-react";
+import { IconTicket, IconAlertCircle, IconLock } from "@tabler/icons-react";
 import { useCart } from "../hooks/useCart";
 import { useCreateCheckoutPreference } from "../api/checkout.queries";
 import { CheckoutError } from "../api/checkout.api";
@@ -28,9 +16,24 @@ import {
   CheckoutErrorDialog,
   type CheckoutErrorCode,
 } from "./CheckoutErrorDialog";
+import { PageShell } from "@/shared/components/PageShell";
 import { formatCurrency } from "@/shared/utils/formats";
 
 const PROFILE_FIELDS = ["cedula", "fullName"] as const;
+
+const VIEWPORT = { once: true, margin: "-10% 0px -10% 0px" } as const;
+
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 24 },
+  show: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: i * 0.08 },
+  }),
+};
+
+const PRIMARY_BORDER =
+  "linear-gradient(100deg, #ff0f7b 0%, #a78bfa 35%, #00e5ff 65%, #fdba74 100%)";
 
 function pickMissingFields(user: {
   cedula: string | null;
@@ -78,6 +81,7 @@ export function CheckoutPageClient() {
       ? "USER_INFO_INCOMPLETE"
       : (((err as { code?: string }).code as CheckoutErrorCode) ?? "INTERNAL_ERROR")
     : null;
+
   const dialogMissingFields = isCheckoutError(err) ? err.missingFields : missingFields;
   const dialogMessage = isCheckoutError(err) ? err.message : undefined;
 
@@ -86,11 +90,13 @@ export function CheckoutPageClient() {
       setProfileDialogOpen(true);
       return;
     }
+
     mutation.mutate(items);
   };
 
   const handleDialogRetry = () => {
     mutation.reset();
+
     if (items.length > 0 && !isProfileIncomplete) {
       mutation.mutate(items);
     }
@@ -98,6 +104,7 @@ export function CheckoutPageClient() {
 
   const handleProfileDialogChange = (open: boolean) => {
     setProfileDialogOpen(open);
+
     if (!open && isError && errorCode === "USER_INFO_INCOMPLETE") {
       mutation.reset();
     }
@@ -105,6 +112,7 @@ export function CheckoutPageClient() {
 
   const handleErrorDialogChange = (open: boolean) => {
     setErrorDialogOpen(open);
+
     if (!open && isError && errorCode !== "USER_INFO_INCOMPLETE") {
       mutation.reset();
     }
@@ -118,195 +126,178 @@ export function CheckoutPageClient() {
     isError && errorCode !== null && errorCode !== "USER_INFO_INCOMPLETE";
 
   return (
-    <Box w="full" py={{ base: 6, md: 10 }}>
-      <Container>
-        <VStack align="start" gap={1} mb={{ base: 6, md: 8 }}>
-          <Text
-            color="brand.cyan"
-            fontSize="sm"
-            fontWeight="black"
-            textTransform="uppercase"
-            letterSpacing="0.15em"
-          >
-            Finalizar compra
-          </Text>
-          <Heading as="h1" size="2xl" color="white" lineHeight="1.1">
-            Revisa tu pedido
-          </Heading>
-          <Text color="brand.muted">
-            {totalTickets} entrada{totalTickets !== 1 ? "s" : ""} en tu carrito
-          </Text>
-        </VStack>
-
-        <Grid
-          w="full"
-          templateColumns={{ base: "1fr", lg: "2fr 1fr" }}
-          gap={{ base: 6, md: 8 }}
-          alignItems="start"
-        >
-          <GridItem w="full">
-            <VStack align="stretch" w="full" gap={4}>
-              {items.map((item) => (
-                <Grid
-                  key={item.ticketTypeId}
-                  templateColumns={{
-                    base: "auto 1fr",
-                    sm: "auto 1fr auto auto",
-                  }}
-                  gap={{ base: 3, sm: 6, md: 8 }}
-                  alignItems="center"
-                  bg="brand.panel"
-                  borderRadius="2xl"
-                  p={{ base: 4, md: 5 }}
-                  border="1px solid"
-                  borderColor="rgba(255,255,255,0.08)"
-                >
-                  <GridItem>
-                    <Box p={2} borderRadius="xl" bg="rgba(0,229,255,0.1)">
-                      <IconTicket size={24} color="#00e5ff" />
-                    </Box>
-                  </GridItem>
-
-                  <GridItem minW={0}>
-                    <Text
-                      fontSize="md"
-                      fontWeight="black"
-                      color="white"
-                      lineHeight="1.3"
-                    >
-                      {item.name}
-                    </Text>
-
-                    <Text fontSize="sm" color="brand.muted" whiteSpace="nowrap">
-                      {formatCurrency(item.unitPriceCents * 100)} c/u
-                    </Text>
-                  </GridItem>
-
-                  <GridItem
-                    colSpan={{ base: 2, sm: 1 }}
-                    textAlign={{ base: "left", sm: "center" }}
-                    justifySelf={{ base: "start", sm: "center" }}
-                  >
-                    <Text fontSize="xs" color="brand.muted">
-                      Cantidad
-                    </Text>
-                    <Text fontSize="lg" fontWeight="black" color="white">
-                      x{item.quantity}
-                    </Text>
-                  </GridItem>
-
-                  <GridItem
-                    colSpan={{ base: 2, sm: 1 }}
-                    textAlign="right"
-                    justifySelf={{ base: "start", sm: "end" }}
-                  >
-                    <Text fontSize="xs" color="brand.muted">
-                      Subtotal
-                    </Text>
-                    <Text fontSize="lg" fontWeight="black" color="brand.cyan">
-                      {formatCurrency(
-                        item.unitPriceCents * item.quantity * 100,
-                      )}
-                    </Text>
-                  </GridItem>
-                </Grid>
-              ))}
-            </VStack>
-          </GridItem>
-
-          <GridItem w="full">
-            <Box
-              bg="brand.panel"
-              borderRadius="2xl"
-              p={{ base: 5, md: 6 }}
-              border="1px solid"
-              borderColor="rgba(255,255,255,0.08)"
-              position="sticky"
-              top={{ base: 4, md: 8 }}
-              boxShadow="0 20px 40px rgba(0,0,0,0.25)"
+    <PageShell
+      eyebrow="Finalizar compra"
+      title="Revisa tu pedido"
+      subtitle={`${totalTickets} entrada${totalTickets !== 1 ? "s" : ""} en tu carrito`}
+    >
+      <div className="!grid !grid-cols-1 !gap-6 lg:!grid-cols-[2fr_1fr] lg:!items-start">
+        <div className="!flex !flex-col !gap-4">
+          {items.map((item, i) => (
+            <motion.article
+              key={item.ticketTypeId}
+              initial="hidden"
+              whileInView="show"
+              viewport={VIEWPORT}
+              variants={fadeUp}
+              custom={i}
+              className="!relative !grid !grid-cols-[auto_1fr] !items-center !gap-3 !overflow-hidden !rounded-3xl glass !p-4 sm:!grid-cols-[auto_1fr_auto_auto] sm:!gap-4 sm:!p-5 md:!gap-6"
+              style={{
+                background: "rgba(15, 18, 38, 0.45)",
+                WebkitBackdropFilter: "blur(14px) saturate(140%)",
+                backdropFilter: "blur(14px) saturate(140%)",
+              }}
             >
-              <OrderSummary hideComprar />
+              <div
+                className="!flex !h-12 !w-12 !items-center !justify-center !rounded-2xl"
+                style={{
+                  background: "rgba(0, 229, 255, 0.12)",
+                  border: "1px solid rgba(0, 229, 255, 0.3)",
+                }}
+              >
+                <IconTicket size={22} color="#00e5ff" />
+              </div>
 
-              {preferenceId && (
-                <Box mt={4} data-testid="wallet-section">
-                  <MpWalletButton preferenceId={preferenceId} />
-                </Box>
-              )}
+              <div className="!min-w-0">
+                <h3 className="!text-base !font-black !text-white sm:!text-lg">
+                  {item.name}
+                </h3>
 
-              {!preferenceId && !mutation.isError && (
-                <VStack align="stretch" gap={2} mt={4}>
-                  <Button
-                    w="full"
-                    h="64px"
-                    borderRadius="xl"
-                    bg="#ffe600"
-                    p={2}
-                    onClick={handlePagar}
-                    disabled={pagarDisabled}
-                    title={
-                      isProfileIncomplete
-                        ? "Completa tu perfil para pagar"
-                        : undefined
-                    }
-                    data-testid="pagar-mp-button"
-                    _hover={{
-                      transform: pagarDisabled
-                        ? undefined
-                        : "translateY(-2px)",
-                      boxShadow: pagarDisabled
-                        ? undefined
-                        : "0 8px 24px rgba(255,230,0,0.25)",
-                    }}
-                    _active={{
-                      transform: pagarDisabled ? undefined : "translateY(0)",
-                    }}
-                    transition="all 0.2s ease"
-                  >
-                    {mutation.isPending ? (
-                      <Flex>
-                        <Spinner size="sm" color="#2d3277" />
-                        <Text ml={2} color="#2d3277">
-                          Creando preferencia de pago...
-                        </Text>
-                      </Flex>
-                    ) : (
-                      <Image
+                <p className="!text-xs !text-white/50 sm:!text-sm">
+                  {formatCurrency(item.unitPriceCents * 100)} c/u
+                </p>
+              </div>
+
+              <div className="!col-span-2 !flex !items-center !justify-between !gap-2 !whitespace-nowrap sm:!col-span-1 sm:!flex-col sm:!justify-center">
+                <span className="!text-[10px] !font-medium !uppercase !tracking-[0.18em] !text-white/40">
+                  Cantidad
+                </span>
+
+                <span className="!shrink-0 !rounded-lg !px-2 !py-1 !text-sm !font-black !whitespace-nowrap"
+                  style={{
+                    background: "rgba(0,229,255,0.12)",
+                    border: "1px solid rgba(0,229,255,0.3)",
+                    color: "#7dd3fc",
+                  }}
+                >
+                  x{item.quantity}
+                </span>
+              </div>
+
+              <div className="!col-span-2 !flex !items-center !justify-between !gap-2 !whitespace-nowrap sm:!col-span-1 sm:!flex-col sm:!items-end sm:!justify-center">
+                <span className="!text-[10px] !font-medium !uppercase !tracking-[0.18em] !text-white/40">
+                  Subtotal
+                </span>
+
+                <span
+                  className="!shrink-0 !text-base !font-black !whitespace-nowrap sm:!text-lg"
+                  style={{
+                    background: PRIMARY_BORDER,
+                    WebkitBackgroundClip: "text",
+                    backgroundClip: "text",
+                    color: "transparent",
+                  }}
+                >
+                  {formatCurrency(item.unitPriceCents * item.quantity * 100)}
+                </span>
+              </div>
+            </motion.article>
+          ))}
+        </div>
+
+        <div className="lg:!sticky lg:!top-28">
+          <motion.div
+            initial="hidden"
+            whileInView="show"
+            viewport={VIEWPORT}
+            variants={fadeUp}
+            custom={0}
+            className="!relative !overflow-hidden !rounded-3xl glass !p-6 sm:!p-7"
+            style={{
+              background: "rgba(15, 18, 38, 0.45)",
+              WebkitBackdropFilter: "blur(14px) saturate(140%)",
+              backdropFilter: "blur(14px) saturate(140%)",
+            }}
+          >
+            <OrderSummary hideComprar />
+
+            {preferenceId && (
+              <div className="!mt-4" data-testid="wallet-section">
+                <MpWalletButton preferenceId={preferenceId} />
+              </div>
+            )}
+
+            {!preferenceId && !mutation.isError && (
+              <div className="!mt-4 !flex !flex-col !gap-2">
+                <button
+                  type="button"
+                  onClick={handlePagar}
+                  disabled={pagarDisabled}
+                  title={
+                    isProfileIncomplete
+                      ? "Completa tu perfil para pagar"
+                      : undefined
+                  }
+                  data-testid="pagar-mp-button"
+                  className="!relative !flex !h-16 !w-full !items-center !justify-center !overflow-hidden !rounded-xl !bg-[#ffe600] !p-2 !transition !duration-300 hover:!translate-y-[-2px] disabled:!cursor-not-allowed disabled:!opacity-60 disabled:hover:!translate-y-0"
+                  style={{
+                    boxShadow: pagarDisabled
+                      ? undefined
+                      : "0 8px 24px rgba(255,230,0,0.25)",
+                  }}
+                >
+                  {mutation.isPending ? (
+                    <div className="!flex !items-center !gap-2 !text-[#2d3277]">
+                      <span
+                        className="!inline-block !h-4 !w-4 !animate-spin !rounded-full !border-2 !border-[#2d3277] !border-t-transparent"
+                        aria-hidden="true"
+                      />
+
+                      <span className="!font-bold">
+                        Creando preferencia de pago...
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="!relative !h-full !w-full">
+                      <NextImage
                         src="/logo-mercado-libre.png"
                         alt="Mercado Pago"
-                        maxH="64px"
-                        maxW="64px"
-                        h="full"
-                        w="auto"
-                        objectFit="contain"
+                        fill
+                        sizes="200px"
+                        style={{ objectFit: "contain" }}
                       />
-                    )}
-                  </Button>
-
-                  {isProfileIncomplete && !mutation.isPending && (
-                    <HStack
-                      gap={2}
-                      p={2}
-                      borderRadius="lg"
-                      bg="rgba(245,158,11,0.08)"
-                      border="1px solid rgba(245,158,11,0.2)"
-                    >
-                      <IconAlertCircle size={16} color="#f59e0b" />
-                      <Text
-                        fontSize="xs"
-                        color="amber.200"
-                        lineHeight="1.4"
-                        data-testid="profile-incomplete-hint"
-                      >
-                        Completa tu cédula y nombre para pagar
-                      </Text>
-                    </HStack>
+                    </div>
                   )}
-                </VStack>
-              )}
-            </Box>
-          </GridItem>
-        </Grid>
-      </Container>
+                </button>
+
+                <p className="!flex !items-center !justify-center !gap-1.5 !text-[10px] !uppercase !tracking-[0.18em] !text-white/35">
+                  <IconLock size={11} />
+                  Pago seguro Mercado Pago
+                </p>
+
+                {isProfileIncomplete && !mutation.isPending && (
+                  <div
+                    className="!flex !items-center !gap-2 !rounded-lg !p-2"
+                    style={{
+                      background: "rgba(245,158,11,0.08)",
+                      border: "1px solid rgba(245,158,11,0.2)",
+                    }}
+                  >
+                    <IconAlertCircle size={16} color="#f59e0b" />
+
+                    <p
+                      className="!text-xs !leading-tight !text-amber-200"
+                      data-testid="profile-incomplete-hint"
+                    >
+                      Completa tu cédula y nombre para pagar
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+          </motion.div>
+        </div>
+      </div>
 
       <UserIncompleteDialog
         open={profileDialogOpen || profileDialogForceOpen}
@@ -325,6 +316,6 @@ export function CheckoutPageClient() {
         message={dialogMessage}
         onRetry={handleDialogRetry}
       />
-    </Box>
+    </PageShell>
   );
 }

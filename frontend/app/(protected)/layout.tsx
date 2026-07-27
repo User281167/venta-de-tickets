@@ -10,7 +10,7 @@ export default function ProtectedLayout({
   return (
     <Box minH="100dvh" display="flex" flexDirection="column" bg="brand.dark">
       <Navbar />
-      <Box as="main" flex={1} display="flex" flexDirection="column" overflow="hidden">
+      <Box as="main" flex={1} display="flex" flexDirection="column" overflow="hidden" mt="20">
         {children}
       </Box>
       <Footer />

@@ -39,12 +39,6 @@ const ALL_LINKS: SidebarLink[] = [
   { href: "/", label: "Home", icon: <IconHome size={20} /> },
   { href: "/admin", label: "Panel", icon: <IconDashboard size={20} /> },
   {
-    href: "/admin/checkin",
-    label: "Check-in",
-    icon: <IconQrcode size={20} />,
-    roles: ["super_admin", "admin", "checker"] as const,
-  },
-  {
     href: "/admin/ticket-types",
     label: "Tipos de entrada",
     icon: <IconTicket size={20} />,
@@ -67,6 +61,12 @@ const ALL_LINKS: SidebarLink[] = [
     label: "Pagos",
     icon: <IconCurrencyDollar size={20} />,
     roles: ["super_admin", "admin"] as const,
+  },
+  {
+    href: "/admin/checkin",
+    label: "Check-in",
+    icon: <IconQrcode size={20} />,
+    roles: ["super_admin", "admin", "checker"] as const,
   },
 ];
 

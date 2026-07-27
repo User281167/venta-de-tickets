@@ -2,7 +2,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 import { Box } from "@chakra-ui/react";
 
-export default function ProtectedLayout({
+export default function EntradasLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -10,7 +10,7 @@ export default function ProtectedLayout({
   return (
     <>
       <Navbar />
-      <Box pt={16} minH="90vh" bg="brand.dark">
+      <Box bg="#000000" minH="100vh">
         {children}
       </Box>
       <Footer />

@@ -1,124 +1,152 @@
 ﻿"use client";
 
-import {
-  Box,
-  Center,
-  Container,
-  Heading,
-  SimpleGrid,
-  Skeleton,
-  Stack,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
+import { motion, type Variants } from "framer-motion";
 import { useActiveTicketTypes } from "@/features/ticket-purchase/api/ticket-purchase.queries";
 import { TicketTypeCard } from "@/features/ticket-types/components/TicketTypeCard";
-import {
-  AnimatedSection,
-  StaggerContainer,
-  StaggerItem,
-} from "@/shared/components/AnimatedSection";
+
+const VIEWPORT = { once: true, margin: "-10% 0px -10% 0px" } as const;
+
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 24 },
+  show: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: i * 0.08 },
+  }),
+};
 
 export function TicketSection() {
   const { data: ticketTypes, isLoading } = useActiveTicketTypes();
 
   return (
-    <Box
+    <section
       id="entradas"
-      py={{ base: 16, md: 24 }}
-      bg="linear-gradient(180deg, #020414 0%, #050719 48%, #020414 100%)"
-      position="relative"
-      overflow="hidden"
+      className="!relative !overflow-hidden !py-16 sm:!py-24"
+      style={{ background: "#000000" }}
     >
-      <Box
-        position="absolute"
-        top="-120px"
-        left="50%"
-        transform="translateX(-50%)"
-        w="600px"
-        h="600px"
-        borderRadius="full"
-        bg="radial-gradient(circle, rgba(255,15,123,0.12) 0%, transparent 70%)"
-        pointerEvents="none"
+      <div
+        className="!pointer-events-none !absolute !-top-40 !left-1/2 !h-[720px] !w-[720px] !-translate-x-1/2 !rounded-full !blur-3xl"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(255,15,123,0.55) 0%, rgba(255,15,123,0.22) 30%, transparent 70%)",
+        }}
+        aria-hidden="true"
+      />
+      <div
+        className="!pointer-events-none !absolute !-bottom-40 !right-[-10%] !h-[560px] !w-[560px] !rounded-full !blur-3xl"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(0,194,255,0.5) 0%, rgba(160,16,96,0.25) 30%, transparent 70%)",
+        }}
+        aria-hidden="true"
+      />
+      <div
+        className="!pointer-events-none !absolute !left-[-8%] !top-1/3 !h-[420px] !w-[420px] !rounded-full !blur-3xl"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(124,60,255,0.42) 0%, transparent 70%)",
+        }}
+        aria-hidden="true"
       />
 
-      <Container maxW="1200px" px={{ base: 4, md: 6 }} position="relative" zIndex={1}>
-        <AnimatedSection direction="up" delay={0} duration={0.6}>
-          <Stack gap={4} align="center" textAlign="center" mb={14}>
-          <Text
-            color="brand.pink"
-            fontSize="sm"
-            fontWeight="black"
-            textTransform="uppercase"
-            letterSpacing="0.15em"
-          >
+      <div className="!relative !z-10 !mx-auto !w-full !max-w-7xl !px-4 sm:!px-6">
+        <motion.div
+          className="!mb-12 !flex !flex-col !items-center !gap-4 !text-center"
+          initial="hidden"
+          whileInView="show"
+          viewport={VIEWPORT}
+          variants={fadeUp}
+          custom={0}
+        >
+          <span className="!inline-flex !items-center !gap-2 !rounded-2xl glass !px-4 !py-1.5 !text-xs !font-medium !uppercase !tracking-[0.2em] !text-[#ff0f7b]">
+            <span
+              className="!h-1.5 !w-1.5 !rounded-full"
+              style={{ background: "#ff0f7b", boxShadow: "0 0 10px #ff0f7b" }}
+            />
             Inscripción abierta
-          </Text>
+          </span>
 
-          <Heading
-            color="white"
-            fontSize={{ base: "3xl", md: "5xl" }}
-            lineHeight="1.1"
-            maxW="700px"
-          >
-            Asegura tu cupo para la convención
-          </Heading>
+          <h2 className="!max-w-3xl !text-4xl !font-semibold !leading-[1.05] !tracking-tight !text-white sm:!text-5xl md:!text-6xl">
+            Asegura tu cupo{" "}
+            <span
+              style={{
+                background:
+                  "linear-gradient(100deg, #7dd3fc 0%, #a78bfa 35%, #f0abfc 65%, #fdba74 100%)",
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                color: "transparent",
+              }}
+            >
+              para la Convención
+            </span>
+          </h2>
 
-          <Text color="brand.muted" fontSize={{ base: "md", md: "lg" }} maxW="600px">
-            Cupos limitados para actividades académicas, culturales y de networking.
-            Elige la entrada que mejor se ajuste a ti.
-          </Text>
-        </Stack>
-        </AnimatedSection>
+          <p className="!max-w-2xl !text-base !leading-relaxed !text-white/70 sm:!text-lg">
+            Cupos limitados para actividades académicas, culturales y de
+            networking. Elige la entrada que mejor se ajuste a ti.
+          </p>
+        </motion.div>
 
         {isLoading ? (
-          <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={6}>
-            {Array.from({ length: 3 }).map((_, i) => (
-              <Skeleton key={i} height="260px" borderRadius="xl" />
+          <div className="!grid !grid-cols-1 !gap-6 md:!grid-cols-2 lg:!grid-cols-3">
+            {[0, 1, 2].map((i) => (
+              <div
+                key={i}
+                className="!h-[360px] !rounded-3xl"
+                style={{
+                  background:
+                    "linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.08), rgba(255,255,255,0.04))",
+                  backgroundSize: "200% 100%",
+                  animation: "shimmer 1.5s infinite",
+                }}
+              />
             ))}
-          </SimpleGrid>
+          </div>
         ) : !ticketTypes || ticketTypes.length === 0 ? (
-          <VStack
-            gap={4}
-            align="center"
-            py={16}
-            px={6}
-            borderRadius="xl"
-            className="glass-card"
+          <motion.div
+            initial="hidden"
+            whileInView="show"
+            viewport={VIEWPORT}
+            variants={fadeUp}
+            custom={1}
+            className="!rounded-3xl !p-10 !text-center glass"
           >
-            <Text color="white" fontSize="xl" fontWeight="bold">
+            <h3 className="!text-xl !font-bold !text-white">
               No hay entradas disponibles en este momento
-            </Text>
-            <Text color="brand.muted" textAlign="center" maxW="500px">
-              Vuelve pronto o contáctanos para más información sobre próximas actividades.
-            </Text>
-          </VStack>
+            </h3>
+            <p className="!mt-2 !text-white/60">
+              Vuelve pronto o contáctanos para más información sobre próximas
+              actividades.
+            </p>
+          </motion.div>
         ) : (
-          <AnimatedSection direction="up" delay={0} duration={0.6}>
-            <StaggerContainer>
-              <SimpleGrid
-                columns={{ base: 1, md: 2, lg: 3 }}
-                gap={6}
-                alignItems="stretch"
+          <div className="!grid !grid-cols-1 !gap-6 md:!grid-cols-2 lg:!grid-cols-3">
+            {ticketTypes.map((tt, i) => (
+              <motion.div
+                key={tt.id}
+                initial="hidden"
+                whileInView="show"
+                viewport={VIEWPORT}
+                variants={fadeUp}
+                custom={i + 1}
               >
-                {ticketTypes.map((tt) => (
-                  <StaggerItem key={tt.id}>
-                    <Box
-                      h="full"
-                      transition="transform 0.25s ease, box-shadow 0.25s ease"
-                      _hover={{
-                        transform: "translateY(-6px)",
-                      }}
-                    >
-                      <TicketTypeCard ticketType={tt} />
-                    </Box>
-                  </StaggerItem>
-                ))}
-              </SimpleGrid>
-            </StaggerContainer>
-          </AnimatedSection>
+                <TicketTypeCard ticketType={tt} />
+              </motion.div>
+            ))}
+          </div>
         )}
-      </Container>
-    </Box>
+      </div>
+
+      <style jsx>{`
+        @keyframes shimmer {
+          0% {
+            background-position: 200% 0;
+          }
+          100% {
+            background-position: -200% 0;
+          }
+        }
+      `}</style>
+    </section>
   );
 }

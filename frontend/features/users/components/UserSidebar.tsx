@@ -8,6 +8,7 @@ import {
   Link as ChakraLink,
   Text,
   VStack,
+  IconButton,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -19,6 +20,8 @@ import {
   IconTicket,
   IconUser,
   IconLogout,
+  IconX,
+  IconMenu2,
 } from "@tabler/icons-react";
 
 const LINKS = [
@@ -145,7 +148,7 @@ export function UserSidebar({
         hideFrom="md"
         direction="column"
         position="fixed"
-        top={0}
+        top={20}
         left={0}
         bottom={0}
         w="72"
@@ -167,6 +170,24 @@ export function UserSidebar({
         >
           Mi cuenta
         </Text>
+
+        <IconButton
+          aria-label="Menú"
+          variant="ghost"
+          size="md"
+          hideFrom="md"
+          position="fixed"
+          border="1px solid"
+          borderColor="white"
+          top={4}
+          right={4}
+          zIndex={1100}
+          bg="white"
+          onClick={onClose}
+        >
+          {mobileOpen ? <IconX size={24} /> : <IconMenu2 size={24} />}
+        </IconButton>
+
         {sidebarContent}
       </Flex>
 
