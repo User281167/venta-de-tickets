@@ -54,6 +54,7 @@ export function CheckoutPageClient() {
 
   const [profileDialogOpen, setProfileDialogOpen] = useState(false);
   const [errorDialogOpen, setErrorDialogOpen] = useState(false);
+  const [autoOpenHandled, setAutoOpenHandled] = useState(false);
 
   const preferenceId = mutation.data?.preferenceId ?? null;
 
@@ -70,6 +71,18 @@ export function CheckoutPageClient() {
       })
     : [];
   const isProfileIncomplete = missingFields.length > 0;
+
+  useEffect(() => {
+    if (
+      !isLoadingMe &&
+      meData?.user &&
+      isProfileIncomplete &&
+      !autoOpenHandled
+    ) {
+      setProfileDialogOpen(true);
+      setAutoOpenHandled(true);
+    }
+  }, [isLoadingMe, meData, isProfileIncomplete, autoOpenHandled]);
 
   if (items.length === 0) return null;
 
@@ -307,6 +320,8 @@ export function CheckoutPageClient() {
             ? dialogMissingFields
             : missingFields
         }
+        defaultCedula={meData?.user?.cedula}
+        defaultFullName={meData?.user?.fullName}
       />
 
       <CheckoutErrorDialog

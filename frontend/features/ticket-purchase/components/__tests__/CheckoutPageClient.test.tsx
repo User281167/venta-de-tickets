@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { ChakraProvider } from "@chakra-ui/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { system } from "@/components/ui/theme";
@@ -8,6 +9,7 @@ import { CheckoutPageClient } from "../CheckoutPageClient";
 
 const mockPush = vi.fn();
 const mockMutate = vi.fn();
+const mockUpdateMe = vi.fn();
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: mockPush }),
@@ -35,6 +37,10 @@ let mockCheckoutState: {
 };
 vi.mock("@/features/users/hooks/useProfile", () => ({
   useMe: () => mockUseMe(),
+  useUpdateMe: () => ({
+    mutate: mockUpdateMe,
+    isPending: false,
+  }),
 }));
 
 const queryClient = new QueryClient({
@@ -183,7 +189,7 @@ describe("CheckoutPageClient", () => {
 
     render(<CheckoutPageClient />, { wrapper: Wrapper });
 
-    expect(await screen.findByText("Completa tu perfil")).toBeInTheDocument();
+    expect(await screen.findByText("Completa tus datos")).toBeInTheDocument();
     expect(screen.getByText("Cédula")).toBeInTheDocument();
   });
 
@@ -212,5 +218,86 @@ describe("CheckoutPageClient", () => {
     render(<CheckoutPageClient />, { wrapper: Wrapper });
 
     expect(await screen.findByText("Entradas agotadas")).toBeInTheDocument();
+  });
+
+  it("auto-opens the dialog on /checkout when profile is incomplete, with form fields", async () => {
+    store["cart-current-event"] = JSON.stringify([
+      {
+        ticketTypeId: "tt-1",
+        name: "General",
+        unitPriceCents: 50000,
+        quantity: 1,
+        maxPerUser: 4,
+        availableStock: 100,
+      },
+    ]);
+
+    mockUseMe.mockReturnValue({
+      data: {
+        user: {
+          id: "u-1",
+          email: "test@test.com",
+          role: "user",
+          fullName: null,
+          cedula: null,
+          phone: null,
+          address: null,
+          dateOfBirth: null,
+        },
+        consentStatus: { required: false, acceptedAt: null, policyVersion: "1" },
+      },
+      isLoading: false,
+    });
+
+    render(<CheckoutPageClient />, { wrapper: Wrapper });
+
+    expect(await screen.findByText("Completa tus datos")).toBeInTheDocument();
+    expect(screen.getByText("Cédula")).toBeInTheDocument();
+    expect(screen.getByText("Nombre completo")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /volver a entradas/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("'Volver a entradas' button routes to /entradas and closes dialog", async () => {
+    store["cart-current-event"] = JSON.stringify([
+      {
+        ticketTypeId: "tt-1",
+        name: "General",
+        unitPriceCents: 50000,
+        quantity: 1,
+        maxPerUser: 4,
+        availableStock: 100,
+      },
+    ]);
+
+    mockUseMe.mockReturnValue({
+      data: {
+        user: {
+          id: "u-1",
+          email: "test@test.com",
+          role: "user",
+          fullName: null,
+          cedula: null,
+          phone: null,
+          address: null,
+          dateOfBirth: null,
+        },
+        consentStatus: { required: false, acceptedAt: null, policyVersion: "1" },
+      },
+      isLoading: false,
+    });
+
+    const user = userEvent.setup();
+    render(<CheckoutPageClient />, { wrapper: Wrapper });
+
+    const back = await screen.findByRole("button", {
+      name: /volver a entradas/i,
+    });
+    await user.click(back);
+
+    await waitFor(() => {
+      expect(mockPush).toHaveBeenCalledWith("/entradas");
+    });
   });
 });
