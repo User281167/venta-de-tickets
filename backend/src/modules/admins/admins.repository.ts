@@ -17,6 +17,7 @@ export function findAll(page: number, limit: number, search?: string) {
         OR: [
           { fullName: { contains: search, mode: 'insensitive' as const } },
           { email: { contains: search, mode: 'insensitive' as const } },
+          { cedula: { contains: search, mode: 'insensitive' as const }}
         ],
       }
     : {};
