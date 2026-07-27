@@ -19,6 +19,7 @@ import {
 import { useState, useCallback } from "react";
 import { useProcessRefund } from "../api/admin-payments.queries";
 import { refundFormSchema } from "../schemas/admin-payments.schema";
+import { ApiError } from "@/shared/api/api-error";
 import { toast } from "sonner";
 import { IconAlertTriangle } from "@tabler/icons-react";
 
@@ -63,8 +64,12 @@ export function RefundDialog({
       toast.success("Reembolso procesado exitosamente");
       reset();
       onOpenChange(false);
-    } catch {
-      toast.error("Error al procesar el reembolso");
+    } catch (err) {
+      if (err instanceof ApiError && err.code === "USED_TICKET") {
+        toast.error("Error, uno de los ticketes ya ha sido usado.");
+      } else {
+        toast.error("Error al procesar el reembolso");
+      }
     }
   }, [reason, mutation, reset, onOpenChange]);
 
