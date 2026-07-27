@@ -23,6 +23,7 @@ import {
 } from "@tabler/icons-react";
 
 import { useLogin } from "../hooks/useLogin";
+import Link from "next/link";
 
 export function LoginForm() {
   const {
@@ -128,6 +129,10 @@ export function LoginForm() {
               Iniciar sesión
             </Button>
           </Stack>
+
+          <Link href="/reset-password">
+            ¿Olvidaste tu contraseña?
+          </Link>
         </form>
 
         <HStack gap={4}>
