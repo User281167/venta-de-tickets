@@ -111,7 +111,7 @@ export function HeroSection() {
         </Wave>
       </div>
 
-      <div className="!relative !z-10 !mx-auto !w-full !max-w-7xl !px-4 sm:!px-6">
+      <div className="!relative !z-10 !mx-auto !w-full !max-w-7xl !px-4 sm:!px-6 !mt-20 !xl:mt-0">
         <div className="!grid !gap-10 lg:!grid-cols-[1.1fr_1fr] lg:!items-center">
           <div className="!flex !flex-col !gap-6">
             <span
@@ -150,7 +150,7 @@ export function HeroSection() {
             >
               <NextLink
                 href={ctaHref}
-                className="group !relative !inline-flex !items-center !gap-2 !overflow-hidden !rounded-full !px-7 !py-3.5 !text-sm !font-semibold !text-black !transition-transform !duration-300 hover:!scale-[1.03]"
+                className="!w-full !max-w-52 group !relative !inline-flex !items-center !gap-2 !overflow-hidden !rounded-full !px-7 !py-3.5 !text-sm !font-semibold !text-black !transition-transform !duration-300 hover:!scale-[1.03]"
                 style={{
                   background:
                     "linear-gradient(100deg, #7dd3fc 0%, #a78bfa 35%, #f0abfc 65%, #fdba74 100%)",
@@ -171,7 +171,7 @@ export function HeroSection() {
 
               <NextLink
                 href="/entradas"
-                className="!inline-flex !items-center !justify-center !rounded-full !border !border-white/15 !bg-white/5 !px-6 !py-3 !text-sm !font-semibold !text-white !transition hover:!bg-white/10"
+                className="!w-full !max-w-52 !inline-flex !items-center !justify-center !rounded-full !border !border-white/15 !bg-white/5 !px-6 !py-3 !text-sm !font-semibold !text-white !transition hover:!bg-white/10"
               >
                 Ver entradas
               </NextLink>

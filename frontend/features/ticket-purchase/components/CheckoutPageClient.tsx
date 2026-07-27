@@ -141,7 +141,7 @@ export function CheckoutPageClient() {
               viewport={VIEWPORT}
               variants={fadeUp}
               custom={i}
-              className="!relative !grid !grid-cols-[auto_1fr] !items-center !gap-3 !overflow-hidden !rounded-3xl glass !p-4 sm:!grid-cols-[auto_1fr_auto_auto] sm:!gap-6 sm:!p-5"
+              className="!relative !grid !grid-cols-[auto_1fr] !items-center !gap-3 !overflow-hidden !rounded-3xl glass !p-4 sm:!grid-cols-[auto_1fr_auto_auto] sm:!gap-4 sm:!p-5 md:!gap-6"
               style={{
                 background: "rgba(15, 18, 38, 0.45)",
                 WebkitBackdropFilter: "blur(14px) saturate(140%)",
@@ -168,12 +168,12 @@ export function CheckoutPageClient() {
                 </p>
               </div>
 
-              <div className="!col-span-2 !flex !items-center !justify-between !gap-2 sm:!col-span-1 sm:!flex-col sm:!justify-center">
+              <div className="!col-span-2 !flex !items-center !justify-between !gap-2 !whitespace-nowrap sm:!col-span-1 sm:!flex-col sm:!justify-center">
                 <span className="!text-[10px] !font-medium !uppercase !tracking-[0.18em] !text-white/40">
                   Cantidad
                 </span>
 
-                <span className="!rounded-lg !px-2 !py-1 !text-sm !font-black"
+                <span className="!shrink-0 !rounded-lg !px-2 !py-1 !text-sm !font-black !whitespace-nowrap"
                   style={{
                     background: "rgba(0,229,255,0.12)",
                     border: "1px solid rgba(0,229,255,0.3)",
@@ -184,13 +184,13 @@ export function CheckoutPageClient() {
                 </span>
               </div>
 
-              <div className="!col-span-2 !flex !items-center !justify-between !gap-2 sm:!col-span-1 sm:!flex-col sm:!items-end sm:!justify-center">
+              <div className="!col-span-2 !flex !items-center !justify-between !gap-2 !whitespace-nowrap sm:!col-span-1 sm:!flex-col sm:!items-end sm:!justify-center">
                 <span className="!text-[10px] !font-medium !uppercase !tracking-[0.18em] !text-white/40">
                   Subtotal
                 </span>
 
                 <span
-                  className="!text-base !font-black sm:!text-lg"
+                  className="!shrink-0 !text-base !font-black !whitespace-nowrap sm:!text-lg"
                   style={{
                     background: PRIMARY_BORDER,
                     WebkitBackgroundClip: "text",

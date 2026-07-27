@@ -77,7 +77,7 @@ export default function AdminDashboard() {
   const email = user?.email ?? "";
 
   return (
-    <Container maxW="5xl" px={{ base: 4, md: 6 }} py={{ base: 8, md: 12 }}>
+    <Container maxW="5xl" px={{ base: 0, md: 6 }} py={{ base: 8, md: 12 }}>
       <VStack gap={10} align="stretch">
         <motion.div
           initial={reduced ? {} : { opacity: 0, y: 20 }}
