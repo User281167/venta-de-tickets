@@ -88,7 +88,7 @@ export function ActionButtons({
               minW="180px"
               variant="outline"
               color="white"
-              bordercolor="utp.azul"
+              borderColor="utp.azul"
               _hover={{ bg: "rgba(0,229,255,0.08)" }}
               _disabled={{ opacity: 0.5, cursor: "not-allowed" }}
               onClick={() =>
