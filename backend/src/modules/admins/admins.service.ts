@@ -200,8 +200,9 @@ export async function updateUser(id: string, data: Record<string, unknown>) {
   if (data.fullName !== undefined) updateData.fullName = data.fullName;
   if (data.phone !== undefined) updateData.phone = data.phone;
   if (data.isActive !== undefined) updateData.isActive = data.isActive;
+  if (data.cedula !== undefined) updateData.cedula = data.cedula;
 
-  if (data.cedula !== undefined) {
+  if (data.cedula !== undefined && data.cedula !== null) {
     const existingCedula = await adminsRepo.findByCedula(data.cedula as string);
 
     if (existingCedula && existingCedula.id !== id) {
@@ -214,8 +215,6 @@ export async function updateUser(id: string, data: Record<string, unknown>) {
         code: 'CONFLICT',
       });
     }
-
-    updateData.cedula = data.cedula;
   }
 
   if (data.role !== undefined) {

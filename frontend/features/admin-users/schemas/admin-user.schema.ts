@@ -14,7 +14,7 @@ export const adminUserUpdateSchema = z
       .min(8, "Mínimo 8 dígitos")
       .max(15, "Máximo 15 dígitos")
       .regex(/^\d+$/, "Solo números permitidos")
-      .optional(),
+      .optional().nullable(),
     role: z.enum(["admin", "checker", "client"]).optional(),
     isActive: z.boolean().optional(),
   })

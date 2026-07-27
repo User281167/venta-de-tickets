@@ -71,7 +71,7 @@ export function UserEditForm({ user, onSave, onCancel }: Props) {
 
       if (fullName !== user.fullName) payload.fullName = fullName;
       if (phone !== (user.phone ?? "")) payload.phone = phone || null;
-      if (cedula !== (user.cedula ?? "")) payload.cedula = cedula || undefined;
+      if (cedula !== (user.cedula ?? "")) payload.cedula = cedula || null;
       if (role !== user.role) payload.role = role as UpdateUserInput["role"];
       if (isActive !== user.isActive) payload.isActive = isActive;
 
