@@ -66,7 +66,7 @@ export function Footer() {
   return (
     <footer
       id="contacto"
-      className="!relative !overflow-hidden !border-t !border-white/10 !pt-12 !pb-6 md:!pt-16"
+      className="!relative !overflow-hidden !pt-12 !pb-6 md:!pt-16"
       style={{ background: "#030615" }}
     >
       <div

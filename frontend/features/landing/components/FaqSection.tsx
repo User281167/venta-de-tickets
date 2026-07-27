@@ -4,6 +4,7 @@ import { useState } from "react";
 import NextLink from "next/link";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { IconChevronDown } from "@tabler/icons-react";
+import { Particles } from "@/shared/components/Particles";
 
 const VIEWPORT = { once: true, margin: "-10% 0px -10% 0px" } as const;
 
@@ -92,7 +93,7 @@ export function FaqSection() {
         aria-hidden="true"
       />
       <div
-        className="!pointer-events-none !absolute !-top-40 !left-[-10%] !h-[500px] !w-[500px] !rounded-full !blur-3xl"
+        className="!pointer-events-none !absolute !top-3 !left-[5%] !h-[500px] !w-[500px] !rounded-full !blur-3xl"
         style={{
           background:
             "radial-gradient(circle, rgba(0,194,255,0.22) 0%, transparent 70%)",
@@ -107,6 +108,8 @@ export function FaqSection() {
         }}
         aria-hidden="true"
       />
+
+      <Particles />
 
       <div className="!relative !z-10 !mx-auto !w-full !max-w-3xl !px-4 sm:!px-6">
         <motion.div

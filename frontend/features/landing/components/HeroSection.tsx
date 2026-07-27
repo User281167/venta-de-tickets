@@ -12,6 +12,7 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 import { AuroraBackground } from "@/shared/components/AuroraBackground";
 import { GradientText } from "@/shared/components/GradientText";
 import { useRevealAll } from "@/features/sponsor/hooks/useRevealAll";
+import { DefaultWaves } from "@/shared/components/Waves";
 
 const LOGO = "/logos-la-u/Vertical - letras blancas.png";
 
@@ -29,87 +30,7 @@ export function HeroSection() {
     >
       <AuroraBackground imageOpacity={50} particleCount={30} />
 
-      <div
-        className="!pointer-events-none !absolute !inset-x-0 !bottom-0 !z-[2] !h-1/2 opacity-10"
-        aria-hidden="true"
-      >
-        <Wave
-          fill="url(#heroWaveFront)"
-          paused={false}
-          style={{ width: "100%", height: "100%", display: "flex" }}
-          options={{
-            height: 22,
-            amplitude: 18,
-            speed: 0.18,
-            points: 4,
-          }}
-        >
-          <defs>
-            <linearGradient id="heroWaveFront" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#7dd3fc" />
-              <stop offset="35%" stopColor="#a78bfa" />
-              <stop offset="65%" stopColor="#f0abfc" />
-              <stop offset="100%" stopColor="#fdba74" />
-            </linearGradient>
-          </defs>
-        </Wave>
-      </div>
-
-      <div
-        className="!pointer-events-none !absolute !inset-x-0 !bottom-0 !z-[2] !h-1/3 opacity-10"
-        aria-hidden="true"
-      >
-        <Wave
-          fill="url(#heroWaveBack)"
-          paused={false}
-          style={{
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            opacity: 0.5,
-          }}
-          options={{
-            height: 18,
-            amplitude: 24,
-            speed: 0.12,
-            points: 3,
-          }}
-        >
-          <defs>
-            <linearGradient id="heroWaveBack" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#ff0f7b" />
-              <stop offset="50%" stopColor="#a78bfa" />
-              <stop offset="100%" stopColor="#00e5ff" />
-            </linearGradient>
-          </defs>
-        </Wave>
-      </div>
-
-      <div
-        className="!pointer-events-none !absolute !inset-x-0 !bottom-0 !z-[2] !h-1/5 opacity-5"
-        aria-hidden="true"
-      >
-        <Wave
-          fill="url(#heroWaveFront)"
-          paused={false}
-          style={{ width: "100%", height: "100%", display: "flex" }}
-          options={{
-            height: 22,
-            amplitude: 18,
-            speed: 0.18,
-            points: 4,
-          }}
-        >
-          <defs>
-            <linearGradient id="heroWaveFront" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#fdba74" />
-              <stop offset="35%" stopColor="#f0abfc" />
-              <stop offset="65%" stopColor="#a78bfa" />
-              <stop offset="100%" stopColor="#7dd3fc" />
-            </linearGradient>
-          </defs>
-        </Wave>
-      </div>
+      <DefaultWaves />
 
       <div className="!relative !z-10 !mx-auto !w-full !max-w-7xl !px-4 sm:!px-6 !mt-20 !xl:mt-0">
         <div className="!grid !gap-10 lg:!grid-cols-[1.1fr_1fr] lg:!items-center">

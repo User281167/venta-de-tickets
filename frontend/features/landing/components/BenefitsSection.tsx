@@ -11,7 +11,6 @@ import {
   IconSparkles,
   IconUsers,
 } from "@tabler/icons-react";
-import Wave from "react-wavify";
 import { FeatureCard } from "@/shared/components/FeatureCard";
 import { GradientText } from "@/shared/components/GradientText";
 
@@ -111,52 +110,6 @@ export function BenefitsSection() {
         }}
         aria-hidden="true"
       />
-
-      <div
-        className="!pointer-events-none !absolute !inset-x-0 !bottom-0 !z-[2] !h-[160px] sm:!h-[200px]"
-        aria-hidden="true"
-      >
-        <Wave
-          fill="url(#benefitsWaveFront)"
-          paused={false}
-          style={{ width: "100%", height: "100%", display: "flex" }}
-          options={{ height: 22, amplitude: 16, speed: 0.16, points: 4 }}
-        >
-          <defs>
-            <linearGradient id="benefitsWaveFront" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#7dd3fc" stopOpacity="0.08" />
-              <stop offset="35%" stopColor="#a78bfa" stopOpacity="0.06" />
-              <stop offset="65%" stopColor="#f0abfc" stopOpacity="0.06" />
-              <stop offset="100%" stopColor="#fdba74" stopOpacity="0.08" />
-            </linearGradient>
-          </defs>
-        </Wave>
-      </div>
-
-      <div
-        className="!pointer-events-none !absolute !inset-x-0 !bottom-0 !z-[2] !h-[120px] sm:!h-[160px]"
-        aria-hidden="true"
-      >
-        <Wave
-          fill="url(#benefitsWaveBack)"
-          paused={false}
-          style={{
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            opacity: 0.45,
-          }}
-          options={{ height: 18, amplitude: 22, speed: 0.1, points: 3 }}
-        >
-          <defs>
-            <linearGradient id="benefitsWaveBack" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#ff0f7b" stopOpacity="0.04" />
-              <stop offset="50%" stopColor="#a78bfa" stopOpacity="0.04" />
-              <stop offset="100%" stopColor="#00e5ff" stopOpacity="0.04" />
-            </linearGradient>
-          </defs>
-        </Wave>
-      </div>
 
       <div className="!relative !z-10 !mx-auto !w-full !max-w-7xl !px-4 sm:!px-6">
         <motion.div
