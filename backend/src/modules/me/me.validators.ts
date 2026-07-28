@@ -51,4 +51,5 @@ export const personalInfoSelect = {
   phone: true,
   address: true,
   dateOfBirth: true,
+  egresado: true,
 } as const;

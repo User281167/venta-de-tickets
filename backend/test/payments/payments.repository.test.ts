@@ -251,6 +251,7 @@ describe('createAdminPaymentTransaction - sale_ends_at validation', () => {
           status: 'enabled',
           sale_ends_at: past,
           db_now: now,
+          only_egresados: false,
         },
       ],
     ]);
@@ -276,6 +277,7 @@ describe('createAdminPaymentTransaction - sale_ends_at validation', () => {
           status: 'enabled',
           sale_ends_at: same,
           db_now: same,
+          only_egresados: false,
         },
       ],
     ]);
@@ -298,6 +300,7 @@ describe('createAdminPaymentTransaction - sale_ends_at validation', () => {
             status: 'enabled',
             sale_ends_at: null,
             db_now: now,
+            only_egresados: false,
           },
         ])
         .mockResolvedValueOnce([{ id: 'ticket-1' }])
@@ -328,6 +331,36 @@ describe('createAdminPaymentTransaction - sale_ends_at validation', () => {
             status: 'enabled',
             sale_ends_at: future,
             db_now: now,
+            only_egresados: false,
+          },
+        ])
+        .mockResolvedValueOnce([{ id: 'ticket-1' }])
+        .mockResolvedValueOnce([{ id: 'payment-1' }]),
+      $executeRaw: vi.fn().mockResolvedValue(0),
+    };
+    mockPrisma.$transaction.mockImplementation(
+      async (fn: (tx: unknown) => unknown) => fn(tx),
+    );
+
+    const result = await repo.createAdminPaymentTransaction(baseInput);
+
+    expect(result.paymentId).toBe('payment-1');
+  });
+
+  it('admin bypass: only_egresados=true succeeds for non-egresado user', async () => {
+    const now = new Date('2026-01-01T00:00:00Z');
+    const tx = {
+      $queryRaw: vi
+        .fn()
+        .mockResolvedValueOnce([
+          {
+            quantity_sold: 0,
+            quantity_total: 100,
+            name: 'VIP Egresados',
+            status: 'enabled',
+            sale_ends_at: null,
+            db_now: now,
+            only_egresados: true,
           },
         ])
         .mockResolvedValueOnce([{ id: 'ticket-1' }])
@@ -352,6 +385,7 @@ describe('createCheckoutReservation - sale_ends_at validation (validateAndReserv
     subtotalCents: 25000,
     totalCents: 25000,
     reserveExpiresAt: new Date('2026-01-01T00:10:00Z'),
+    userEgresado: false,
     items: [{ ticketTypeId: 'tt-1', quantity: 1, unitPriceCents: 25000 }],
     generateTicketCode: () => 'TKT-001',
   };
@@ -377,6 +411,7 @@ describe('createCheckoutReservation - sale_ends_at validation (validateAndReserv
             max_per_user: null,
             sale_ends_at: past,
             db_now: now,
+            only_egresados: false,
           },
         ]),
       $executeRaw: vi.fn().mockResolvedValue(0),
@@ -388,5 +423,142 @@ describe('createCheckoutReservation - sale_ends_at validation (validateAndReserv
     await expect(repo.createCheckoutReservation(baseInput)).rejects.toMatchObject(
       { message: 'TICKET_TYPE_EXPIRED', code: 'TICKET_TYPE_EXPIRED' },
     );
+  });
+});
+
+describe('createCheckoutReservation - only_egresados validation', () => {
+  const baseInput = {
+    paymentId: 'payment-1',
+    userId: 'user-1',
+    provider: 'mercadopago',
+    subtotalCents: 25000,
+    totalCents: 25000,
+    reserveExpiresAt: new Date('2026-01-01T00:10:00Z'),
+    items: [{ ticketTypeId: 'tt-1', quantity: 1, unitPriceCents: 25000 }],
+    generateTicketCode: () => 'TKT-001',
+  };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  function buildTx(tt: Record<string, unknown>) {
+    return {
+      $queryRaw: vi
+        .fn()
+        .mockResolvedValueOnce([]) // sweep
+        .mockResolvedValueOnce([tt]), // validateAndReserveStock
+      $executeRaw: vi.fn().mockResolvedValue(0),
+    };
+  }
+
+  it('throws EGRESADO_ONLY (403) when only_egresados=true and user is not egresado', async () => {
+    const now = new Date('2026-01-01T00:00:00Z');
+    const tx = buildTx({
+      quantity_sold: 0,
+      quantity_total: 100,
+      status: 'enabled',
+      max_per_user: null,
+      sale_ends_at: null,
+      db_now: now,
+      only_egresados: true,
+    });
+    mockPrisma.$transaction.mockImplementation(
+      async (fn: (tx: unknown) => unknown) => fn(tx),
+    );
+
+    await expect(
+      repo.createCheckoutReservation({ ...baseInput, userEgresado: false }),
+    ).rejects.toMatchObject({
+      message: 'EGRESADO_ONLY',
+      code: 'EGRESADO_ONLY',
+      statusCode: 403,
+    });
+  });
+
+  it('proceeds when only_egresados=true and user is egresado', async () => {
+    const now = new Date('2026-01-01T00:00:00Z');
+    const tx = {
+      $queryRaw: vi
+        .fn()
+        .mockResolvedValueOnce([]) // sweep
+        .mockResolvedValueOnce([
+          {
+            quantity_sold: 0,
+            quantity_total: 100,
+            status: 'enabled',
+            max_per_user: null,
+            sale_ends_at: null,
+            db_now: now,
+            only_egresados: true,
+          },
+        ])
+        .mockResolvedValueOnce([
+          {
+            id: 'ticket-1',
+            ticket_type_id: 'tt-1',
+            user_id: 'user-1',
+            status: 'reserved',
+            reserve_expires_at: baseInput.reserveExpiresAt,
+            ticket_code: 'TKT-001',
+            payment_id: baseInput.paymentId,
+            unit_price_cents: 25000,
+          },
+        ]),
+      $executeRaw: vi.fn().mockResolvedValue(0),
+    };
+    mockPrisma.$transaction.mockImplementation(
+      async (fn: (tx: unknown) => unknown) => fn(tx),
+    );
+
+    const result = await repo.createCheckoutReservation({
+      ...baseInput,
+      userEgresado: true,
+    });
+
+    expect(result.paymentId).toBe('payment-1');
+  });
+
+  it('proceeds when only_egresados=false regardless of user flag', async () => {
+    const now = new Date('2026-01-01T00:00:00Z');
+    const tx = {
+      $queryRaw: vi
+        .fn()
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce([
+          {
+            quantity_sold: 0,
+            quantity_total: 100,
+            status: 'enabled',
+            max_per_user: null,
+            sale_ends_at: null,
+            db_now: now,
+            only_egresados: false,
+          },
+        ])
+        .mockResolvedValueOnce([
+          {
+            id: 'ticket-1',
+            ticket_type_id: 'tt-1',
+            user_id: 'user-1',
+            status: 'reserved',
+            reserve_expires_at: baseInput.reserveExpiresAt,
+            ticket_code: 'TKT-001',
+            payment_id: baseInput.paymentId,
+            unit_price_cents: 25000,
+          },
+        ]),
+      $executeRaw: vi.fn().mockResolvedValue(0),
+    };
+    mockPrisma.$transaction.mockImplementation(
+      async (fn: (tx: unknown) => unknown) => fn(tx),
+    );
+
+    const result = await repo.createCheckoutReservation({
+      ...baseInput,
+      userEgresado: false,
+    });
+
+    expect(result.paymentId).toBe('payment-1');
   });
 });

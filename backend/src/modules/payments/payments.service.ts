@@ -14,7 +14,7 @@ import {
 
 import { logger } from '../../utils/logger.js';
 import { RESERVATION_EXPIRATION_INTERNAL_MILLIS , RESERVATION_EXPIRATION_PROVIDER_MILLIS } from '../../shared/config/constants.js';
-import { findByUserId } from '../me/me.repository.js';
+import { findByUserId, findEgresadoFlag } from '../me/me.repository.js';
 
 function generateTicketCode(): string {
   return randomBytes(16).toString('hex');
@@ -95,6 +95,9 @@ export async function createCheckout(
     );
   }
 
+  const egresadoRow = await findEgresadoFlag(userId);
+  const userEgresado = egresadoRow?.egresado ?? false;
+
   const checkoutItems: Array<{
     ticketTypeId: string;
     name: string;
@@ -139,6 +142,7 @@ export async function createCheckout(
     subtotalCents,
     totalCents: subtotalCents,
     reserveExpiresAt,
+    userEgresado,
     items: checkoutItems,
     generateTicketCode,
   });

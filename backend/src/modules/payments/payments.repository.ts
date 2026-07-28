@@ -130,6 +130,7 @@ async function validateAndReserveStock(
   tx: Prisma.TransactionClient,
   userId: string,
   item: { ticketTypeId: string; quantity: number },
+  userEgresado: boolean,
 ): Promise<void> {
   const rows = await tx.$queryRaw<
     Array<{
@@ -139,6 +140,7 @@ async function validateAndReserveStock(
       max_per_user: number | null;
       sale_ends_at: Date | null;
       db_now: Date;
+      only_egresados: boolean;
     }>
   >`
     SELECT
@@ -147,7 +149,8 @@ async function validateAndReserveStock(
       status,
       max_per_user,
       sale_ends_at,
-      now() AS db_now
+      now() AS db_now,
+      only_egresados
     FROM ticket_types
     WHERE id = ${item.ticketTypeId}::uuid
     FOR UPDATE
@@ -173,6 +176,13 @@ async function validateAndReserveStock(
     throw Object.assign(new Error('TICKET_TYPE_EXPIRED'), {
       statusCode: 400,
       code: 'TICKET_TYPE_EXPIRED',
+    });
+  }
+
+  if (ticketType.only_egresados && !userEgresado) {
+    throw Object.assign(new Error('EGRESADO_ONLY'), {
+      statusCode: 403,
+      code: 'EGRESADO_ONLY',
     });
   }
 
@@ -256,6 +266,7 @@ export async function createCheckoutReservation(input: {
   subtotalCents: number;
   totalCents: number;
   reserveExpiresAt: Date;
+  userEgresado: boolean;
   items: Array<{
     ticketTypeId: string;
     quantity: number;
@@ -269,7 +280,7 @@ export async function createCheckoutReservation(input: {
 
     // 2. validar TODOS los items y descontar stock (falla rápido si algo no cumple)
     for (const item of input.items) {
-      await validateAndReserveStock(tx, input.userId, item);
+      await validateAndReserveStock(tx, input.userId, item, input.userEgresado);
     }
 
     // 3. solo si todas las validaciones pasaron, crear el payment
@@ -609,8 +620,9 @@ export async function createAdminPaymentTransaction(input: {
           status: string;
           sale_ends_at: Date | null;
           db_now: Date;
+          only_egresados: boolean;
         }>
-        >`SELECT quantity_sold, quantity_total, name, status, sale_ends_at, now() AS db_now
+        >`SELECT quantity_sold, quantity_total, name, status, sale_ends_at, now() AS db_now, only_egresados
           FROM ticket_types
           WHERE id = ${item.ticketTypeId}::uuid
           FOR UPDATE`;

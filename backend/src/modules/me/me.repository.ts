@@ -8,6 +8,13 @@ export function findByUserId(userId: string) {
   });
 }
 
+export function findEgresadoFlag(userId: string) {
+  return prisma.user.findUnique({
+    where: { id: userId },
+    select: { egresado: true },
+  });
+}
+
 export function upsert(userId: string, data: Record<string, unknown>) {
   return prisma.user.update({
     where: { id: userId },

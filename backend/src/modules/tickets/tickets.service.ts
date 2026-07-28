@@ -43,6 +43,7 @@ export async function createTicketType(data: {
   quantityTotal: number;
   maxPerUser?: number;
   saleEndsAt?: string;
+  onlyEgresados?: boolean;
 }) {
   logger.info(`Creating ticket type: name=${data.name}`);
   const ticketType = await ticketsRepo.create({
@@ -52,6 +53,7 @@ export async function createTicketType(data: {
     quantityTotal: data.quantityTotal,
     maxPerUser: data.maxPerUser,
     saleEndsAt: data.saleEndsAt ? new Date(data.saleEndsAt) : undefined,
+    onlyEgresados: data.onlyEgresados,
   });
 
   logger.info(`Ticket type created: id=${ticketType.id}`);
@@ -68,6 +70,7 @@ export async function updateTicketType(
     maxPerUser?: number | null;
     saleEndsAt?: string | null;
     status?: 'enabled' | 'disabled' | 'blocked';
+    onlyEgresados?: boolean;
   },
 ) {
   logger.info(`Updating ticket type: id=${id}`);
@@ -88,6 +91,7 @@ export async function updateTicketType(
     updateData.saleEndsAt = data.saleEndsAt ? new Date(data.saleEndsAt) : null;
   }
   if (data.status !== undefined) updateData.status = data.status;
+  if (data.onlyEgresados !== undefined) updateData.onlyEgresados = data.onlyEgresados;
 
   if (data.quantityTotal !== undefined) {
     if (data.quantityTotal < existing.quantitySold) {

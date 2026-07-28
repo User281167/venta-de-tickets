@@ -22,6 +22,7 @@ export const createTicketSchema = z.object({
     .positive('Quantity total must be greater than 0'),
   maxPerUser: z.number().int().positive('Max per user must be greater than 0').optional(),
   saleEndsAt: z.string().datetime().optional(),
+  onlyEgresados: z.boolean().optional(),
 }).strict();
 
 export const updateTicketSchema = z.object({
@@ -32,6 +33,7 @@ export const updateTicketSchema = z.object({
   maxPerUser: z.number().int().positive('Max per user must be greater than 0').nullable().optional(),
   saleEndsAt: z.string().datetime().nullable().optional(),
   status: ticketTypeStatusSchema.optional(),
+  onlyEgresados: z.boolean().optional(),
 }).strict().refine((data) => Object.keys(data).length > 0, {
   message: 'At least one field must be provided',
 });
