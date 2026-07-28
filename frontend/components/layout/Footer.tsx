@@ -96,47 +96,10 @@ export function Footer() {
 
       <div className="!relative !z-10 !mx-auto !max-w-7xl !px-4 sm:!px-6">
         <div className="!grid !grid-cols-1 !gap-10 sm:!grid-cols-2 lg:!grid-cols-4">
-          <div className="!flex !flex-col !items-start !gap-4">
-            <Eyebrow>Organiza</Eyebrow>
-            <img
-              src="/utp-logo.png"
-              alt="Universidad Tecnológica de Pereira"
-              className="!h-12 !w-auto"
-              loading="lazy"
-            />
-            <div className="!flex !flex-wrap !gap-2 !pt-1">
-              <SocialLink
-                href="https://instagram.com/UTPereira"
-                label="Instagram"
-              >
-                <IconBrandInstagram size={18} />
-              </SocialLink>
-              <SocialLink
-                href="https://www.facebook.com/UTPereira"
-                label="Facebook"
-              >
-                <IconBrandFacebook size={18} />
-              </SocialLink>
-              <SocialLink
-                href="https://www.youtube.com/UTPereira"
-                label="YouTube"
-              >
-                <IconBrandYoutube size={18} />
-              </SocialLink>
-              <SocialLink href="https://x.com/UTPereira" label="X">
-                <IconBrandX size={18} />
-              </SocialLink>
-              <SocialLink
-                href="https://www.linkedin.com/school/universidad-tecnol-gica-de-pereira/"
-                label="LinkedIn"
-              >
-                <IconBrandLinkedin size={18} />
-              </SocialLink>
-            </div>
-          </div>
+
 
           <div className="!flex !flex-col !items-start !gap-4">
-            <Eyebrow>Con el apoyo de</Eyebrow>
+            <Eyebrow>Organiza</Eyebrow>
             <div className="!flex !items-start !gap-3">
               <img
                 src="/ASE-icon.png"
@@ -172,6 +135,45 @@ export function Footer() {
                   </SocialLink>
                 </div>
               </div>
+            </div>
+          </div>
+
+          <div className="!flex !flex-col !items-start !gap-4">
+            <Eyebrow>Con el apoyo de</Eyebrow>
+            <img
+              src="/utp-logo.png"
+              alt="Universidad Tecnológica de Pereira"
+              className="!h-12 !w-auto"
+              loading="lazy"
+            />
+            <div className="!flex !flex-wrap !gap-2 !pt-1">
+              <SocialLink
+                href="https://instagram.com/UTPereira"
+                label="Instagram"
+              >
+                <IconBrandInstagram size={18} />
+              </SocialLink>
+              <SocialLink
+                href="https://www.facebook.com/UTPereira"
+                label="Facebook"
+              >
+                <IconBrandFacebook size={18} />
+              </SocialLink>
+              <SocialLink
+                href="https://www.youtube.com/UTPereira"
+                label="YouTube"
+              >
+                <IconBrandYoutube size={18} />
+              </SocialLink>
+              <SocialLink href="https://x.com/UTPereira" label="X">
+                <IconBrandX size={18} />
+              </SocialLink>
+              <SocialLink
+                href="https://www.linkedin.com/school/universidad-tecnol-gica-de-pereira/"
+                label="LinkedIn"
+              >
+                <IconBrandLinkedin size={18} />
+              </SocialLink>
             </div>
           </div>
 
