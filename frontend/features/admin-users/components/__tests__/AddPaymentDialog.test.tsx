@@ -28,6 +28,7 @@ const mockUser: UserRow = {
   cedula: null,
   role: "client",
   isActive: true,
+  egresado: false,
   createdAt: "2024-01-01",
 };
 

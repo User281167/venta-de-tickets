@@ -8,6 +8,7 @@ const selectUserList = {
   cedula: true,
   role: true,
   isActive: true,
+  egresado: true,
   createdAt: true,
 } as const;
 

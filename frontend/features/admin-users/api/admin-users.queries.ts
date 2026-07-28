@@ -14,6 +14,7 @@ export type UserRow = {
   cedula: string | null;
   role: string | null;
   isActive: boolean;
+  egresado: boolean;
   createdAt: string;
 };
 
@@ -38,6 +39,7 @@ export type UpdateUserInput = {
   cedula?: string | null;
   role?: "admin" | "checker" | "client";
   isActive?: boolean;
+  egresado?: boolean;
 };
 
 async function fetchUsers(

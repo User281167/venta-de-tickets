@@ -51,6 +51,7 @@ export function UserEditForm({ user, onSave, onCancel }: Props) {
   const [cedula, setCedula] = useState(user.cedula ?? "");
   const [role, setRole] = useState(user.role ?? "client");
   const [isActive, setIsActive] = useState(user.isActive);
+  const [egresado, setEgresado] = useState(user.egresado);
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -60,6 +61,7 @@ export function UserEditForm({ user, onSave, onCancel }: Props) {
     setCedula(user.cedula ?? "");
     setRole(user.role ?? "client");
     setIsActive(user.isActive);
+    setEgresado(user.egresado);
   }, [user]);
 
   const handleSubmit = useCallback(
@@ -74,6 +76,7 @@ export function UserEditForm({ user, onSave, onCancel }: Props) {
       if (cedula !== (user.cedula ?? "")) payload.cedula = cedula || null;
       if (role !== user.role) payload.role = role as UpdateUserInput["role"];
       if (isActive !== user.isActive) payload.isActive = isActive;
+      if (egresado !== user.egresado) payload.egresado = egresado;
 
       const parsed = adminUserUpdateSchema.safeParse(payload);
 
@@ -106,7 +109,7 @@ export function UserEditForm({ user, onSave, onCancel }: Props) {
         setSaving(false);
       }
     },
-    [fullName, phone, cedula, role, isActive],
+    [fullName, phone, cedula, role, isActive, egresado],
   );
 
   return (
@@ -193,6 +196,23 @@ export function UserEditForm({ user, onSave, onCancel }: Props) {
               <Switch.Root
                 checked={isActive}
                 onCheckedChange={(e) => setIsActive(e.checked)}
+              >
+                <Switch.HiddenInput />
+                <Switch.Control>
+                  <Switch.Thumb />
+                </Switch.Control>
+              </Switch.Root>
+            </HStack>
+          </Field.Root>
+
+          <Field.Root>
+            <HStack justify="space-between" align="center" h="full" py={1}>
+              <Field.Label color="brand.muted" mb={0}>
+                Egresado
+              </Field.Label>
+              <Switch.Root
+                checked={egresado}
+                onCheckedChange={(e) => setEgresado(e.checked)}
               >
                 <Switch.HiddenInput />
                 <Switch.Control>

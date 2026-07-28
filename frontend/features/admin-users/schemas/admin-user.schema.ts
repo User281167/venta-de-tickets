@@ -17,6 +17,7 @@ export const adminUserUpdateSchema = z
       .optional().nullable(),
     role: z.enum(["admin", "checker", "client"]).optional(),
     isActive: z.boolean().optional(),
+    egresado: z.boolean().optional(),
   })
   .strict()
   .refine((data) => Object.keys(data).length > 0, {

@@ -43,6 +43,7 @@ export const updateUserSchema = z
     cedula: cedulaSchema.optional().nullable(),
     role: z.enum(['admin', 'checker', 'client']).optional(),
     isActive: z.boolean().optional(),
+    egresado: z.boolean().optional(),
   })
   .strict()
   .refine((data) => Object.keys(data).length > 0, {

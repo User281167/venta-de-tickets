@@ -202,6 +202,7 @@ export async function updateUser(id: string, data: Record<string, unknown>) {
   if (data.fullName !== undefined) updateData.fullName = data.fullName;
   if (data.phone !== undefined) updateData.phone = data.phone;
   if (data.cedula !== undefined) updateData.cedula = data.cedula;
+  if (data.egresado !== undefined) updateData.egresado = data.egresado;
 
   if (data.isActive !== undefined) {
     updateData.isActive = data.isActive;
