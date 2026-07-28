@@ -7,13 +7,14 @@ import { useEffect, useState } from "react";
 import { AnimatedSection } from "@/shared/components/AnimatedSection";
 
 const SLIDES = [
-  { src: "/ase-oficial/slider0.jpg", alt: "Networking y comunidad", offset: 0 },
-  { src: "/ase-oficial/slider1.jpg", alt: "Momentos de la convención", offset: 0 },
-  { src: "/ase-oficial/slider2.jpg", alt: "Networking y comunidad", offset: 0 },
-  { src: "/ase-oficial/slider4.jpg", alt: "Experiencias UTP", offset: 0 },
-  { src: "/ase-oficial/slider6.jpg", alt: "Networking y comunidad", offset: 0 },
-  { src: "/ase-oficial/slider7.jpg", alt: "Ponencias inspiradoras", offset: 0 },
-  { src: "/ase-oficial/slider8.jpg", alt: "Experiencias UTP", offset: 0 },
+  { src: "/ase-oficial/slider0.jpg", alt: "Networking y comunidad", offsetY: "50%" },
+  { src: "/ase-oficial/slider1.jpg", alt: "Momentos de la convención", offsetY: "50%" },
+  { src: "/ase-oficial/slider2.jpg", alt: "Networking y comunidad", offsetY: "50%" },
+  { src: "/ase-oficial/slider4.jpg", alt: "Experiencias UTP", offsetY: "35%" },
+  { src: "/ase-oficial/slider6.jpg", alt: "Networking y comunidad", offsetY: "50%" },
+  { src: "/ase-oficial/slider7.jpg", alt: "Ponencias inspiradoras", offsetY: "60%" },
+  { src: "/ase-oficial/slider8.jpg", alt: "Experiencias UTP", offsetY: "50%" },
+  { src: "/ase-oficial/slider9.jpg", alt: "Experiencias UTP", offsetY: "45%" },
 ];
 
 const AUTO_PLAY_INTERVAL = 5000;
@@ -64,7 +65,7 @@ export function FullWidthSlider() {
               src={slide.src}
               alt={slide.alt}
               fill
-              style={{ objectFit: "cover" }}
+              style={{ objectFit: "cover", objectPosition: `center ${slide.offsetY}` }}
               priority={i === 0}
             />
             <Box
