@@ -6,8 +6,8 @@ vi.mock('../src/shared/services/auth.service.js', () => ({
   verifyToken: vi.fn(),
 }));
 
-vi.mock('../src/shared/services/role-resolver.js', () => ({
-  resolveRole: vi.fn(),
+vi.mock('../src/shared/services/user-resolver.js', () => ({
+  resolveUser: vi.fn(),
 }));
 
 vi.mock('../src/modules/me/me.repository.js', () => ({
@@ -25,7 +25,7 @@ vi.mock('../src/modules/users/users.service.js', () => ({
 }));
 
 const { verifyToken } = await import('../src/shared/services/auth.service.js');
-const { resolveRole } = await import('../src/shared/services/role-resolver.js');
+const { resolveUser } = await import('../src/shared/services/user-resolver.js');
 const { getPrivacyStatus } = await import('../src/modules/users/users.service.js');
 
 const meRepo = await import('../src/modules/me/me.repository.js');
@@ -36,7 +36,7 @@ function authHeader(token = 'valid.jwt.token') {
 }
 
 function mockClientAuth() {
-  vi.mocked(resolveRole).mockResolvedValue('client');
+  vi.mocked(resolveUser).mockResolvedValue({ role: 'client', isActive: true });
   vi.mocked(verifyToken).mockResolvedValue({
     id: 'user-123',
     email: 'test@example.com',
@@ -45,7 +45,7 @@ function mockClientAuth() {
 }
 
 function mockNonClientAuth(role: string) {
-  vi.mocked(resolveRole).mockResolvedValue(role);
+  vi.mocked(resolveUser).mockResolvedValue({ role, isActive: true });
   vi.mocked(verifyToken).mockResolvedValue({
     id: 'user-123',
     email: 'test@example.com',

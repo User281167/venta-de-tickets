@@ -29,6 +29,7 @@ vi.mock('../../src/modules/payments/payments.repository.js', () => ({
 
 vi.mock('../../src/modules/me/me.repository.js', () => ({
   findByUserId: vi.fn(),
+  findEgresadoFlag: vi.fn(),
 }));
 
 vi.mock('../../src/modules/payments/providers/provider.registry.js', () => ({
@@ -60,6 +61,7 @@ const mockUser = { id: 'user-1', cedula: '12345678', fullName: 'Test User' };
 describe('payments.service', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(meRepo.findEgresadoFlag).mockResolvedValue({ egresado: false });
   });
 
   describe('createCheckout', () => {

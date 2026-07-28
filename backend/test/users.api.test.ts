@@ -6,8 +6,8 @@ vi.mock('../src/shared/services/auth.service.js', () => ({
   verifyToken: vi.fn(),
 }));
 
-vi.mock('../src/shared/services/role-resolver.js', () => ({
-  resolveRole: vi.fn(),
+vi.mock('../src/shared/services/user-resolver.js', () => ({
+  resolveUser: vi.fn(),
 }));
 
 vi.mock('../src/modules/users/users.repository.js', () => ({
@@ -16,7 +16,7 @@ vi.mock('../src/modules/users/users.repository.js', () => ({
 }));
 
 const { verifyToken } = await import('../src/shared/services/auth.service.js');
-const { resolveRole } = await import('../src/shared/services/role-resolver.js');
+const { resolveUser } = await import('../src/shared/services/user-resolver.js');
 
 const repo = await import('../src/modules/users/users.repository.js');
 
@@ -27,7 +27,7 @@ function authHeader(token = 'valid.jwt.token') {
 describe('POST /api/users/me/privacy-acceptance', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(resolveRole).mockResolvedValue(null);
+    vi.mocked(resolveUser).mockResolvedValue({ role: null, isActive: true });
     vi.mocked(verifyToken).mockResolvedValue({
       id: 'user-123',
       email: 'test@example.com',
@@ -78,7 +78,7 @@ describe('POST /api/users/me/privacy-acceptance', () => {
 describe('GET /api/users/me/privacy-status', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(resolveRole).mockResolvedValue(null);
+    vi.mocked(resolveUser).mockResolvedValue({ role: null, isActive: true });
     vi.mocked(verifyToken).mockResolvedValue({
       id: 'user-123',
       email: 'test@example.com',

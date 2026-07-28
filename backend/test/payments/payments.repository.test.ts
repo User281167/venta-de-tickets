@@ -196,10 +196,10 @@ describe('payments.repository', () => {
     expect(mockPrisma.payment.findUnique).toHaveBeenCalledWith({
       where: { id: 'pay-1' },
       include: {
-        user: { select: { id: 'user-1', email: 'a@test.com', fullName: 'Alice' } },
+        user: { select: { id: true, email: true, fullName: true } },
         tickets: {
           include: {
-            ticketType: { select: { id: 'tt-1', name: 'VIP', price: 25000 } },
+            ticketType: { select: { id: true, name: true, price: true } },
           },
         },
       },
