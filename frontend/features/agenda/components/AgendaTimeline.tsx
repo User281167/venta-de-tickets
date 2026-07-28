@@ -165,7 +165,7 @@ export function AgendaTimeline() {
 
                 return (
                   <Grid
-                    key={`${day.date}-${event.time}`}
+                    key={`${day.date}-${event.time}-${event.title}`}
                     templateColumns={{ base: "auto 1fr", md: "2fr 1fr" }}
                     gap={{ base: 4, md: 8 }}
                     alignItems="center"

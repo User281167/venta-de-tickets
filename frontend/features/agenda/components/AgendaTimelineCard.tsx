@@ -118,9 +118,9 @@ export function EventCard({ event, index, side }: EventCardProps) {
                 {event.title}
               </Heading>
 
-              <Text color="brand.muted" fontSize="md" lineHeight="1.7">
+              {/*<Text color="brand.muted" fontSize="md" lineHeight="1.7">
                 {event.description}
-              </Text>
+              </Text>*/}
             </Stack>
         </Grid>
       </Box>
