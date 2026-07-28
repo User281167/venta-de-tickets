@@ -11,6 +11,7 @@ import {
 } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { authFetch } from "@/shared/api/admin-fetch";
+import { ProfileIncompleteGuard } from "@/providers/ProfileIncompleteGuard";
 
 type AuthContextValue = {
   user: User | null;
@@ -82,6 +83,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return (
     <AuthContext.Provider value={{ user, session, role, isLoading }}>
       {children}
+      <ProfileIncompleteGuard />
     </AuthContext.Provider>
   );
 }
