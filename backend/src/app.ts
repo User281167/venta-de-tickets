@@ -14,6 +14,7 @@ import {
 import { paymentsRouter } from './modules/payments/index.js';
 import { checkinRouter } from './modules/checkin/index.js';
 import { confirmationsRouter } from './modules/confirmations/confirmations.routes.js';
+import { donacionesRouter } from './modules/donaciones/donaciones.routes.js';
 
 import { logger } from './utils/logger.js';
 
@@ -45,5 +46,6 @@ app.use('/api/users', usersRouter);
 app.use('/api', paymentsRouter);
 app.use('/internal/checkin', checkinRouter);
 app.use('/api/confirmations', confirmationsRouter);
+app.use('/api/donaciones', donacionesRouter);
 
 app.use(errorHandler);
