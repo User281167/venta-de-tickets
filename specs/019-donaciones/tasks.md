@@ -22,8 +22,8 @@
 
 **Purpose**: Project initialization and basic structure for donations feature.
 
-- [ ] T001 [P] Add Donation model and enums to backend/prisma/schema.prisma
-- [ ] T002 [P] Run `npx prisma migrate dev --name add_donations` to create migration
+- [x] T001 [P] Add Donation model and enums to backend/prisma/schema.prisma
+- [x] T002 [P] Run `npx prisma migrate dev --name add_donations` to create migration
 
 **Checkpoint**: Database schema ready for donation data.
 
@@ -35,11 +35,11 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T003 [P] Modify MercadoPagoProvider constructor in backend/src/modules/payments/providers/mercadopago.provider.ts to accept config object
-- [ ] T004 [P] Add new environment variables to backend/src/shared/config/env.ts (MERCADOPAGO_BARRANQUEROS_UTP_ACCESS_TOKEN, MERCADOPAGO_BARRANQUEROS_UTP_WEBHOOK_SECRET)
-- [ ] T005 [P] Register 2 MercadoPagoProvider instances in backend/src/modules/payments/providers/provider.registry.ts (mercadopago-la-convencion, mercadopago-barranqueros-utp)
-- [ ] T006 [P] Create donation Zod schema in backend/src/modules/donaciones/donaciones.schema.ts (fullName optional nullable, email optional nullable .email(), amountCents number int min 2000, account nativeEnum)
-- [ ] T007 [P] Create donation repository in backend/src/modules/donaciones/donaciones.repository.ts (create, updateStateByExternalReference, findByExternalReference)
+- [x] T003 [P] Modify MercadoPagoProvider constructor in backend/src/modules/payments/providers/mercadopago.provider.ts to accept config object
+- [x] T004 [P] Add new environment variables to backend/src/shared/config/env.ts (MERCADOPAGO_BARRANQUEROS_UTP_ACCESS_TOKEN, MERCADOPAGO_BARRANQUEROS_UTP_WEBHOOK_SECRET)
+- [x] T005 [P] Register 2 MercadoPagoProvider instances in backend/src/modules/payments/providers/provider.registry.ts (mercadopago-la-convencion, mercadopago-barranqueros-utp)
+- [x] T006 [P] Create donation Zod schema in backend/src/modules/donaciones/donaciones.schema.ts (fullName optional nullable, email optional nullable .email(), amountCents number int min 2000, account nativeEnum)
+- [x] T007 [P] Create donation repository in backend/src/modules/donaciones/donaciones.repository.ts (create, updateStateByExternalReference, findByExternalReference)
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel.
 
