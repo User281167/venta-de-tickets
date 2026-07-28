@@ -122,9 +122,7 @@ export function FeatureCard({
 
       <div className="!relative !flex !h-full !flex-col">
         <div
-          className={`!inline-flex !h-12 !w-12 !items-center !justify-center !rounded-2xl !text-white ${
-            shadow ? `${TW_BG_FILL[color]} ${TW_TEXT[color]}` : "glass-strong"
-          }`}
+          className={`!inline-flex !h-12 !w-12 !items-center !justify-center !rounded-2xl !text-white`}
           style={
             shadow
               ? { boxShadow: `0 0 20px -4px ${c.token}` }

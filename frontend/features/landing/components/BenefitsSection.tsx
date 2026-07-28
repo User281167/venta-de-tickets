@@ -4,15 +4,15 @@ import { motion, type Variants } from "framer-motion";
 import NextLink from "next/link";
 import {
   IconArrowRight,
-  IconBriefcase,
-  IconHeart,
-  IconMicrophone,
+  IconBallFootball,
+  IconHeartHandshake,
   IconSchool,
   IconSparkles,
   IconUsers,
 } from "@tabler/icons-react";
 import { FeatureCard } from "@/shared/components/FeatureCard";
 import { GradientText } from "@/shared/components/GradientText";
+import { Image } from "@chakra-ui/react";
 
 const VIEWPORT = { once: true, margin: "-10% 0px -10% 0px" } as const;
 
@@ -36,46 +36,46 @@ type Activity = {
 
 const ACTIVITIES: Activity[] = [
   {
-    title: "Conferencias",
-    description:
-      "Líderes nacionales e internacionales en IA, innovación y transformación digital.",
-    color: "cyan",
-    icon: <IconMicrophone {...ICON} />,
-  },
-  {
-    title: "Talleres",
-    description:
-      "Aprende, actualiza y potencia tus habilidades del futuro con expertos.",
-    color: "blue",
+    title: "Academia",
+    description: "Ideas que abren posibilidades",
+    color: "violet",
     icon: <IconSchool {...ICON} />,
   },
   {
     title: "Networking",
-    description:
-      "Conecta con egresados, empresas e instituciones que transforman el mundo.",
+    description: "Conexiones que crean oportunidades",
     color: "magenta",
     icon: <IconUsers {...ICON} />,
   },
   {
-    title: "Feria de Empleo",
-    description:
-      "Oportunidades laborales, ruedas de negocio y vitrina de emprendimientos.",
-    color: "orange",
-    icon: <IconBriefcase {...ICON} />,
-  },
-  {
-    title: "Cultura",
-    description:
-      "Conciertos, arte, deportes y actividades para disfrutar y reconectar.",
-    color: "violet",
+    title: "Social",
+    description: "Cultura, celebración y pertenencia",
+    color: "cyan",
     icon: <IconSparkles {...ICON} />,
   },
   {
-    title: "Reencuentro",
-    description:
-      "Revive momentos, comparte historias y fortalece el sentido de pertenencia.",
+    title: "Deportivo",
+    description: "Movimiento que une generaciones",
+    color: "blue",
+    icon: <IconBallFootball {...ICON} />,
+  },
+  {
+    title: "Bienestar",
+    description: "Cuidar también es conectar con nosotros y la naturaleza",
     color: "verde",
-    icon: <IconHeart {...ICON} />,
+    icon: <IconHeartHandshake {...ICON} />,
+  },
+  {
+    title: "Barranqueros UTP",
+    description: "El Ecosistema de Emprendimiento Barranqueros UTP",
+    color: "verde",
+    icon: <Image
+      src="/barranqueros-logo.png"
+      m="auto"
+      w="auto"
+      h="full"
+      style={{ objectFit: "cover" }}
+    />,
   },
 ];
 
@@ -134,12 +134,12 @@ export function BenefitsSection() {
           </span>
 
           <h2 className="!text-4xl !font-black !uppercase !leading-[1.05] !tracking-tight !text-white sm:!text-5xl md:!text-6xl">
-            Una agenda para <GradientText>inspirarte</GradientText>
+            6 dimensiones para <GradientText>vivir la convención</GradientText>
           </h2>
 
           <p className="!max-w-2xl !text-base !leading-relaxed !text-white/70 sm:!text-lg">
-            Seis experiencias diseñadas para conectar el talento UTP con las
-            oportunidades del futuro.
+            Cinco experiencias que conectan el talento UTP con las oportunidades
+            del futuro.
           </p>
         </motion.div>
 
