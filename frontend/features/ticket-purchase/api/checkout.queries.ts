@@ -10,7 +10,7 @@ export function useCreateCheckoutPreference() {
       createCheckoutPreference(
         items,
         typeof window !== "undefined"
-        ? `${window.location.origin}/checkout/success`
+        ? `${window.location.origin}/checkout`
         : "",
       ),
   });

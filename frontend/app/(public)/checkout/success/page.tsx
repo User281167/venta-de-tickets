@@ -65,7 +65,7 @@ function SuccessInner() {
       details={details}
       primaryAction={{ label: "Volver a entradas", href: "/entradas" }}
       statusColor="#00e5ff"
-      bgGlow="rgba(0,229,255,0.15)"
+      bgGlow="rgba(0, 194, 255, 0.15)"
     />
   );
 }

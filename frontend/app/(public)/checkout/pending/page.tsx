@@ -35,13 +35,13 @@ function PendingInner() {
 
   return (
     <CheckoutResultCard
-      icon={<IconClock size={48} color="#ffbf00" />}
+      icon={<IconClock size={48} color="#E94E1B" />}
       title="Pago pendiente"
       subtitle="Estamos esperando la confirmación de Mercado Pago"
       details={details}
-      primaryAction={{ label: "Volver a entradas", href: "/entradas" }}
-      statusColor="#ffbf00"
-      bgGlow="rgba(255,191,0,0.15)"
+      primaryAction={{ label: "Volver a entradas", href: "/entradas", bg: "utp.naranja", color: "white" }}
+      statusColor="#E94E1B"
+      bgGlow="rgba(233, 78, 27, 0.15)"
     />
   );
 }

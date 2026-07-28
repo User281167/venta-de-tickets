@@ -13,6 +13,8 @@ interface CheckoutResultCardProps {
   primaryAction: {
     label: string;
     href: string;
+    bg?: string;
+    color?: string;
   };
   statusColor: string;
   bgGlow?: string;
@@ -39,21 +41,23 @@ export function CheckoutResultCard({
       <VStack
         maxW="480px"
         w="full"
-        bg="brand.panel"
+        bg="utp.glass"
         borderRadius="2xl"
         p={{ base: 6, md: 8 }}
         border="1px solid"
-        borderColor="rgba(255,255,255,0.08)"
+        borderColor="rgba(255,255,255,0.1)"
         boxShadow={`0 24px 80px rgba(0,0,0,0.5), 0 0 60px ${bgGlow}`}
+        backdropFilter="blur(24px)"
         textAlign="center"
         gap={5}
       >
         <Box
           p={4}
           borderRadius="full"
-          bg={`${statusColor}15`}
+          bg={`${statusColor}20`}
           border={`1px solid ${statusColor}40`}
           display="inline-flex"
+          backdropFilter="blur(8px)"
         >
           {icon}
         </Box>
@@ -70,31 +74,32 @@ export function CheckoutResultCard({
           )}
         </VStack>
 
-        {details && (
-          <Box
-            w="full"
-            p={4}
-            borderRadius="xl"
-            bg="rgba(255,255,255,0.03)"
-            border="1px solid rgba(255,255,255,0.06)"
-            textAlign="left"
-          >
-            {details}
-          </Box>
-        )}
+         {details && (
+           <Box
+             w="full"
+             p={4}
+             borderRadius="xl"
+             bg="rgba(255,255,255,0.05)"
+             border="1px solid rgba(255,255,255,0.1)"
+             textAlign="left"
+             backdropFilter="blur(8px)"
+           >
+             {details}
+           </Box>
+         )}
 
-        <Button
-          asChild
-          w="full"
-          h="52px"
-          borderRadius="xl"
-          bg="brand.cyan"
-          color="brand.dark"
-          fontWeight="black"
-          fontSize="md"
-          _hover={{ opacity: 0.9, transform: "translateY(-2px)" }}
-          transition="all 0.2s ease"
-        >
+         <Button
+           asChild
+           w="full"
+           h="52px"
+           borderRadius="xl"
+           bg={primaryAction.bg ?? "utp.azul"}
+           color={primaryAction.color ?? "brand.dark"}
+           fontWeight="black"
+           fontSize="md"
+           _hover={{ opacity: 0.9, transform: "translateY(-2px)" }}
+           transition="all 0.2s ease"
+         >
           <Link href={primaryAction.href}>
             <HStack gap={2} justify="center">
               <IconArrowLeft size={18} />

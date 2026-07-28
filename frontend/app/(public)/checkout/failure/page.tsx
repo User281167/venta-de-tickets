@@ -23,12 +23,12 @@ function FailureInner() {
 
   return (
     <CheckoutResultCard
-      icon={<IconCircleX size={48} color="#ff0f7b" />}
+      icon={<IconCircleX size={48} color="#A01060" />}
       title="Pago rechazado"
       subtitle="No pudimos procesar tu pago"
       details={
         <>
-          <Text fontSize="md" color="red.300" fontWeight="semibold">
+          <Text fontSize="md" color="utp.magenta" fontWeight="semibold">
             {reason}
           </Text>
           <Text fontSize="sm" color="brand.muted" mt={2}>
@@ -36,9 +36,9 @@ function FailureInner() {
           </Text>
         </>
       }
-      primaryAction={{ label: "Intentar de nuevo", href: "/entradas" }}
-      statusColor="#ff0f7b"
-      bgGlow="rgba(255,15,123,0.15)"
+      primaryAction={{ label: "Intentar de nuevo", href: "/entradas", bg: "utp.magenta", color: "white" }}
+      statusColor="#A01060"
+      bgGlow="rgba(160, 16, 96, 0.15)"
     />
   );
 }
