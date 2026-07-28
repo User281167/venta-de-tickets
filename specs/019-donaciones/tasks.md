@@ -72,8 +72,8 @@
 
 ### Implementation for User Story 2
 
-- [ ] T014 [P] [US2] Add handleBarranquerosWebhook service method in backend/src/modules/donaciones/donaciones.service.ts (reuses handleWebhook logic with different provider)
-- [ ] T015 [US2] Add Barranqueros UTP webhook route in backend/src/modules/donaciones/donaciones.routes.ts (POST /api/donaciones/webhook/mercadopago-barranqueros-utp)
+- [x] T014 [P] [US2] Add handleBarranquerosWebhook service method in backend/src/modules/donaciones/donaciones.service.ts (reuses handleWebhook logic with different provider)
+- [x] T015 [US2] Add Barranqueros UTP webhook route in backend/src/modules/donaciones/donaciones.routes.ts (POST /api/donaciones/webhook/mercadopago-barranqueros-utp)
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently. Users can donate to either account.
 
@@ -87,9 +87,9 @@
 
 ### Implementation for User Story 3
 
-- [ ] T016 [US3] Verify idempotency in handleWebhook in backend/src/modules/donaciones/donaciones.service.ts (UPDATE where state = pending, check affected rows)
-- [ ] T017 [US3] Ensure metadata field stores raw webhook payload in backend/src/modules/donaciones/donaciones.service.ts
-- [ ] T018 [US3] Verify Ley 1581 compliance: no logging of webhook payload outside metadata in backend/src/modules/donaciones/
+- [x] T016 [US3] Verify idempotency in handleWebhook in backend/src/modules/donaciones/donaciones.service.ts (UPDATE where state = pending, check affected rows)
+- [x] T017 [US3] Ensure metadata field stores raw webhook payload in backend/src/modules/donaciones/donaciones.service.ts
+- [x] T018 [US3] Verify Ley 1581 compliance: no logging of webhook payload outside metadata in backend/src/modules/donaciones/
 
 **Checkpoint**: Webhook processing is robust, idempotent, and compliant. All donation state transitions work correctly.
 

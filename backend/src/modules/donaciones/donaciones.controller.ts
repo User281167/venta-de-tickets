@@ -25,6 +25,19 @@ export async function handleLaConvencionWebhook(
   res.status(200).json({ status: 'processed' });
 }
 
+export async function handleBarranquerosWebhook(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  await donacionesService.handleWebhook(
+    'mercadopago-barranqueros-utp',
+    req.body,
+    req.headers as Record<string, string>,
+  );
+
+  res.status(200).json({ status: 'processed' });
+}
+
 export async function getStatus(req: Request, res: Response): Promise<void> {
   const externalReference = z.string().parse(req.params.externalReference);
 

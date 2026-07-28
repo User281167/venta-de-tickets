@@ -9,4 +9,8 @@ donacionesRouter.post(
   '/webhook/mercadopago-la-convencion',
   ctrl.handleLaConvencionWebhook,
 );
+donacionesRouter.post(
+  '/webhook/mercadopago-barranqueros-utp',
+  ctrl.handleBarranquerosWebhook,
+);
 donacionesRouter.get('/:externalReference/status', ctrl.getStatus);
