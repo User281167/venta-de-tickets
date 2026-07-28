@@ -30,6 +30,7 @@ const general: TicketType = {
   saleEndsAt: null,
   isSoldOut: false,
   isActive: true,
+  onlyEgresados: false,
   status: "enabled",
 };
 
