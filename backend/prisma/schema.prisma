@@ -72,6 +72,11 @@ model User {
   @@map("users")
 }
 
+model EgresadosList {
+  cedula    String   @unique @db.VarChar(20)
+  @@map("egresados_list")
+}
+
 model PrivacyAcceptance {
   id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   userId        String     @map("user_id") @db.Uuid
