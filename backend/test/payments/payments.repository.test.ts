@@ -196,15 +196,197 @@ describe('payments.repository', () => {
     expect(mockPrisma.payment.findUnique).toHaveBeenCalledWith({
       where: { id: 'pay-1' },
       include: {
-        user: { select: { id: true, email: true, fullName: true } },
+        user: { select: { id: 'user-1', email: 'a@test.com', fullName: 'Alice' } },
         tickets: {
           include: {
-            ticketType: { select: { id: true, name: true, price: true } },
+            ticketType: { select: { id: 'tt-1', name: 'VIP', price: 25000 } },
           },
         },
       },
     });
     expect(result?.user.email).toBe('a@test.com');
     expect(result?.tickets).toHaveLength(1);
+  });
+});
+
+describe('createAdminPaymentTransaction - sale_ends_at validation', () => {
+  const baseInput = {
+    userId: 'user-1',
+    provider: 'MANUAL',
+    subtotalCents: 25000,
+    discountCents: 0,
+    totalCents: 25000,
+    createdBy: 'admin-1',
+    tickets: [{ ticketTypeId: 'tt-1', quantity: 1, unitPriceCents: 25000 }],
+    generateTicketCode: () => 'TKT-001',
+  };
+
+  function mockTxWith(queryRawResponses: unknown[][]) {
+    const tx = {
+      $queryRaw: vi.fn(),
+      $executeRaw: vi.fn().mockResolvedValue(0),
+    };
+    for (const r of queryRawResponses) {
+      tx.$queryRaw.mockResolvedValueOnce(r);
+    }
+    mockPrisma.$transaction.mockImplementation(
+      async (fn: (tx: unknown) => unknown) => fn(tx),
+    );
+    return tx;
+  }
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('throws TICKET_TYPE_EXPIRED when sale_ends_at is in the past (admin path)', async () => {
+    const past = new Date('2020-01-01T00:00:00Z');
+    const now = new Date('2026-01-01T00:00:00Z');
+    mockTxWith([
+      [
+        {
+          quantity_sold: 0,
+          quantity_total: 100,
+          name: 'VIP',
+          status: 'enabled',
+          sale_ends_at: past,
+          db_now: now,
+        },
+      ],
+    ]);
+
+    await expect(repo.createAdminPaymentTransaction(baseInput)).rejects.toMatchObject(
+      {
+        code: 'TICKET_TYPE_EXPIRED',
+        statusCode: 400,
+      },
+    );
+
+    expect(mockPrisma.$transaction).toHaveBeenCalledTimes(1);
+  });
+
+  it('throws TICKET_TYPE_EXPIRED when sale_ends_at equals db_now (admin path)', async () => {
+    const same = new Date('2026-01-01T00:00:00Z');
+    mockTxWith([
+      [
+        {
+          quantity_sold: 0,
+          quantity_total: 100,
+          name: 'VIP',
+          status: 'enabled',
+          sale_ends_at: same,
+          db_now: same,
+        },
+      ],
+    ]);
+
+    await expect(repo.createAdminPaymentTransaction(baseInput)).rejects.toMatchObject(
+      { code: 'TICKET_TYPE_EXPIRED' },
+    );
+  });
+
+  it('proceeds when sale_ends_at is null (never expires)', async () => {
+    const now = new Date('2026-01-01T00:00:00Z');
+    const tx = {
+      $queryRaw: vi
+        .fn()
+        .mockResolvedValueOnce([
+          {
+            quantity_sold: 0,
+            quantity_total: 100,
+            name: 'VIP',
+            status: 'enabled',
+            sale_ends_at: null,
+            db_now: now,
+          },
+        ])
+        .mockResolvedValueOnce([{ id: 'ticket-1' }])
+        .mockResolvedValueOnce([{ id: 'payment-1' }]),
+      $executeRaw: vi.fn().mockResolvedValue(0),
+    };
+    mockPrisma.$transaction.mockImplementation(
+      async (fn: (tx: unknown) => unknown) => fn(tx),
+    );
+
+    const result = await repo.createAdminPaymentTransaction(baseInput);
+
+    expect(result.paymentId).toBe('payment-1');
+    expect(result.ticketIds).toEqual(['ticket-1']);
+  });
+
+  it('proceeds when sale_ends_at is in the future (admin path)', async () => {
+    const future = new Date('2099-01-01T00:00:00Z');
+    const now = new Date('2026-01-01T00:00:00Z');
+    const tx = {
+      $queryRaw: vi
+        .fn()
+        .mockResolvedValueOnce([
+          {
+            quantity_sold: 0,
+            quantity_total: 100,
+            name: 'VIP',
+            status: 'enabled',
+            sale_ends_at: future,
+            db_now: now,
+          },
+        ])
+        .mockResolvedValueOnce([{ id: 'ticket-1' }])
+        .mockResolvedValueOnce([{ id: 'payment-1' }]),
+      $executeRaw: vi.fn().mockResolvedValue(0),
+    };
+    mockPrisma.$transaction.mockImplementation(
+      async (fn: (tx: unknown) => unknown) => fn(tx),
+    );
+
+    const result = await repo.createAdminPaymentTransaction(baseInput);
+
+    expect(result.paymentId).toBe('payment-1');
+  });
+});
+
+describe('createCheckoutReservation - sale_ends_at validation (validateAndReserveStock)', () => {
+  const baseInput = {
+    paymentId: 'payment-1',
+    userId: 'user-1',
+    provider: 'mercadopago',
+    subtotalCents: 25000,
+    totalCents: 25000,
+    reserveExpiresAt: new Date('2026-01-01T00:10:00Z'),
+    items: [{ ticketTypeId: 'tt-1', quantity: 1, unitPriceCents: 25000 }],
+    generateTicketCode: () => 'TKT-001',
+  };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('throws TICKET_TYPE_EXPIRED during checkout reservation when sale_ends_at is past', async () => {
+    const past = new Date('2020-01-01T00:00:00Z');
+    const now = new Date('2026-01-01T00:00:00Z');
+    const tx = {
+      $queryRaw: vi
+        .fn()
+        // sweepExpiredReservationsInternal
+        .mockResolvedValueOnce([])
+        // validateAndReserveStock
+        .mockResolvedValueOnce([
+          {
+            quantity_sold: 0,
+            quantity_total: 100,
+            status: 'enabled',
+            max_per_user: null,
+            sale_ends_at: past,
+            db_now: now,
+          },
+        ]),
+      $executeRaw: vi.fn().mockResolvedValue(0),
+    };
+    mockPrisma.$transaction.mockImplementation(
+      async (fn: (tx: unknown) => unknown) => fn(tx),
+    );
+
+    await expect(repo.createCheckoutReservation(baseInput)).rejects.toMatchObject(
+      { message: 'TICKET_TYPE_EXPIRED', code: 'TICKET_TYPE_EXPIRED' },
+    );
   });
 });

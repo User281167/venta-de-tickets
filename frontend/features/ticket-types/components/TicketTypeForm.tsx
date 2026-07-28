@@ -36,6 +36,17 @@ interface TicketTypeFormProps {
 
 const num = (v: unknown) => (v != null ? Number(v) : 0);
 
+function toIsoEndOfDay(value: string | null | undefined): string | null {
+  if (!value) return null;
+  // ya es ISO completo (la API devuelve con T)
+  if (value.includes("T")) return value;
+  // <input type="date"> produce YYYY-MM-DD -> fin de dia en UTC
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return `${value}T23:59:59.000Z`;
+  }
+  return value;
+}
+
 const inputStyles = {
   bg: "rgba(255,255,255,0.03)",
   border: "1px solid rgba(255,255,255,0.08)",
@@ -74,7 +85,7 @@ export function TicketTypeForm({
       setPrice(num(ticketType.price));
       setQuantityTotal(num(ticketType.quantityTotal));
       setMaxPerUser(ticketType.maxPerUser);
-      setSaleEndsAt(ticketType.saleEndsAt ?? "");
+      setSaleEndsAt(ticketType.saleEndsAt?.slice(0, 10) ?? "");
       setIsActive(ticketType.isActive);
     }
   }, [ticketType]);
@@ -90,7 +101,7 @@ export function TicketTypeForm({
         price: price || undefined,
         quantityTotal: quantityTotal || undefined,
         maxPerUser: maxPerUser ?? undefined,
-        saleEndsAt: saleEndsAt || null,
+        saleEndsAt: toIsoEndOfDay(saleEndsAt),
         isActive,
       };
       const parsed = updateTicketTypeSchema.safeParse(payload);
@@ -130,7 +141,7 @@ export function TicketTypeForm({
         price,
         quantityTotal,
         maxPerUser: maxPerUser ?? undefined,
-        saleEndsAt: saleEndsAt || undefined,
+        saleEndsAt: toIsoEndOfDay(saleEndsAt) ?? undefined,
       };
       const parsed = createTicketTypeSchema.safeParse(payload);
 

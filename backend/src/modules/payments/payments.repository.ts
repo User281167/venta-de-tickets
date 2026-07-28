@@ -137,9 +137,17 @@ async function validateAndReserveStock(
       quantity_total: number;
       status: string;
       max_per_user: number | null;
+      sale_ends_at: Date | null;
+      db_now: Date;
     }>
   >`
-    SELECT quantity_sold, quantity_total, status, max_per_user
+    SELECT
+      quantity_sold,
+      quantity_total,
+      status,
+      max_per_user,
+      sale_ends_at,
+      now() AS db_now
     FROM ticket_types
     WHERE id = ${item.ticketTypeId}::uuid
     FOR UPDATE
@@ -155,6 +163,16 @@ async function validateAndReserveStock(
   if (ticketType.status !== 'enabled') {
     throw Object.assign(new Error('TICKET_TYPE_NOT_AVAILABLE'), {
       statusCode: 400,
+    });
+  }
+
+  if (
+    ticketType.sale_ends_at !== null &&
+    ticketType.sale_ends_at <= ticketType.db_now
+  ) {
+    throw Object.assign(new Error('TICKET_TYPE_EXPIRED'), {
+      statusCode: 400,
+      code: 'TICKET_TYPE_EXPIRED',
     });
   }
 
@@ -589,8 +607,13 @@ export async function createAdminPaymentTransaction(input: {
           quantity_total: number;
           name: string;
           status: string;
+          sale_ends_at: Date | null;
+          db_now: Date;
         }>
-      >`SELECT quantity_sold, quantity_total, name, status FROM ticket_types WHERE id = ${item.ticketTypeId}::uuid FOR UPDATE`;
+        >`SELECT quantity_sold, quantity_total, name, status, sale_ends_at, now() AS db_now
+          FROM ticket_types
+          WHERE id = ${item.ticketTypeId}::uuid
+          FOR UPDATE`;
 
       const ticketType = rows[0];
 
@@ -600,6 +623,28 @@ export async function createAdminPaymentTransaction(input: {
           {
             statusCode: 404,
             code: 'NOT_FOUND',
+          },
+        );
+      }
+
+      if (
+        ticketType.sale_ends_at !== null &&
+        ticketType.sale_ends_at <= ticketType.db_now
+      ) {
+        throw Object.assign(
+          new Error(
+            `Ticket type "${ticketType.name}" sale ended at ${ticketType.sale_ends_at.toISOString()}`,
+          ),
+          {
+            statusCode: 400,
+            code: 'TICKET_TYPE_EXPIRED',
+            details: [
+              {
+                ticketTypeId: item.ticketTypeId,
+                name: ticketType.name,
+                saleEndsAt: ticketType.sale_ends_at,
+              },
+            ],
           },
         );
       }
