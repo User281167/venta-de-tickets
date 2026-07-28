@@ -108,7 +108,7 @@ export const OrderSummary = memo(function OrderSummary({
               {items.map((item) => (
                 <div
                   key={item.ticketTypeId}
-                  className="!flex !items-center !gap-2.5"
+                  className="!flex !flex-wrap !items-center !gap-2.5"
                 >
                   <span
                     className="!inline-flex !shrink-0 !items-center !justify-center !rounded-lg !px-2 !py-1 !text-xs !font-black !whitespace-nowrap"
@@ -121,7 +121,7 @@ export const OrderSummary = memo(function OrderSummary({
                     x{item.quantity}
                   </span>
 
-                  <div className="!min-w-0 !flex-1">
+                  <div className="!min-w-0 !flex-wrap sm:!flex-1">
                     <p className="!truncate !text-sm !font-semibold !text-white">
                       {item.name}
                     </p>
@@ -151,7 +151,7 @@ export const OrderSummary = memo(function OrderSummary({
               <p className="!text-xs !text-white/45">IVA incluido</p>
             </div>
 
-            <div className="!flex !items-center !justify-between">
+            <div className="!flex !flex-wrap !items-center !justify-between">
               <p className="!text-lg !font-black !text-white">Total</p>
               <p
                 className="!text-2xl !font-black"

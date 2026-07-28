@@ -112,7 +112,7 @@ export const TicketTypeCard = memo(function TicketTypeCard({
       )}
 
       <div className="!relative !flex !flex-1 !flex-col !gap-4 !pt-2">
-        <div className="!flex !items-start !justify-between !gap-4">
+        <div className="!flex !flex-wrap !items-start !justify-between !gap-4">
           <div className="!flex !flex-1 !flex-col !gap-2">
             <div className="!flex !items-center !gap-2">
               <div

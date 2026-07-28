@@ -138,7 +138,7 @@ export function BenefitsSection() {
           </h2>
 
           <p className="!max-w-2xl !text-base !leading-relaxed !text-white/70 sm:!text-lg">
-            Cinco experiencias que conectan el talento UTP con las oportunidades
+            Seis experiencias que conectan el talento UTP con las oportunidades
             del futuro.
           </p>
         </motion.div>

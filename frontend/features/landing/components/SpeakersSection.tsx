@@ -23,7 +23,7 @@ type Speaker = {
 const SPEAKERS: Speaker[] = [
   {
     name: "Alci Acosta",
-    role: "Vallenato tradicional con sello propio para abrir la convención.",
+    role: "Boleros tradicional colombiano con sello propio para abrir la convención.",
     image: "/invitados/Alci Acosta.png",
   },
   {
@@ -39,7 +39,7 @@ const SPEAKERS: Speaker[] = [
   },
   {
     name: "Concierto Electro",
-    role: "Cierre a puro ritmo electrónico para celebrar la noche.",
+    role: "Inicio a puro ritmo electrónico.",
     image: "/invitados/concierto-electro.jpeg",
   },
 ];
@@ -106,7 +106,7 @@ export function SpeakersSection() {
           </h2>
         </motion.div>
 
-        <div className="!grid !grid-cols-2 !gap-5 md:!grid-cols-3 lg:!grid-cols-4">
+        <div className="!grid !grid-cols-1 !gap-5 sm:!grid-cols-2 md:!grid-cols-4">
           {SPEAKERS.map((speaker, i) => (
             <motion.article
               key={speaker.name}
@@ -141,7 +141,7 @@ export function SpeakersSection() {
                 />
               </div>
 
-              <div className="!relative !mt-auto !flex !w-full !flex-col !gap-1 !text-center">
+              <div className="!relative !flex !w-full !flex-col !gap-1 !text-center">
                 <h3 className="!text-base !font-black !text-white">
                   {speaker.name}
                 </h3>

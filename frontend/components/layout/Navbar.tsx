@@ -23,7 +23,7 @@ import { useCart } from "@/features/ticket-purchase/hooks/useCart";
 type NavItem = { label: string; href: string };
 
 const CENTER_ITEMS: NavItem[] = [
-  { label: "ENTRADAS", href: "/entradas" },
+  { label: "Entradas", href: "/entradas" },
 ];
 
 const MORE_ITEMS: NavItem[] = [
