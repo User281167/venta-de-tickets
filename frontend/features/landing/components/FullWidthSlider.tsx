@@ -7,10 +7,13 @@ import { useEffect, useState } from "react";
 import { AnimatedSection } from "@/shared/components/AnimatedSection";
 
 const SLIDES = [
-  { src: "/slider1.jpg", alt: "Momentos de la convención" },
-  { src: "/slider2.jpg", alt: "Networking y comunidad" },
-  { src: "/slider3.jpeg", alt: "Ponencias inspiradoras" },
-  { src: "/slider4.jpg", alt: "Experiencias UTP" },
+  { src: "/ase-oficial/slider0.jpg", alt: "Networking y comunidad", offset: 0 },
+  { src: "/ase-oficial/slider1.jpg", alt: "Momentos de la convención", offset: 0 },
+  { src: "/ase-oficial/slider2.jpg", alt: "Networking y comunidad", offset: 0 },
+  { src: "/ase-oficial/slider4.jpg", alt: "Experiencias UTP", offset: 0 },
+  { src: "/ase-oficial/slider6.jpg", alt: "Networking y comunidad", offset: 0 },
+  { src: "/ase-oficial/slider7.jpg", alt: "Ponencias inspiradoras", offset: 0 },
+  { src: "/ase-oficial/slider8.jpg", alt: "Experiencias UTP", offset: 0 },
 ];
 
 const AUTO_PLAY_INTERVAL = 5000;
