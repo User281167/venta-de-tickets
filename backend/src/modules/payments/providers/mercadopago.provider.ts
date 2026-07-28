@@ -45,9 +45,9 @@ export class MercadoPagoProvider implements PaymentProvider {
         })),
         external_reference: input.externalReference,
         back_urls: {
-          success: `${input.backUrl}/success`,
-          failure: `${input.backUrl}/failure`,
-          pending: `${input.backUrl}/pending`,
+          success: `${input.backUrl}/state/success`,
+          failure: `${input.backUrl}/state/failure`,
+          pending: `${input.backUrl}/state/pending`,
         },
         notification_url: `${env.API_URL}/api/payments/webhook/mercadopago`,
         payer: input.payerEmail ? { email: input.payerEmail } : undefined,
