@@ -7,10 +7,14 @@ import type { TicketType } from "@/features/ticket-types/schemas/ticket-types.sc
 
 interface TicketTypeGridProps {
   ticketTypes: TicketType[];
+  userEgresado: boolean | null;
+  isLoggedIn: boolean;
 }
 
 export const TicketTypeGrid = memo(function TicketTypeGrid({
   ticketTypes,
+  userEgresado,
+  isLoggedIn,
 }: TicketTypeGridProps) {
   const { items, addItem, increment, decrement, canIncrement, canDecrement } =
     useCart();
@@ -18,9 +22,20 @@ export const TicketTypeGrid = memo(function TicketTypeGrid({
   const getQuantity = (ticketTypeId: string) =>
     items.find((i) => i.ticketTypeId === ticketTypeId)?.quantity ?? 0;
 
-  const filteredTicketTypes = ticketTypes.filter(
-    (tt) => tt.status === "enabled",
-  );
+  // solo-egresados: oculta solo si user logged + confirmado no-egresado
+  // null = loading, mantenemos la card visible (defensa en card: bloquea botón)
+  const isBlockedForUser = (tt: TicketType): boolean => {
+    if (!tt.onlyEgresados) return false;
+    if (!isLoggedIn) return true; // visitante: no puede comprar sin auth
+    if (userEgresado === null) return true; // loading: bloquea por seguridad
+
+    return userEgresado === false;
+  };
+
+  const filteredTicketTypes = ticketTypes.filter((tt) => {
+    if (tt.status !== "enabled") return false;
+    return true;
+  });
 
   if (filteredTicketTypes.length === 0) {
     return (
@@ -47,6 +62,7 @@ export const TicketTypeGrid = memo(function TicketTypeGrid({
           onDecrement={() => decrement(tt.id)}
           canDecrement={canDecrement(tt.id)}
           canIncrement={canIncrement(tt.id)}
+          isEgresadoBlocked={isBlockedForUser(tt)}
         />
       ))}
     </div>

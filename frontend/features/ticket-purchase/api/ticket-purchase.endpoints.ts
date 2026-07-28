@@ -12,6 +12,7 @@ type BackendTicketType = {
   maxPerUser: number | null;
   saleEndsAt: string | null;
   status: string;
+  onlyEgresados: boolean;
 };
 
 type BackendResponse = {
@@ -40,6 +41,7 @@ export async function fetchActiveTicketTypes(): Promise<TicketType[]> {
     saleEndsAt: tt.saleEndsAt,
     isSoldOut: tt.quantitySold >= tt.quantityTotal,
     isActive: tt.status === "enabled",
+    onlyEgresados: tt.onlyEgresados,
     status: tt.status as 'enabled' | 'disabled' | 'blocked',
   }));
 }

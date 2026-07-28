@@ -15,6 +15,7 @@ type BackendAdminTicketType = {
   maxPerUser: number | null;
   saleEndsAt: string | null;
   status: string;
+  onlyEgresados: boolean;
   createdAt: string;
   updatedAt: string;
 };

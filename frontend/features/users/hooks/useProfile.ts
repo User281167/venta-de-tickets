@@ -10,10 +10,11 @@ import type { UpdateUserInput } from "../schemas/users.schema";
 
 const ME_KEY = ["me"] as const;
 
-export function useMe() {
+export function useMe(options?: { enabled?: boolean }) {
   return useQuery({
     queryKey: ME_KEY,
     queryFn: fetchMe,
+    enabled: options?.enabled,
   });
 }
 

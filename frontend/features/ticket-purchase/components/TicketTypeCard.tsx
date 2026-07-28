@@ -14,6 +14,7 @@ interface TicketTypeCardProps {
   onDecrement: () => void;
   canIncrement: boolean;
   canDecrement: boolean;
+  isEgresadoBlocked: boolean;
 }
 
 const VIEWPORT = { once: true, margin: "-10% 0px -10% 0px" } as const;
@@ -41,11 +42,13 @@ export const TicketTypeCard = memo(function TicketTypeCard({
   onDecrement,
   canIncrement,
   canDecrement,
+  isEgresadoBlocked,
 }: TicketTypeCardProps) {
   const isSoldOut = ticketType.availableCount <= 0;
   const isLowStock =
     !isSoldOut && ticketType.availableCount <= LOW_STOCK_THRESHOLD;
   const isDisabled = ticketType.status !== "enabled";
+  const onlyEgresados = ticketType.onlyEgresados;
   const isInactive = isSoldOut || isDisabled;
 
   const glow = isInactive ? GLOW_OFF : isLowStock ? GLOW_LOW : GLOW_OK;
@@ -153,6 +156,19 @@ export const TicketTypeCard = memo(function TicketTypeCard({
                 Disponible
               </span>
             ) : null}
+
+            {onlyEgresados && !isInactive && (
+              <span
+                className="!inline-flex !w-fit !items-center !gap-1.5 !rounded-full !px-2.5 !py-1 !text-xs !font-semibold"
+                style={{
+                  background: "rgba(167, 139, 250, 0.12)",
+                  border: "1px solid rgba(167, 139, 250, 0.3)",
+                  color: "#c4b5fd",
+                }}
+              >
+                Solo egresados
+              </span>
+            )}
           </div>
 
           <div className="!text-right">
@@ -195,6 +211,10 @@ export const TicketTypeCard = memo(function TicketTypeCard({
           {isInactive ? (
             <span className="!inline-flex !items-center !gap-1.5 !rounded-xl !border !border-white/10 !bg-white/5 !px-3 !py-2 !text-xs !font-bold !text-white/40">
               {isSoldOut ? "Agotado" : "No disponible"}
+            </span>
+          ) : isEgresadoBlocked ? (
+            <span className="!inline-flex !items-center !gap-1.5 !rounded-xl !border !border-white/10 !bg-white/5 !px-3 !py-2 !text-xs !font-bold !text-white/40">
+              Solo egresados
             </span>
           ) : quantity === 0 ? (
             <button

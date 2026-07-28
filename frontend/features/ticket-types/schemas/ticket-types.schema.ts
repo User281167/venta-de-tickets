@@ -10,6 +10,7 @@ export const ticketTypeSchema = z.object({
   saleEndsAt: z.string().nullable(),
   isSoldOut: z.boolean(),
   isActive: z.boolean(),
+  onlyEgresados: z.boolean(),
   status: z.enum(['enabled', 'disabled', 'blocked']),
 });
 
@@ -23,6 +24,7 @@ export const adminTicketTypeSchema = z.object({
   maxPerUser: z.number().nullable(),
   isActive: z.boolean(),
   saleEndsAt: z.string().nullable(),
+  onlyEgresados: z.boolean(),
   createdAt: z.string(),
   updatedAt: z.string(),
 });
@@ -34,6 +36,7 @@ export const createTicketTypeSchema = z.object({
   quantityTotal: z.number().int().positive(),
   maxPerUser: z.number().int().min(1).optional(),
   saleEndsAt: z.string().optional(),
+  onlyEgresados: z.boolean().optional(),
 });
 
 export const updateTicketTypeSchema = z.object({
@@ -44,6 +47,7 @@ export const updateTicketTypeSchema = z.object({
   maxPerUser: z.number().int().min(1).optional(),
   isActive: z.boolean().optional(),
   saleEndsAt: z.string().optional().nullable(),
+  onlyEgresados: z.boolean().optional(),
 });
 
 export type TicketType = z.infer<typeof ticketTypeSchema>;

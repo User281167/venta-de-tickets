@@ -64,6 +64,7 @@ export type GetMeResponse = {
     cedula: string | null;
     address: string | null;
     dateOfBirth: string | null;
+    egresado: boolean;
   };
   consentStatus: {
     required: boolean;

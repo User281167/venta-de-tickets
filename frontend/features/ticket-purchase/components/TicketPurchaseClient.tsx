@@ -4,9 +4,14 @@ import { useActiveTicketTypes } from "../api/ticket-purchase.queries";
 import { TicketTypeGrid } from "./TicketTypeGrid";
 import { OrderSummary } from "./OrderSummary";
 import { PageShell } from "@/shared/components/PageShell";
+import { useMyEgresado } from "../hooks/useMyEgresado";
+import { useAuth } from "@/providers/AuthProvider";
 
 export function TicketPurchaseClient() {
   const { data: ticketTypes, isLoading, error } = useActiveTicketTypes();
+  const userEgresado = useMyEgresado();
+  const { session, isLoading: authLoading } = useAuth();
+  const isLoggedIn = !authLoading && !!session;
 
   if (isLoading) {
     return (
@@ -64,7 +69,11 @@ export function TicketPurchaseClient() {
     >
       <div className="!grid !grid-cols-1 !gap-6 lg:!grid-cols-[2fr_1fr] lg:!items-start">
         <div>
-          <TicketTypeGrid ticketTypes={ticketTypes} />
+          <TicketTypeGrid
+            ticketTypes={ticketTypes}
+            userEgresado={userEgresado}
+            isLoggedIn={isLoggedIn}
+          />
         </div>
 
         <div className="lg:!sticky lg:!top-28">

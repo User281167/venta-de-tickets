@@ -75,6 +75,9 @@ export function TicketTypeForm({
   const [maxPerUser, setMaxPerUser] = useState(ticketType?.maxPerUser ?? null);
   const [saleEndsAt, setSaleEndsAt] = useState(ticketType?.saleEndsAt ?? "");
   const [isActive, setIsActive] = useState(ticketType?.isActive ?? true);
+  const [onlyEgresados, setOnlyEgresados] = useState(
+    ticketType?.onlyEgresados ?? false,
+  );
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
 
@@ -87,6 +90,7 @@ export function TicketTypeForm({
       setMaxPerUser(ticketType.maxPerUser);
       setSaleEndsAt(ticketType.saleEndsAt?.slice(0, 10) ?? "");
       setIsActive(ticketType.isActive);
+      setOnlyEgresados(ticketType.onlyEgresados);
     }
   }, [ticketType]);
 
@@ -103,6 +107,7 @@ export function TicketTypeForm({
         maxPerUser: maxPerUser ?? undefined,
         saleEndsAt: toIsoEndOfDay(saleEndsAt),
         isActive,
+        onlyEgresados,
       };
       const parsed = updateTicketTypeSchema.safeParse(payload);
 
@@ -142,6 +147,7 @@ export function TicketTypeForm({
         quantityTotal,
         maxPerUser: maxPerUser ?? undefined,
         saleEndsAt: toIsoEndOfDay(saleEndsAt) ?? undefined,
+        onlyEgresados,
       };
       const parsed = createTicketTypeSchema.safeParse(payload);
 
@@ -269,6 +275,23 @@ export function TicketTypeForm({
               </HStack>
             </Field.Root>
           )}
+
+          <Field.Root>
+            <HStack justify="space-between" align="center" h="full" py={1}>
+              <Field.Label color="brand.muted" mb={0}>
+                Solo egresados
+              </Field.Label>
+              <Switch.Root
+                checked={onlyEgresados}
+                onCheckedChange={(e) => setOnlyEgresados(e.checked)}
+              >
+                <Switch.HiddenInput />
+                <Switch.Control>
+                  <Switch.Thumb />
+                </Switch.Control>
+              </Switch.Root>
+            </HStack>
+          </Field.Root>
         </Grid>
 
         {Object.keys(errors).length > 0 && (
