@@ -64,7 +64,7 @@ export function AgendaTimeline() {
               mx="auto"
             >
               Selecciona un día para ver la línea de tiempo con actividades,
-              ponentes y experiencias.
+              invitados y experiencias.
             </Text>
           </Stack>
 

@@ -31,7 +31,7 @@ const MORE_ITEMS: NavItem[] = [
   { label: "La Convención", href: "/#convencion" },
   { label: "Agenda", href: "/agenda" },
   { label: "Actividades", href: "/#actividades" },
-  { label: "Ponentes", href: "/#speakers" },
+  { label: "Invitados", href: "/#invitados" },
   { label: "Aliados", href: "/aliados" },
   { label: "Contacto", href: "/#contacto" },
 ];

@@ -15,7 +15,7 @@ const QUICK_LINKS = [
   { label: "La Convención", href: "/#convencion" },
   { label: "Agenda", href: "/agenda" },
   { label: "Actividades", href: "/#actividades" },
-  { label: "Ponentes", href: "/#speakers" },
+  { label: "Invitados", href: "/#invitados" },
   { label: "Entradas", href: "/#entradas" },
   { label: "Contacto", href: "/#contacto" },
   { label: "Aliados", href: "/aliados" },
