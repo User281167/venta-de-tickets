@@ -1,28 +1,17 @@
 "use client";
 
+import NextImage from "next/image";
 import { Particles } from "@/shared/components/Particles";
-import {
-  IconBuildingBank,
-  IconChartBar,
-  IconCpu,
-  IconDeviceLaptop,
-  IconLeaf,
-  IconRocket,
-  IconSchool,
-  IconTruck,
-} from "@tabler/icons-react";
-
-const ICON = { size: 22, stroke: 2 } as const;
 
 const PARTNERS = [
-  { name: "UTP Innova", icon: <IconRocket {...ICON} /> },
-  { name: "TechEje", icon: <IconCpu {...ICON} /> },
-  { name: "Banco del Futuro", icon: <IconBuildingBank {...ICON} /> },
-  { name: "Ecosistema Verde", icon: <IconLeaf {...ICON} /> },
-  { name: "Logística Plus", icon: <IconTruck {...ICON} /> },
-  { name: "EdTech Colombia", icon: <IconDeviceLaptop {...ICON} /> },
-  { name: "DataLab", icon: <IconChartBar {...ICON} /> },
-  { name: "Egresados UTP", icon: <IconSchool {...ICON} /> },
+  { name: "GHL Hoteles", image: "/aliados/GHL holetes.png" },
+  { name: "Publik", image: "/aliados/publik.png" },
+  { name: "Sueje", image: "/aliados/sueje.png" },
+  { name: "Tecnodiesel", image: "/aliados/tecnodiesel.svg" },
+  { name: "GHL Hoteles", image: "/aliados/GHL holetes.png" },
+  { name: "Publik", image: "/aliados/publik.png" },
+  { name: "Sueje", image: "/aliados/sueje.png" },
+  { name: "Tecnodiesel", image: "/aliados/tecnodiesel.svg" },
 ];
 
 const GRADIENT_TEXT = {
@@ -82,22 +71,21 @@ export function PartnersSection() {
           {track.map((partner, index) => (
             <div
               key={`${partner.name}-${index}`}
-              className="!mx-2 !flex !min-w-[240px] !items-center !gap-3 !rounded-2xl glass !px-6 !py-4 !transition !duration-300 hover:!scale-[1.03] sm:!min-w-[280px] sm:!gap-4 sm:!px-8 sm:!py-5"
+              className="!mx-2 !flex !min-w-[240px] !flex-col !items-center !justify-center !gap-3 !rounded-2xl glass !px-6 !py-5 !transition !duration-300 hover:!scale-[1.03] sm:!min-w-[280px] sm:!gap-4 sm:!px-8 sm:!py-6"
               style={{
                 background: "rgba(15, 18, 38, 0.5)",
                 WebkitBackdropFilter: "blur(14px) saturate(140%)",
                 backdropFilter: "blur(14px) saturate(140%)",
               }}
             >
-              <div
-                className="!flex !h-11 !w-11 !shrink-0 !items-center !justify-center !rounded-xl"
-                style={{
-                  background: "rgba(0, 229, 255, 0.12)",
-                  border: "1px solid rgba(0, 229, 255, 0.3)",
-                  boxShadow: "0 0 18px rgba(0, 229, 255, 0.25)",
-                }}
-              >
-                <span style={{ color: "#7dd3fc" }}>{partner.icon}</span>
+              <div className="!relative !flex !h-16 !w-full !items-center !justify-center sm:!h-20">
+                <NextImage
+                  src={partner.image}
+                  alt={partner.name}
+                  fill
+                  sizes="(min-width: 640px) 280px, 240px"
+                  style={{ objectFit: "contain" }}
+                />
               </div>
               <span className="!whitespace-nowrap !text-base !font-semibold !text-white sm:!text-lg">
                 {partner.name}
