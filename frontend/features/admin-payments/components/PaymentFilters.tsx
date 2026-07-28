@@ -56,7 +56,7 @@ function DateInput({
       <Field.Label color="brand.muted" fontSize="sm" mb={1}>
         {label}
       </Field.Label>
-      <Box position="relative">
+      <Box position="relative" w="full">
         <Box
           position="absolute"
           left={3}
@@ -115,12 +115,12 @@ export function PaymentFilters({
     >
       <Flex
         gap={3}
-        wrap={{ base: "wrap", lg: "nowrap" }}
+        wrap={{ base: "wrap", xl: "nowrap" }}
         w="full"
         align="end"
       >
         <Field.Root
-          flex={{ lg: "1.5" }}
+          flex={{ lg: "1" }}
           minW={{ base: "full", md: "260px" }}
         >
           <Field.Label color="brand.muted" fontSize="sm" mb={1}>
@@ -150,13 +150,13 @@ export function PaymentFilters({
 
         <Flex
           gap={3}
-          wrap={{ base: "wrap", lg: "nowrap" }}
+          wrap={{ base: "wrap", xl: "nowrap" }}
           flex={{ lg: "1" }}
-          minW={{ base: "full", md: "auto" }}
+          minW={{ base: "full", xl: "auto" }}
           w="full"
           align="end"
         >
-          <Field.Root minW={{ base: "full", md: "140px" }} flex={{ lg: "1" }}>
+          <Field.Root minW={{ base: "full", md: "160px" }} flex={{ lg: "1" }}>
             <Field.Label color="brand.muted" fontSize="sm" mb={1}>
               Estado
             </Field.Label>
@@ -202,7 +202,7 @@ export function PaymentFilters({
             </Select.Root>
           </Field.Root>
 
-          <Box minW={{ base: "full", md: "160px" }} flex={{ lg: "1" }}>
+          <Box minW={{ base: "full", md: "160px" }}>
             <DateInput
               label="Desde"
               value={dateFrom}
@@ -210,7 +210,7 @@ export function PaymentFilters({
             />
           </Box>
 
-          <Box minW={{ base: "full", md: "160px" }} flex={{ lg: "1" }}>
+          <Box minW={{ base: "full", md: "160px" }}>
             <DateInput
               label="Hasta"
               value={dateTo}

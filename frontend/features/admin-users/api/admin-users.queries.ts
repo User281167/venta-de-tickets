@@ -35,7 +35,7 @@ export type CreateUserInput = {
 export type UpdateUserInput = {
   fullName?: string;
   phone?: string | null;
-  cedula?: string;
+  cedula?: string | null;
   role?: "admin" | "checker" | "client";
   isActive?: boolean;
 };

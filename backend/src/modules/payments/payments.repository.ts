@@ -711,6 +711,16 @@ export async function refundTransaction(input: {
       ['paid', 'confirmed', 'pending_confirmation'].includes(t.status),
     );
 
+    // si fue un ticket usado no revertir y retornar error
+    const usedTickets = tickets.filter((t) => t.status === 'used');
+
+    if (usedTickets.length > 0) {
+      throw Object.assign(new Error('USED_TICKET'), {
+        statusCode: 409,
+        code: 'USED_TICKET',
+      });
+    }
+
     if (stockToRevert.length > 0) {
       const typeCounts = new Map<string, number>();
       for (const t of stockToRevert) {

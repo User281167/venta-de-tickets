@@ -106,7 +106,7 @@ export function BatchUploadPage() {
       >
         <Stack gap={1}>
           <Text
-            color="brand.cyan"
+            color="utp.azul"
             fontSize="sm"
             fontWeight="black"
             textTransform="uppercase"
@@ -226,7 +226,7 @@ export function BatchUploadPage() {
               className="glass-card"
               borderRadius="2xl"
             >
-              <Spinner color="brand.cyan" size="xl" />
+              <Spinner color="utp.azul" size="xl" />
               <Text color="brand.muted">Leyendo archivo...</Text>
             </Flex>
           )}

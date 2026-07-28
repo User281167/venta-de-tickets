@@ -74,7 +74,39 @@ export async function signInWithGoogle() {
 
 export async function signOut() {
   const supabase = createClient();
+
   const { error } = await supabase.auth.signOut();
+
+  if (error) {
+    return { success: false as const, error: mapError(error) };
+  }
+
+  return { success: true as const, error: null };
+}
+
+export async function resetPasswordForEmail(email: string) {
+  const supabase = createClient();
+
+  const origin =
+    typeof window !== "undefined" ? window.location.origin : undefined;
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: origin
+      ? `${origin}/update-password`
+      : undefined,
+  });
+
+  if (error) {
+    return { success: false as const, error: mapError(error) };
+  }
+
+  return { success: true as const, error: null };
+}
+
+export async function updatePassword(password: string) {
+  const supabase = createClient();
+
+  const { error } = await supabase.auth.updateUser({ password });
 
   if (error) {
     return { success: false as const, error: mapError(error) };

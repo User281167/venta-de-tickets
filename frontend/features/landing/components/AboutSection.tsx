@@ -24,7 +24,7 @@ const fadeUp: Variants = {
   }),
 };
 
-const HERO_IMAGE = "/conferencia-1.jpg";
+const HERO_IMAGE = "/ase-oficial/banner1.jpg";
 
 type Stat = {
   value: string;
@@ -36,25 +36,25 @@ type Stat = {
 const STATS: Stat[] = [
   {
     value: "+4.000",
-    label: "Egresados reunidos",
+    label: "Egresados reunidos correspondientes a egresados entre 2001-2026",
     color: "magenta",
     icon: <IconUsersGroup size={20} stroke={2} />,
   },
   {
-    value: "+30",
-    label: "Actividades académicas y culturales",
+    value: "6 Dimensiones",
+    label: "Academia, Networking, Social, Deportivo, Bienestar y Barranqueros.",
     color: "blue",
     icon: <IconCalendarEvent size={20} stroke={2} />,
   },
   {
-    value: "Innovación",
-    label: "e inteligencia colectiva",
+    value: "Inteligencia Artificial (IA)",
+    label: "Evento que conecta todas las disciplinas en nuestro Campus Inteligente.",
     color: "cyan",
     icon: <IconSparkles size={20} stroke={2} />,
   },
   {
-    value: "Impacto",
-    label: "para el presente y el futuro",
+    value: "La U del Futuro",
+    label: "Liderando la conversación del mañana con enfoque en liderazgo regional y sostenibilidad.",
     color: "orange",
     icon: <IconWorld size={20} stroke={2} />,
   },
@@ -173,11 +173,7 @@ export function AboutSection() {
               </h2>
 
               <p className="!text-base !leading-relaxed !text-white/70 sm:!text-lg">
-                Tres días para reconectar, aprender, inspirarnos y aportar
-                al desarrollo del país desde el corazón de nuestra
-                Universidad. Expertos nacionales e internacionales,
-                actividades académicas, culturales y espacios de
-                networking en un solo lugar.
+                Esta convención es academia + networking, alianzas, bienestar, cultura y entretenimiento, articulados alrededor de una conversación transversal durante los días 22, 23 y 24 de octubre.
               </p>
             </motion.div>
 

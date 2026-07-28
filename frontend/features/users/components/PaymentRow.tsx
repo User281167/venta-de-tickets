@@ -84,7 +84,7 @@ export function PaymentRow({ payment }: { payment: PaymentItem }) {
                   <HStack gap={4}>
                     <ProviderIcon />
 
-                    <Stack gap={0}>
+                    <Stack gap={0} align="baseline">
                       <Text color="white" fontWeight="bold" fontSize="lg">
                         {providerLabel}
                       </Text>

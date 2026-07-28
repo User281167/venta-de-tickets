@@ -3,9 +3,9 @@
 import { motion, type Variants } from "framer-motion";
 import NextLink from "next/link";
 import { IconArrowRight, IconUser } from "@tabler/icons-react";
-import Wave from "react-wavify";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { GradientText } from "@/shared/components/GradientText";
+import { DefaultWaves } from "@/shared/components/Waves";
 
 const VIEWPORT = { once: true, margin: "-10% 0px -10% 0px" } as const;
 
@@ -59,51 +59,7 @@ export function CtaSection() {
         aria-hidden="true"
       />
 
-      <div
-        className="!pointer-events-none !absolute !inset-x-0 !bottom-0 !z-[2] !h-[160px] sm:!h-[200px] opacity-20"
-        aria-hidden="true"
-      >
-        <Wave
-          fill="url(#ctaWaveFront)"
-          paused={false}
-          style={{ width: "100%", height: "100%", display: "flex" }}
-          options={{ height: 22, amplitude: 18, speed: 0.16, points: 4 }}
-        >
-          <defs>
-            <linearGradient id="ctaWaveFront" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#ff0f7b" stopOpacity="0.4" />
-              <stop offset="35%" stopColor="#a78bfa" stopOpacity="0.35" />
-              <stop offset="65%" stopColor="#f0abfc" stopOpacity="0.35" />
-              <stop offset="100%" stopColor="#00d5b8" stopOpacity="0.4" />
-            </linearGradient>
-          </defs>
-        </Wave>
-      </div>
-
-      <div
-        className="!pointer-events-none !absolute !inset-x-0 !bottom-0 !z-[2] !h-[120px] sm:!h-[160px] opacity-10"
-        aria-hidden="true"
-      >
-        <Wave
-          fill="url(#ctaWaveBack)"
-          paused={false}
-          style={{
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            opacity: 0.5,
-          }}
-          options={{ height: 18, amplitude: 22, speed: 0.1, points: 3 }}
-        >
-          <defs>
-            <linearGradient id="ctaWaveBack" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#ff0f7b" stopOpacity="0.3" />
-              <stop offset="50%" stopColor="#a78bfa" stopOpacity="0.3" />
-              <stop offset="100%" stopColor="#00d5b8" stopOpacity="0.3" />
-            </linearGradient>
-          </defs>
-        </Wave>
-      </div>
+      <DefaultWaves />
 
       <div className="!relative !z-10 !mx-auto !w-full !max-w-7xl !px-4 sm:!px-6">
         <div className="!flex !flex-col !items-center !gap-10 lg:!flex-row lg:!items-center lg:!justify-between lg:!gap-12 lg:!text-left">

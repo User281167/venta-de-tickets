@@ -100,7 +100,7 @@ export function UserTable() {
         >
           <Box>
             <Text
-              color="brand.cyan"
+              color="utp.azul"
               fontSize="sm"
               fontWeight="black"
               textTransform="uppercase"
@@ -141,7 +141,7 @@ export function UserTable() {
           startElement={<IconSearch size={18} color="#aeb8d8" />}
         >
           <Input
-            placeholder="Buscar por nombre o correo..."
+            placeholder="Buscar por nombre, cédula o correo..."
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             size="lg"

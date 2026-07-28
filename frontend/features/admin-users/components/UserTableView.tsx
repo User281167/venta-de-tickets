@@ -33,7 +33,7 @@ interface UserTableViewProps {
 }
 
 const GRID_COLS =
-  "minmax(180px, 1.5fr) minmax(220px, 2fr) 110px 110px 130px 120px";
+  "minmax(160px, 1.4fr) minmax(140px, 1fr) minmax(200px, 1.8fr) 110px 130px 120px 110px";
 
 export function UserTableView({
   users,
@@ -92,6 +92,9 @@ export function UserTableView({
             Nombre
           </Text>
           <Text role="columnheader" color="white" fontWeight="bold" fontSize="sm">
+            Cédula
+          </Text>
+          <Text role="columnheader" color="white" fontWeight="bold" fontSize="sm">
             Correo
           </Text>
           <Text role="columnheader" color="white" fontWeight="bold" fontSize="sm">
@@ -134,6 +137,9 @@ export function UserTableView({
             >
               <Text color="white" fontWeight="bold" fontSize="sm">
                 {user.fullName}
+              </Text>
+              <Text color="white" fontWeight="bold" fontSize="sm">
+                {user.cedula}
               </Text>
               <Text color="brand.muted" fontSize="sm">
                 {user.email}

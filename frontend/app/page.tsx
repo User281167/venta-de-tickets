@@ -11,6 +11,8 @@ import { FullWidthSlider } from "@/features/landing/components/FullWidthSlider";
 import { FaqSection } from "@/features/landing/components/FaqSection";
 import { TestimonialsSection } from "@/features/landing/components/TestimonialsSection";
 import { PartnersSection } from "@/features/landing/components/PartnersSection";
+import { AsociacionSection } from "@/features/sponsor/components/AsociacionSection";
+import { ImpactoSocialSection } from "@/features/sponsor/components/ImpactoSocialSection";
 
 export default function LandingPage() {
   return (
@@ -24,7 +26,9 @@ export default function LandingPage() {
         <FullWidthSlider />
         <BenefitsSection />
         <SpeakersSection />
-        <TestimonialsSection />
+        {/*<TestimonialsSection />*/}
+        <AsociacionSection />
+        <ImpactoSocialSection />
         <PartnersSection />
         <FaqSection />
         <CtaSection />

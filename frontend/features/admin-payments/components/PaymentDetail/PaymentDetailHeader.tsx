@@ -19,7 +19,7 @@ export function PaymentDetailHeader() {
     >
       <VStack align="start" gap={1}>
         <Text
-          color="brand.cyan"
+          color="utp.azul"
           fontSize="sm"
           fontWeight="black"
           textTransform="uppercase"

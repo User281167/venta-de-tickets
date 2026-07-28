@@ -22,29 +22,25 @@ type Speaker = {
 
 const SPEAKERS: Speaker[] = [
   {
-    name: "Santiago Bilinkis",
-    role: "Futurista e investigador en inteligencia artificial.",
-    image: "/carlos.jpg",
+    name: "Alci Acosta",
+    role: "Vallenato tradicional con sello propio para abrir la convención.",
+    image: "/invitados/Alci Acosta.png",
   },
   {
-    name: "Carolina Cruz",
-    role: "Líder en innovación y transformación organizacional.",
-    image: "/laura.jpg",
+    name: "Jean Carlos Centeno",
+    role: "Voz líder del vallenato contemporáneo y grandes éxitos.",
+    image: "/invitados/Jean Carlos Centeno.webp",
   },
   {
-    name: "Daniel Gomez",
-    role: "Emprendedor serial y mentor de startups tecnológicas.",
-    image: "/andres.jpg",
+    name: "Frankie Ruiz (Javier Mauricio Valencia Henao)",
+    role: "Homenaje al ídolo de la salsa con un show en vivo.",
+    image:
+      "/invitados/Frankie Ruiz (Javier Mauricio Valencia Henao).jpeg",
   },
   {
-    name: "Maria Camila Díaz",
-    role: "Experta en liderazgo consciente y desarrollo humano.",
-    image: "/elena.jpg",
-  },
-  {
-    name: "Invitado Internacional",
-    role: "Próximamente más información",
-    image: "/conferencia-2.jpg",
+    name: "Concierto Electro",
+    role: "Cierre a puro ritmo electrónico para celebrar la noche.",
+    image: "/invitados/concierto-electro.jpeg",
   },
 ];
 
@@ -59,7 +55,7 @@ const GRADIENT_TEXT = {
 export function SpeakersSection() {
   return (
     <section
-      id="speakers"
+      id="invitados"
       className="!relative !overflow-hidden !py-16 sm:!py-24"
       style={{ background: "#000000" }}
     >
@@ -101,16 +97,16 @@ export function SpeakersSection() {
             className="!text-xs !font-black !uppercase !tracking-[0.22em]"
             style={GRADIENT_TEXT}
           >
-            Ponentes confirmados
+            Invitados confirmados
           </span>
 
           <h2 className="!text-4xl !font-black !uppercase !leading-[1.05] !tracking-tight !text-white sm:!text-5xl md:!text-6xl">
-            Mentes que construyen el{" "}
-            <span style={GRADIENT_TEXT}>futuro</span>
+            Eventos de grandes{" "}
+            <span style={GRADIENT_TEXT}>artistas</span>
           </h2>
         </motion.div>
 
-        <div className="!grid !grid-cols-2 !gap-5 md:!grid-cols-3 lg:!grid-cols-5">
+        <div className="!grid !grid-cols-2 !gap-5 md:!grid-cols-3 lg:!grid-cols-4">
           {SPEAKERS.map((speaker, i) => (
             <motion.article
               key={speaker.name}
@@ -134,17 +130,13 @@ export function SpeakersSection() {
                 aria-hidden="true"
               />
 
-              <div className="!relative !flex !h-[120px] !w-[120px] !items-center !justify-center !overflow-hidden !rounded-full !border-2 sm:!h-[140px] sm:!w-[140px]"
-                style={{
-                  borderColor: "rgba(255, 15, 123, 0.6)",
-                  boxShadow: "0 0 28px rgba(255, 15, 123, 0.45)",
-                }}
+              <div className="!relative !flex !aspect-square !w-full !items-center !justify-center !overflow-hidden !rounded-2xl"
               >
                 <NextImage
                   src={speaker.image}
                   alt={speaker.name}
                   fill
-                  sizes="140px"
+                  sizes="(min-width: 1024px) 20vw, (min-width: 768px) 30vw, 50vw"
                   style={{ objectFit: "cover" }}
                 />
               </div>

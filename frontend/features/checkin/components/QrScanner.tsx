@@ -97,7 +97,7 @@ export function QrScanCamera({ onScan }: Props) {
       >
         <form onSubmit={handleManualSubmit}>
           <Stack gap={4}>
-            <HStack gap={2} color="brand.cyan">
+            <HStack gap={2} color="utp.azul">
               <IconKeyboard size={20} aria-hidden />
 
               <Text color="white" fontWeight="bold">
@@ -177,7 +177,7 @@ export function QrScanCamera({ onScan }: Props) {
             justifyContent="center"
             bg="rgba(2,4,20,0.7)"
           >
-            <Text color="brand.cyan">Iniciando cámara…</Text>
+            <Text color="utp.azul">Iniciando cámara…</Text>
           </Box>
         )}
 

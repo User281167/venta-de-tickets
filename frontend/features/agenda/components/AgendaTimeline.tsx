@@ -39,7 +39,7 @@ export function AgendaTimeline() {
         <VStack gap={10} align="stretch">
           <Stack gap={4} textAlign="center" mb={4}>
             <Text
-              color="brand.cyan"
+              color="utp.azul"
               fontSize="sm"
               fontWeight="black"
               textTransform="uppercase"
@@ -64,7 +64,7 @@ export function AgendaTimeline() {
               mx="auto"
             >
               Selecciona un día para ver la línea de tiempo con actividades,
-              ponentes y experiencias.
+              invitados y experiencias.
             </Text>
           </Stack>
 

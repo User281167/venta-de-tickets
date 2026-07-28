@@ -22,7 +22,7 @@ function InfoRow({
 }) {
   return (
     <HStack gap={3} align="center">
-      <Box color="brand.cyan">
+      <Box color="utp.azul">
         <Icon size={20} aria-hidden />
       </Box>
 
@@ -56,7 +56,7 @@ export function TicketSummaryCard({ ticket }: { ticket: TicketSummaryType }) {
       <HStack justify="space-between" align="flex-start" mb={5}>
         <Stack gap={1}>
           <Text
-            color="brand.cyan"
+            color="utp.azul"
             fontSize="xs"
             fontWeight="black"
             textTransform="uppercase"

@@ -47,7 +47,7 @@ export const TicketTypesHeader = React.memo(function TicketTypesHeader({
       >
         <Box>
           <Text
-            color="brand.cyan"
+            color="utp.azul"
             fontSize="sm"
             fontWeight="black"
             textTransform="uppercase"

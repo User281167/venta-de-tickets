@@ -39,7 +39,7 @@ function EmptyTicketTypes() {
 function LoadingState() {
   return (
     <HStack justify="center" py={10}>
-      <Spinner color="brand.cyan" size="xl" />
+      <Spinner color="utp.azul" size="xl" />
     </HStack>
   );
 }

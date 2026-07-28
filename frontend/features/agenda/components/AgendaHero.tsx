@@ -63,7 +63,7 @@ export function AgendaHero() {
             transition={{ duration: 0.6 }}
           >
             <Text
-              color="brand.cyan"
+              color="utp.azul"
               fontSize="sm"
               fontWeight="black"
               textTransform="uppercase"

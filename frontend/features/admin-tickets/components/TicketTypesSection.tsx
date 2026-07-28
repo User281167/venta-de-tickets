@@ -25,7 +25,7 @@ export function TicketTypesSection() {
   if (isLoading) {
     return (
       <Center h="full" flex={1}>
-        <Spinner size="xl" color="brand.cyan" />
+        <Spinner size="xl" color="utp.azul" />
       </Center>
     );
   }

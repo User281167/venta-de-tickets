@@ -40,7 +40,7 @@ export const updateUserSchema = z
   .object({
     fullName: z.string().min(1).max(150).optional(),
     phone: phoneSchema,
-    cedula: cedulaSchema.optional(),
+    cedula: cedulaSchema.optional().nullable(),
     role: z.enum(['admin', 'checker', 'client']).optional(),
     isActive: z.boolean().optional(),
   })
