@@ -9,6 +9,8 @@ import { notifyPaymentConfirmed } from '../messaging/index.js';
 
 const ROLES = ['admin', 'checker', 'client'];
 const NO_ALLOWED_ROLES = ['super_admin'];
+// 100 años — effectively permanent, reversible via "none"
+const PERMANENT_BAN_HOURS = '876000h';
 
 export async function listUsers(page: number, limit: number, search?: string) {
   const [data, total] = await Promise.all([
@@ -199,8 +201,31 @@ export async function updateUser(id: string, data: Record<string, unknown>) {
 
   if (data.fullName !== undefined) updateData.fullName = data.fullName;
   if (data.phone !== undefined) updateData.phone = data.phone;
-  if (data.isActive !== undefined) updateData.isActive = data.isActive;
   if (data.cedula !== undefined) updateData.cedula = data.cedula;
+
+  if (data.isActive !== undefined) {
+    updateData.isActive = data.isActive;
+
+    const { error: banError } =
+      await supabaseAdmin.auth.admin.updateUserById(id, {
+        ban_duration: data.isActive ? 'none' : PERMANENT_BAN_HOURS,
+      });
+
+    if (banError) {
+      logger.error(
+        `Failed to ${data.isActive ? 'unban' : 'ban'} user in supabase auth: id=${id}, error=${banError.message}`,
+      );
+
+      throw Object.assign(
+        new Error(`Failed to ${data.isActive ? 'unban' : 'ban'} user`),
+        { statusCode: 502, code: 'AUTH_ERROR' },
+      );
+    }
+
+    logger.info(
+      `User ${data.isActive ? 'unbanned' : 'banned'} in supabase auth: id=${id}`,
+    );
+  }
 
   if (data.cedula !== undefined && data.cedula !== null) {
     const existingCedula = await adminsRepo.findByCedula(data.cedula as string);

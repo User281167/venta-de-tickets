@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 import { UnauthorizedError } from '../errors/UnauthorizedError.js';
 import { verifyToken } from '../services/auth.service.js';
-import { resolveRole } from '../services/role-resolver.js';
+import { resolveUser } from '../services/user-resolver.js';
 
 export async function authMiddleware(
   req: Request,
@@ -26,12 +26,18 @@ export async function authMiddleware(
   }
 
   const user = await verifyToken(token);
-  const role = await resolveRole(user.id, user.role);
+
+  // ban check: JWT válido hasta 1h post-ban, hasta que refresquen
+  const dbUser = await resolveUser(user.id, user.role);
+
+  if (!dbUser || !dbUser.isActive) {
+    throw new UnauthorizedError('User is banned');
+  }
 
   req.user = {
     id: user.id,
     email: user.email,
-    role,
+    role: dbUser.role,
   };
 
   next();
