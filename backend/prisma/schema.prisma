@@ -103,6 +103,7 @@ model TicketType {
   maxPerUser    Int?     @map("max_per_user")
   saleEndsAt    DateTime? @map("sale_ends_at") @db.Timestamptz
   status        TicketTypeStatus  @default(enabled) @map("status")
+  onlyEgresados Boolean   @default(false) @map("only_egresados")
   createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
