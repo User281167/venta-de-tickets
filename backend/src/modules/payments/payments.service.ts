@@ -305,6 +305,48 @@ export async function getEpaycoPaymentStatus(
   return status;
 }
 
+export async function getEpaycoStatusByRef(refPayco: string) {
+  const response = await fetch(
+    `https://secure.epayco.co/validation/v1/reference/${refPayco}`,
+  );
+
+  if (!response.ok) {
+    throw new Error(`ePayco validation failed with status ${response.status}`);
+  }
+
+  const data = (await response.json()) as {
+    success?: boolean;
+    data?: {
+      x_response?: string;
+      x_ref_payco?: string;
+      x_transaction_id?: string;
+      x_amount?: string;
+      x_currency_code?: string;
+      [key: string]: unknown;
+    };
+  };
+
+  if (!data.success) {
+    return { status: 'pending' as const };
+  }
+
+  const xResponse = data.data?.x_response ?? '';
+  let status: 'completed' | 'failed' | 'pending';
+  switch (xResponse) {
+    case 'Aceptada':
+      status = 'completed';
+      break;
+    case 'Rechazada':
+    case 'Fallida':
+      status = 'failed';
+      break;
+    default:
+      status = 'pending';
+  }
+
+  return { status, validation: data.data };
+}
+
 export async function listMyPayments(
   userId: string,
   page: number,

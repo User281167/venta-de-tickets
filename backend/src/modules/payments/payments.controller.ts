@@ -59,6 +59,24 @@ export async function handleEpaycoStatus(req: Request, res: Response): Promise<v
   }
 }
 
+export async function handleEpaycoStatusByRef(req: Request, res: Response): Promise<void> {
+  try {
+    const refPayco = Array.isArray(req.params.refPayco) ? req.params.refPayco[0] : req.params.refPayco;
+    const result = await paymentsService.getEpaycoStatusByRef(refPayco);
+
+    res.json(result);
+  } catch (err) {
+    if (err instanceof Error) {
+      res.status(502).json({
+        error: { code: 'VALIDATION_ERROR', message: err.message },
+      });
+      return;
+    }
+
+    throw err;
+  }
+}
+
 export async function handleGetPaymentStatus(req: Request, res: Response): Promise<void> {
   try {
     const { id } = paymentStatusParamsSchema.parse(req.params);
