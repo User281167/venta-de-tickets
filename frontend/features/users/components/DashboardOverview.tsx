@@ -41,7 +41,7 @@ const PROFILE_FIELDS: (keyof GetMeResponse["user"])[] = [
 function calculateProfileCompletion(user: GetMeResponse["user"] | undefined) {
   if (!user) return 0;
   const filled = PROFILE_FIELDS.filter((key) => Boolean(user[key])).length;
-  return filled / PROFILE_FIELDS.length) * 100;
+  return (filled / PROFILE_FIELDS.length) * 100;
 }
 
 function DashboardSkeleton() {

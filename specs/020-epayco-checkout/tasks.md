@@ -87,9 +87,9 @@
 
 **Independent Test**: Observe two provider options at checkout, select each, verify correct provider flow.
 
-- [ ] T023 [P] [US3] Add provider radio/toggle UI in frontend/features/ticket-purchase/components/CheckoutPageClient.tsx: "Mercado Pago" and "ePayco" options with logos
-- [ ] T024 [P] [US3] Pass selected provider to createCheckoutPreference() API call
-- [ ] T025 [US3] Update payment display in frontend/features/users/components/PaymentRow.tsx and PaymentDetail.tsx: show "ePayco" label for provider="epayco" payments (currently only checks "mercadopago")
+- [X] T023 [P] [US3] Add provider radio/toggle UI in frontend/features/ticket-purchase/components/CheckoutPageClient.tsx: "Mercado Pago" and "ePayco" options with logos — done in T018
+- [X] T024 [P] [US3] Pass selected provider to createCheckoutPreference() API call — done in T017/T018
+- [X] T025 [US3] Update payment display in frontend/features/users/components/PaymentRow.tsx and PaymentDetail.tsx: show "ePayco" label for provider="epayco" payments
 
 **Checkpoint**: Both provider options visible, selection routes to correct provider flow, payments display correct provider name.
 

@@ -253,7 +253,7 @@ export function CheckoutPageClient() {
                 onClick={() => setSelectedProvider("epayco")}
                 className={`!flex-1 !rounded-lg !p-2 !text-xs !font-bold !uppercase !tracking-[0.12em] !transition ${
                   selectedProvider === "epayco"
-                    ? "!bg-[#00c9b7] !text-white"
+                    ? "!bg-white !text-black"
                     : "!bg-white/5 !text-white/50 hover:!bg-white/10"
                 }`}
               >

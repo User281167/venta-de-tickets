@@ -91,7 +91,9 @@ export function PaymentDetail({ payment }: { payment: PaymentItem }) {
             <Text color="white" fontSize="sm">
               {payment.provider === "mercadopago"
                 ? "Mercado Pago"
-                : payment.provider}
+                : payment.provider === "epayco"
+                  ? "ePayco"
+                  : payment.provider}
             </Text>
           </Stack>
         </HStack>

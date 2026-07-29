@@ -42,7 +42,11 @@ export function PaymentRow({ payment }: { payment: PaymentItem }) {
   const color = STATUS_COLORS[payment.status] ?? "#6b7280";
   const statusLabel = PAYMENT_STATUS_LABELS[payment.status] ?? payment.status;
   const providerLabel =
-    payment.provider === "mercadopago" ? "Mercado Pago" : payment.provider;
+    payment.provider === "mercadopago"
+      ? "Mercado Pago"
+      : payment.provider === "epayco"
+        ? "ePayco"
+        : payment.provider;
 
   return (
     <motion.div

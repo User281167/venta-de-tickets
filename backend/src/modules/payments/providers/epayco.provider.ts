@@ -68,8 +68,12 @@ export class EpaycoProvider implements PaymentProvider {
     };
 
     if (!data.success || !data.data?.sessionId) {
-      logger.error('ePayco session creation response missing sessionId');
-      throw new Error('Failed to create ePayco checkout session');
+      logger.error(
+        `ePayco session creation response missing sessionId: ${JSON.stringify(data)}`,
+      );
+      throw new Error(
+        `Failed to create ePayco checkout session: ${data.titleResponse ?? JSON.stringify(data)}`,
+      );
     }
 
     const sessionId = data.data.sessionId;

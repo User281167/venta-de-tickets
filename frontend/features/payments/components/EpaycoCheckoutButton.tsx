@@ -39,14 +39,25 @@ export function EpaycoCheckoutButton({ backUrl }: EpaycoCheckoutButtonProps) {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-
-    if (typeof ePayco === "undefined") {
-      const msg = "Script de ePayco no cargó correctamente.";
-      setErrorMsg(msg);
+    if (typeof ePayco !== "undefined") {
+      setScriptReady(true);
       return;
     }
 
-    setScriptReady(true);
+    const script = document.createElement("script");
+    script.src = "https://checkout.epayco.co/checkout-v2.js";
+    script.async = true;
+    script.onload = () => {
+      if (typeof ePayco !== "undefined") {
+        setScriptReady(true);
+      } else {
+        setErrorMsg("ePayco no cargó correctamente.");
+      }
+    };
+    script.onerror = () => {
+      setErrorMsg("Error al cargar ePayco. Verifica tu conexión.");
+    };
+    document.body.appendChild(script);
   }, []);
 
   const handlePagar = useCallback(async () => {
@@ -105,7 +116,7 @@ export function EpaycoCheckoutButton({ backUrl }: EpaycoCheckoutButtonProps) {
         onClick={handlePagar}
         disabled={mutation.isPending || !scriptReady}
         data-testid="epayco-pay-button"
-        className="!relative !flex !h-16 !w-full !items-center !justify-center !overflow-hidden !rounded-xl !bg-[#00c9b7] !p-2 !transition !duration-300 hover:!translate-y-[-2px] disabled:!cursor-not-allowed disabled:!opacity-60 disabled:hover:!translate-y-0"
+        className="!relative !flex !h-16 !w-full !items-center !justify-center !overflow-hidden !rounded-xl !bg-white !p-2 !transition !duration-300 hover:!translate-y-[-2px] disabled:!cursor-not-allowed disabled:!opacity-60 disabled:hover:!translate-y-0"
         style={{
           boxShadow:
             mutation.isPending || !scriptReady
@@ -124,7 +135,7 @@ export function EpaycoCheckoutButton({ backUrl }: EpaycoCheckoutButtonProps) {
         ) : (
           <div className="!relative !h-full !w-full">
             <NextImage
-              src="/logo-epayco.png"
+              src="/logo-epayco.webp"
               alt="ePayco"
               fill
               sizes="200px"
