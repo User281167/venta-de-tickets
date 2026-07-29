@@ -30,6 +30,16 @@ const envSchema = z.object({
   MERCADOPAGO_WEBHOOK_SECRET: z
     .string()
     .min(1, 'MERCADOPAGO_WEBHOOK_SECRET is required'),
+  EPAYCO_PUBLIC_KEY: z
+    .string()
+    .min(1, 'EPAYCO_PUBLIC_KEY is required'),
+  EPAYCO_PRIVATE_KEY: z
+    .string()
+    .min(1, 'EPAYCO_PRIVATE_KEY is required'),
+  EPAYCO_P_KEY: z.string().min(1, 'EPAYCO_P_KEY is required'),
+  EPAYCO_CUST_ID_CLIENTE: z
+    .string()
+    .min(1, 'EPAYCO_CUST_ID_CLIENTE is required'),
   RESEND_API_KEY: z.string().min(1, 'RESEND_API_KEY is required'),
   EMAIL_FROM: z.string().min(1, 'EMAIL_FROM is required'),
 });
@@ -52,6 +62,10 @@ console.log({
   CORS_ORIGIN: !!process.env.CORS_ORIGIN,
   MERCADOPAGO_ACCESS_TOKEN: !!process.env.MERCADOPAGO_ACCESS_TOKEN,
   MERCADOPAGO_WEBHOOK_SECRET: !!process.env.MERCADOPAGO_WEBHOOK_SECRET,
+  EPAYCO_PUBLIC_KEY: !!process.env.EPAYCO_PUBLIC_KEY,
+  EPAYCO_PRIVATE_KEY: !!process.env.EPAYCO_PRIVATE_KEY,
+  EPAYCO_P_KEY: !!process.env.EPAYCO_P_KEY,
+  EPAYCO_CUST_ID_CLIENTE: !!process.env.EPAYCO_CUST_ID_CLIENTE,
   RESEND_API_KEY: !!process.env.RESEND_API_KEY,
   EMAIL_FROM: !!process.env.EMAIL_FROM,
   host: dbURL.hostname,

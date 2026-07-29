@@ -20,9 +20,9 @@
 
 **Purpose**: Environment variables, docs review, scaffolding
 
-- [ ] T001 Read docs/epayco/ to understand ePayco API flow: Apify login, session creation, webhook signature (SHA256), Smart Checkout frontend
-- [ ] T002 [P] Add ePayco env vars to backend/.env.example: EPAYCO_PUBLIC_KEY, EPAYCO_PRIVATE_KEY, EPAYCO_P_KEY, EPAYCO_CUST_ID_CLIENTE
-- [ ] T003 [P] Add ePayco env vars + validation to backend/src/shared/config/env.ts using Zod
+- [X] T001 Read docs/epayco/ to understand ePayco API flow: Apify login, session creation, webhook signature (SHA256), Smart Checkout frontend
+- [X] T002 [P] Add ePayco env vars to backend/.env.example: EPAYCO_PUBLIC_KEY, EPAYCO_PRIVATE_KEY, EPAYCO_P_KEY, EPAYCO_CUST_ID_CLIENTE
+- [X] T003 [P] Add ePayco env vars + validation to backend/src/shared/config/env.ts using Zod
 
 ---
 
