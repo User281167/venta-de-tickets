@@ -74,8 +74,8 @@
 
 ### Backend
 
-- [ ] T021 [US2] Handle ePayco webhook content-type: ensure webhook route accepts both application/json and application/x-www-form-urlencoded (ePayco sends form-encoded)
-- [ ] T022 [US2] Wire existing /api/payments/webhook/:provider route: ePayco webhooks POST to /api/payments/webhook/epayco → existing payments.controller.handleWebhook calls payments.service.processWebhook which uses EpaycoProvider.verifySignature + parseWebhook
+- [X] T021 [US2] Handle ePayco webhook content-type: added express.urlencoded({ extended: true }) middleware — ePayco sends form-encoded
+- [X] T022 [US2] Wire existing /api/payments/webhook/:provider route: already wired via generic route + provider registry — no changes needed
 
 **Checkpoint**: ePayco webhook received, signature verified, payment status updated, tickets created — same as Mercado Pago flow.
 

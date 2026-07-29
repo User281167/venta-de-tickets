@@ -24,6 +24,7 @@ app.set('trust proxy', 1);
 const allowedOrigins = env.CORS_ORIGIN.split(',');
 app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Middleware de logging en Express
 app.use((req, res, next) => {
