@@ -40,7 +40,7 @@ export async function createDonation(
     externalReference,
     amountCents: input.amountCents,
     description: `Donación - ${input.account.replace('_', ' ')}`,
-    backUrl: `${env.CONFIRMATION_LINK_BASE_URL}/api/donaciones/retorno/${externalReference}`,
+    backUrl: `${env.CONFIRMATION_LINK_BASE_URL}/donaciones/retorno/?external_reference=${externalReference}`,
     payerEmail: input.email ?? undefined,
   });
 
