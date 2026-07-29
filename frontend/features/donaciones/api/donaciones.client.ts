@@ -37,6 +37,7 @@ export type CreateDonationInput = {
   email?: string | null;
   amountCents: number;
   account: "LA_CONVENCION" | "BARRANQUEROS_UTP";
+  backUrl: string;
 };
 
 export type CreateDonationResponse = {

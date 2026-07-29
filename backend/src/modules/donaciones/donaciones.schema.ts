@@ -6,6 +6,7 @@ export const createDonationSchema = z.object({
   email: z.string().email().max(255).optional().nullable(),
   amountCents: z.number().int().min(2000, 'El monto mínimo es 2000 COP'),
   account: z.nativeEnum(DonationAccount),
+  backUrl: z.string().url(),
 });
 
 export const donationResponseSchema = z.object({

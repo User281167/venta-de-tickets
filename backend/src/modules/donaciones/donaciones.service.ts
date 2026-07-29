@@ -1,6 +1,5 @@
 import { DonationStatus } from '@prisma/client';
 import type { Prisma } from '@prisma/client';
-import { env } from '../../shared/config/env.js';
 import { NotFoundError } from '../../shared/errors/index.js';
 import { getDonationProvider } from './providers/donation-provider.registry.js';
 import {
@@ -40,7 +39,7 @@ export async function createDonation(
     externalReference,
     amountCents: input.amountCents,
     description: `Donación - ${input.account.replace('_', ' ')}`,
-    backUrl: `${env.CONFIRMATION_LINK_BASE_URL}/donaciones/retorno/?external_reference=${externalReference}`,
+    backUrl: input.backUrl,
     payerEmail: input.email ?? undefined,
   });
 

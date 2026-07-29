@@ -50,9 +50,9 @@ export class MercadoPagoDonationProvider implements DonationProvider {
         ],
         external_reference: input.externalReference,
         back_urls: {
-          success: input.backUrl,
-          failure: input.backUrl,
-          pending: input.backUrl,
+          success: `${input.backUrl}/state/success`,
+          failure: `${input.backUrl}/state/failure`,
+          pending: `${input.backUrl}/state/pending`,
         },
         notification_url: this.config.notificationUrl,
         payer: input.payerEmail ? { email: input.payerEmail } : undefined,
