@@ -9,17 +9,17 @@ function normalizeProviderName(name: string) {
 }
 
 function registerKnownDonationProviders() {
-  registerDonationProvider('mercadopago-la_convencion', new MercadoPagoDonationProvider({
+  registerDonationProvider('mercadopago-la-convencion', new MercadoPagoDonationProvider({
     accessToken: env.MERCADOPAGO_ACCESS_TOKEN,
     webhookSecret: env.MERCADOPAGO_WEBHOOK_SECRET,
-    providerName: 'mercadopago-la_convencion',
+    providerName: 'mercadopago-la-convencion',
     notificationUrl: `${env.API_URL}/api/donaciones/webhook/mercadopago-la-convencion`,
   }));
 
-  registerDonationProvider('mercadopago-barranqueros_utp', new MercadoPagoDonationProvider({
+  registerDonationProvider('mercadopago-barranqueros-utp', new MercadoPagoDonationProvider({
     accessToken: env.MERCADOPAGO_ACCESS_TOKEN,
     webhookSecret: env.MERCADOPAGO_WEBHOOK_SECRET,
-    providerName: 'mercadopago-barranqueros_utp',
+    providerName: 'mercadopago-barranqueros-utp',
     notificationUrl: `${env.API_URL}/api/donaciones/webhook/mercadopago-barranqueros-utp`,
   }));
 }

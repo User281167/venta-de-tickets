@@ -32,7 +32,7 @@ export async function createDonation(
   const externalReference = generateExternalReference(input.account);
 
   const provider = getDonationProvider(
-    `mercadopago-${input.account.toLowerCase()}`,
+    `mercadopago-${input.account.toLowerCase().replace(/_/g, '-')}`,
   );
 
   const result = await provider.createPreference({
