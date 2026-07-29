@@ -115,7 +115,7 @@ export async function createCheckout(
     validateTicketType(item, ticketType);
 
     // precio en con cents para payment
-    const unitPriceCents = Math.round(Number(ticketType.price) * 100);
+    const unitPriceCents = Number(ticketType.price) * 100;
     subtotalCents += unitPriceCents * item.quantity;
 
     logger.info(
@@ -164,6 +164,7 @@ export async function createCheckout(
     paymentId,
     checkoutUrl: checkoutResult.checkoutUrl,
     preferenceId: checkoutResult.providerTxId,
+    ...(checkoutResult.sessionId ? { sessionId: checkoutResult.sessionId } : {}),
   };
 }
 
@@ -270,6 +271,38 @@ export async function processWebhook(
   }
 
   return { received: true };
+}
+
+export async function getEpaycoPaymentStatus(
+  paymentId: string,
+  refPayco?: string,
+) {
+  const payment = await paymentsRepo.findByIdWithTickets(paymentId);
+
+  if (!payment) {
+    throw new NotFoundError('Payment not found');
+  }
+
+  const status: { status: string; ePaycoStatus?: Record<string, unknown> } = {
+    status: payment.status,
+  };
+
+  if (payment.status === 'pending' && refPayco) {
+    try {
+      const response = await fetch(
+        `https://secure.epayco.co/validation/v1/reference/${refPayco}`,
+      );
+
+      if (response.ok) {
+        const validation = await response.json();
+        status.ePaycoStatus = validation as Record<string, unknown>;
+      }
+    } catch {
+      logger.warn(`ePayco validation API call failed for ref=${refPayco}`);
+    }
+  }
+
+  return status;
 }
 
 export async function listMyPayments(
@@ -394,7 +427,7 @@ export async function createAdminPayment(input: {
       item.ticketTypeId,
     );
 
-    const unitPriceCents = Math.round(Number(ticketType.price) * 100);
+    const unitPriceCents = Number(ticketType.price) * 100;
     subtotalCents += unitPriceCents * item.quantity;
     ticketsWithPrice.push({ ...item, unitPriceCents });
   }

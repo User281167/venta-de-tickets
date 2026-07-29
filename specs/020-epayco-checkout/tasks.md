@@ -47,20 +47,20 @@
 
 ### Backend
 
-- [ ] T010 [P] [US1] Extend existing POST /api/payments/checkout response: return `sessionId` field alongside existing `checkoutUrl`/`preferenceId` when provider is "epayco"
-- [ ] T011 [US1] Create GET /api/payments/epayco/status/:paymentId polling endpoint: queries ePayco validation API (https://secure.epayco.co/validation/v1/reference/{ref}) to confirm final transaction status
-- [ ] T012 [US1] Add Zod schema for provider field in backend/src/modules/payments/payments.validators.ts: accept "epayco" in addition to "mercadopago"
+- [X] T010 [P] [US1] Extend existing POST /api/payments/checkout response: return `sessionId` field alongside existing `checkoutUrl`/`preferenceId` when provider is "epayco"
+- [X] T011 [US1] Create GET /api/payments/epayco/status/:paymentId polling endpoint: queries ePayco validation API to confirm final transaction status
+- [X] T012 [US1] Add Zod schema for provider field in backend/src/modules/payments/payments.validators.ts: accept "epayco" in addition to "mercadopago"
 
 ### Frontend
 
-- [ ] T013 [P] [US1] Create frontend/features/payments/types/epayco.ts: ePayco-specific TypeScript types (EpaycoCheckoutResponse, EpaycoWebhookPayload, etc.)
-- [ ] T014 [P] [US1] Create frontend/features/payments/api/epayco.ts: createEpaycoSession() calls POST /api/payments/checkout with provider "epayco", pollEpaycoStatus() calls GET /api/payments/epayco/status/:paymentId
-- [ ] T015 [P] [US1] Create frontend/features/payments/api/epayco.queries.ts: useCreateEpaycoCheckout() TanStack Query mutation, useEpaycoStatus() polling query
-- [ ] T016 [US1] Create EpaycoCheckoutButton component in frontend/features/payments/components/EpaycoCheckoutButton.tsx: dynamically loads https://checkout.epayco.co/checkout-v2.js, on click calls createEpaycoSession, then configures ePayco.checkout.configure({sessionId, type: "onpage", test: true/false}), registers hooks (onResponse, onClosed, onErrors), calls checkout.open()
-- [ ] T017 [US1] Modify frontend/features/ticket-purchase/api/checkout.api.ts: extend CheckoutResponse type with optional sessionId field, add provider parameter to createCheckoutPreference()
-- [ ] T018 [US1] Modify frontend/features/ticket-purchase/components/CheckoutPageClient.tsx: add ePayco as payment provider option alongside Mercado Pago, render EpaycoCheckoutButton when ePayco selected, show provider selector UI
-- [ ] T019 [US1] Handle onResponse hook in EpaycoCheckoutButton: redirect user to /checkout/state on successful payment
-- [ ] T020 [US1] Handle onErrors and onClosed hooks in EpaycoCheckoutButton: show error message, re-enable button, allow retry
+- [X] T013 [P] [US1] Create frontend/features/payments/types/epayco.ts: ePayco-specific TypeScript types (EpaycoCheckoutResponse, EpaycoWebhookPayload, etc.)
+- [X] T014 [P] [US1] Create frontend/features/payments/api/epayco.ts: createEpaycoSession() calls POST /api/payments/checkout with provider "epayco", pollEpaycoStatus() calls GET /api/payments/epayco/status/:paymentId
+- [X] T015 [P] [US1] Create frontend/features/payments/api/epayco.queries.ts: useCreateEpaycoCheckout() TanStack Query mutation, useEpaycoStatus() polling query
+- [X] T016 [US1] Create EpaycoCheckoutButton component in frontend/features/payments/components/EpaycoCheckoutButton.tsx: dynamically loads https://checkout.epayco.co/checkout-v2.js, on click calls createEpaycoSession, then configures ePayco.checkout.configure({sessionId, type: "onpage", test: true/false}), registers hooks (onResponse, onClosed, onErrors), calls checkout.open()
+- [X] T017 [US1] Modify frontend/features/ticket-purchase/api/checkout.api.ts: extend CheckoutResponse type with optional sessionId field, add provider parameter to createCheckoutPreference()
+- [X] T018 [US1] Modify frontend/features/ticket-purchase/components/CheckoutPageClient.tsx: add ePayco as payment provider option alongside Mercado Pago, render EpaycoCheckoutButton when ePayco selected, show provider selector UI
+- [X] T019 [US1] Handle onResponse hook in EpaycoCheckoutButton: redirect user to /checkout/state on successful payment
+- [X] T020 [US1] Handle onErrors and onClosed hooks in EpaycoCheckoutButton: show error message, re-enable button, allow retry
 
 **Checkpoint**: User can select ePayco, see Smart Checkout widget, complete payment end-to-end.
 

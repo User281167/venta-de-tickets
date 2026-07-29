@@ -6,12 +6,19 @@ import type { CheckoutItem } from "./checkout.api";
 
 export function useCreateCheckoutPreference() {
   return useMutation({
-    mutationFn: (items: CheckoutItem[]) =>
+    mutationFn: ({
+      items,
+      provider = "mercadopago",
+    }: {
+      items: CheckoutItem[];
+      provider?: string;
+    }) =>
       createCheckoutPreference(
         items,
         typeof window !== "undefined"
-        ? `${window.location.origin}/checkout`
-        : "",
+          ? `${window.location.origin}/checkout`
+          : "",
+        provider,
       ),
   });
 }

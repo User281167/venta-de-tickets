@@ -13,6 +13,7 @@ export type CheckoutResponse = {
   paymentId: string;
   checkoutUrl: string;
   preferenceId: string;
+  sessionId?: string;
 };
 
 const ERROR_MESSAGES: Record<string, string> = {
@@ -54,6 +55,7 @@ async function getToken(): Promise<string> {
 export async function createCheckoutPreference(
   items: CheckoutItem[],
   backUrl: string,
+  provider: string = "mercadopago",
 ): Promise<CheckoutResponse> {
   const token = await getToken();
 
@@ -66,7 +68,7 @@ export async function createCheckoutPreference(
     body: JSON.stringify({
       items,
       backUrl,
-      provider: "mercadopago",
+      provider,
     }),
   });
 

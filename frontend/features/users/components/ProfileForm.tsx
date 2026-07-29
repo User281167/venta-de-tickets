@@ -149,7 +149,7 @@ export function ProfileForm() {
     user.address,
     user.dateOfBirth,
   ].filter(Boolean).length;
-  const completionPercent = Math.round((completedCount / 5) * 100);
+  const completionPercent = (completedCount / 5) * 100;
 
   const startEdit = () => {
     setForm({

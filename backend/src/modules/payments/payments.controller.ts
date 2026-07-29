@@ -35,6 +35,30 @@ export async function handleWebhook(req: Request, res: Response): Promise<void> 
   res.json(result);
 }
 
+export async function handleEpaycoStatus(req: Request, res: Response): Promise<void> {
+  try {
+    const { paymentId } = req.params;
+
+    const id = Array.isArray(paymentId) ? paymentId[0] : paymentId;
+    const result = await paymentsService.getEpaycoPaymentStatus(id, req.query.ref_payco as string | undefined);
+
+    res.json(result);
+  } catch (err) {
+    if (err instanceof ZodError) {
+      res.status(422).json({
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: err.issues.map((i) => i.message).join(', '),
+        },
+      });
+
+      return;
+    }
+
+    throw err;
+  }
+}
+
 export async function handleGetPaymentStatus(req: Request, res: Response): Promise<void> {
   try {
     const { id } = paymentStatusParamsSchema.parse(req.params);

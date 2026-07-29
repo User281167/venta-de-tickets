@@ -8,7 +8,9 @@ export const checkoutItemSchema = z.object({
 export const checkoutSchema = z.object({
   items: z.array(checkoutItemSchema).min(1, 'At least one item is required'),
   backUrl: z.string().url('Invalid back URL'),
-  provider: z.string().min(1, 'Payment provider is required'),
+  provider: z.enum(['mercadopago', 'epayco'], {
+    errorMap: () => ({ message: 'Payment provider must be "mercadopago" or "epayco"' }),
+  }),
 }).strict();
 
 export const paymentStatusParamsSchema = z.object({
