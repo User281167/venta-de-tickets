@@ -135,48 +135,6 @@ export function TicketSection() {
             ))}
           </div>
         )}
-
-        <motion.div
-          initial="hidden"
-          whileInView="show"
-          viewport={VIEWPORT}
-          variants={fadeUp}
-          custom={2}
-          className="!mt-12 !flex !flex-col !items-stretch !justify-center !gap-4 sm:!flex-row sm:!items-center sm:!gap-5"
-        >
-          <button
-            type="button"
-            onClick={() => undefined}
-            className="!group !inline-flex !h-14 !w-full !items-center !justify-center !gap-3 !rounded-full !border !px-7 !text-sm !font-semibold !text-white !transition !duration-300 hover:!translate-y-[-2px] sm:!w-[360px]"
-            style={{
-              background:
-                "linear-gradient(#020414, #020414) padding-box, linear-gradient(90deg, #ff0f7b, #00e5ff) border-box",
-              border: "1px solid transparent",
-              boxShadow: "0 0 24px rgba(0,229,255,0.18)",
-            }}
-          >
-            <img
-              src="/barranqueros-logo.png"
-              alt="Barranqueros UTP"
-              className="!h-6 !w-6 !object-contain"
-            />
-            <span>Donar a Barranqueros UTP</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => undefined}
-            className="!group !inline-flex !h-14 !w-full !items-center !justify-center !gap-3 !rounded-full !border !px-7 !text-sm !font-semibold !text-white !transition !duration-300 hover:!translate-y-[-2px] sm:!w-[360px]"
-            style={{
-              background:
-                "linear-gradient(#020414, #020414) padding-box, linear-gradient(90deg, #ff0f7b, #00e5ff) border-box",
-              border: "1px solid transparent",
-              boxShadow: "0 0 24px rgba(0,229,255,0.18)",
-            }}
-          >
-            <span>Donar a La Convención UTP</span>
-          </button>
-        </motion.div>
       </div>
 
       <style jsx>{`
