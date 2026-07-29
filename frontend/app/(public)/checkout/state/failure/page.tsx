@@ -2,7 +2,7 @@
 
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { Text } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import { IconCircleX } from "@tabler/icons-react";
 import { CheckoutResultCard } from "@/features/ticket-purchase/components/CheckoutResultCard";
 
@@ -16,11 +16,13 @@ const FAILURE_REASON: Record<string, string> = {
 
 function FailureInner() {
   const searchParams = useSearchParams();
+  const externalRef = searchParams.get("externalRef");
   const collectionStatus = searchParams.get("collection_status");
   const reasonText = searchParams.get("reason_text");
-  const reason = reasonText
-    ?? (collectionStatus
-      ? FAILURE_REASON[collectionStatus] ?? `Estado: ${collectionStatus}`
+  const reason =
+    reasonText ??
+    (collectionStatus
+      ? (FAILURE_REASON[collectionStatus] ?? `Estado: ${collectionStatus}`)
       : "No se pudo completar el pago");
 
   return (
@@ -30,6 +32,14 @@ function FailureInner() {
       subtitle="No pudimos procesar tu pago"
       details={
         <>
+          {externalRef && (
+            <Flex justify="space-between" fontSize="sm">
+              <Text color="brand.muted">Referencia</Text>
+              <Text color="white" fontWeight="semibold" fontFamily="mono">
+                {externalRef}
+              </Text>
+            </Flex>
+          )}
           <Text fontSize="md" color="utp.magenta" fontWeight="semibold">
             {reason}
           </Text>
@@ -38,7 +48,12 @@ function FailureInner() {
           </Text>
         </>
       }
-      primaryAction={{ label: "Intentar de nuevo", href: "/entradas", bg: "utp.magenta", color: "white" }}
+      primaryAction={{
+        label: "Intentar de nuevo",
+        href: "/entradas",
+        bg: "utp.magenta",
+        color: "white",
+      }}
       statusColor="#A01060"
       bgGlow="rgba(160, 16, 96, 0.15)"
     />

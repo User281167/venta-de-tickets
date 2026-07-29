@@ -29,11 +29,11 @@ function ResultInner() {
 
         switch (data.status) {
           case "completed":
-            router.replace(`/checkout/state/success?external_ref=${encodeURIComponent(refPayco ?? "")}`);
+            router.replace(`/checkout/state/success?external_reference=${encodeURIComponent(refPayco ?? "")}`);
             break;
           case "failed": {
             const reason = reasonText ? encodeURIComponent(reasonText) : "";
-            router.replace(`/checkout/state/failure?reason_text=${reason}&external_ref=${encodeURIComponent(refPayco ?? "")}`);
+            router.replace(`/checkout/state/failure?reason_text=${reason}&external_reference=${encodeURIComponent(refPayco ?? "")}`);
             break;
           }
           default:
