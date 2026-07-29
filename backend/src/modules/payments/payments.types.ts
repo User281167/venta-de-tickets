@@ -26,6 +26,7 @@ export interface CheckoutInput {
 export interface CheckoutResult {
   checkoutUrl: string;
   providerTxId: string;
+  sessionId?: string;
 }
 
 export interface NormalizedWebhookEvent {

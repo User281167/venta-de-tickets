@@ -30,12 +30,12 @@
 
 **Purpose**: Apify auth service and ePayco provider implementation — blocks all user stories.
 
-- [ ] T004 Create ApifyAuthService in backend/src/modules/payments/providers/epayco/apify-auth.service.ts: login() calls POST https://apify.epayco.co/login with Basic auth (PUBLIC_KEY:PRIVATE_KEY base64), caches Bearer token with expiry, getToken() returns cached or refreshes automatically
-- [ ] T005 [P] Create EpaycoProvider implementing PaymentProvider in backend/src/modules/payments/providers/epayco.provider.ts: getProviderName() returns "epayco"
-- [ ] T006 [P] [US1] Implement EpaycoProvider.createCheckout(): calls ApifyAuthService.getToken(), then POST https://apify.epayco.co/payment/session/create with checkout_version "2", name, currency "COP", amount (totalCents/100), response URL, confirmation URL, billing.email; returns { sessionId, checkoutUrl, providerTxId }
-- [ ] T007 [P] [US2] Implement EpaycoProvider.verifySignature(): compute SHA256(p_cust_id_cliente^p_key^x_ref_payco^x_transaction_id^x_amount^x_currency_code) and compare to x_signature
-- [ ] T008 [P] [US2] Implement EpaycoProvider.parseWebhook(): extract x_ref_payco → reference, map x_response ("Aceptada"→approved, "Rechazada"/"Fallida"→declined, "Pendiente"→pending), x_transaction_id → externalId
-- [ ] T009 Register EpaycoProvider in backend/src/modules/payments/providers/provider.registry.ts
+- [X] T004 Create ApifyAuthService in backend/src/modules/payments/providers/epayco/apify-auth.service.ts: login() calls POST https://apify.epayco.co/login with Basic auth (PUBLIC_KEY:PRIVATE_KEY base64), caches Bearer token with expiry, getToken() returns cached or refreshes automatically
+- [X] T005 [P] Create EpaycoProvider implementing PaymentProvider in backend/src/modules/payments/providers/epayco.provider.ts: getProviderName() returns "epayco"
+- [X] T006 [P] [US1] Implement EpaycoProvider.createCheckout(): calls ApifyAuthService.getToken(), then POST https://apify.epayco.co/payment/session/create with checkout_version "2", name, currency "COP", amount (totalCents/100), response URL, confirmation URL, billing.email; returns { sessionId, checkoutUrl, providerTxId }
+- [X] T007 [P] [US2] Implement EpaycoProvider.verifySignature(): compute SHA256(p_cust_id_cliente^p_key^x_ref_payco^x_transaction_id^x_amount^x_currency_code) and compare to x_signature
+- [X] T008 [P] [US2] Implement EpaycoProvider.parseWebhook(): extract x_extra1 → reference (paymentId), map x_response ("Aceptada"→approved, "Rechazada"/"Fallida"→declined, "Pendiente"→pending), x_transaction_id → externalId
+- [X] T009 Register EpaycoProvider in backend/src/modules/payments/providers/provider.registry.ts
 
 ---
 

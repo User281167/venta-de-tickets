@@ -1,5 +1,6 @@
 import type { PaymentProvider } from '../payments.types.js';
 import { MercadoPagoProvider } from './mercadopago.provider.js';
+import { EpaycoProvider } from './epayco.provider.js';
 
 const providers = new Map<string, PaymentProvider>();
 
@@ -9,6 +10,7 @@ function normalizeProviderName(name: string) {
 
 function registerKnownProviders() {
   registerProvider('mercadopago', new MercadoPagoProvider());
+  registerProvider('epayco', new EpaycoProvider());
 }
 
 registerKnownProviders();
