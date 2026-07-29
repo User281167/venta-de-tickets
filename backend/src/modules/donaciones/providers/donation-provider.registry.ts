@@ -12,14 +12,14 @@ function registerKnownDonationProviders() {
   registerDonationProvider('mercadopago-la_convencion', new MercadoPagoDonationProvider({
     accessToken: env.MERCADOPAGO_ACCESS_TOKEN,
     webhookSecret: env.MERCADOPAGO_WEBHOOK_SECRET,
-    providerName: 'mercadopago-la-convencion',
+    providerName: 'mercadopago-la_convencion',
     notificationUrl: `${env.API_URL}/api/donaciones/webhook/mercadopago-la-convencion`,
   }));
 
   registerDonationProvider('mercadopago-barranqueros_utp', new MercadoPagoDonationProvider({
     accessToken: env.MERCADOPAGO_ACCESS_TOKEN,
     webhookSecret: env.MERCADOPAGO_WEBHOOK_SECRET,
-    providerName: 'mercadopago-barranqueros-utp',
+    providerName: 'mercadopago-barranqueros_utp',
     notificationUrl: `${env.API_URL}/api/donaciones/webhook/mercadopago-barranqueros-utp`,
   }));
 }
