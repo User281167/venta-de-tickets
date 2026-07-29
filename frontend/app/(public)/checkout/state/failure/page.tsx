@@ -17,9 +17,11 @@ const FAILURE_REASON: Record<string, string> = {
 function FailureInner() {
   const searchParams = useSearchParams();
   const collectionStatus = searchParams.get("collection_status");
-  const reason = collectionStatus
-    ? FAILURE_REASON[collectionStatus] ?? `Estado: ${collectionStatus}`
-    : "No se pudo completar el pago";
+  const reasonText = searchParams.get("reason_text");
+  const reason = reasonText
+    ?? (collectionStatus
+      ? FAILURE_REASON[collectionStatus] ?? `Estado: ${collectionStatus}`
+      : "No se pudo completar el pago");
 
   return (
     <CheckoutResultCard

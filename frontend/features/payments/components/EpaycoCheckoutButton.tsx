@@ -92,7 +92,7 @@ export function EpaycoCheckoutButton({ backUrl }: EpaycoCheckoutButtonProps) {
       onResponse: (response) => {
         if (response.x_response === "Aceptada") {
           router.push(
-            `/checkout/state?paymentId=${mutationResult.paymentId}&ref_payco=${response.x_ref_payco ?? ""}`,
+            `/checkout/result?ref_payco=${response.x_ref_payco ?? ""}`,
           );
         } else {
           setErrorMsg("El pago no fue procesado. Intenta de nuevo.");
