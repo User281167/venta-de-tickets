@@ -106,7 +106,7 @@ export function CheckoutPageClient() {
       return;
     }
 
-    mutation.mutate(items);
+    mutation.mutate({ items, provider: selectedProvider });
   };
 
   const handleDialogRetry = () => {

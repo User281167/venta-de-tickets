@@ -29,7 +29,7 @@ function TicketTypeCard({
   const reduced = useReducedMotion();
   const available = tt.quantityTotal - tt.quantitySold;
   const progress = tt.quantityTotal > 0
-    ? tt.quantitySold / tt.quantityTotal) * 100
+    ? (tt.quantitySold / tt.quantityTotal) * 100
     : 0;
 
   return (

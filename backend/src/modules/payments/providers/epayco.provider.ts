@@ -64,6 +64,7 @@ export class EpaycoProvider implements PaymentProvider {
 
     const data = (await response.json()) as {
       success?: boolean;
+      titleResponse?: string;
       data?: { sessionId?: string; token?: string };
     };
 
