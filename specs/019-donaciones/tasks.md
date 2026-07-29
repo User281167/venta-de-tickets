@@ -53,12 +53,12 @@
 
 ### Implementation for User Story 1
 
-- [ ] T008 [US1] Implement createDonation service method in backend/src/modules/donaciones/donaciones.service.ts (generates externalReference DON-LA_CONVENCION-{uuid}, creates preference via provider, returns init_point)
-- [ ] T009 [US1] Implement handleWebhook service method in backend/src/modules/donaciones/donaciones.service.ts (verifies signature, parses payload, updates donation state with idempotency)
-- [ ] T010 [US1] Implement getStatus service method in backend/src/modules/donaciones/donaciones.service.ts (returns donation state by externalReference)
-- [ ] T011 [US1] Implement donation controller in backend/src/modules/donaciones/donaciones.controller.ts (createDonation, handleLaConvencionWebhook, getStatus)
-- [ ] T012 [US1] Implement donation routes in backend/src/modules/donaciones/donaciones.routes.ts (POST /api/donaciones, POST /api/donaciones/webhook/mercadopago-la-convencion, GET /api/donaciones/:externalReference/status)
-- [ ] T013 [US1] Register donation routes in backend/src/app.ts or backend/src/routes/index.ts
+- [x] T008 [US1] Implement createDonation service method in backend/src/modules/donaciones/donaciones.service.ts (generates externalReference DON-LA_CONVENCION-{uuid}, creates preference via provider, returns init_point)
+- [x] T009 [US1] Implement handleWebhook service method in backend/src/modules/donaciones/donaciones.service.ts (verifies signature, parses payload, updates donation state with idempotency)
+- [x] T010 [US1] Implement getStatus service method in backend/src/modules/donaciones/donaciones.service.ts (returns donation state by externalReference)
+- [x] T011 [US1] Implement donation controller in backend/src/modules/donaciones/donaciones.controller.ts (createDonation, handleLaConvencionWebhook, getStatus)
+- [x] T012 [US1] Implement donation routes in backend/src/modules/donaciones/donaciones.routes.ts (POST /api/donaciones, POST /api/donaciones/webhook/mercadopago-la-convencion, GET /api/donaciones/:externalReference/status)
+- [x] T013 [US1] Register donation routes in backend/src/app.ts or backend/src/routes/index.ts
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently. Users can donate to La Convención, payment goes through MP, webhook updates status, and polling works.
 
@@ -103,11 +103,11 @@
 
 ### Implementation for User Story 4
 
-- [ ] T019 [P] [US4] Create DonationButton component in frontend/src/features/donaciones/components/DonationButton.tsx (props: account, label)
-- [ ] T020 [P] [US4] Create DonationForm component in frontend/src/features/donaciones/components/DonationForm.tsx (Zod validation, form fields)
-- [ ] T021 [US4] Create donation API client in frontend/src/features/donaciones/api/donaciones.ts (POST /api/donaciones mutation with TanStack Query)
-- [ ] T022 [US4] Create return page in frontend/src/app/donaciones/retorno/page.tsx (polling GET /api/donaciones/:ref/status every 3 seconds)
-- [ ] T023 [US4] Add DonationButton instances to landing page in frontend/src/app/page.tsx (2 buttons: La Convención and Barranqueros UTP)
+- [x] T019 [P] [US4] Create DonationButton component in frontend/src/features/donaciones/components/DonationButton.tsx (props: account, label)
+- [x] T020 [P] [US4] Create DonationForm component in frontend/src/features/donaciones/components/DonationForm.tsx (Zod validation, form fields)
+- [x] T021 [US4] Create donation API client in frontend/src/features/donaciones/api/donaciones.ts (POST /api/donaciones mutation with TanStack Query)
+- [x] T022 [US4] Create return page in frontend/src/app/donaciones/retorno/page.tsx (polling GET /api/donaciones/:ref/status every 3 seconds)
+- [x] T023 [US4] Add DonationButton instances to landing page in frontend/src/app/page.tsx (2 buttons: La Convención and Barranqueros UTP)
 
 **Checkpoint**: Frontend donation flow is complete. Users can donate via UI, get redirected to MP, and see status updates on return.
 
@@ -118,12 +118,12 @@
 
 **Purpose**: Improvements that affect multiple user stories.
 
-- [ ] T024 [P] Add error handling and user-friendly messages in frontend donation flow
-- [ ] T025 [P] Add loading states to DonationButton and DonationForm
-- [ ] T026 [P] Add success/error feedback on return page
-- [ ] T027 [P] Verify CORS configuration for donation endpoints
-- [ ] T028 [P] Add rate limiting to POST /api/donaciones endpoint
-- [ ] T029 Run manual tests: create donation to La Convención, create donation to Barranqueros UTP, simulate webhook for each
+- [x] T024 [P] Add error handling and user-friendly messages in frontend donation flow
+- [x] T025 [P] Add loading states to DonationButton and DonationForm
+- [x] T026 [P] Add success/error feedback on return page
+- [x] T027 [P] Verify CORS configuration for donation endpoints
+- [x] T028 [P] Add rate limiting to POST /api/donaciones endpoint
+- [x] T029 Run manual tests: create donation to La Convención, create donation to Barranqueros UTP, simulate webhook for each
 
 ---
 

@@ -45,7 +45,7 @@ export class MercadoPagoDonationProvider implements DonationProvider {
             id: createDonationUUID(),
             title: input.description,
             quantity: 1,
-            unit_price: input.amountCents / 100,
+            unit_price: input.amountCents,
           },
         ],
         external_reference: input.externalReference,
