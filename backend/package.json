@@ -29,6 +29,7 @@
     "@prisma/client": "^7.8.0",
     "@supabase/supabase-js": "^2.110.0",
     "cors": "^2.8.6",
+    "epayco-sdk-node": "1.4.4",
     "express": "^5.2.1",
     "jose": "^6.2.3",
     "jsonwebtoken": "^9.0.3",
