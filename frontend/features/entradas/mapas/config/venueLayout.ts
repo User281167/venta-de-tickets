@@ -88,7 +88,7 @@ export const venueLayout: VenueLayout = {
       grid: { rows: 9, cols: 20 },
       segments: [
         { x: 40, y: 280, width: 252, height: 230, rows: 9, cols: 20 },
-        { x: 112, y: 540, width: 171, height: 150, rows: 5, cols: 16 },
+        { x: 120, y: 540, width: 171, height: 150, rows: 5, cols: 16 },
       ],
       entrances: [],
       ticketTypeIds: ["4ca65855-ef7c-47d7-886c-287f0b0e1b12", "5cbbc707-669b-4192-a417-b30dfc92b55a"],
@@ -104,7 +104,7 @@ export const venueLayout: VenueLayout = {
       grid: { rows: 9, cols: 12 },
       segments: [
         { x: 301, y: 280, width: 144, height: 230, rows: 9, cols: 12 },
-        { x: 292, y: 540, width: 144, height: 150, rows: 5, cols: 12 },
+        { x: 302, y: 540, width: 144, height: 150, rows: 5, cols: 12 },
       ],
       entrances: [],
       ticketTypeIds: ["7a1ca2b7-57ae-4e1f-bc92-06b5defdba13"],
@@ -120,7 +120,7 @@ export const venueLayout: VenueLayout = {
       grid: { rows: 9, cols: 3 },
       segments: [
         { x: 454, y: 280, width: 36, height: 230, rows: 9, cols: 3 },
-        { x: 445, y: 540, width: 36, height: 150, rows: 5, cols: 3 },
+        { x: 455, y: 540, width: 36, height: 150, rows: 5, cols: 3 },
       ],
       entrances: [],
       ticketTypeIds: ["6915c724-b4e8-4e06-ad20-2ac6df08b600"],
