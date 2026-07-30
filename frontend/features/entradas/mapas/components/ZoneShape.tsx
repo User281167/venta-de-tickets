@@ -56,24 +56,58 @@ export function ZoneShape({
   );
 
   const highlighted = isHovered || isSelected;
+  const isPending = !zone.confirmed;
   const strokeColor = disabled
     ? "rgba(255,255,255,0.1)"
     : highlighted
       ? accent
-      : "rgba(255,255,255,0.18)";
+      : isPending
+        ? `${accent}66`
+        : "rgba(255,255,255,0.18)";
+
+  const strokeDash = isPending ? "6 4" : undefined;
 
   return (
     <g>
-      {points.map((p) => (
-        <circle
-          key={p.idx}
-          cx={p.cx}
-          cy={p.cy}
-          r={2.6}
-          fill={p.occupied ? COLOR_OCCUPIED : COLOR_AVAILABLE}
-          opacity={p.occupied ? 0.55 : disabled ? 0.5 : 0.92}
+      {!isPending &&
+        points.map((p) => (
+          <circle
+            key={p.idx}
+            cx={p.cx}
+            cy={p.cy}
+            r={2.6}
+            fill={p.occupied ? COLOR_OCCUPIED : COLOR_AVAILABLE}
+            opacity={p.occupied ? 0.55 : disabled ? 0.5 : 0.92}
+          />
+        ))}
+
+      {highlighted && (
+        <rect
+          x={shape.x - 4}
+          y={shape.y - 4}
+          width={shape.width + 8}
+          height={shape.height + 8}
+          rx={12}
+          fill="transparent"
+          stroke={accent}
+          strokeWidth={1}
+          opacity={0.35}
+          style={{ pointerEvents: "none" }}
         />
-      ))}
+      )}
+
+      {highlighted && (
+        <rect
+          x={shape.x}
+          y={shape.y}
+          width={shape.width}
+          height={shape.height}
+          rx={10}
+          fill={accent}
+          opacity={0.08}
+          style={{ pointerEvents: "none" }}
+        />
+      )}
 
       <rect
         x={shape.x}
@@ -84,18 +118,34 @@ export function ZoneShape({
         fill="transparent"
         stroke={strokeColor}
         strokeWidth={highlighted ? 2.5 : 1}
+        strokeDasharray={strokeDash}
       />
 
       <text
         x={shape.x + 10}
         y={shape.y - 8}
-        fill={highlighted ? accent : "rgba(255,255,255,0.65)"}
+        fill={highlighted ? accent : isPending ? `${accent}aa` : "rgba(255,255,255,0.65)"}
         fontSize={13}
         fontWeight={600}
         style={{ pointerEvents: "none" }}
       >
         {label}
+        {isPending && " (próximamente)"}
       </text>
+
+      {isPending && (
+        <text
+          x={shape.x + shape.width / 2}
+          y={shape.y + shape.height / 2}
+          fill={`${accent}99`}
+          fontSize={11}
+          fontWeight={500}
+          textAnchor="middle"
+          style={{ pointerEvents: "none" }}
+        >
+          Sin asientos confirmados
+        </text>
+      )}
 
       {entrances.map((entrance, i) => {
         const len = 12;

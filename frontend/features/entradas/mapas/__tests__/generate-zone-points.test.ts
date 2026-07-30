@@ -14,6 +14,7 @@ const makeZone = (overrides: Partial<VenueZone> = {}): VenueZone => ({
   grid: { rows: 4, cols: 4 },
   entrances: [],
   ticketTypeIds: [],
+  confirmed: true,
   ...overrides,
 });
 

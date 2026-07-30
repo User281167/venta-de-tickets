@@ -11,13 +11,6 @@ export function ZoneLegend() {
       <span className="!inline-flex !items-center !gap-1.5">
         <span
           className="!inline-block !h-2.5 !w-2.5 !rounded-full"
-          style={{ background: "#e11d48", opacity: 0.6 }}
-        />
-        Ocupado
-      </span>
-      <span className="!inline-flex !items-center !gap-1.5">
-        <span
-          className="!inline-block !h-2.5 !w-2.5 !rounded-full"
           style={{ background: "rgba(255,255,255,0.18)" }}
         />
         Zona inactiva

@@ -117,26 +117,28 @@ export function VenueMap({
           {layout.stage.label}
         </text>
 
-        {layout.zones.map((zone) => (
-          <ZoneShape
-            key={zone.key}
-            zone={zone}
-            ticketTypes={ticketTypesByZone.get(zone.key) ?? []}
-            isHovered={hover?.key === zone.key}
-            isSelected={selectedKey === zone.key}
-            disabled={disabledKeys?.has(zone.key) ?? false}
-            onHover={handleHover}
-            onMove={handleMove}
-            onLeave={handleLeave}
-            onSelect={handleSelect}
-          />
-        ))}
+        {layout.zones
+          .filter((zone) => zone.confirmed)
+          .map((zone) => (
+            <ZoneShape
+              key={zone.key}
+              zone={zone}
+              ticketTypes={ticketTypesByZone.get(zone.key) ?? []}
+              isHovered={hover?.key === zone.key}
+              isSelected={selectedKey === zone.key}
+              disabled={disabledKeys?.has(zone.key) ?? false}
+              onHover={handleHover}
+              onMove={handleMove}
+              onLeave={handleLeave}
+              onSelect={handleSelect}
+            />
+          ))}
       </svg>
 
-      {hover && hoveredZone && hoveredTotal > 0 && (
+      {hover && hoveredZone && (
         <ZoneTooltip
           title={hoveredZone.label}
-          available={hoveredAvailable}
+          available={hoveredTotal > 0 ? hoveredAvailable : 0}
           total={hoveredTotal}
           x={hover.x}
           y={hover.y}
