@@ -57,6 +57,7 @@ export function CheckoutPageClient() {
   const [profileDialogOpen, setProfileDialogOpen] = useState(false);
   const [errorDialogOpen, setErrorDialogOpen] = useState(false);
   const [autoOpenHandled, setAutoOpenHandled] = useState(false);
+  const [epaycoError, setEpaycoError] = useState<{ code: string; message: string } | null>(null);
 
   const preferenceId = mutation.data?.preferenceId ?? null;
 
@@ -86,11 +87,15 @@ export function CheckoutPageClient() {
     }
   }, [isLoadingMe, meData, isProfileIncomplete, autoOpenHandled]);
 
+  useEffect(() => {
+    setEpaycoError(null);
+  }, [selectedProvider]);
+
   if (items.length === 0) return null;
 
   const totalTickets = items.reduce((sum, i) => sum + i.quantity, 0);
-  const err = mutation.error;
-  const isError = mutation.isError;
+  const err = mutation.error ?? epaycoError;
+  const isError = mutation.isError || epaycoError !== null;
   const errorCode: CheckoutErrorCode | "USER_INFO_INCOMPLETE" | null = err
     ? (err as { code?: string }).code === "USER_INFO_INCOMPLETE"
       ? "USER_INFO_INCOMPLETE"
@@ -98,7 +103,7 @@ export function CheckoutPageClient() {
     : null;
 
   const dialogMissingFields = isCheckoutError(err) ? err.missingFields : missingFields;
-  const dialogMessage = isCheckoutError(err) ? err.message : undefined;
+  const dialogMessage = isCheckoutError(err) ? err.message : epaycoError?.message ?? undefined;
 
   const handlePagar = () => {
     if (isProfileIncomplete) {
@@ -111,8 +116,9 @@ export function CheckoutPageClient() {
 
   const handleDialogRetry = () => {
     mutation.reset();
+    setEpaycoError(null);
 
-    if (items.length > 0 && !isProfileIncomplete) {
+    if (items.length > 0 && !isProfileIncomplete && !epaycoError) {
       mutation.mutate({ items, provider: selectedProvider });
     }
   };
@@ -130,6 +136,7 @@ export function CheckoutPageClient() {
 
     if (!open && isError && errorCode !== "USER_INFO_INCOMPLETE") {
       mutation.reset();
+      setEpaycoError(null);
     }
   };
 
@@ -264,6 +271,7 @@ export function CheckoutPageClient() {
             {selectedProvider === "epayco" && (
               <EpaycoCheckoutButton
                 backUrl={`${typeof window !== "undefined" ? window.location.origin : ""}/checkout`}
+                onError={(code, message) => setEpaycoError({ code, message })}
               />
             )}
 

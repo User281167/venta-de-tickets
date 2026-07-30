@@ -27,9 +27,10 @@ declare const ePayco: {
 
 interface EpaycoCheckoutButtonProps {
   backUrl: string;
+  onError?: (code: string, message: string) => void;
 }
 
-export function EpaycoCheckoutButton({ backUrl }: EpaycoCheckoutButtonProps) {
+export function EpaycoCheckoutButton({ backUrl, onError }: EpaycoCheckoutButtonProps) {
   const router = useRouter();
   const { items } = useCart();
   const mutation = useCreateEpaycoCheckout();
@@ -68,13 +69,19 @@ export function EpaycoCheckoutButton({ backUrl }: EpaycoCheckoutButtonProps) {
       return;
     }
 
-    const mutationResult = await mutation.mutateAsync({
-      items: items.map((i) => ({
-        ticketTypeId: i.ticketTypeId,
-        quantity: i.quantity,
-      })),
-      backUrl,
-    });
+    let mutationResult;
+    try {
+      mutationResult = await mutation.mutateAsync({
+        items: items.map((i) => ({
+          ticketTypeId: i.ticketTypeId,
+          quantity: i.quantity,
+        })),
+        backUrl,
+      });
+    } catch (err: any) {
+      onError?.(err.code ?? "INTERNAL_ERROR", err.message ?? "Error al crear sesión de pago");
+      return;
+    }
 
     const sessionId = mutationResult.sessionId;
     if (!sessionId) {

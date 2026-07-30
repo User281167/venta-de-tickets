@@ -35,7 +35,9 @@ export async function createEpaycoSession(
 
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
-    throw new Error(body?.error?.message ?? `Error ${res.status}`);
+    const error = new Error(body?.error?.message ?? `Error ${res.status}`);
+    (error as any).code = body?.error?.code;
+    throw error;
   }
 
   return res.json();
