@@ -8,6 +8,13 @@ export function ZoneLegend() {
         />
         Disponible
       </span>
+      <span className="!inline-flex !items-center !gap-1.5 text-red-400">
+        <span
+          className="!inline-block !h-2.5 !w-2.5 !rounded-full"
+          style={{ background: "#f87171" }}
+        />
+        Zona Ocupada
+      </span>
       <span className="!inline-flex !items-center !gap-1.5">
         <span
           className="!inline-block !h-2.5 !w-2.5 !rounded-full"

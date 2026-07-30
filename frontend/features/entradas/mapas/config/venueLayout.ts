@@ -10,11 +10,28 @@ export type ZoneGrid = {
   cols: number;
 };
 
+export type ZoneSegment = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  rows: number;
+  cols: number;
+};
+
 export type ZoneEntrance = {
   x: number;
   y: number;
   side: "top" | "bottom" | "left" | "right";
   label?: string;
+};
+
+export type VenueStructure = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  label: string;
 };
 
 export type VenueZone = {
@@ -24,6 +41,7 @@ export type VenueZone = {
   accent: string;
   shape: ZoneShape;
   grid: ZoneGrid;
+  segments: ZoneSegment[];
   entrances: ZoneEntrance[];
   ticketTypeIds: string[];
   confirmed: boolean;
@@ -38,30 +56,41 @@ export type VenueLayout = {
     height: number;
     label: string;
   };
+  structures: VenueStructure[];
   zones: VenueZone[];
 };
 
 const PLACEHOLDER = "00000000-0000-0000-0000-000000000000";
 
-// Horizontal layout (rotated 90° CW from original): seating flows from
-// back-of-room (left) to stage (right). Bronce is the largest block, then
-// Plata, then VIP immediately in front of the stage.
+// Two-row layout matching the venue plan: each zone (Bronce/Plata/VIP) is
+// drawn as TWO physical blocks — a primary block in the main hall and a
+// secondary narrower block below — connected visually as one zone.
 export const venueLayout: VenueLayout = {
-  viewBox: { width: 720, height: 620 },
-  stage: { x: 620, y: 220, width: 80, height: 180, label: "ESCENARIO" },
+  viewBox: { width: 720, height: 800 },
+  stage: { x: 543, y: 305, width: 162, height: 180, label: "ESCENARIO" },
+  structures: [
+    {
+      x: 350,
+      y: 40,
+      width: 144,
+      height: 210,
+      label: "Zona técnica / acceso",
+    },
+  ],
   zones: [
     {
       key: "bronce",
       label: "Bronce",
       description:
         "Zona principal con vista al escenario, acceso general.",
-      accent: "#9ca3af",
-      shape: { x: 60, y: 70, width: 170, height: 480 },
-      grid: { rows: 20, cols: 8 },
-      entrances: [
-        { x: 60, y: 200, side: "left" },
-        { x: 60, y: 420, side: "left" },
+      accent: "#c07a3e",
+      shape: { x: 40, y: 280, width: 252, height: 230 },
+      grid: { rows: 9, cols: 20 },
+      segments: [
+        { x: 40, y: 280, width: 252, height: 230, rows: 9, cols: 20 },
+        { x: 112, y: 540, width: 171, height: 150, rows: 5, cols: 16 },
       ],
+      entrances: [],
       ticketTypeIds: ["4ca65855-ef7c-47d7-886c-287f0b0e1b12", "5cbbc707-669b-4192-a417-b30dfc92b55a"],
       confirmed: true,
     },
@@ -70,13 +99,14 @@ export const venueLayout: VenueLayout = {
       label: "Plata",
       description:
         "Fila intermedia con vista completa del escenario. Conexión directa con VIP.",
-      accent: "#7c3cff",
-      shape: { x: 260, y: 110, width: 150, height: 400 },
-      grid: { rows: 18, cols: 7 },
-      entrances: [
-        { x: 260, y: 200, side: "left" },
-        { x: 260, y: 420, side: "left" },
+      accent: "#9ca3af",
+      shape: { x: 301, y: 280, width: 144, height: 230 },
+      grid: { rows: 9, cols: 12 },
+      segments: [
+        { x: 301, y: 280, width: 144, height: 230, rows: 9, cols: 12 },
+        { x: 292, y: 540, width: 144, height: 150, rows: 5, cols: 12 },
       ],
+      entrances: [],
       ticketTypeIds: ["7a1ca2b7-57ae-4e1f-bc92-06b5defdba13"],
       confirmed: true,
     },
@@ -86,12 +116,13 @@ export const venueLayout: VenueLayout = {
       description:
         "Fila preferencial directamente frente al escenario, acceso a zona lounge.",
       accent: "#d4af37",
-      shape: { x: 440, y: 160, width: 140, height: 300 },
-      grid: { rows: 14, cols: 6 },
-      entrances: [
-        { x: 440, y: 240, side: "left" },
-        { x: 440, y: 380, side: "left" },
+      shape: { x: 454, y: 280, width: 36, height: 230 },
+      grid: { rows: 9, cols: 3 },
+      segments: [
+        { x: 454, y: 280, width: 36, height: 230, rows: 9, cols: 3 },
+        { x: 445, y: 540, width: 36, height: 150, rows: 5, cols: 3 },
       ],
+      entrances: [],
       ticketTypeIds: ["6915c724-b4e8-4e06-ad20-2ac6df08b600"],
       confirmed: true,
     },
@@ -102,6 +133,7 @@ export const venueLayout: VenueLayout = {
       accent: "#3b82f6",
       shape: { x: 0, y: 0, width: 0, height: 0 },
       grid: { rows: 1, cols: 1 },
+      segments: [],
       entrances: [],
       ticketTypeIds: [],
       confirmed: false,

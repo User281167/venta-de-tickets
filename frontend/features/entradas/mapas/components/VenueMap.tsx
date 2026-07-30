@@ -12,6 +12,7 @@ interface VenueMapProps {
   selectedKey: string | null;
   onSelect: (zoneKey: string) => void;
   disabledKeys?: Set<string>;
+  readOnly?: boolean;
 }
 
 type HoverState = { key: string; x: number; y: number } | null;
@@ -22,6 +23,7 @@ export function VenueMap({
   selectedKey,
   onSelect,
   disabledKeys,
+  readOnly = false,
 }: VenueMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [hover, setHover] = useState<HoverState>(null);
@@ -96,6 +98,31 @@ export function VenueMap({
         aria-label="Mapa del evento"
         role="img"
       >
+        {layout.structures.map((s, i) => (
+          <g key={`struct-${i}`}>
+            <rect
+              x={s.x}
+              y={s.y}
+              width={s.width}
+              height={s.height}
+              rx={4}
+              fill="rgba(255,255,255,0.03)"
+              stroke="rgba(255,255,255,0.18)"
+              strokeDasharray="4 4"
+            />
+            <text
+              x={s.x + s.width / 2}
+              y={s.y + s.height / 2}
+              fill="rgba(255,255,255,0.4)"
+              fontSize={11}
+              textAnchor="middle"
+              style={{ pointerEvents: "none" }}
+            >
+              {s.label}
+            </text>
+          </g>
+        ))}
+
         <rect
           x={layout.stage.x}
           y={layout.stage.y}
@@ -124,9 +151,9 @@ export function VenueMap({
               key={zone.key}
               zone={zone}
               ticketTypes={ticketTypesByZone.get(zone.key) ?? []}
-              isHovered={hover?.key === zone.key}
-              isSelected={selectedKey === zone.key}
-              disabled={disabledKeys?.has(zone.key) ?? false}
+              isHovered={!readOnly && hover?.key === zone.key}
+              isSelected={!readOnly && selectedKey === zone.key}
+              disabled={readOnly || (disabledKeys?.has(zone.key) ?? false)}
               onHover={handleHover}
               onMove={handleMove}
               onLeave={handleLeave}
@@ -135,7 +162,7 @@ export function VenueMap({
           ))}
       </svg>
 
-      {hover && hoveredZone && (
+      {!readOnly && hover && hoveredZone && (
         <ZoneTooltip
           title={hoveredZone.label}
           available={hoveredTotal > 0 ? hoveredAvailable : 0}

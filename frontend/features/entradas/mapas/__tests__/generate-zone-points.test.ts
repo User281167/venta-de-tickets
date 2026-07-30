@@ -12,6 +12,7 @@ const makeZone = (overrides: Partial<VenueZone> = {}): VenueZone => ({
   accent: "#fff",
   shape: { x: 0, y: 0, width: 100, height: 100 },
   grid: { rows: 4, cols: 4 },
+  segments: [],
   entrances: [],
   ticketTypeIds: [],
   confirmed: true,

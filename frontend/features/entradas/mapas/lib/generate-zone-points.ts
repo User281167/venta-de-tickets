@@ -1,4 +1,4 @@
-import type { VenueZone } from "../config/venueLayout";
+import type { ZoneSegment, VenueZone } from "../config/venueLayout";
 
 function hashString(str: string): number {
   let h = 0;
@@ -54,6 +54,34 @@ export type ZonePoint = {
   occupied: boolean;
 };
 
+export function buildSegmentPoints(
+  segment: ZoneSegment,
+  occupiedSet: Set<number>,
+  padding = 8,
+): ZonePoint[] {
+  const { x, y, width, height, rows, cols } = segment;
+  const usableW = width - padding * 2;
+  const usableH = height - padding * 2;
+  const stepX = cols > 1 ? usableW / (cols - 1) : 0;
+  const stepY = rows > 1 ? usableH / (rows - 1) : 0;
+  const pts: ZonePoint[] = [];
+
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const idx = r * cols + c;
+      pts.push({
+        idx,
+        cx: x + padding + c * stepX,
+        cy: y + padding + r * stepY,
+        occupied: occupiedSet.has(idx),
+      });
+    }
+  }
+
+  return pts;
+}
+
+// Legacy single-shape builder kept for tests that exercise the original API.
 export function buildZonePoints(
   zone: VenueZone,
   occupiedSet: Set<number>,
@@ -80,7 +108,6 @@ export function buildZonePoints(
     }
   }
 
-  // touch unused param to keep signature stable for future variants
   void total;
   return pts;
 }
