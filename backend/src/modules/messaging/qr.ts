@@ -1,9 +1,9 @@
 import QRCode from 'qrcode';
 import { logger } from '../../utils/logger.js';
 
-export async function generateQrPngDataUrl(token: string): Promise<string> {
+export async function generateQrPngBuffer(token: string): Promise<Buffer> {
   try {
-    return await QRCode.toDataURL(token, {
+    return await QRCode.toBuffer(token, {
       errorCorrectionLevel: 'M',
       margin: 2,
       width: 256,
@@ -12,7 +12,7 @@ export async function generateQrPngDataUrl(token: string): Promise<string> {
   } catch (err) {
     logger.error(
       { err: (err as Error).message },
-      '[messaging:qr] failed to generate PNG data URL',
+      '[messaging:qr] failed to generate PNG buffer',
     );
     throw err;
   }

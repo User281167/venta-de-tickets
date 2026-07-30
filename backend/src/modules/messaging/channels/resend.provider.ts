@@ -1,5 +1,8 @@
 import { Resend } from 'resend';
-import type { EmailProvider } from './email-provider.interface.js';
+import type {
+  EmailAttachment,
+  EmailProvider,
+} from './email-provider.interface.js';
 import { env } from '../../../shared/config/env.js';
 import { logger } from '../../../utils/logger.js';
 
@@ -10,13 +13,24 @@ export class ResendProvider implements EmailProvider {
     this.client = new Resend(env.RESEND_API_KEY);
   }
 
-  async send(to: string, subject: string, html: string): Promise<void> {
+  async send(
+    to: string,
+    subject: string,
+    html: string,
+    attachments?: EmailAttachment[],
+  ): Promise<void> {
     try {
       const { error } = await this.client.emails.send({
         from: env.EMAIL_FROM,
         to,
         subject,
         html,
+        attachments: attachments?.map((a) => ({
+          filename: a.filename,
+          content: a.content,
+          contentType: a.contentType,
+          contentId: a.contentId,
+        })),
       });
 
       if (error) {

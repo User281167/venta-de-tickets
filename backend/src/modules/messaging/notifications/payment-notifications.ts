@@ -1,7 +1,7 @@
 import { prisma } from '../../../shared/database/prisma.client.js';
 import { logger } from '../../../utils/logger.js';
 import { messagingService } from '../messaging.service.js';
-import { generateQrPngDataUrl } from '../qr.js';
+import { generateQrPngBuffer } from '../qr.js';
 
 async function findPaymentWithUser(paymentId: string) {
   return prisma.payment.findUnique({
@@ -46,7 +46,7 @@ export async function notifyPaymentConfirmed(paymentId: string): Promise<void> {
       }
 
       try {
-        const qrDataUrl = await generateQrPngDataUrl(ticket.qrToken);
+        const qrPngBuffer = await generateQrPngBuffer(ticket.qrToken);
 
         await messagingService.sendTicketPaid({
           customerName: payment.user.fullName,
@@ -54,7 +54,7 @@ export async function notifyPaymentConfirmed(paymentId: string): Promise<void> {
           ticketId: ticket.id,
           ticketCode: ticket.ticketCode,
           ticketName: ticket.ticketType.name,
-          qrDataUrl,
+          qrPngBuffer,
         });
       } catch (ticketErr) {
         logger.error(

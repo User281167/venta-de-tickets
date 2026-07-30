@@ -148,7 +148,7 @@ export async function sendTicketPaid(input: {
   ticketId: string;
   ticketCode: string;
   ticketName?: string;
-  qrDataUrl: string;
+  qrPngBuffer: Buffer;
 }): Promise<void> {
   const html = renderTemplate('ticket-paid', {
     frontendUrl: env.CONFIRMATION_LINK_BASE_URL,
@@ -156,14 +156,21 @@ export async function sendTicketPaid(input: {
     eventName: EVENT_NAME,
     ticketId: input.ticketId,
     ticketCode: input.ticketCode,
-    ticketName: input.ticketName ?? `Entrada para ${EVENT_NAME}`,
-    qrDataUrl: input.qrDataUrl,
+    ticketName: input.ticketName ?? '',
   });
 
   await getEmailProvider().send(
     input.customerEmail,
     `Tu entrada está lista — ${EVENT_NAME}`,
     html,
+    [
+      {
+        filename: 'ticket-qr.png',
+        content: input.qrPngBuffer,
+        contentType: 'image/png',
+        contentId: 'ticket-qr',
+      },
+    ],
   );
 }
 
