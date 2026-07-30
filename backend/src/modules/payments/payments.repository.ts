@@ -392,6 +392,88 @@ export async function reclaimExpiredPayment(input: {
   });
 }
 
+export async function reclaimFailedPayment(input: {
+  paymentId: string;
+  providerTxId: string;
+  metadata: Prisma.InputJsonValue;
+}): Promise<
+  | { outcome: 'reclaimed'; ticketIds: string[] }
+  | { outcome: 'unfulfillable' }
+  | { outcome: 'already_processed' }
+> {
+  return prisma.$transaction(async (tx) => {
+    const paymentRows = await tx.$queryRaw<Array<{ status: string }>>`
+      SELECT status FROM payments WHERE id = ${input.paymentId}::uuid FOR UPDATE
+    `;
+
+    const payment = paymentRows[0];
+    if (!payment || payment.status !== 'failed') {
+      return { outcome: 'already_processed' as const };
+    }
+
+    const tickets = (await tx.$queryRaw`
+      SELECT id, ticket_type_id, status
+      FROM tickets
+      WHERE payment_id = ${input.paymentId}::uuid AND status IN ('reserved', 'expired')
+    `) as Array<{ id: string; ticket_type_id: string; status: string }>;
+
+    if (tickets.length === 0) {
+      return { outcome: 'unfulfillable' as const };
+    }
+
+    const typeCounts = new Map<string, number>();
+    for (const t of tickets) {
+      typeCounts.set(t.ticket_type_id, (typeCounts.get(t.ticket_type_id) ?? 0) + 1);
+    }
+
+    const typeIds = [...typeCounts.keys()].sort();
+    const typeRows = (await tx.$queryRaw`
+      SELECT id, quantity_sold, quantity_total
+      FROM ticket_types
+      WHERE id = ANY(${typeIds}::uuid[])
+      FOR UPDATE
+    `) as Array<{ id: string; quantity_sold: number; quantity_total: number }>;
+
+    const typeMap = new Map(typeRows.map((r) => [r.id, r]));
+
+    const hasExpired = tickets.some((t) => t.status === 'expired');
+
+    if (hasExpired) {
+      for (const [typeId, count] of typeCounts) {
+        const tt = typeMap.get(typeId);
+
+        if (!tt || tt.quantity_sold + count > tt.quantity_total) {
+          return { outcome: 'unfulfillable' as const };
+        }
+      }
+
+      for (const [typeId, count] of typeCounts) {
+        await tx.$executeRaw`
+          UPDATE ticket_types SET quantity_sold = quantity_sold + ${count}
+          WHERE id = ${typeId}::uuid
+        `;
+      }
+    }
+
+    await tx.$executeRaw`
+      UPDATE tickets
+      SET status = 'paid', purchased_at = now()
+      WHERE payment_id = ${input.paymentId}::uuid AND status IN ('reserved', 'expired')
+    `;
+
+    await tx.$executeRaw`
+      UPDATE payments
+      SET status = 'completed', provider_tx_id = ${input.providerTxId}, metadata = ${input.metadata}::jsonb
+      WHERE id = ${input.paymentId}::uuid
+    `;
+
+    return {
+      outcome: 'reclaimed' as const,
+      ticketIds: tickets.map((t) => t.id),
+    };
+  });
+}
+
 export function markUnfulfillable(
   paymentId: string,
   providerTxId: string,

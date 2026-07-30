@@ -199,12 +199,39 @@ export async function processWebhook(
     return { received: true };
   }
 
-  if (payment.status === 'failed' || payment.status === 'completed_unfulfillable') {
+  if (payment.status === 'completed_unfulfillable') {
     if (event.status === 'approved') {
-      // Dinero real llegando tarde sobre algo que ya cerramos: requiere revisión manual.
       logger.warn(
-        `Late approval on closed payment: paymentId=${payment.id}, currentStatus=${payment.status}, externalId=${event.externalId}`,
+        `Late approval on unfulfillable payment: paymentId=${payment.id}, externalId=${event.externalId}`,
       );
+    }
+
+    return { received: true };
+  }
+
+  if (payment.status === 'failed') {
+    if (event.status === 'approved') {
+      const result = await paymentsRepo.reclaimFailedPayment({
+        paymentId: payment.id,
+        providerTxId: event.externalId,
+        metadata: event.rawPayload as any,
+      });
+
+      if (result.outcome === 'reclaimed') {
+        logger.info(`Reclaimed failed payment: paymentId=${payment.id}, tickets=${result.ticketIds.length}`);
+
+        for (const ticketId of result.ticketIds) {
+          await ticketsService.generateQrForTicket(ticketId);
+        }
+
+        void notifyPaymentConfirmed(payment.id);
+      } else if (result.outcome === 'unfulfillable') {
+        await paymentsRepo.markUnfulfillable(payment.id, event.externalId, event.rawPayload as any);
+        logger.warn(`Payment unfulfillable (sold out on reclaim): paymentId=${payment.id}`);
+        void notifyPaymentUnfulfillable(payment.id);
+      } else {
+        logger.info(`Reclaim already processed by concurrent webhook: paymentId=${payment.id}`);
+      }
     }
 
     return { received: true };
