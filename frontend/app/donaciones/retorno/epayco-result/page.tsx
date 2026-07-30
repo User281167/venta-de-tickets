@@ -26,6 +26,9 @@ function EpaycoResultInner() {
       if (refPayco) url.searchParams.set("ref_payco", refPayco);
     } else {
       url.pathname = "/donaciones/retorno/state/pending";
+
+      if (externalRef) url.searchParams.set("external_reference", externalRef);
+      if (refPayco) url.searchParams.set("ref_payco", refPayco);
     }
 
     router.replace(url.pathname + url.search);

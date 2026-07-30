@@ -1,6 +1,7 @@
 import { DonationStatus } from '@prisma/client';
 import type { Prisma } from '@prisma/client';
 import { NotFoundError } from '../../shared/errors/index.js';
+import { logger } from '../../utils/logger.js';
 import { getDonationProvider } from './providers/donation-provider.registry.js';
 import {
   donationRepository,
@@ -85,6 +86,9 @@ export async function handleWebhook(
   );
 
   if (updated === 0) {
+    logger.warn(
+      `Donation webhook: no row updated for reference=${event.reference}, status=${event.status}, externalId=${event.externalId}. Current state likely doesn't allow transition.`,
+    );
     return;
   }
 }

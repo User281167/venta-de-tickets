@@ -48,7 +48,7 @@ export const donationRepository = {
     const result = await prisma.donation.updateMany({
       where: {
         externalReference: externalReference,
-        state: 'pending',
+        state: data.state === 'confirmed' ? { in: ['pending', 'rejected'] } : 'pending',
       },
       data: {
         state: data.state,
