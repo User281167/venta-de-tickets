@@ -7,6 +7,7 @@ async function findPaymentWithUser(paymentId: string) {
     where: { id: paymentId },
     include: {
       user: { select: { id: true, email: true, fullName: true } },
+      tickets: { select: { id: true } },
     },
   });
 }
@@ -111,6 +112,14 @@ export async function notifyPaymentRefunded(input: {
       reason: input.reason,
       refundedAt: payment.updatedAt,
     });
+
+    for (const ticket of payment.tickets) {
+      void notifyTicketCancellation({
+        ticketId: ticket.id,
+        customerName: payment.user.fullName,
+        customerEmail: payment.user.email,
+      });
+    }
   } catch (err) {
     logger.error(
       { err: (err as Error).message, paymentId: input.paymentId },
@@ -132,6 +141,21 @@ export async function notifyTicketConfirmation(input: {
     logger.error(
       { err: (err as Error).message, ticketId: input.ticketId },
       '[messaging:notify] ticket confirmation dispatch failed',
+    );
+  }
+}
+
+export async function notifyTicketCancellation(input: {
+  ticketId: string;
+  customerName: string;
+  customerEmail: string;
+}): Promise<void> {
+  try {
+    await messagingService.sendTicketCancellation(input);
+  } catch (err) {
+    logger.error(
+      { err: (err as Error).message, ticketId: input.ticketId },
+      '[messaging:notify] ticket cancellation dispatch failed',
     );
   }
 }

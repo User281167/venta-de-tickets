@@ -6,6 +6,7 @@ export {
   notifyPaymentUnfulfillable,
   notifyPaymentRefunded,
   notifyTicketConfirmation,
+  notifyTicketCancellation,
 } from './notifications/payment-notifications.js';
 export type {
   MessagingChannel,

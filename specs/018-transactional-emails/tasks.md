@@ -86,9 +86,9 @@
 
 ### Implementation for User Story 3
 
-- [ ] T015 [P] [US3] Create `ticket-cancelled.html` template in `backend/src/modules/messaging/templates/` with fields: `customerName`, `eventName`, `ticketId`
-- [ ] T016 [US3] Add `sendTicketCancellation(ticket)` method to `messaging.service.ts` in `backend/src/modules/messaging/messaging.service.ts`
-- [ ] T017 [US3] Integrate `messagingService.sendTicketCancellation()` into `backend/src/modules/tickets/tickets.service.ts` — call after `cancel` DB commit with `void` prefix
+- [x] T015 [P] [US3] Create `ticket-cancelled.html` template in `backend/src/modules/messaging/templates/` with fields: `customerName`, `eventName`, `ticketId`
+- [x] T016 [US3] Add `sendTicketCancellation(ticket)` method to `messaging.service.ts` in `backend/src/modules/messaging/messaging.service.ts`
+- [x] T017 [US3] Integrate `messagingService.sendTicketCancellation()` into `backend/src/modules/tickets/tickets.service.ts` — call after `cancel` DB commit with `void` prefix
 
 **Checkpoint**: Ticket cancelled email sends when ticket transitions to cancelled
 

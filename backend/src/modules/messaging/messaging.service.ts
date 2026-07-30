@@ -142,12 +142,32 @@ export async function sendTicketConfirmation(input: {
   );
 }
 
+export async function sendTicketCancellation(input: {
+  customerName: string;
+  customerEmail: string;
+  ticketId: string;
+}): Promise<void> {
+  const html = renderTemplate('ticket-cancelled', {
+    frontendUrl: env.CONFIRMATION_LINK_BASE_URL,
+    customerName: input.customerName,
+    eventName: EVENT_NAME,
+    ticketId: input.ticketId,
+  });
+
+  await getEmailProvider().send(
+    input.customerEmail,
+    `Entrada cancelada — ${EVENT_NAME}`,
+    html,
+  );
+}
+
 export const messagingService = {
   sendPaymentConfirmation,
   sendPaymentFailed,
   sendPaymentUnfulfillable,
   sendPaymentRefunded,
   sendTicketConfirmation,
+  sendTicketCancellation,
 };
 
 logger.info('[messaging] service initialized');
