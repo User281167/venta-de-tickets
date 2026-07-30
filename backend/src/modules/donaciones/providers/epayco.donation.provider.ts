@@ -41,6 +41,7 @@ export class EpaycoDonationProvider implements DonationProvider {
         body: JSON.stringify({
           checkout_version: '2',
           name: input.description,
+          description: input.description,
           currency: 'COP',
           amount: input.amountCents,
           response: `${input.backUrl}/epayco-result`,

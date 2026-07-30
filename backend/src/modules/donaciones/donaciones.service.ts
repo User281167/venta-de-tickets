@@ -38,7 +38,7 @@ export async function createDonation(
   const result = await provider.createPreference({
     externalReference,
     amountCents: input.amountCents,
-    description: `Donación - ${input.account.replace('_', ' ')}`,
+    description: `Donación para ${input.account === 'LA_CONVENCION' ? 'La Convención' : 'Barranqueros UTP'}`,
     backUrl: input.backUrl,
     payerEmail: input.email ?? undefined,
   });

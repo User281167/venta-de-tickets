@@ -37,7 +37,8 @@ export class EpaycoProvider implements PaymentProvider {
         },
         body: JSON.stringify({
           checkout_version: '2',
-          name: input.items[0]?.name ?? 'Entradas para la Conveción de Egresados UTP 2026',
+          name: input.items.map(i => `${i.name} x${i.quantity}`).join(', ') || 'Entradas',
+          description: input.items.map(i => `${i.name} x${i.quantity}`).join(', ') || 'Entradas',
           currency: 'COP',
           amount: totalAmount,
           response: `${input.backUrl}/result`,
