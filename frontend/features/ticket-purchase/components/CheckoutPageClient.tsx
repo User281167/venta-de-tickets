@@ -53,7 +53,7 @@ export function CheckoutPageClient() {
   const mutation = useCreateCheckoutPreference();
   const { data: meData, isLoading: isLoadingMe } = useMe();
 
-  const [selectedProvider, setSelectedProvider] = useState<"mercadopago" | "epayco">("mercadopago");
+  const [selectedProvider, setSelectedProvider] = useState<"epayco">("epayco");
   const [profileDialogOpen, setProfileDialogOpen] = useState(false);
   const [errorDialogOpen, setErrorDialogOpen] = useState(false);
   const [autoOpenHandled, setAutoOpenHandled] = useState(false);
@@ -86,10 +86,6 @@ export function CheckoutPageClient() {
       setAutoOpenHandled(true);
     }
   }, [isLoadingMe, meData, isProfileIncomplete, autoOpenHandled]);
-
-  useEffect(() => {
-    setEpaycoError(null);
-  }, [selectedProvider]);
 
   if (items.length === 0) return null;
 
@@ -243,45 +239,19 @@ export function CheckoutPageClient() {
           >
             <OrderSummary hideComprar />
 
-            <div className="!mb-4 !flex !gap-2">
-              <button
-                type="button"
-                onClick={() => setSelectedProvider("mercadopago")}
-                className={`!flex-1 !rounded-lg !p-2 !text-xs !font-bold !uppercase !tracking-[0.12em] !transition ${
-                  selectedProvider === "mercadopago"
-                    ? "!bg-[#ffe600] !text-[#2d3277]"
-                    : "!bg-white/5 !text-white/50 hover:!bg-white/10"
-                }`}
-              >
-                Mercado Pago
-              </button>
-              <button
-                type="button"
-                onClick={() => setSelectedProvider("epayco")}
-                className={`!flex-1 !rounded-lg !p-2 !text-xs !font-bold !uppercase !tracking-[0.12em] !transition ${
-                  selectedProvider === "epayco"
-                    ? "!bg-white !text-black"
-                    : "!bg-white/5 !text-white/50 hover:!bg-white/10"
-                }`}
-              >
-                ePayco
-              </button>
-            </div>
+            <EpaycoCheckoutButton
+              backUrl={`${typeof window !== "undefined" ? window.location.origin : ""}/checkout`}
+              onError={(code, message) => setEpaycoError({ code, message })}
+            />
 
-            {selectedProvider === "epayco" && (
-              <EpaycoCheckoutButton
-                backUrl={`${typeof window !== "undefined" ? window.location.origin : ""}/checkout`}
-                onError={(code, message) => setEpaycoError({ code, message })}
-              />
-            )}
-
-            {selectedProvider === "mercadopago" && preferenceId && (
+            {/* MP hidden — MP credentials not ready */}
+            {false && preferenceId && (
               <div className="!mt-4" data-testid="wallet-section">
                 <MpWalletButton preferenceId={preferenceId} />
               </div>
             )}
 
-            {selectedProvider === "mercadopago" && !preferenceId && !mutation.isError && (
+            {false && !preferenceId && !mutation.isError && (
               <div className="!flex !flex-col !gap-2">
                 <button
                   type="button"
