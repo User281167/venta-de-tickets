@@ -7,6 +7,7 @@ import {
   IconBrandYoutube,
   IconMail,
   IconMapPin,
+  IconMessageCircle,
   IconPhone,
   IconWorld,
 } from "@tabler/icons-react";
@@ -139,7 +140,7 @@ export function Footer() {
           </div>
 
           <div className="!flex !flex-col !items-start !gap-4">
-            <Eyebrow>Con el apoyo de</Eyebrow>
+            <Eyebrow>Organiza</Eyebrow>
             <img
               src="/utp-logo.png"
               alt="Universidad Tecnológica de Pereira"
@@ -231,6 +232,17 @@ export function Footer() {
                 className="!mt-0.5 !shrink-0 !text-white/55"
               />
               <span>+57 606 313 7110 - 313 7533</span>
+            </a>
+            <a
+              href="https://wa.me/+573216423542"
+              target="_blank"
+              className="!flex !items-start !gap-2 !text-sm !text-white/65 !transition hover:!text-white"
+            >
+              <IconMessageCircle
+                size={16}
+                className="!mt-0.5 !shrink-0 !text-white/55"
+              />
+              <span>+57 3216423542</span>
             </a>
           </div>
         </div>
