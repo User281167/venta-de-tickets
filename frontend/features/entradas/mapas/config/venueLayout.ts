@@ -61,6 +61,9 @@ export type VenueLayout = {
 };
 
 const PLACEHOLDER = "00000000-0000-0000-0000-000000000000";
+const PLACE_VIPS = process.env.NEXT_PUBLIC_ZONA_VIP_IDS ?? PLACEHOLDER
+const PLACE_PLATA = process.env.NEXT_PUBLIC_ZONA_PLATA_IDS ?? PLACEHOLDER
+const PLACE_BRONCE = process.env.NEXT_PUBLIC_ZONA_BRONCE_IDS ?? PLACEHOLDER
 
 // Two-row layout matching the venue plan: each zone (Bronce/Plata/VIP) is
 // drawn as TWO physical blocks — a primary block in the main hall and a
@@ -91,7 +94,7 @@ export const venueLayout: VenueLayout = {
         { x: 120, y: 540, width: 171, height: 150, rows: 5, cols: 16 },
       ],
       entrances: [],
-      ticketTypeIds: ["4ca65855-ef7c-47d7-886c-287f0b0e1b12", "5cbbc707-669b-4192-a417-b30dfc92b55a"],
+      ticketTypeIds: [PLACE_BRONCE],
       confirmed: true,
     },
     {
@@ -107,7 +110,7 @@ export const venueLayout: VenueLayout = {
         { x: 302, y: 540, width: 144, height: 150, rows: 5, cols: 12 },
       ],
       entrances: [],
-      ticketTypeIds: ["7a1ca2b7-57ae-4e1f-bc92-06b5defdba13"],
+      ticketTypeIds: [PLACE_PLATA],
       confirmed: true,
     },
     {
@@ -123,7 +126,7 @@ export const venueLayout: VenueLayout = {
         { x: 455, y: 540, width: 36, height: 150, rows: 5, cols: 3 },
       ],
       entrances: [],
-      ticketTypeIds: ["6915c724-b4e8-4e06-ad20-2ac6df08b600"],
+      ticketTypeIds: [PLACE_VIPS],
       confirmed: true,
     },
     {
