@@ -5,6 +5,18 @@ import type { EpaycoCheckoutResponse, EpaycoSessionRequest, EpaycoStatusResponse
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
+const ERROR_MESSAGES: Record<string, string> = {
+  VALIDATION_ERROR: "Algunos campos no son válidos. Revisa la información ingresada.",
+  MAX_PER_USER_EXCEEDED: "Has excedido el límite por usuario para uno o más tipos de entrada.",
+  TICKET_TYPE_NOT_AVAILABLE: "Uno o más tipos de entrada ya no están disponibles.",
+  TICKET_TYPE_EXPIRED: "La venta de una o más entradas ya cerró.",
+  EGRESADO_ONLY: "Una o más entradas están reservadas para egresados.",
+  SOLD_OUT: "Uno o más tipos de entrada están agotados.",
+  USER_INFO_INCOMPLETE: "Completa tu perfil para continuar con el pago.",
+  UNAUTHORIZED: "Tu sesión expiró. Inicia sesión nuevamente.",
+  INTERNAL_ERROR: "No pudimos procesar el pago. Intenta de nuevo.",
+};
+
 async function getToken(): Promise<string> {
   const supabase = createClient();
   const { data } = await supabase.auth.getSession();
@@ -35,8 +47,10 @@ export async function createEpaycoSession(
 
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
-    const error = new Error(body?.error?.message ?? `Error ${res.status}`);
-    (error as any).code = body?.error?.code;
+    const code = body?.error?.code ?? "INTERNAL_ERROR";
+    const message = ERROR_MESSAGES[code] ?? body?.error?.message ?? "Error inesperado";
+    const error = new Error(message);
+    (error as any).code = code;
     throw error;
   }
 
