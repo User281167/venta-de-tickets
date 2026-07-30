@@ -142,6 +142,31 @@ export async function sendTicketConfirmation(input: {
   );
 }
 
+export async function sendTicketPaid(input: {
+  customerName: string;
+  customerEmail: string;
+  ticketId: string;
+  ticketCode: string;
+  ticketName?: string;
+  qrDataUrl: string;
+}): Promise<void> {
+  const html = renderTemplate('ticket-paid', {
+    frontendUrl: env.CONFIRMATION_LINK_BASE_URL,
+    customerName: input.customerName,
+    eventName: EVENT_NAME,
+    ticketId: input.ticketId,
+    ticketCode: input.ticketCode,
+    ticketName: input.ticketName ?? `Entrada para ${EVENT_NAME}`,
+    qrDataUrl: input.qrDataUrl,
+  });
+
+  await getEmailProvider().send(
+    input.customerEmail,
+    `Tu entrada está lista — ${EVENT_NAME}`,
+    html,
+  );
+}
+
 export async function sendTicketCancellation(input: {
   customerName: string;
   customerEmail: string;
@@ -167,6 +192,7 @@ export const messagingService = {
   sendPaymentUnfulfillable,
   sendPaymentRefunded,
   sendTicketConfirmation,
+  sendTicketPaid,
   sendTicketCancellation,
 };
 

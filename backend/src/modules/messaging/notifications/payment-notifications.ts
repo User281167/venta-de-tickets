@@ -1,13 +1,21 @@
 import { prisma } from '../../../shared/database/prisma.client.js';
 import { logger } from '../../../utils/logger.js';
 import { messagingService } from '../messaging.service.js';
+import { generateQrPngDataUrl } from '../qr.js';
 
 async function findPaymentWithUser(paymentId: string) {
   return prisma.payment.findUnique({
     where: { id: paymentId },
     include: {
       user: { select: { id: true, email: true, fullName: true } },
-      tickets: { select: { id: true } },
+      tickets: {
+        select: {
+          id: true,
+          ticketCode: true,
+          qrToken: true,
+          ticketType: { select: { name: true } },
+        },
+      },
     },
   });
 }
@@ -28,6 +36,37 @@ export async function notifyPaymentConfirmed(paymentId: string): Promise<void> {
       totalCents: payment.totalCents,
       paidAt: payment.updatedAt,
     });
+
+    for (const ticket of payment.tickets) {
+      if (!ticket.qrToken) {
+        logger.warn(
+          `Skipping ticket-paid email: missing qrToken ticketId=${ticket.id} paymentId=${paymentId}`,
+        );
+        continue;
+      }
+
+      try {
+        const qrDataUrl = await generateQrPngDataUrl(ticket.qrToken);
+
+        await messagingService.sendTicketPaid({
+          customerName: payment.user.fullName,
+          customerEmail: payment.user.email,
+          ticketId: ticket.id,
+          ticketCode: ticket.ticketCode,
+          ticketName: ticket.ticketType.name,
+          qrDataUrl,
+        });
+      } catch (ticketErr) {
+        logger.error(
+          {
+            err: (ticketErr as Error).message,
+            paymentId,
+            ticketId: ticket.id,
+          },
+          '[messaging:notify] ticket-paid dispatch failed',
+        );
+      }
+    }
   } catch (err) {
     logger.error(
       { err: (err as Error).message, paymentId },

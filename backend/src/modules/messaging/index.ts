@@ -13,3 +13,4 @@ export type {
   MessagingClient,
   ConfirmationLinkPayload,
 } from './messaging.types.js';
+
