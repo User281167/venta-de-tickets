@@ -1,29 +1,15 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
+import Script from "next/script";
 import { useRouter } from "next/navigation";
 import NextImage from "next/image";
 import { IconLock } from "@tabler/icons-react";
 import { useCart } from "@/features/ticket-purchase/hooks/useCart";
 import { useCreateEpaycoCheckout } from "../api/epayco.queries";
 
-declare const ePayco: {
-  checkout: {
-    configure: (config: {
-      sessionId: string;
-      type: "onpage" | "standard";
-      test: boolean;
-    }) => {
-      open: () => void;
-      setHooks: (hooks: {
-        onCreated?: (data: unknown) => void;
-        onResponse?: (response: { ref_payco?: string; x_response?: string; x_ref_payco?: string }) => void;
-        onErrors?: (error: unknown) => void;
-        onClosed?: (errors?: unknown) => void;
-      }) => void;
-    };
-  };
-};
+const EPAYCO_SDK_URL = "https://checkout.epayco.co/checkout-v2.js";
+const EPAYCO_TEST_MODE = process.env.NEXT_PUBLIC_EPAYCO_TEST === "true";
 
 interface EpaycoCheckoutButtonProps {
   backUrl: string;
@@ -35,37 +21,35 @@ export function EpaycoCheckoutButton({ backUrl, onError }: EpaycoCheckoutButtonP
   const { items } = useCart();
   const mutation = useCreateEpaycoCheckout();
   const [scriptReady, setScriptReady] = useState(false);
+  const [scriptError, setScriptError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-  const dialogRef = useRef<HTMLDialogElement>(null);
+  const isMountedRef = useRef(true);
 
-  useEffect(() => {
+  const handleScriptLoad = useCallback(() => {
     if (typeof window === "undefined") return;
-    if (typeof ePayco !== "undefined") {
-      setScriptReady(true);
-      return;
-    }
 
-    const script = document.createElement("script");
-    script.src = "https://checkout.epayco.co/checkout-v2.js";
-    script.async = true;
-    script.onload = () => {
-      if (typeof ePayco !== "undefined") {
-        setScriptReady(true);
-      } else {
-        setErrorMsg("ePayco no cargó correctamente.");
-      }
-    };
-    script.onerror = () => {
-      setErrorMsg("Error al cargar ePayco. Verifica tu conexión.");
-    };
-    document.body.appendChild(script);
+    if (window.ePayco) {
+      isMountedRef.current = true;
+      setScriptReady(true);
+    } else {
+      setScriptError(true);
+    }
+  }, []);
+
+  const handleScriptError = useCallback(() => {
+    setScriptError(true);
   }, []);
 
   const handlePagar = useCallback(async () => {
     setErrorMsg("");
 
-    if (!scriptReady) {
-      setErrorMsg("Medio de pago no disponible.");
+    if (scriptError) {
+      setErrorMsg("No se pudo cargar el medio de pago. Recarga la página.");
+      return;
+    }
+
+    if (!scriptReady || typeof window === "undefined" || !window.ePayco) {
+      setErrorMsg("Medio de pago no disponible. Intenta de nuevo.");
       return;
     }
 
@@ -89,10 +73,10 @@ export function EpaycoCheckoutButton({ backUrl, onError }: EpaycoCheckoutButtonP
       return;
     }
 
-    const checkout = ePayco.checkout.configure({
+    const checkout = window.ePayco.checkout.configure({
       sessionId,
       type: "onpage",
-      test: process.env.NEXT_PUBLIC_EPAYCO_TEST === "true",
+      test: EPAYCO_TEST_MODE,
     });
 
     checkout.setHooks({
@@ -105,7 +89,7 @@ export function EpaycoCheckoutButton({ backUrl, onError }: EpaycoCheckoutButtonP
           setErrorMsg("El pago no fue procesado. Intenta de nuevo.");
         }
       },
-      onErrors: (error) => {
+      onErrors: () => {
         setErrorMsg("Error al procesar el pago.");
       },
       onClosed: () => {
@@ -114,21 +98,35 @@ export function EpaycoCheckoutButton({ backUrl, onError }: EpaycoCheckoutButtonP
     });
 
     checkout.open();
-  }, [scriptReady, mutation, items, backUrl, router]);
+  }, [scriptReady, scriptError, mutation, items, backUrl, router, onError]);
+
+  const buttonDisabled = mutation.isPending || !scriptReady || scriptError;
+  const buttonTitle = scriptError
+    ? "No se pudo cargar ePayco. Recarga la página."
+    : !scriptReady
+      ? "Cargando medio de pago..."
+      : undefined;
 
   return (
     <div className="!mt-4 !flex !flex-col !gap-2">
+      <Script
+        src={EPAYCO_SDK_URL}
+        strategy="afterInteractive"
+        onLoad={handleScriptLoad}
+        onError={handleScriptError}
+      />
+
       <button
         type="button"
         onClick={handlePagar}
-        disabled={mutation.isPending || !scriptReady}
+        disabled={buttonDisabled}
+        title={buttonTitle}
         data-testid="epayco-pay-button"
         className="!relative !flex !h-16 !w-full !items-center !justify-center !overflow-hidden !rounded-xl !bg-white !p-2 !transition !duration-300 hover:!translate-y-[-2px] disabled:!cursor-not-allowed disabled:!opacity-60 disabled:hover:!translate-y-0"
         style={{
-          boxShadow:
-            mutation.isPending || !scriptReady
-              ? undefined
-              : "0 8px 24px rgba(0,201,183,0.25)",
+          boxShadow: buttonDisabled
+            ? undefined
+            : "0 8px 24px rgba(0,201,183,0.25)",
         }}
       >
         {mutation.isPending ? (
@@ -169,8 +167,6 @@ export function EpaycoCheckoutButton({ backUrl, onError }: EpaycoCheckoutButtonP
           {errorMsg}
         </div>
       )}
-
-      <dialog ref={dialogRef} />
     </div>
   );
 }
