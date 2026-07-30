@@ -1,5 +1,5 @@
 <!-- SPECKIT START -->
-Current plan: specs/020-epayco-checkout/plan.md
+Current plan: specs/021-donation-dashboard/plan.md
 <!-- SPECKIT END -->
 
 # AGENT.md
