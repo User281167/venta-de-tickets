@@ -41,7 +41,7 @@ export function ProfileIncompleteGuard() {
   const router = useRouter();
   const pathname = usePathname();
   const { user, isLoading: isLoadingAuth } = useAuth();
-  const { data: meData } = useMe();
+  const { data: meData, isLoading: isLoadingMe } = useMe();
   const { mutate: doUpdate, isPending } = useUpdateMe();
 
   const [open, setOpen] = useState(false);
@@ -54,26 +54,30 @@ export function ProfileIncompleteGuard() {
   }>({});
 
   const isLoggedIn = !!user && !isLoadingAuth;
-  const needsCedula = !meData?.user?.cedula;
-  const needsFullName = !meData?.user?.fullName;
+  const meLoaded = !isLoadingMe && !!meData?.user;
+  const needsCedula = meLoaded ? !meData.user.cedula : false;
+  const needsFullName = meLoaded ? !meData.user.fullName : false;
   const isIncomplete = needsCedula || needsFullName;
 
-  const shouldShow = isLoggedIn && isIncomplete;
+  const shouldShow = isLoggedIn && meLoaded && isIncomplete;
   const isSkipped = SKIP_PATHS.some((p) => pathname?.startsWith(p));
 
   const handleOpenChange = (next: boolean) => {
     if (!next && isIncomplete) return;
+
     if (next && meData?.user) {
       setCedula(meData.user.cedula ?? "");
       setFullName(meData.user.fullName ?? "");
       setErrors({});
     }
+
     setOpen(next);
   };
 
   if (shouldShow && !isSkipped && pathname && pathname !== lastAutoPath) {
     setLastAutoPath(pathname);
     setOpen(true);
+
     if (meData?.user) {
       setCedula(meData.user.cedula ?? "");
       setFullName(meData.user.fullName ?? "");
@@ -103,6 +107,7 @@ export function ProfileIncompleteGuard() {
           fieldErrors[key] = issue.message;
         }
       }
+
       setErrors(fieldErrors);
       return;
     }

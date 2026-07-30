@@ -8,10 +8,12 @@ const PARTNERS = [
   { name: "Publik", image: "/aliados/publik.png" },
   { name: "Sueje", image: "/aliados/sueje.png" },
   { name: "Tecnodiesel", image: "/aliados/tecnodiesel.svg" },
+  { name: "Sonesta", image: "/aliados/sonesta.png" },
   { name: "GHL Hoteles", image: "/aliados/GHL holetes.png" },
   { name: "Publik", image: "/aliados/publik.png" },
   { name: "Sueje", image: "/aliados/sueje.png" },
   { name: "Tecnodiesel", image: "/aliados/tecnodiesel.svg" },
+  { name: "Sonesta", image: "/aliados/sonesta.png" },
 ];
 
 const GRADIENT_TEXT = {

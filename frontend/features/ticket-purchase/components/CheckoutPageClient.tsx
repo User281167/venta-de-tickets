@@ -67,25 +67,38 @@ export function CheckoutPageClient() {
     }
   }, [items, router]);
 
-  const missingFields = meData?.user
+  const meLoaded = !isLoadingMe && !!meData?.user;
+  const missingFields = meLoaded
     ? pickMissingFields({
-        cedula: meData.user.cedula,
-        fullName: meData.user.fullName,
+        cedula: meData!.user.cedula,
+        fullName: meData!.user.fullName,
       })
     : [];
-  const isProfileIncomplete = missingFields.length > 0;
+  const isProfileIncomplete = meLoaded && missingFields.length > 0;
 
   useEffect(() => {
-    if (
-      !isLoadingMe &&
-      meData?.user &&
-      isProfileIncomplete &&
-      !autoOpenHandled
-    ) {
+    if (meLoaded && isProfileIncomplete && !autoOpenHandled) {
       setProfileDialogOpen(true);
       setAutoOpenHandled(true);
     }
-  }, [isLoadingMe, meData, isProfileIncomplete, autoOpenHandled]);
+  }, [meLoaded, isProfileIncomplete, autoOpenHandled]);
+
+  if (!meLoaded) {
+    return (
+      <PageShell
+        eyebrow="Finalizar compra"
+        title="Revisa tu pedido"
+        subtitle="Cargando tu información..."
+      >
+        <div className="!flex !min-h-[40vh] !items-center !justify-center">
+          <div
+            className="!h-10 !w-10 !animate-spin !rounded-full !border-2 !border-white/20 !border-t-cyan-400"
+            aria-hidden="true"
+          />
+        </div>
+      </PageShell>
+    );
+  }
 
   if (items.length === 0) return null;
 
@@ -136,8 +149,7 @@ export function CheckoutPageClient() {
     }
   };
 
-  const pagarDisabled =
-    mutation.isPending || isProfileIncomplete || isLoadingMe;
+  const pagarDisabled = !meLoaded || mutation.isPending || isProfileIncomplete;
 
   const profileDialogForceOpen = isError && errorCode === "USER_INFO_INCOMPLETE";
   const errorDialogForceOpen =
