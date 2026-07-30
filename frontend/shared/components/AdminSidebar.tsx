@@ -25,6 +25,7 @@ import {
   IconX,
   IconHome,
   IconCurrencyDollar,
+  IconHeart,
 } from "@tabler/icons-react";
 import { useState, type ReactNode } from "react";
 
@@ -60,6 +61,12 @@ const ALL_LINKS: SidebarLink[] = [
     href: "/admin/pagos",
     label: "Pagos",
     icon: <IconCurrencyDollar size={20} />,
+    roles: ["super_admin", "admin"] as const,
+  },
+  {
+    href: "/admin/donaciones",
+    label: "Donaciones",
+    icon: <IconHeart size={20} />,
     roles: ["super_admin", "admin"] as const,
   },
   {

@@ -30,3 +30,18 @@ export type DonationResponse = z.infer<typeof donationResponseSchema>;
 export type DonationStatusResponse = z.infer<typeof donationStatusSchema>;
 
 export type DonationProviderName = 'epayco-la-convencion' | 'epayco-barranqueros-utp';
+
+export const adminListDonationsQuerySchema = z.object({
+  page: z.coerce.number().int().positive().default(1),
+  limit: z.coerce.number().int().positive().max(100).default(50),
+  state: z.nativeEnum(DonationStatus).optional(),
+  account: z.nativeEnum(DonationAccount).optional(),
+  search: z.string().max(255).optional(),
+});
+
+export const adminResendDonationParamsSchema = z.object({
+  id: z.string().uuid(),
+});
+
+export type AdminListDonationsQuery = z.infer<typeof adminListDonationsQuerySchema>;
+export type AdminResendDonationParams = z.infer<typeof adminResendDonationParamsSchema>;

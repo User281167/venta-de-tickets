@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { DonationAccount } from '@prisma/client';
 
 const envSchema = z.object({
   DATABASE_URL: z.string().min(1, 'DATABASE_URL is required'),

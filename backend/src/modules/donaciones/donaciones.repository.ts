@@ -16,6 +16,21 @@ export interface UpdateDonationData {
   metadata?: Prisma.InputJsonValue;
 }
 
+export interface AdminDonationFilters {
+  page: number;
+  limit: number;
+  state?: DonationStatus;
+  account?: DonationAccount;
+  search?: string;
+}
+
+export interface PaginatedDonations {
+  data: Donation[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
 export function createDonationUUID() {
   return crypto.randomUUID();
 }
@@ -55,6 +70,61 @@ export const donationRepository = {
         paymentId: data.paymentId,
         metadata: data.metadata,
       },
+    });
+    return result.count;
+  },
+
+  findById: async (id: string): Promise<Donation | null> => {
+    return prisma.donation.findUnique({
+      where: { id: id },
+    });
+  },
+
+  findAllAdmin: async (
+    filters: AdminDonationFilters,
+  ): Promise<PaginatedDonations> => {
+    const where: Prisma.DonationWhereInput = {};
+
+    if (filters.state) {
+      where.state = filters.state;
+    }
+
+    if (filters.account) {
+      where.account = filters.account;
+    }
+
+    if (filters.search) {
+      const term = filters.search.trim();
+      if (term.length > 0) {
+        where.OR = [
+          { full_name: { contains: term, mode: 'insensitive' } },
+          { email: { contains: term, mode: 'insensitive' } },
+        ];
+      }
+    }
+
+    const skip = (filters.page - 1) * filters.limit;
+
+    const [data, total] = await Promise.all([
+      prisma.donation.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: filters.limit,
+      }),
+      prisma.donation.count({ where }),
+    ]);
+
+    return { data, total, page: filters.page, limit: filters.limit };
+  },
+
+  expirePending: async (olderThan: Date): Promise<number> => {
+    const result = await prisma.donation.updateMany({
+      where: {
+        state: 'pending',
+        createdAt: { lt: olderThan },
+      },
+      data: { state: 'cancelled' },
     });
     return result.count;
   },
