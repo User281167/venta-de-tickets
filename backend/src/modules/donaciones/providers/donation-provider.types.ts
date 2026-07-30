@@ -11,6 +11,7 @@ export interface DonationPreferenceInput {
 export interface DonationPreferenceResult {
   initPoint: string;
   providerTxId: string;
+  sessionId?: string;
 }
 
 export interface NormalizedDonationWebhookEvent {

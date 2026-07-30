@@ -43,6 +43,7 @@ export type CreateDonationInput = {
 
 export type CreateDonationResponse = {
   initPoint: string;
+  sessionId?: string;
 };
 
 export type DonationStatusResponse = {

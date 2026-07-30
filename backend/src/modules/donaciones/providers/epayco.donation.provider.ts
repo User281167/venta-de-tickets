@@ -10,8 +10,6 @@ import type {
   DonationWebhookStatus,
 } from './donation-provider.types.js';
 
-const EPAYCO_CHECKOUT_URL = 'https://checkout.epayco.co/checkout-v2/session';
-
 export interface EpaycoDonationConfig {
   providerName: string;
   account: string;
@@ -81,15 +79,15 @@ export class EpaycoDonationProvider implements DonationProvider {
     }
 
     const sessionId = data.data.sessionId;
-    const initPoint = `${EPAYCO_CHECKOUT_URL}/${sessionId}`;
 
     logger.info(
       `ePayco donation session created: sessionId=${sessionId}, externalReference=${input.externalReference}`,
     );
 
     return {
-      initPoint,
+      initPoint: '',
       providerTxId: sessionId,
+      sessionId,
     };
   }
 

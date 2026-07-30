@@ -28,7 +28,7 @@ function mapWebhookStatus(
 
 export async function createDonation(
   input: CreateDonationInput,
-): Promise<string> {
+): Promise<{ initPoint: string; sessionId?: string }> {
   const externalReference = generateExternalReference(input.account);
 
   const providerName = `${input.provider}-${input.account.toLowerCase().replace(/_/g, '-')}`;
@@ -50,7 +50,10 @@ export async function createDonation(
     externalReference,
   });
 
-  return result.initPoint;
+  return {
+    initPoint: result.initPoint,
+    sessionId: result.sessionId,
+  };
 }
 
 export async function handleWebhook(

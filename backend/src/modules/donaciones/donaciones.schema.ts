@@ -11,7 +11,8 @@ export const createDonationSchema = z.object({
 });
 
 export const donationResponseSchema = z.object({
-  initPoint: z.string().url(),
+  initPoint: z.string(),
+  sessionId: z.string().optional(),
 });
 
 export const donationStatusSchema = z.object({

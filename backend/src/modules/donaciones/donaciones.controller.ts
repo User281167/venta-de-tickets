@@ -7,9 +7,9 @@ import { createDonationSchema } from './donaciones.schema.js';
 export async function createDonation(req: Request, res: Response): Promise<void> {
   const input = createDonationSchema.parse(req.body);
 
-  const initPoint = await donacionesService.createDonation(input);
+  const result = await donacionesService.createDonation(input);
 
-  res.status(201).json({ initPoint });
+  res.status(201).json(result);
 }
 
 export async function handleLaConvencionWebhook(

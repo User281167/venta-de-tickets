@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { z } from "zod";
 import {
   Button,
@@ -23,6 +24,23 @@ import { toast } from "sonner";
 import { useCreateDonation } from "../hooks/useDonaciones";
 import { formatCurrency } from "@/shared/utils/formats";
 
+declare const ePayco: {
+  checkout: {
+    configure: (config: {
+      sessionId: string;
+      type: "onpage" | "standard";
+      test: boolean;
+    }) => {
+      open: () => void;
+      setHooks: (hooks: {
+        onResponse?: (response: Record<string, string>) => void;
+        onErrors?: (error: unknown) => void;
+        onClosed?: () => void;
+      }) => void;
+    };
+  };
+};
+
 export type DonationAccount = "LA_CONVENCION" | "BARRANQUEROS_UTP";
 
 const formSchema = z.object({
@@ -42,12 +60,33 @@ interface Props {
 }
 
 export function DonationForm({ account, open, onClose, onSubmitting }: Props) {
+  const router = useRouter();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [amount, setAmount] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [scriptReady, setScriptReady] = useState(false);
 
   const mutation = useCreateDonation();
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (typeof ePayco !== "undefined") {
+      setScriptReady(true);
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = "https://checkout.epayco.co/checkout-v2.js";
+    script.async = true;
+
+    script.onload = () => {
+      if (typeof ePayco !== "undefined") {
+        setScriptReady(true);
+      }
+    };
+    document.body.appendChild(script);
+  }, []);
 
   const accountLabel =
     account === "LA_CONVENCION" ? "La Convención" : "Barranqueros UTP";
@@ -74,6 +113,11 @@ export function DonationForm({ account, open, onClose, onSubmitting }: Props) {
 
     setErrors({});
 
+    if (!scriptReady) {
+      toast.error("Medio de pago no disponible.");
+      return;
+    }
+
     onSubmitting?.(true);
 
     mutation.mutate(
@@ -87,7 +131,36 @@ export function DonationForm({ account, open, onClose, onSubmitting }: Props) {
       },
       {
         onSuccess: (data) => {
-          window.location.href = data.initPoint;
+          if (data.sessionId) {
+            const checkout = ePayco.checkout.configure({
+              sessionId: data.sessionId,
+              type: "onpage",
+              test: process.env.NEXT_PUBLIC_EPAYCO_TEST === "true",
+            });
+
+            checkout.setHooks({
+              onResponse: (response) => {
+                const params = new URLSearchParams();
+                if (response.x_ref_payco) params.set("ref_payco", response.x_ref_payco);
+
+                const qs = params.toString();
+                const status = response.x_response === "Aceptada" ? "success" : "failure";
+                router.push(`/donaciones/retorno/state/${status}${qs ? `?${qs}` : ""}`);
+              },
+              onErrors: () => {
+                onSubmitting?.(false);
+                toast.error("Error al procesar el pago. Intenta de nuevo.");
+              },
+              onClosed: () => {
+                mutation.reset();
+                setScriptReady(true);
+              },
+            });
+
+            checkout.open();
+          } else if (data.initPoint) {
+            window.location.href = data.initPoint;
+          }
         },
         onError: (err) => {
           onSubmitting?.(false);
