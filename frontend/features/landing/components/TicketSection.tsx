@@ -1,5 +1,7 @@
 ﻿"use client";
 
+import NextLink from "next/link";
+import { IconMap2 } from "@tabler/icons-react";
 import { motion, type Variants } from "framer-motion";
 import { useActiveTicketTypes } from "@/features/ticket-purchase/api/ticket-purchase.queries";
 import { TicketTypeCard } from "@/features/ticket-types/components/TicketTypeCard";
@@ -120,20 +122,32 @@ export function TicketSection() {
             </p>
           </motion.div>
         ) : (
-          <div className="!grid !grid-cols-1 !gap-6 md:!grid-cols-2 lg:!grid-cols-3">
-            {ticketTypes.map((tt, i) => (
-              <motion.div
-                key={tt.id}
-                initial="hidden"
-                whileInView="show"
-                viewport={VIEWPORT}
-                variants={fadeUp}
-                custom={i + 1}
+          <>
+            <div className="!grid !grid-cols-1 !gap-6 md:!grid-cols-2 lg:!grid-cols-3">
+              {ticketTypes.map((tt, i) => (
+                <motion.div
+                  key={tt.id}
+                  initial="hidden"
+                  whileInView="show"
+                  viewport={VIEWPORT}
+                  variants={fadeUp}
+                  custom={i + 1}
+                >
+                  <TicketTypeCard ticketType={tt} />
+                </motion.div>
+              ))}
+            </div>
+
+            <div className="!mt-8 !flex !justify-center">
+              <NextLink
+                href="/entradas/mapa"
+                className="!inline-flex !items-center !gap-2 !rounded-2xl glass !px-5 !py-3 !text-sm !font-bold !text-white !transition hover:!bg-white/10"
               >
-                <TicketTypeCard ticketType={tt} />
-              </motion.div>
-            ))}
-          </div>
+                <IconMap2 size={16} className="text-utp-azul" />
+                Ver mapa del evento y disponibilidad en vivo
+              </NextLink>
+            </div>
+          </>
         )}
       </div>
 

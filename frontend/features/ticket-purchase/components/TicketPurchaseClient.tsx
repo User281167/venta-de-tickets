@@ -1,19 +1,37 @@
 "use client";
 
+import { useState, useMemo } from "react";
+import NextLink from "next/link";
+import { IconLayoutGrid, IconMap2 } from "@tabler/icons-react";
 import { useActiveTicketTypes } from "../api/ticket-purchase.queries";
 import { TicketTypeGrid } from "./TicketTypeGrid";
 import { OrderSummary } from "./OrderSummary";
 import { PageShell } from "@/shared/components/PageShell";
 import { useMyEgresado } from "../hooks/useMyEgresado";
 import { useAuth } from "@/providers/AuthProvider";
+import { VenueMapContent } from "@/features/entradas/mapas/components/VenueMapContent";
+
+type ViewMode = "grid" | "map";
+
+const PRIMARY_BORDER =
+  "linear-gradient(100deg, #ff0f7b 0%, #a78bfa 35%, #00e5ff 65%, #fdba74 100%)";
 
 export function TicketPurchaseClient() {
   const { data: ticketTypes, isLoading, error } = useActiveTicketTypes();
   const userEgresado = useMyEgresado();
   const { session, isLoading: authLoading } = useAuth();
   const isLoggedIn = !authLoading && !!session;
+  const [viewMode, setViewMode] = useState<ViewMode>("grid");
 
-  if (isLoading) {
+  const showSkeleton = isLoading && viewMode === "grid";
+  const showError = !!error && viewMode === "grid";
+
+  const isEmpty = useMemo(
+    () => !ticketTypes || ticketTypes.length === 0,
+    [ticketTypes],
+  );
+
+  if (showSkeleton) {
     return (
       <PageShell
         eyebrow="Compra tus entradas"
@@ -39,7 +57,7 @@ export function TicketPurchaseClient() {
     );
   }
 
-  if (error) {
+  if (showError) {
     return (
       <PageShell title="La Convención">
         <p className="!text-center !text-white/60">
@@ -51,7 +69,7 @@ export function TicketPurchaseClient() {
     );
   }
 
-  if (!ticketTypes || ticketTypes.length === 0) {
+  if (isEmpty && viewMode === "grid") {
     return (
       <PageShell title="La Convención">
         <p className="!text-center !text-white/60">
@@ -67,13 +85,75 @@ export function TicketPurchaseClient() {
       title="La Convención"
       subtitle="Selecciona el tipo de entrada que deseas adquirir. Las unidades son limitadas."
     >
+      <div className="!mb-6 !flex !flex-wrap !items-center !justify-between !gap-3">
+        <div
+          className="!inline-flex !rounded-2xl !border !p-1"
+          style={{
+            background: "rgba(15, 18, 38, 0.6)",
+            borderColor: "rgba(255,255,255,0.1)",
+          }}
+          role="tablist"
+          aria-label="Modo de visualización"
+        >
+          <button
+            type="button"
+            role="tab"
+            aria-selected={viewMode === "grid"}
+            onClick={() => setViewMode("grid")}
+            className="!inline-flex !items-center !gap-2 !rounded-xl !px-4 !py-2 !text-sm !font-bold !transition"
+            style={
+              viewMode === "grid"
+                ? {
+                    background: PRIMARY_BORDER,
+                    color: "#000",
+                  }
+                : { color: "rgba(255,255,255,0.7)" }
+            }
+          >
+            <IconLayoutGrid size={16} />
+            Lista
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={viewMode === "map"}
+            onClick={() => setViewMode("map")}
+            className="!inline-flex !items-center !gap-2 !rounded-xl !px-4 !py-2 !text-sm !font-bold !transition"
+            style={
+              viewMode === "map"
+                ? {
+                    background: PRIMARY_BORDER,
+                    color: "#000",
+                  }
+                : { color: "rgba(255,255,255,0.7)" }
+            }
+          >
+            <IconMap2 size={16} />
+            Mapa
+          </button>
+        </div>
+
+        {viewMode === "map" && (
+          <NextLink
+            href="/entradas/mapa"
+            className="!text-xs !text-white/55 !underline-offset-2 hover:!text-white hover:!underline"
+          >
+            Ver mapa en página completa →
+          </NextLink>
+        )}
+      </div>
+
       <div className="!grid !grid-cols-1 !gap-6 lg:!grid-cols-[2fr_1fr] lg:!items-start">
         <div>
-          <TicketTypeGrid
-            ticketTypes={ticketTypes}
-            userEgresado={userEgresado}
-            isLoggedIn={isLoggedIn}
-          />
+          {viewMode === "grid" ? (
+            <TicketTypeGrid
+              ticketTypes={ticketTypes ?? []}
+              userEgresado={userEgresado}
+              isLoggedIn={isLoggedIn}
+            />
+          ) : (
+            <VenueMapContent hideOrderSummary />
+          )}
         </div>
 
         <div className="lg:!sticky lg:!top-28">
