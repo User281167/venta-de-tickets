@@ -82,6 +82,7 @@ export function DonationForm({ account, open, onClose, onSubmitting }: Props) {
         email: parsed.data.email || null,
         amountCents: parsed.data.amount,
         account,
+        provider: "epayco",
         backUrl: `${window.location.origin}/donaciones/retorno`,
       },
       {

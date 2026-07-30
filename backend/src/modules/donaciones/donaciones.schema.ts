@@ -7,6 +7,7 @@ export const createDonationSchema = z.object({
   amountCents: z.number().int().min(2000, 'El monto mínimo es 2000 COP'),
   account: z.nativeEnum(DonationAccount),
   backUrl: z.string().url(),
+  provider: z.enum(['epayco']).default('epayco'),
 });
 
 export const donationResponseSchema = z.object({
@@ -26,3 +27,5 @@ export const webhookPayloadSchema = z.record(z.string(), z.unknown());
 export type CreateDonationInput = z.infer<typeof createDonationSchema>;
 export type DonationResponse = z.infer<typeof donationResponseSchema>;
 export type DonationStatusResponse = z.infer<typeof donationStatusSchema>;
+
+export type DonationProviderName = 'epayco-la-convencion' | 'epayco-barranqueros-utp';

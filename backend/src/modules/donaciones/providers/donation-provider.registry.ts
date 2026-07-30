@@ -1,6 +1,7 @@
 import type { DonationProvider } from './donation-provider.types.js';
 import { env } from '../../../shared/config/env.js';
 import { MercadoPagoDonationProvider } from './mercadopago.donation.provider.js';
+import { EpaycoDonationProvider } from './epayco.donation.provider.js';
 
 const providers = new Map<string, DonationProvider>();
 
@@ -21,6 +22,18 @@ function registerKnownDonationProviders() {
     webhookSecret: env.MERCADOPAGO_WEBHOOK_SECRET,
     providerName: 'mercadopago-barranqueros-utp',
     notificationUrl: `${env.API_URL}/api/donaciones/webhook/mercadopago-barranqueros-utp`,
+  }));
+
+  registerDonationProvider('epayco-la-convencion', new EpaycoDonationProvider({
+    providerName: 'epayco-la-convencion',
+    account: 'LA_CONVENCION',
+    notificationUrl: `${env.API_URL}/api/donaciones/webhook/epayco-la-convencion`,
+  }));
+
+  registerDonationProvider('epayco-barranqueros-utp', new EpaycoDonationProvider({
+    providerName: 'epayco-barranqueros-utp',
+    account: 'BARRANQUEROS_UTP',
+    notificationUrl: `${env.API_URL}/api/donaciones/webhook/epayco-barranqueros-utp`,
   }));
 }
 

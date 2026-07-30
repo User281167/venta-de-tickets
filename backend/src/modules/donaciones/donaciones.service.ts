@@ -31,9 +31,8 @@ export async function createDonation(
 ): Promise<string> {
   const externalReference = generateExternalReference(input.account);
 
-  const provider = getDonationProvider(
-    `mercadopago-${input.account.toLowerCase().replace(/_/g, '-')}`,
-  );
+  const providerName = `${input.provider}-${input.account.toLowerCase().replace(/_/g, '-')}`;
+  const provider = getDonationProvider(providerName);
 
   const result = await provider.createPreference({
     externalReference,

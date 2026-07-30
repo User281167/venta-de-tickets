@@ -38,6 +38,32 @@ export async function handleBarranquerosWebhook(
   res.status(200).json({ status: 'processed' });
 }
 
+export async function handleEpaycoLaConvencionWebhook(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  await donacionesService.handleWebhook(
+    'epayco-la-convencion',
+    req.body,
+    req.headers as Record<string, string>,
+  );
+
+  res.status(200).json({ status: 'processed' });
+}
+
+export async function handleEpaycoBarranquerosWebhook(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  await donacionesService.handleWebhook(
+    'epayco-barranqueros-utp',
+    req.body,
+    req.headers as Record<string, string>,
+  );
+
+  res.status(200).json({ status: 'processed' });
+}
+
 export async function getStatus(req: Request, res: Response): Promise<void> {
   const externalReference = z.string().parse(req.params.externalReference);
 

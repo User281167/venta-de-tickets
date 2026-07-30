@@ -15,4 +15,12 @@ donacionesRouter.post(
   '/webhook/mercadopago-barranqueros-utp',
   ctrl.handleBarranquerosWebhook,
 );
+donacionesRouter.post(
+  '/webhook/epayco-la-convencion',
+  ctrl.handleEpaycoLaConvencionWebhook,
+);
+donacionesRouter.post(
+  '/webhook/epayco-barranqueros-utp',
+  ctrl.handleEpaycoBarranquerosWebhook,
+);
 donacionesRouter.get('/:externalReference/status', ctrl.getStatus);
