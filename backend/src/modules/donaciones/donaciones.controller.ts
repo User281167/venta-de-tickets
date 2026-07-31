@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { z } from 'zod';
+import { z, ZodError } from 'zod';
 
 import * as donacionesService from './donaciones.service.js';
 import {
@@ -82,25 +82,39 @@ export async function getStatus(req: Request, res: Response): Promise<void> {
 }
 
 export async function listDonations(req: Request, res: Response): Promise<void> {
-  const filters = adminListDonationsQuerySchema.parse(req.query);
+  try {
+    const filters = adminListDonationsQuerySchema.parse(req.query);
 
-  const result = await donacionesService.listDonations(filters);
+    const result = await donacionesService.listDonations(filters);
 
-  res.status(200).json({
-    data: result.data.map((donation) => ({
-      id: donation.id,
-      fullName: donation.full_name,
-      email: donation.email,
-      amountCents: Number(donation.amountCents),
-      state: donation.state,
-      account: donation.account,
-      externalReference: donation.externalReference,
-      paymentId: donation.paymentId,
-      createdAt: donation.createdAt.toISOString(),
-      updatedAt: donation.updatedAt.toISOString(),
-    })),
-    total: result.total,
-    page: result.page,
-    limit: result.limit,
-  });
+    res.status(200).json({
+      data: result.data.map((donation) => ({
+        id: donation.id,
+        fullName: donation.full_name,
+        email: donation.email,
+        amountCents: Number(donation.amountCents),
+        state: donation.state,
+        account: donation.account,
+        externalReference: donation.externalReference,
+        paymentId: donation.paymentId,
+        createdAt: donation.createdAt.toISOString(),
+        updatedAt: donation.updatedAt.toISOString(),
+      })),
+      total: result.total,
+      page: result.page,
+      limit: result.limit,
+    });
+  } catch (err) {
+    if (err instanceof ZodError) {
+      res.status(422).json({
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: err.issues.map((i) => i.message).join(', '),
+        },
+      });
+      return;
+    }
+
+    throw err;
+  }
 }

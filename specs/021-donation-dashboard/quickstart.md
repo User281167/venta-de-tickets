@@ -2,15 +2,9 @@
 
 ## Setup Steps
 
-### 1. Environment Variables
+### 1. No Environment Variables Required
 
-Add to backend `.env`:
-
-```env
-# Optional — only for non-super-admin admins
-ADMIN_ACCOUNT=LA_CONVENCION
-# or ADMIN_ACCOUNT=BARRANQUEROS_UTP
-```
+Admin endpoint visibility does not require extra env vars. Both `admin` and `super_admin` users see all donations across both accounts.
 
 ### 2. No Database Migration Needed
 
@@ -18,16 +12,25 @@ No schema changes — existing `donations` table is sufficient.
 
 ### 3. Verify Donation Module
 
-Admin donation functionality lives within existing `backend/src/modules/donaciones/`. Ensure `donaciones.repository.ts` has new methods before relying on endpoints.
+Admin donation functionality lives within existing `backend/src/modules/donaciones/`. Ensure `donaciones.repository.ts` has new methods (`findAllAdmin`, `findById`, `expirePending`) before relying on endpoints.
 
 ### 4. Verify Messaging Module
 
-Donation email template must exist at `backend/src/modules/messaging/templates/donation-confirmed.html` before email send works.
+Donation email templates must exist at:
+- `backend/src/modules/messaging/templates/donation-confirmed.html`
+- `backend/src/modules/messaging/templates/donation-rejected.html`
+- `backend/src/modules/messaging/templates/donation-cancelled.html`
 
-### 5. Seed Data (for testing)
+Templates are loaded at runtime by `renderTemplate`.
+
+### 5. Cron Job
+
+`startDonationExpiryJob()` starts automatically with the backend. It runs every 20 minutes and cancels any pending donation older than 20 minutes, sending a cancellation email per expired donation.
+
+### 6. Seed Data (for testing)
 
 Insert test donations via Prisma Studio or direct SQL to verify dashboard renders correctly with various states.
 
-### 6. Admin Account for Testing
+### 7. Admin Account for Testing
 
 Ensure at least one user with role `admin` or `super_admin` exists in the `users` table.

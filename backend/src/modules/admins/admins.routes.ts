@@ -20,6 +20,6 @@ adminsRouter.get('/payments/:id', requireRole('admin'), adminsController.getPaym
 adminsRouter.post('/payments/:id/refund', requireRole('admin'), adminsController.refundPaymentHandler);
 adminsRouter.post('/payments/manual', requireRole('admin'), adminsController.createAdminPaymentHandler);
 
-adminsRouter.get('/donations', requireRole('admin'), donacionesController.listDonations);
+adminsRouter.get('/donations', requireRole('admin', 'super_admin'), donacionesController.listDonations);
 
 export { adminsRouter };
