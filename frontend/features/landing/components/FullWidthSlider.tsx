@@ -7,14 +7,26 @@ import { useEffect, useState } from "react";
 import { AnimatedSection } from "@/shared/components/AnimatedSection";
 
 const SLIDES = [
-  { src: "/ase-oficial/slider0.jpg", alt: "Networking y comunidad", offsetY: "50%" },
-  { src: "/ase-oficial/slider1.jpg", alt: "Momentos de la convención", offsetY: "50%" },
-  { src: "/ase-oficial/slider2.jpg", alt: "Networking y comunidad", offsetY: "50%" },
-  { src: "/ase-oficial/slider4.jpg", alt: "Experiencias UTP", offsetY: "35%" },
-  { src: "/ase-oficial/slider6.jpg", alt: "Networking y comunidad", offsetY: "50%" },
-  { src: "/ase-oficial/slider7.jpg", alt: "Ponencias inspiradoras", offsetY: "60%" },
-  { src: "/ase-oficial/slider8.jpg", alt: "Experiencias UTP", offsetY: "50%" },
-  { src: "/ase-oficial/slider9.jpg", alt: "Experiencias UTP", offsetY: "45%" },
+  { src: "/ase-oficial/0.jpg", alt: "Networking y comunidad", offsetY: "50%" },
+  { src: "/ase-oficial/1.jpg", alt: "Momentos de la convención", offsetY: "50%" },
+  { src: "/ase-oficial/2.jpg", alt: "Networking y comunidad", offsetY: "50%" },
+  { src: "/ase-oficial/4.jpg", alt: "Experiencias UTP", offsetY: "35%" },
+  { src: "/ase-oficial/5.webp", alt: "Networking y comunidad", offsetY: "60%" },
+  { src: "/ase-oficial/6.webp", alt: "Networking y comunidad", offsetY: "50%" },
+  { src: "/ase-oficial/7.jpg", alt: "Ponencias inspiradoras", offsetY: "60%" },
+  { src: "/ase-oficial/8.jpg", alt: "Experiencias UTP", offsetY: "50%" },
+  { src: "/ase-oficial/9.jpg", alt: "Experiencias UTP", offsetY: "45%" },
+  { src: "/ase-oficial/10.jpg", alt: "Experiencias UTP", offsetY: "70%" },
+  { src: "/ase-oficial/11.webp", alt: "Experiencias UTP", offsetY: "30%" },
+  { src: "/ase-oficial/12.webp", alt: "Experiencias UTP", offsetY: "50%" },
+  { src: "/ase-oficial/14.webp", alt: "Experiencias UTP", offsetY: "50%" },
+  { src: "/ase-oficial/15.webp", alt: "Experiencias UTP", offsetY: "50%" },
+  { src: "/ase-oficial/16.webp", alt: "Experiencias UTP", offsetY: "50%" },
+  { src: "/ase-oficial/17.webp", alt: "Experiencias UTP", offsetY: "70%" },
+  { src: "/ase-oficial/18.webp", alt: "Experiencias UTP", offsetY: "50%" },
+  { src: "/ase-oficial/19.webp", alt: "Experiencias UTP", offsetY: "70%" },
+  { src: "/ase-oficial/20.webp", alt: "Experiencias UTP", offsetY: "65%" },
+  { src: "/ase-oficial/21.webp", alt: "Experiencias UTP", offsetY: "80%" },
 ];
 
 const AUTO_PLAY_INTERVAL = 5000;
