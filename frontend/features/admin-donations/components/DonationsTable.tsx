@@ -69,7 +69,7 @@ export function DonationsTable({ donations }: { donations: DonationListRow[] }) 
                 </Table.Cell>
                 <Table.Cell>
                   <Text color="white" fontWeight="black" fontSize="sm">
-                    {formatCurrency(donation.amountCents)}
+                    {formatCurrency(donation.amountCents * 100)}
                   </Text>
                 </Table.Cell>
                 <Table.Cell>
