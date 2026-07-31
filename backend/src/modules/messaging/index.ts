@@ -8,6 +8,11 @@ export {
   notifyTicketConfirmation,
   notifyTicketCancellation,
 } from './notifications/payment-notifications.js';
+export {
+  notifyDonationConfirmed,
+  notifyDonationRejected,
+  notifyDonationCancelled,
+} from './notifications/donation-notifications.js';
 export type {
   MessagingChannel,
   MessagingClient,

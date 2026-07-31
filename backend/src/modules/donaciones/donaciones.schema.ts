@@ -39,9 +39,4 @@ export const adminListDonationsQuerySchema = z.object({
   search: z.string().max(255).optional(),
 });
 
-export const adminResendDonationParamsSchema = z.object({
-  id: z.string().uuid(),
-});
-
 export type AdminListDonationsQuery = z.infer<typeof adminListDonationsQuerySchema>;
-export type AdminResendDonationParams = z.infer<typeof adminResendDonationParamsSchema>;

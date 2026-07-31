@@ -118,14 +118,29 @@ export const donationRepository = {
     return { data, total, page: filters.page, limit: filters.limit };
   },
 
-  expirePending: async (olderThan: Date): Promise<number> => {
-    const result = await prisma.donation.updateMany({
+  expirePending: async (
+    olderThan: Date,
+  ): Promise<{ id: string }[]> => {
+    const expired = await prisma.donation.findMany({
       where: {
         state: 'pending',
         createdAt: { lt: olderThan },
       },
+      select: { id: true },
+    });
+
+    if (expired.length === 0) {
+      return [];
+    }
+
+    await prisma.donation.updateMany({
+      where: {
+        id: { in: expired.map((d) => d.id) },
+        state: 'pending',
+      },
       data: { state: 'cancelled' },
     });
-    return result.count;
+
+    return expired;
   },
 };

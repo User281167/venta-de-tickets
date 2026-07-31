@@ -11,6 +11,11 @@ import type { CreateDonationInput } from './donaciones.schema.js';
 import type { AdminListDonationsQuery } from './donaciones.schema.js';
 import type { Donation } from '@prisma/client';
 import { DONATION_EXPIRY_INTERVAL_MILLIS } from '../../shared/config/constants.js';
+import {
+  notifyDonationConfirmed,
+  notifyDonationRejected,
+  notifyDonationCancelled,
+} from '../messaging/index.js';
 
 function generateExternalReference(account: string): string {
   return `DON-${account}-${createDonationUUID()}`;
@@ -93,6 +98,20 @@ export async function handleWebhook(
     );
     return;
   }
+
+  if (newState === 'confirmed' || newState === 'rejected') {
+    const donation = await donationRepository.findByExternalReference(
+      event.reference,
+    );
+
+    if (donation) {
+      if (newState === 'confirmed') {
+        void notifyDonationConfirmed(donation.id);
+      } else {
+        void notifyDonationRejected(donation.id);
+      }
+    }
+  }
 }
 
 export async function getStatus(
@@ -121,13 +140,17 @@ export async function listDonations(filters: AdminListDonationsQuery) {
 
 export async function sweepExpiredDonations(): Promise<number> {
   const cutoff = new Date(Date.now() - DONATION_EXPIRY_INTERVAL_MILLIS);
-  const count = await donationRepository.expirePending(cutoff);
+  const expired = await donationRepository.expirePending(cutoff);
 
-  if (count > 0) {
+  if (expired.length > 0) {
     logger.info(
-      `Donation sweep completed: expiredCount=${count}, cutoff=${cutoff.toISOString()}`,
+      `Donation sweep completed: expiredCount=${expired.length}, cutoff=${cutoff.toISOString()}`,
     );
+
+    for (const { id } of expired) {
+      void notifyDonationCancelled(id);
+    }
   }
 
-  return count;
+  return expired.length;
 }

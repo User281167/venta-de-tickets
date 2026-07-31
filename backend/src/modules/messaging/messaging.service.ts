@@ -193,6 +193,79 @@ export async function sendTicketCancellation(input: {
   );
 }
 
+function donationAccountName(account: string): string {
+  return account === 'LA_CONVENCION' ? 'La Convención' : 'Barranqueros UTP';
+}
+
+export async function sendDonationConfirmation(input: {
+  donorName: string;
+  donorEmail: string;
+  amountCents: number;
+  account: string;
+  confirmedAt: Date;
+}): Promise<void> {
+  const html = renderTemplate('donation-confirmed', {
+    frontendUrl: env.CONFIRMATION_LINK_BASE_URL,
+    donorName: input.donorName,
+    amount: formatCop(input.amountCents),
+    eventName: EVENT_NAME,
+    accountName: donationAccountName(input.account),
+    donationDate: formatDate(input.confirmedAt),
+  });
+
+  await getEmailProvider().send(
+    input.donorEmail,
+    `Donación confirmada — ${EVENT_NAME}`,
+    html,
+  );
+}
+
+export async function sendDonationRejection(input: {
+  donorName: string;
+  donorEmail: string;
+  amountCents: number;
+  account: string;
+  rejectedAt: Date;
+}): Promise<void> {
+  const html = renderTemplate('donation-rejected', {
+    frontendUrl: env.CONFIRMATION_LINK_BASE_URL,
+    donorName: input.donorName,
+    amount: formatCop(input.amountCents),
+    eventName: EVENT_NAME,
+    accountName: donationAccountName(input.account),
+    donationDate: formatDate(input.rejectedAt),
+  });
+
+  await getEmailProvider().send(
+    input.donorEmail,
+    `No pudimos procesar tu donación — ${EVENT_NAME}`,
+    html,
+  );
+}
+
+export async function sendDonationCancellation(input: {
+  donorName: string;
+  donorEmail: string;
+  amountCents: number;
+  account: string;
+  cancelledAt: Date;
+}): Promise<void> {
+  const html = renderTemplate('donation-cancelled', {
+    frontendUrl: env.CONFIRMATION_LINK_BASE_URL,
+    donorName: input.donorName,
+    amount: formatCop(input.amountCents),
+    eventName: EVENT_NAME,
+    accountName: donationAccountName(input.account),
+    donationDate: formatDate(input.cancelledAt),
+  });
+
+  await getEmailProvider().send(
+    input.donorEmail,
+    `Tu donación expiró — ${EVENT_NAME}`,
+    html,
+  );
+}
+
 export const messagingService = {
   sendPaymentConfirmation,
   sendPaymentFailed,
@@ -201,6 +274,9 @@ export const messagingService = {
   sendTicketConfirmation,
   sendTicketPaid,
   sendTicketCancellation,
+  sendDonationConfirmation,
+  sendDonationRejection,
+  sendDonationCancellation,
 };
 
 logger.info('[messaging] service initialized');
