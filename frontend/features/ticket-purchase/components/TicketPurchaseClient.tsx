@@ -132,18 +132,9 @@ export function TicketPurchaseClient() {
             Mapa
           </button>
         </div>
-
-        {viewMode === "map" && (
-          <NextLink
-            href="/entradas/mapa"
-            className="!text-xs !text-white/55 !underline-offset-2 hover:!text-white hover:!underline"
-          >
-            Ver mapa en página completa →
-          </NextLink>
-        )}
       </div>
 
-      <div className="!grid !grid-cols-1 !gap-6 lg:!grid-cols-[2fr_1fr] lg:!items-start">
+      <div className={viewMode === "grid" ? "!grid !grid-cols-1 !gap-6 lg:!grid-cols-[2fr_1fr] lg:!items-start" : undefined}>
         <div>
           {viewMode === "grid" ? (
             <TicketTypeGrid
@@ -152,13 +143,15 @@ export function TicketPurchaseClient() {
               isLoggedIn={isLoggedIn}
             />
           ) : (
-            <VenueMapContent hideOrderSummary />
+            <VenueMapContent />
           )}
         </div>
 
-        <div className="lg:!sticky lg:!top-28">
-          <OrderSummary />
-        </div>
+        {viewMode === "grid" && (
+          <div className="lg:!sticky lg:!top-28">
+            <OrderSummary />
+          </div>
+        )}
       </div>
     </PageShell>
   );

@@ -140,7 +140,7 @@ export function TicketSection() {
 
             <div className="!mt-8 !flex !justify-center">
               <NextLink
-                href="/entradas/mapa"
+                href="/entradas"
                 className="!inline-flex !items-center !gap-2 !rounded-2xl glass !px-5 !py-3 !text-sm !font-bold !text-white !transition hover:!bg-white/10"
               >
                 <IconMap2 size={16} className="text-utp-azul" />
