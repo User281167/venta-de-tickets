@@ -29,7 +29,7 @@ const SPEAKERS: Speaker[] = [
   {
     name: "El Checo Acosta",
     role: "Aquí encontrarás el ritmo, la sabrosura y la alegría que solo el Príncipe del Carnaval sabe brindar. Conéctate con la energía inagotable de Checo Acosta.",
-    image: "/invitados/checo.jfif",
+    image: "/invitados/checo.png",
   },
   {
     name: "Jean Carlos Centeno",
