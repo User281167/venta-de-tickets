@@ -20,25 +20,29 @@ describe('audit.repository', () => {
   });
 
   describe('create', () => {
-    it('persists all snapshot fields and serializes metadata', async () => {
+    it('persists actor snapshot fields and action metadata', async () => {
       const metadata = { priceBefore: 50000, priceAfter: 60000 };
       mockPrisma.auditLog.create.mockResolvedValue({ id: 'log-1' });
 
-      await auditRepository.create({
-        eventId: 'evt-1',
-        actorId: 'user-1',
-        actorRole: 'admin',
-        action: 'ticket_type.price_updated',
-        entityType: 'TicketType',
-        entityId: 'tt-1',
-        metadata,
-      });
+      await auditRepository.create(
+        {
+          eventId: 'evt-1',
+          actorId: 'user-1',
+          action: 'ticket_type.price_updated',
+          entityType: 'TicketType',
+          entityId: 'tt-1',
+          metadata,
+        },
+        { role: 'admin', fullName: 'Ana Admin', cedula: '12345678' },
+      );
 
       expect(mockPrisma.auditLog.create).toHaveBeenCalledWith({
         data: {
           eventId: 'evt-1',
           actorId: 'user-1',
           actorRole: 'admin',
+          actorName: 'Ana Admin',
+          actorCedula: '12345678',
           action: 'ticket_type.price_updated',
           entityType: 'TicketType',
           entityId: 'tt-1',
@@ -47,17 +51,38 @@ describe('audit.repository', () => {
       });
     });
 
-    it('stores Prisma.JsonNull sentinel when metadata is omitted', async () => {
+    it('accepts null actorName and actorCedula (unknown actor snapshot)', async () => {
       mockPrisma.auditLog.create.mockResolvedValue({ id: 'log-2' });
 
-      await auditRepository.create({
-        eventId: 'evt-1',
-        actorId: 'user-1',
-        actorRole: 'checker',
-        action: 'ticket.checked_in',
-        entityType: 'Ticket',
-        entityId: 't-1',
-      });
+      await auditRepository.create(
+        {
+          eventId: 'evt-1',
+          actorId: 'user-gone',
+          action: 'ticket.checked_in',
+          entityType: 'Ticket',
+          entityId: 't-1',
+        },
+        { role: 'unknown', fullName: null, cedula: null },
+      );
+
+      const call = mockPrisma.auditLog.create.mock.calls[0][0];
+      expect(call.data.actorName).toBeNull();
+      expect(call.data.actorCedula).toBeNull();
+    });
+
+    it('stores Prisma.JsonNull sentinel when metadata is omitted', async () => {
+      mockPrisma.auditLog.create.mockResolvedValue({ id: 'log-3' });
+
+      await auditRepository.create(
+        {
+          eventId: 'evt-1',
+          actorId: 'user-1',
+          action: 'ticket.checked_in',
+          entityType: 'Ticket',
+          entityId: 't-1',
+        },
+        { role: 'checker', fullName: 'Carla', cedula: null },
+      );
 
       const call = mockPrisma.auditLog.create.mock.calls[0][0];
       expect(call.data.metadata).toBe(Prisma.JsonNull);

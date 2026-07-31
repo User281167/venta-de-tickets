@@ -15,6 +15,10 @@ vi.mock('../src/modules/tickets/tickets.repository.js', () => ({
   findOwnedById: vi.fn(),
 }));
 
+vi.mock('../src/modules/audit/audit.service.js', () => ({
+  log: vi.fn(),
+}));
+
 const repo = await import('../src/modules/tickets/tickets.repository.js');
 const service = await import('../src/modules/tickets/tickets.service.js');
 
@@ -31,6 +35,8 @@ const mockTicketType = {
   createdAt: '2026-07-01T00:00:00.000Z',
   updatedAt: '2026-07-01T00:00:00.000Z',
 };
+
+const mockActor = { id: 'admin-1' };
 
 describe('listTicketTypes', () => {
   beforeEach(() => { vi.clearAllMocks(); });
@@ -105,7 +111,7 @@ describe('createTicketType', () => {
       name: 'General',
       price: 50000,
       quantityTotal: 100,
-    });
+    }, mockActor);
 
     expect(result.status).toBe('enabled');
     expect(repo.create).toHaveBeenCalledWith({
@@ -126,7 +132,7 @@ describe('updateTicketType', () => {
     vi.mocked(repo.findById).mockResolvedValue(mockTicketType);
     vi.mocked(repo.update).mockResolvedValue({ ...mockTicketType, name: 'VIP' });
 
-    const result = await service.updateTicketType(mockTicketType.id, { name: 'VIP' });
+    const result = await service.updateTicketType(mockTicketType.id, { name: 'VIP' }, mockActor);
 
     expect(result.name).toBe('VIP');
     expect(repo.findById).toHaveBeenCalledWith(mockTicketType.id);
@@ -136,7 +142,7 @@ describe('updateTicketType', () => {
     vi.mocked(repo.findById).mockResolvedValue(null);
 
     await expect(
-      service.updateTicketType('nonexistent', { name: 'VIP' }),
+      service.updateTicketType('nonexistent', { name: 'VIP' }, mockActor),
     ).rejects.toThrow(NotFoundError);
   });
 
@@ -144,7 +150,7 @@ describe('updateTicketType', () => {
     vi.mocked(repo.findById).mockResolvedValue(mockTicketType);
     vi.mocked(repo.update).mockResolvedValue({ ...mockTicketType, status: 'disabled' });
 
-    const result = await service.updateTicketType(mockTicketType.id, { status: 'disabled' });
+    const result = await service.updateTicketType(mockTicketType.id, { status: 'disabled' }, mockActor);
 
     expect(result.status).toBe('disabled');
   });
@@ -153,7 +159,7 @@ describe('updateTicketType', () => {
     vi.mocked(repo.findById).mockResolvedValue(mockTicketType);
 
     await expect(
-      service.updateTicketType(mockTicketType.id, { quantityTotal: 10 }),
+      service.updateTicketType(mockTicketType.id, { quantityTotal: 10 }, mockActor),
     ).rejects.toThrow(ValidationError);
   });
 
@@ -161,7 +167,7 @@ describe('updateTicketType', () => {
     vi.mocked(repo.findById).mockResolvedValue(mockTicketType);
     vi.mocked(repo.update).mockResolvedValue({ ...mockTicketType, quantityTotal: 200 });
 
-    const result = await service.updateTicketType(mockTicketType.id, { quantityTotal: 200 });
+    const result = await service.updateTicketType(mockTicketType.id, { quantityTotal: 200 }, mockActor);
 
     expect(result.quantityTotal).toBe(200);
   });
@@ -170,7 +176,7 @@ describe('updateTicketType', () => {
     vi.mocked(repo.findById).mockResolvedValue(mockTicketType);
     vi.mocked(repo.update).mockResolvedValue({ ...mockTicketType, quantityTotal: 30 });
 
-    const result = await service.updateTicketType(mockTicketType.id, { quantityTotal: 30 });
+    const result = await service.updateTicketType(mockTicketType.id, { quantityTotal: 30 }, mockActor);
 
     expect(result.quantityTotal).toBe(30);
   });

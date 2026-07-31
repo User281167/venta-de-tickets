@@ -1,14 +1,20 @@
 import { Prisma } from '@prisma/client';
 import { prisma } from '../../shared/database/prisma.client.js';
 import type { AuditLogInput, AuditLogEntry } from './audit.types.js';
+import type { AuditActorSnapshot } from './auditUser.cache.js';
 
 export const auditRepository = {
-  create: async (input: AuditLogInput): Promise<AuditLogEntry> => {
+  create: async (
+    input: AuditLogInput,
+    actor: AuditActorSnapshot,
+  ): Promise<AuditLogEntry> => {
     return prisma.auditLog.create({
       data: {
         eventId: input.eventId,
         actorId: input.actorId,
-        actorRole: input.actorRole,
+        actorRole: actor.role,
+        actorName: actor.fullName,
+        actorCedula: actor.cedula,
         action: input.action,
         entityType: input.entityType,
         entityId: input.entityId,

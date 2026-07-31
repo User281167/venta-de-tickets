@@ -4,6 +4,7 @@ import { ConflictError } from '../../shared/errors/ConflictError.js';
 import { supabaseAdmin } from '../../shared/supabase/admin-client.js';
 import * as adminsRepo from './admins.repository.js';
 import * as paymentsService from '../payments/payments.service.js';
+import { auditUserCache } from '../audit/auditUser.cache.js';
 
 import { logger } from '../../utils/logger.js';
 import { notifyPaymentConfirmed } from '../messaging/index.js';
@@ -82,6 +83,14 @@ export async function createUser(data: Record<string, unknown>) {
       phone: data.phone ? String(data.phone) : null,
       role: 'client',
     });
+
+    if (user.role !== 'client') {
+      auditUserCache.set(userId, {
+        role: user.role,
+        fullName: user.fullName,
+        cedula: user.cedula,
+      });
+    }
 
     logger.info(`User created: ${userId}`);
 
@@ -271,5 +280,9 @@ export async function updateUser(id: string, data: Record<string, unknown>) {
 
   logger.info(`User updated: id=${id}`);
 
-  return adminsRepo.update(id, updateData);
+  const updated = await adminsRepo.update(id, updateData);
+
+  auditUserCache.invalidate(id);
+
+  return updated;
 }

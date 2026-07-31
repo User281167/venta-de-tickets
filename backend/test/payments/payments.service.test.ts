@@ -24,7 +24,14 @@ vi.mock('../../src/modules/payments/payments.repository.js', () => ({
   findByReference: vi.fn(),
   update: vi.fn(),
   reclaimExpiredPayment: vi.fn(),
+  reclaimFailedPayment: vi.fn(),
   markUnfulfillable: vi.fn(),
+  refundTransaction: vi.fn(),
+  findCancellableTicketsByPayment: vi.fn(),
+}));
+
+vi.mock('../../src/modules/audit/audit.service.js', () => ({
+  log: vi.fn(),
 }));
 
 vi.mock('../../src/modules/me/me.repository.js', () => ({
@@ -270,6 +277,7 @@ describe('payments.service', () => {
       });
 
       vi.mocked(paymentsRepo.findByReference).mockResolvedValue({ id: 'pay-1', status: 'failed', provider: 'mercadopago' });
+      vi.mocked(paymentsRepo.reclaimFailedPayment).mockResolvedValue({ outcome: 'reclaimed', ticketIds: [] });
 
       const result = await paymentsService.processWebhook({}, { 'x-signature': 'valid' }, 'mercadopago');
 

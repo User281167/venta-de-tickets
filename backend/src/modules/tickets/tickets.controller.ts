@@ -77,7 +77,9 @@ export async function adminList(req: Request, res: Response): Promise<void> {
 export async function create(req: Request, res: Response): Promise<void> {
   try {
     const data = createTicketSchema.parse(req.body);
-    const ticketType = await ticketsService.createTicketType(data);
+    const ticketType = await ticketsService.createTicketType(data, {
+      id: req.user!.id,
+    });
 
     res.status(201).json(ticketType);
   } catch (err) {
@@ -100,7 +102,9 @@ export async function update(req: Request, res: Response): Promise<void> {
   try {
     const { id } = paramsSchema.parse(req.params);
     const data = updateTicketSchema.parse(req.body);
-    const ticketType = await ticketsService.updateTicketType(id, data);
+    const ticketType = await ticketsService.updateTicketType(id, data, {
+      id: req.user!.id,
+    });
 
     res.json(ticketType);
   } catch (err) {

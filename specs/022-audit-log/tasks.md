@@ -46,7 +46,7 @@
 
 ### Módulo `backend/src/modules/audit/`
 
-- [x] T005 [P] Crear `audit.types.ts` en `backend/src/modules/audit/audit.types.ts` con `AuditLogInput` (actorId, actorRole, action, entityType, entityId, metadata), `AuditLogEntry` (data-model.md) y `ListAuditLogInput`
+- [x] T005 [P] Crear `audit.types.ts` en `backend/src/modules/audit/audit.types.ts` con `AuditLogInput` (actorId, action, entityType, entityId, metadata), `AuditLogEntry` (data-model.md) y `ListAuditLogInput`. `actorRole`/`actorName`/`actorCedula` se resuelven via `auditUserCache` en `log()` (no vienen del caller).
 - [x] T006 [P] Crear `audit.validators.ts` en `backend/src/modules/audit/audit.validators.ts` con `listAuditLogQuerySchema` zod: `since` (ISO datetime opcional), `cursor` (string opcional), `entityType` (string opcional), `limit` (coerce int, default 50, max 100) — patrón `donaciones.schema.ts`
 - [x] T007 Implementar `audit.repository.ts` en `backend/src/modules/audit/audit.repository.ts`: `create(input)` (insert simple vía Prisma) y `findMany({ since, cursor, entityType, limit })` con paginación por cursor `(createdAt, id)` e incluye `actor` (select `fullName`) para display
 - [x] T008 Implementar `audit.service.ts` en `backend/src/modules/audit/audit.service.ts`: `log()` con try/catch interno que **nunca lanza** (logger.error + retorno) y `list()` que delega a `findMany` y arma `nextCursor` (null si no hay más) — research.md §4
@@ -71,12 +71,12 @@
 
 ### Implementation for User Story 1
 
-- [ ] T013 [P] [US1] Instrumentar `ticket_type.created` en `createTicketType` de `backend/src/modules/tickets/tickets.service.ts` (`metadata: { name, price, quantityTotal }`)
-- [ ] T014 [P] [US1] Instrumentar `ticket_type.price_updated` en `updateTicketType` (solo si `price` presente) de `backend/src/modules/tickets/tickets.service.ts` (`metadata: { priceBefore, priceAfter }`)
-- [ ] T015 [P] [US1] Instrumentar `ticket_type.status_updated` en `updateTicketType` (solo si `status` presente) de `backend/src/modules/tickets/tickets.service.ts` (`metadata: { statusBefore, statusAfter }`)
-- [ ] T016 [P] [US1] Instrumentar `ticket.checked_in` en `checkin.service.ts` de `backend/src/modules/checkin/checkin.service.ts` al confirmar check-in (`metadata: { statusBefore, statusAfter }`)
-- [ ] T017 [P] [US1] Instrumentar `ticket.cancelled` en el flujo de cancelación de tickets (ubicar: `payments.repository.ts` reclaim/expiración y/o endpoint de cancelación admin) en `backend/src/modules/payments/` o `backend/src/modules/tickets/` (`metadata: { statusBefore, statusAfter }`)
-- [ ] T018 [P] [US1] Instrumentar `payment.status_changed` en cada transición de estado de `backend/src/modules/payments/payments.service.ts` (webhook `processWebhook`, `processRefund`, `createAdminPayment` — incluye pagos admin que bypasean checks) (`metadata: { statusBefore, statusAfter, totalCents }`)
+- [x] T013 [P] [US1] Instrumentar `ticket_type.created` en `createTicketType` de `backend/src/modules/tickets/tickets.service.ts` (`metadata: { name, price, quantityTotal }`)
+- [x] T014 [P] [US1] Instrumentar `ticket_type.price_updated` en `updateTicketType` (solo si `price` presente) de `backend/src/modules/tickets/tickets.service.ts` (`metadata: { priceBefore, priceAfter }`)
+- [x] T015 [P] [US1] Instrumentar `ticket_type.status_updated` en `updateTicketType` (solo si `status` presente) de `backend/src/modules/tickets/tickets.service.ts` (`metadata: { statusBefore, statusAfter }`)
+- [x] T016 [P] [US1] Instrumentar `ticket.checked_in` en `checkin.service.ts` de `backend/src/modules/checkin/checkin.service.ts` al confirmar check-in (`metadata: { statusBefore, statusAfter }`)
+- [x] T017 [P] [US1] Instrumentar `ticket.cancelled` en el flujo de cancelación de tickets (ubicar: `payments.repository.ts` reclaim/expiración y/o endpoint de cancelación admin) en `backend/src/modules/payments/` o `backend/src/modules/tickets/` (`metadata: { statusBefore, statusAfter }`)
+- [x] T018 [P] [US1] Instrumentar `payment.status_changed` en cada transición de estado de `backend/src/modules/payments/payments.service.ts` (webhook `processWebhook`, `processRefund`, `createAdminPayment` — incluye pagos admin que bypasean checks) (`metadata: { statusBefore, statusAfter, totalCents }`)
 
 **Checkpoint**: US1 complete — las 6 acciones del MVP quedan registradas con metadata selectivo.
 

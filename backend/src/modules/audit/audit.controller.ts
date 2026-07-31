@@ -18,6 +18,8 @@ export async function listAuditLog(req: Request, res: Response): Promise<void> {
         eventId: entry.eventId,
         actorId: entry.actorId,
         actorRole: entry.actorRole,
+        actorName: entry.actorName,
+        actorCedula: entry.actorCedula,
         action: entry.action,
         entityType: entry.entityType,
         entityId: entry.entityId,
@@ -38,6 +40,7 @@ export async function listAuditLog(req: Request, res: Response): Promise<void> {
 
       return;
     }
+
     throw err;
   }
 }

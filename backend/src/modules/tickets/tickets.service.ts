@@ -3,6 +3,8 @@ import { NotFoundError } from '../../shared/errors/NotFoundError.js';
 import { ValidationError } from '../../shared/errors/ValidationError.js';
 import { env } from '../../shared/config/env.js';
 import * as ticketsRepo from './tickets.repository.js';
+import * as auditService from '../audit/audit.service.js';
+import { EVENT_ID } from '../audit/audit.constants.js';
 
 import { logger } from '../../utils/logger.js';
 
@@ -41,15 +43,18 @@ export async function listAllTicketTypes(page: number, limit: number) {
   return { data, total, page, limit };
 }
 
-export async function createTicketType(data: {
-  name: string;
-  description?: string;
-  price: number;
-  quantityTotal: number;
-  maxPerUser?: number;
-  saleEndsAt?: string;
-  onlyEgresados?: boolean;
-}) {
+export async function createTicketType(
+  data: {
+    name: string;
+    description?: string;
+    price: number;
+    quantityTotal: number;
+    maxPerUser?: number;
+    saleEndsAt?: string;
+    onlyEgresados?: boolean;
+  },
+  actor: { id: string },
+) {
   logger.info(`Creating ticket type: name=${data.name}`);
   const ticketType = await ticketsRepo.create({
     name: data.name,
@@ -59,6 +64,19 @@ export async function createTicketType(data: {
     maxPerUser: data.maxPerUser,
     saleEndsAt: data.saleEndsAt ? new Date(data.saleEndsAt) : undefined,
     onlyEgresados: data.onlyEgresados,
+  });
+
+  await auditService.log({
+    eventId: EVENT_ID,
+    actorId: actor.id,
+    action: 'ticket_type.created',
+    entityType: 'TicketType',
+    entityId: ticketType.id,
+    metadata: {
+      name: data.name,
+      price: data.price,
+      quantityTotal: data.quantityTotal,
+    },
   });
 
   logger.info(`Ticket type created: id=${ticketType.id}`);
@@ -77,6 +95,7 @@ export async function updateTicketType(
     status?: 'enabled' | 'disabled' | 'blocked';
     onlyEgresados?: boolean;
   },
+  actor: { id: string },
 ) {
   logger.info(`Updating ticket type: id=${id}`);
   const existing = await ticketsRepo.findById(id);
@@ -113,9 +132,39 @@ export async function updateTicketType(
     updateData.quantityTotal = data.quantityTotal;
   }
 
+  const updated = await ticketsRepo.update(id, updateData);
+
+  if (data.price !== undefined && Number(existing.price) !== data.price) {
+    await auditService.log({
+      eventId: EVENT_ID,
+      actorId: actor.id,
+      action: 'ticket_type.price_updated',
+      entityType: 'TicketType',
+      entityId: id,
+      metadata: {
+        priceBefore: Number(existing.price),
+        priceAfter: data.price,
+      },
+    });
+  }
+
+  if (data.status !== undefined && existing.status !== data.status) {
+    await auditService.log({
+      eventId: EVENT_ID,
+      actorId: actor.id,
+      action: 'ticket_type.status_updated',
+      entityType: 'TicketType',
+      entityId: id,
+      metadata: {
+        statusBefore: existing.status,
+        statusAfter: data.status,
+      },
+    });
+  }
+
   logger.info(`Ticket type updated: id=${id}`);
 
-  return ticketsRepo.update(id, updateData);
+  return updated;
 }
 
 export async function generateQrForTicket(ticketId: string) {

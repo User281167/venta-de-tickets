@@ -5,6 +5,8 @@ import { NotFoundError } from '../../shared/errors/NotFoundError.js';
 import { ConflictError } from '../../shared/errors/ConflictError.js';
 import { InvalidQrError } from '../../shared/errors/InvalidQrError.js';
 import { logger } from '../../utils/logger.js';
+import * as auditService from '../audit/audit.service.js';
+import { EVENT_ID } from '../audit/audit.constants.js';
 
 import * as checkinRepo from './checkin.repository.js';
 import {
@@ -76,6 +78,18 @@ export async function confirmEntryDirect(
     );
     throw new ConflictError('Ticket not available for direct entry');
   }
+
+  await auditService.log({
+    eventId: EVENT_ID,
+    actorId: checkerId,
+    action: 'ticket.checked_in',
+    entityType: 'Ticket',
+    entityId: ticketId,
+    metadata: {
+      statusBefore: 'paid',
+      statusAfter: 'used',
+    },
+  });
 
   logger.info(
     `Checkin confirm-entry: ticketId=${ticketId} checkerId=${checkerId}`,
@@ -150,6 +164,18 @@ export async function allowEntry(
     );
     throw new ConflictError('Ticket not available for allow entry');
   }
+
+  await auditService.log({
+    eventId: EVENT_ID,
+    actorId: checkerId,
+    action: 'ticket.checked_in',
+    entityType: 'Ticket',
+    entityId: ticketId,
+    metadata: {
+      statusBefore: 'confirmed',
+      statusAfter: 'used',
+    },
+  });
 
   logger.info(
     `Checkin allow-entry: ticketId=${ticketId} checkerId=${checkerId}`,

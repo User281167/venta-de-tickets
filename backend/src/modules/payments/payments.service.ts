@@ -11,6 +11,8 @@ import {
   notifyPaymentRefunded,
   notifyPaymentUnfulfillable,
 } from '../messaging/notifications/payment-notifications.js';
+import * as auditService from '../audit/audit.service.js';
+import { EVENT_ID } from '../audit/audit.constants.js';
 
 import { logger } from '../../utils/logger.js';
 import { RESERVATION_EXPIRATION_INTERNAL_MILLIS , RESERVATION_EXPIRATION_PROVIDER_MILLIS } from '../../shared/config/constants.js';
@@ -224,10 +226,37 @@ export async function processWebhook(
           await ticketsService.generateQrForTicket(ticketId);
         }
 
+        await auditService.log({
+          eventId: EVENT_ID,
+          actorId: 'system:webhook',
+          action: 'payment.status_changed',
+          entityType: 'Payment',
+          entityId: payment.id,
+          metadata: {
+            statusBefore: 'failed',
+            statusAfter: 'completed',
+            totalCents: payment.totalCents,
+          },
+        });
+
         void notifyPaymentConfirmed(payment.id);
       } else if (result.outcome === 'unfulfillable') {
         await paymentsRepo.markUnfulfillable(payment.id, event.externalId, event.rawPayload as any);
         logger.warn(`Payment unfulfillable (sold out on reclaim): paymentId=${payment.id}`);
+
+        await auditService.log({
+          eventId: EVENT_ID,
+          actorId: 'system:webhook',
+          action: 'payment.status_changed',
+          entityType: 'Payment',
+          entityId: payment.id,
+          metadata: {
+            statusBefore: 'failed',
+            statusAfter: 'completed_unfulfillable',
+            totalCents: payment.totalCents,
+          },
+        });
+
         void notifyPaymentUnfulfillable(payment.id);
       } else {
         logger.info(`Reclaim already processed by concurrent webhook: paymentId=${payment.id}`);
@@ -257,10 +286,37 @@ export async function processWebhook(
         await ticketsService.generateQrForTicket(ticketId);
       }
 
+      await auditService.log({
+        eventId: EVENT_ID,
+        actorId: 'system:webhook',
+        action: 'payment.status_changed',
+        entityType: 'Payment',
+        entityId: payment.id,
+        metadata: {
+          statusBefore: 'expired',
+          statusAfter: 'completed',
+          totalCents: payment.totalCents,
+        },
+      });
+
       void notifyPaymentConfirmed(payment.id);
     } else if (result.outcome === 'unfulfillable') {
       await paymentsRepo.markUnfulfillable(payment.id, event.externalId, event.rawPayload as any);
       logger.warn(`Payment unfulfillable (sold out on reclaim): paymentId=${payment.id}`);
+
+      await auditService.log({
+        eventId: EVENT_ID,
+        actorId: 'system:webhook',
+        action: 'payment.status_changed',
+        entityType: 'Payment',
+        entityId: payment.id,
+        metadata: {
+          statusBefore: 'expired',
+          statusAfter: 'completed_unfulfillable',
+          totalCents: payment.totalCents,
+        },
+      });
+
       void notifyPaymentUnfulfillable(payment.id);
     } else {
       logger.info(`Reclaim already processed by concurrent webhook: paymentId=${payment.id}`);
@@ -288,12 +344,39 @@ export async function processWebhook(
         }
       }
 
+      await auditService.log({
+        eventId: EVENT_ID,
+        actorId: 'system:webhook',
+        action: 'payment.status_changed',
+        entityType: 'Payment',
+        entityId: payment.id,
+        metadata: {
+          statusBefore: 'pending',
+          statusAfter: 'completed',
+          totalCents: payment.totalCents,
+        },
+      });
+
       void notifyPaymentConfirmed(payment.id);
       logger.info(`Processed payment: paymentId=${payment.id}, externalId=${event.externalId}`);
     }
   } else if (event.status === 'declined') {
     logger.info(`Declined payment: paymentId=${payment.id}, externalId=${event.externalId}`);
     await paymentsRepo.update(payment.id, { status: 'failed' });
+
+    await auditService.log({
+      eventId: EVENT_ID,
+      actorId: 'system:webhook',
+      action: 'payment.status_changed',
+      entityType: 'Payment',
+      entityId: payment.id,
+      metadata: {
+        statusBefore: 'pending',
+        statusAfter: 'failed',
+        totalCents: payment.totalCents,
+      },
+    });
+
     void notifyPaymentFailed(payment.id, 'El proveedor de pagos rechazó la transacción.');
   }
 
@@ -516,6 +599,20 @@ export async function createAdminPayment(input: {
     await ticketsService.generateQrForTicket(ticketId);
   }
 
+  await auditService.log({
+    eventId: EVENT_ID,
+    actorId: input.createdBy,
+    action: 'payment.admin_created',
+    entityType: 'Payment',
+    entityId: result.paymentId,
+    metadata: {
+      provider: input.provider,
+      statusBefore: 'none',
+      statusAfter: 'completed',
+      totalCents: subtotalCents,
+    },
+  });
+
   void notifyPaymentConfirmed(result.paymentId);
 
   logger.info(
@@ -530,15 +627,41 @@ export async function processRefund(input: {
   reason: string;
   processedById: string;
 }) {
-  // Verificar que el pago existe y está completado
-  // (no se puede revertir un pago que no esté completado)
-  // No se usa API de proveedor para enviar dinero
-  // (requiere que se haga el pago de reembolso manual) esto solo indica a BD interna el estado del pago
   logger.info(
     `Processing refund: paymentId=${input.paymentId} reason=${input.reason} processedById=${input.processedById}`,
   );
 
+  const cancelledTickets = await paymentsRepo.findCancellableTicketsByPayment(
+    input.paymentId,
+  );
+
   const refund = await paymentsRepo.refundTransaction(input);
+
+  await auditService.log({
+    eventId: EVENT_ID,
+    actorId: input.processedById,
+    action: 'payment.status_changed',
+    entityType: 'Payment',
+    entityId: input.paymentId,
+    metadata: {
+      statusBefore: 'completed',
+      statusAfter: 'refunded',
+    },
+  });
+
+  for (const ticket of cancelledTickets) {
+    await auditService.log({
+      eventId: EVENT_ID,
+      actorId: input.processedById,
+      action: 'ticket.cancelled',
+      entityType: 'Ticket',
+      entityId: ticket.id,
+      metadata: {
+        statusBefore: ticket.status,
+        statusAfter: 'cancelled',
+      },
+    });
+  }
 
   void notifyPaymentRefunded({
     paymentId: input.paymentId,

@@ -31,6 +31,10 @@ vi.mock('../../src/modules/messaging/index.js', () => ({
   notifyTicketConfirmation: mockNotifyTicketConfirmation,
 }));
 
+vi.mock('../../src/modules/audit/audit.service.js', () => ({
+  log: vi.fn(),
+}));
+
 import jwt from 'jsonwebtoken';
 import * as checkinService from '../../src/modules/checkin/checkin.service.js';
 

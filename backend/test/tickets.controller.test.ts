@@ -101,7 +101,10 @@ describe('create', () => {
   beforeEach(() => { vi.clearAllMocks(); });
 
   it('returns 201 with created ticket type', async () => {
-    const req = mockReq({ body: { name: 'General', price: 50000, quantityTotal: 100 } });
+    const req = mockReq({
+      body: { name: 'General', price: 50000, quantityTotal: 100 },
+      user: { id: 'admin-1', role: 'admin' },
+    });
     const res = mockRes();
     const created = { id: 'new-uuid', name: 'General', status: 'enabled' };
 
@@ -109,6 +112,10 @@ describe('create', () => {
 
     await ctrl.create(req, res);
 
+    expect(service.createTicketType).toHaveBeenCalledWith(
+      expect.any(Object),
+      { id: 'admin-1' },
+    );
     expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalledWith(created);
   });
@@ -142,6 +149,7 @@ describe('update', () => {
     const req = mockReq({
       params: { id: '550e8400-e29b-41d4-a716-446655440000' },
       body: { name: 'VIP' },
+      user: { id: 'admin-1', role: 'admin' },
     });
     const res = mockRes();
     const updated = { id: req.params.id, name: 'VIP' };
@@ -150,6 +158,11 @@ describe('update', () => {
 
     await ctrl.update(req, res);
 
+    expect(service.updateTicketType).toHaveBeenCalledWith(
+      req.params.id,
+      expect.any(Object),
+      { id: 'admin-1' },
+    );
     expect(res.json).toHaveBeenCalledWith(updated);
   });
 

@@ -215,15 +215,17 @@ model Donation {
 }
 
 model AuditLog {
-  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  eventId    String
-  actorId    String
-  actorRole  String
-  action     String
-  entityType String
-  entityId   String
-  metadata   Json?
-  createdAt  DateTime @default(now()) @db.Timestamptz
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  eventId     String
+  actorId     String
+  actorRole   String
+  actorName   String?
+  actorCedula String?  @db.VarChar(20)
+  action      String
+  entityType  String
+  entityId    String
+  metadata    Json?
+  createdAt   DateTime @default(now()) @db.Timestamptz
 
   @@index([eventId, createdAt])
   @@index([entityType, entityId])

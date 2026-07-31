@@ -3,7 +3,6 @@ import type { Prisma } from '@prisma/client';
 export interface AuditLogInput {
   eventId: string;
   actorId: string;
-  actorRole: string;
   action: string;
   entityType: string;
   entityId: string;
@@ -15,6 +14,8 @@ export type AuditLogEntry = {
   eventId: string;
   actorId: string;
   actorRole: string;
+  actorName: string | null;
+  actorCedula: string | null;
   action: string;
   entityType: string;
   entityId: string;
