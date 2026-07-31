@@ -21,7 +21,7 @@ export function TicketPurchaseClient() {
   const userEgresado = useMyEgresado();
   const { session, isLoading: authLoading } = useAuth();
   const isLoggedIn = !authLoading && !!session;
-  const [viewMode, setViewMode] = useState<ViewMode>("grid");
+  const [viewMode, setViewMode] = useState<ViewMode>("map");
 
   const showSkeleton = isLoading && viewMode === "grid";
   const showError = !!error && viewMode === "grid";
