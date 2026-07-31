@@ -69,16 +69,16 @@ const PLACE_BRONCE = process.env.NEXT_PUBLIC_ZONA_BRONCE_IDS?.split(",") ?? PLAC
 // drawn as TWO physical blocks — a primary block in the main hall and a
 // secondary narrower block below — connected visually as one zone.
 export const venueLayout: VenueLayout = {
-  viewBox: { width: 720, height: 800 },
-  stage: { x: 543, y: 305, width: 162, height: 180, label: "ESCENARIO" },
+  viewBox: { width: 720, height: 550 },
+  stage: { x: 543, y: 95, width: 162, height: 180, label: "ESCENARIO" },
   structures: [
-    {
-      x: 350,
-      y: 40,
-      width: 144,
-      height: 210,
-      label: "",
-    },
+    // {
+    //   x: 350,
+    //   y: 40,
+    //   width: 144,
+    //   height: 210,
+    //   label: "",
+    // },
   ],
   zones: [
     {
@@ -90,8 +90,8 @@ export const venueLayout: VenueLayout = {
       shape: { x: 40, y: 280, width: 252, height: 230 },
       grid: { rows: 9, cols: 20 },
       segments: [
-        { x: 40, y: 280, width: 252, height: 230, rows: 9, cols: 20 },
-        { x: 120, y: 540, width: 171, height: 150, rows: 5, cols: 16 },
+        { x: 40, y: 70, width: 252, height: 230, rows: 9, cols: 20 },
+        { x: 120, y: 330, width: 171, height: 150, rows: 5, cols: 16 },
       ],
       entrances: [],
       ticketTypeIds: PLACE_BRONCE,
@@ -106,8 +106,8 @@ export const venueLayout: VenueLayout = {
       shape: { x: 301, y: 280, width: 144, height: 230 },
       grid: { rows: 9, cols: 12 },
       segments: [
-        { x: 301, y: 280, width: 144, height: 230, rows: 9, cols: 12 },
-        { x: 302, y: 540, width: 144, height: 150, rows: 5, cols: 12 },
+        { x: 301, y: 70, width: 144, height: 230, rows: 9, cols: 12 },
+        { x: 302, y: 330, width: 144, height: 150, rows: 5, cols: 12 },
       ],
       entrances: [],
       ticketTypeIds: PLACE_PLATA,
@@ -122,8 +122,8 @@ export const venueLayout: VenueLayout = {
       shape: { x: 454, y: 280, width: 36, height: 230 },
       grid: { rows: 9, cols: 3 },
       segments: [
-        { x: 454, y: 280, width: 36, height: 230, rows: 9, cols: 3 },
-        { x: 455, y: 540, width: 36, height: 150, rows: 5, cols: 3 },
+        { x: 454, y: 70, width: 36, height: 230, rows: 9, cols: 3 },
+        { x: 455, y: 330, width: 36, height: 150, rows: 5, cols: 3 },
       ],
       entrances: [],
       ticketTypeIds: PLACE_VIPS,
