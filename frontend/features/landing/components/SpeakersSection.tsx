@@ -22,8 +22,8 @@ type Speaker = {
 
 const SPEAKERS: Speaker[] = [
   {
-    name: "Alci Acosta acompñado con la Orquesta Sinfónica de la UTP",
-    role: "Boleros tradicional colombiano con sello propio para abrir la convención.",
+    name: "Alci Acosta",
+    role: "La leyenda del bolero como nunca antes la escuchaste. La inconfundible voz y el piano nostálgico del maestro Alci Acosta se elevan a otro nivel, acompañados por la majestuosidad de la Orquesta Sinfónica de la UTP.",
     image: "/invitados/Alci Acosta.png",
   },
   {
