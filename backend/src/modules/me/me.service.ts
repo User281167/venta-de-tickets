@@ -75,6 +75,7 @@ export async function getPersonalInfo(userId: string) {
       phone: null,
       address: null,
       dateOfBirth: null,
+      egresado: false,
     };
   }
 
@@ -86,6 +87,7 @@ export async function getPersonalInfo(userId: string) {
     dateOfBirth: user.dateOfBirth
       ? user.dateOfBirth.toISOString().split('T')[0]
       : null,
+    egresado: user.egresado ?? false,
   };
 }
 
