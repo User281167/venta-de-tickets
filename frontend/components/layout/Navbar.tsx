@@ -164,7 +164,7 @@ export function Navbar() {
             <CartFab itemCount={totalItems} onClick={() => setCartOpen(true)} />
 
             {isLoading ? (
-              <SkeletonButton count={1} />
+              <SkeletonButton count={1} w="96px" h="32px" borderRadius="lg" />
             ) : user ? (
               <div ref={userRef} className="!relative !hidden md:!block">
                 <button

@@ -26,7 +26,7 @@ export function HeroSection() {
   return (
     <section
       id="hero"
-      className="!relative !flex !min-h-screen !items-center !overflow-hidden !bg-black"
+      className="!relative !flex !min-h-screen !items-center !overflow-hidden !bg-black !py-10"
     >
       <AuroraBackground imageOpacity={50} particleCount={30} />
 
@@ -42,6 +42,26 @@ export function HeroSection() {
               <span className="!h-1.5 !w-1.5 !rounded-full !bg-cyan-neon !shadow-[0_0_10px_var(--color-cyan-neon)]" />
               XXIV Convención de Egresados · UTP 2026
             </span>
+
+            <div
+              className="reveal !flex !items-center !justify-center lg:!hidden"
+              data-reveal-index="4"
+            >
+              <div
+                className="animate-float-large will-change-transform"
+                style={{
+                  filter:
+                    "drop-shadow(0 0 50px oklch(0.6 0.24 300 / 0.45))",
+                }}
+              >
+                <img
+                  src={LOGO}
+                  alt="La U del Futuro — XXIV Convención de Egresados UTP 2026"
+                  className="!h-44 !w-auto sm:!h-52 md:!h-60"
+                  loading="eager"
+                />
+              </div>
+            </div>
 
             <h1
               className="reveal !text-4xl !font-semibold !leading-[1.02] !tracking-tight !text-white sm:!text-5xl md:!text-6xl lg:!text-[4.5rem]"
@@ -101,7 +121,7 @@ export function HeroSection() {
 
           <div className="!flex !flex-col !gap-4">
             <div
-              className="reveal !flex !items-center !justify-center"
+              className="reveal !flex !items-center !justify-center !hidden lg:!inline !mx-auto"
               data-reveal-index="4"
             >
               <div

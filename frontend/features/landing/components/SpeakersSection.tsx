@@ -22,7 +22,7 @@ type Speaker = {
 
 const SPEAKERS: Speaker[] = [
   {
-    name: "Alci Acosta",
+    name: "Alci Acosta acompñado con la Orquesta Sinfónica de la UTP",
     role: "Boleros tradicional colombiano con sello propio para abrir la convención.",
     image: "/invitados/Alci Acosta.png",
   },
