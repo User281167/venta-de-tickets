@@ -8,6 +8,7 @@ import {
   createDonationUUID,
 } from './donaciones.repository.js';
 import type { CreateDonationInput } from './donaciones.schema.js';
+import type { AdminListDonationsQuery } from './donaciones.schema.js';
 import type { Donation } from '@prisma/client';
 
 function generateExternalReference(account: string): string {
@@ -105,4 +106,14 @@ export async function getStatus(
   }
 
   return donation;
+}
+
+export async function listDonations(filters: AdminListDonationsQuery) {
+  return donationRepository.findAllAdmin({
+    page: filters.page,
+    limit: filters.limit,
+    state: filters.state,
+    account: filters.account,
+    search: filters.search,
+  });
 }

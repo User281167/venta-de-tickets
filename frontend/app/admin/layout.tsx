@@ -16,10 +16,11 @@ const queryClient = new QueryClient();
 // scan flow works. Add an entry here only if a new sub-page needs to be
 // hidden from `checker`.
 const ROLE_RESTRICTED_PATHS: Record<string, string[]> = {
-  "/admin/ticket-types": ["admin"],
-  "/admin/usuarios": ["admin"],
-  "/admin/usuarios/carga-masiva": ["admin"],
-  "/admin/pagos": ["admin"],
+  "/admin/ticket-types": ["admin", "super_admin"],
+  "/admin/usuarios": ["admin", "super_admin"],
+  "/admin/usuarios/carga-masiva": ["admin", "super_admin"],
+  "/admin/pagos": ["admin", "super_admin"],
+  "/admin/donaciones": ["admin", "super_admin"],
 };
 
 function AdminLayoutInner({ children }: { children: ReactNode }) {

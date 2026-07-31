@@ -3,6 +3,7 @@ import { authMiddleware } from '../../shared/middlewares/auth.middleware.js';
 import { adminMiddleware } from '../../shared/middlewares/admin.middleware.js';
 import { requireRole } from '../../shared/middlewares/require-role.middleware.js';
 import * as adminsController from './admins.controller.js';
+import * as donacionesController from '../donaciones/donaciones.controller.js';
 
 const adminsRouter = Router();
 
@@ -18,5 +19,7 @@ adminsRouter.get('/payments', requireRole('admin'), adminsController.listPayment
 adminsRouter.get('/payments/:id', requireRole('admin'), adminsController.getPaymentDetailHandler);
 adminsRouter.post('/payments/:id/refund', requireRole('admin'), adminsController.refundPaymentHandler);
 adminsRouter.post('/payments/manual', requireRole('admin'), adminsController.createAdminPaymentHandler);
+
+adminsRouter.get('/donations', requireRole('admin'), donacionesController.listDonations);
 
 export { adminsRouter };
