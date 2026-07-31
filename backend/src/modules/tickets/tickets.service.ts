@@ -24,6 +24,11 @@ export async function getTicketTypeById(id: string) {
     throw new NotFoundError('Ticket type not found');
   }
 
+  if (ticketType.status === 'blocked') {
+    logger.warn(`Ticket type blocked: id=${id}`);
+    throw new NotFoundError('Ticket type not found');
+  }
+
   return ticketType;
 }
 

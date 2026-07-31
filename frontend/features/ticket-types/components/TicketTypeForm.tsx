@@ -9,9 +9,12 @@ import {
   Grid,
   HStack,
   Input,
+  Portal,
+  Select,
   Switch,
   Textarea,
   Text,
+  createListCollection,
 } from "@chakra-ui/react";
 import { toast } from "sonner";
 
@@ -59,6 +62,14 @@ const inputStyles = {
   },
 };
 
+const STATUS_OPTIONS = createListCollection({
+  items: [
+    { value: "enabled", label: "Activo (visible y comprable)" },
+    { value: "disabled", label: "Inactivo (visible, no comprable)" },
+    { value: "blocked", label: "Bloqueado (oculto al público)" },
+  ],
+});
+
 export function TicketTypeForm({
   ticketType,
   onCreate,
@@ -74,7 +85,9 @@ export function TicketTypeForm({
   );
   const [maxPerUser, setMaxPerUser] = useState(ticketType?.maxPerUser ?? null);
   const [saleEndsAt, setSaleEndsAt] = useState(ticketType?.saleEndsAt ?? "");
-  const [isActive, setIsActive] = useState(ticketType?.isActive ?? true);
+  const [status, setStatus] = useState<"enabled" | "disabled" | "blocked">(
+    ticketType?.status ?? "enabled",
+  );
   const [onlyEgresados, setOnlyEgresados] = useState(
     ticketType?.onlyEgresados ?? false,
   );
@@ -89,7 +102,7 @@ export function TicketTypeForm({
       setQuantityTotal(num(ticketType.quantityTotal));
       setMaxPerUser(ticketType.maxPerUser);
       setSaleEndsAt(ticketType.saleEndsAt?.slice(0, 10) ?? "");
-      setIsActive(ticketType.isActive);
+      setStatus(ticketType.status);
       setOnlyEgresados(ticketType.onlyEgresados);
     }
   }, [ticketType]);
@@ -106,7 +119,7 @@ export function TicketTypeForm({
         quantityTotal: quantityTotal || undefined,
         maxPerUser: maxPerUser ?? undefined,
         saleEndsAt: toIsoEndOfDay(saleEndsAt),
-        isActive,
+        status,
         onlyEgresados,
       };
       const parsed = updateTicketTypeSchema.safeParse(payload);
@@ -259,20 +272,36 @@ export function TicketTypeForm({
 
           {isEditing && (
             <Field.Root>
-              <HStack justify="space-between" align="center" h="full" py={1}>
-                <Field.Label color="brand.muted" mb={0}>
-                  Activo
-                </Field.Label>
-                <Switch.Root
-                  checked={isActive}
-                  onCheckedChange={(e) => setIsActive(e.checked)}
-                >
-                  <Switch.HiddenInput />
-                  <Switch.Control>
-                    <Switch.Thumb />
-                  </Switch.Control>
-                </Switch.Root>
-              </HStack>
+              <Field.Label color="brand.muted">Estado</Field.Label>
+              <Select.Root
+                collection={STATUS_OPTIONS}
+                value={[status]}
+                onValueChange={({ value }) =>
+                  setStatus((value[0] as "enabled" | "disabled" | "blocked") ?? "enabled")
+                }
+              >
+                <Select.HiddenSelect />
+                <Select.Control>
+                  <Select.Trigger {...inputStyles}>
+                    <Select.ValueText placeholder="Selecciona un estado" />
+                  </Select.Trigger>
+                  <Select.IndicatorGroup>
+                    <Select.Indicator />
+                  </Select.IndicatorGroup>
+                </Select.Control>
+                <Portal>
+                  <Select.Positioner>
+                    <Select.Content>
+                      {STATUS_OPTIONS.items.map((opt) => (
+                        <Select.Item item={opt} key={opt.value}>
+                          <Text color="black">{opt.label}</Text>
+                          <Select.ItemIndicator />
+                        </Select.Item>
+                      ))}
+                    </Select.Content>
+                  </Select.Positioner>
+                </Portal>
+              </Select.Root>
             </Field.Root>
           )}
 

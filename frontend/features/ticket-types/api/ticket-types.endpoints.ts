@@ -14,7 +14,7 @@ type BackendAdminTicketType = {
   quantitySold: number;
   maxPerUser: number | null;
   saleEndsAt: string | null;
-  status: string;
+  status: "enabled" | "disabled" | "blocked";
   onlyEgresados: boolean;
   createdAt: string;
   updatedAt: string;
@@ -53,18 +53,11 @@ export async function updateAdminTicketType(
   id: string,
   data: UpdateTicketTypeInput,
 ): Promise<AdminTicketType> {
-  const body: Record<string, unknown> = { ...data };
-
-  if (body.isActive !== undefined) {
-    body.status = body.isActive ? "enabled" : "disabled";
-    delete body.isActive;
-  }
-
   const result = await authFetch<BackendAdminTicketType>(
     `/api/admin/tickets/${id}`,
     {
       method: "PATCH",
-      body: JSON.stringify(body),
+      body: JSON.stringify(data),
     },
   );
 

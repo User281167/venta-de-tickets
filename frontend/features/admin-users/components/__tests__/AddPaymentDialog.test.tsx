@@ -41,6 +41,7 @@ const mockTicketType: AdminTicketType = {
   quantitySold: 2,
   maxPerUser: null,
   saleEndsAt: null,
+  status: "enabled",
   isActive: true,
   onlyEgresados: false,
   createdAt: "2024-01-01",

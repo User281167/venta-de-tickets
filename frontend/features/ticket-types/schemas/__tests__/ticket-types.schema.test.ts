@@ -67,8 +67,10 @@ describe("adminTicketTypeSchema", () => {
     quantityTotal: 500,
     quantitySold: 100,
     maxPerUser: 4,
+    status: "enabled" as const,
     isActive: true,
     saleEndsAt: null,
+    onlyEgresados: false,
     createdAt: "2026-06-01T00:00:00.000Z",
     updatedAt: "2026-06-15T00:00:00.000Z",
   };
@@ -82,8 +84,26 @@ describe("adminTicketTypeSchema", () => {
     const result = adminTicketTypeSchema.safeParse({
       ...validAdminTicketType,
       isActive: false,
+      status: "disabled",
     });
     expect(result.success).toBe(true);
+  });
+
+  it("accepts blocked ticket type", () => {
+    const result = adminTicketTypeSchema.safeParse({
+      ...validAdminTicketType,
+      isActive: false,
+      status: "blocked",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("rejects invalid status", () => {
+    const result = adminTicketTypeSchema.safeParse({
+      ...validAdminTicketType,
+      status: "archived",
+    });
+    expect(result.success).toBe(false);
   });
 
   it("rejects missing quantitySold", () => {
@@ -158,6 +178,16 @@ describe("updateTicketTypeSchema (frontend)", () => {
 
   it("rejects negative price", () => {
     const result = updateTicketTypeSchema.safeParse({ price: -100 });
+    expect(result.success).toBe(false);
+  });
+
+  it("accepts status update", () => {
+    const result = updateTicketTypeSchema.safeParse({ status: "blocked" });
+    expect(result.success).toBe(true);
+  });
+
+  it("rejects invalid status", () => {
+    const result = updateTicketTypeSchema.safeParse({ status: "archived" });
     expect(result.success).toBe(false);
   });
 });

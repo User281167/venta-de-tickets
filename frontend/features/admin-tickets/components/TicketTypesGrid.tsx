@@ -80,15 +80,19 @@ function TicketTypeCard({
               </Text>
             )}
           </Stack>
-          <Badge
-            colorPalette={tt.isActive ? "green" : "red"}
-            size="sm"
-            px={2}
-            py={1}
-            borderRadius="full"
-          >
-            {tt.isActive ? "Activo" : "Inactivo"}
-          </Badge>
+          {tt.status === "blocked" ? (
+            <Badge colorPalette="yellow" size="sm" px={2} py={1} borderRadius="full">
+              Bloqueado
+            </Badge>
+          ) : tt.status === "disabled" ? (
+            <Badge colorPalette="red" size="sm" px={2} py={1} borderRadius="full">
+              Inactivo
+            </Badge>
+          ) : (
+            <Badge colorPalette="green" size="sm" px={2} py={1} borderRadius="full">
+              Activo
+            </Badge>
+          )}
         </HStack>
 
         <Text color="white" fontSize="2xl" fontWeight="black" className="gradient-text" mb={4}>

@@ -22,6 +22,7 @@ export const adminTicketTypeSchema = z.object({
   quantityTotal: z.number(),
   quantitySold: z.number(),
   maxPerUser: z.number().nullable(),
+  status: z.enum(['enabled', 'disabled', 'blocked']),
   isActive: z.boolean(),
   saleEndsAt: z.string().nullable(),
   onlyEgresados: z.boolean(),
@@ -45,7 +46,7 @@ export const updateTicketTypeSchema = z.object({
   price: z.number().positive().optional(),
   quantityTotal: z.number().int().positive().optional(),
   maxPerUser: z.number().int().min(1).optional(),
-  isActive: z.boolean().optional(),
+  status: z.enum(['enabled', 'disabled', 'blocked']).optional(),
   saleEndsAt: z.string().optional().nullable(),
   onlyEgresados: z.boolean().optional(),
 });

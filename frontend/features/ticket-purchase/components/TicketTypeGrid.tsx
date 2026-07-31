@@ -32,12 +32,7 @@ export const TicketTypeGrid = memo(function TicketTypeGrid({
     return userEgresado === false;
   };
 
-  const filteredTicketTypes = ticketTypes.filter((tt) => {
-    if (tt.status !== "enabled") return false;
-    return true;
-  });
-
-  if (filteredTicketTypes.length === 0) {
+  if (ticketTypes.length === 0) {
     return (
       <p className="!py-10 !text-center !text-white/60">
         No hay tipos de entrada disponibles
@@ -47,7 +42,7 @@ export const TicketTypeGrid = memo(function TicketTypeGrid({
 
   return (
     <div className="!grid !grid-cols-1 !gap-5 md:!grid-cols-2">
-      {filteredTicketTypes.map((tt) => (
+      {ticketTypes.map((tt) => (
         <TicketTypeCard
           key={tt.id}
           ticketType={tt}
