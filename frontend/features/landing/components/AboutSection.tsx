@@ -24,7 +24,7 @@ const fadeUp: Variants = {
   }),
 };
 
-const HERO_IMAGE = "/ase-oficial/banner1.jpg";
+const HERO_IMAGE = "/ase-oficial/1.jpg";
 
 type Stat = {
   value: string;

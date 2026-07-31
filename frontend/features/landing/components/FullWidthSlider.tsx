@@ -16,7 +16,6 @@ const SLIDES = [
   { src: "/ase-oficial/7.jpg", alt: "Ponencias inspiradoras", offsetY: "60%" },
   { src: "/ase-oficial/8.jpg", alt: "Experiencias UTP", offsetY: "50%" },
   { src: "/ase-oficial/9.jpg", alt: "Experiencias UTP", offsetY: "45%" },
-  { src: "/ase-oficial/10.jpg", alt: "Experiencias UTP", offsetY: "70%" },
   { src: "/ase-oficial/11.webp", alt: "Experiencias UTP", offsetY: "30%" },
   { src: "/ase-oficial/12.webp", alt: "Experiencias UTP", offsetY: "50%" },
   { src: "/ase-oficial/14.webp", alt: "Experiencias UTP", offsetY: "50%" },
