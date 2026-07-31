@@ -92,12 +92,12 @@
 
 ### Implementation for User Story 2
 
-- [ ] T019 [P] [US2] Crear `types/index.ts` y `schemas/audit.schema.ts` en `frontend/features/audit/` (tipos `AuditLogEntry`, `AuditLogFilters`, `AuditLogResponse`; zod filters)
-- [ ] T020 [P] [US2] Crear `api/audit.endpoints.ts` en `frontend/features/audit/api/audit.endpoints.ts`: `fetchAuditLog(filters)` vía `authFetch` (`@/shared/api/admin-fetch`) a `/api/audit-log` con query params `since`/`entityType`/`limit` (cursor se envía en la siguiente página si se implementa)
-- [ ] T021 [P] [US2] Crear `api/audit.queries.ts` en `frontend/features/audit/api/audit.queries.ts`: hook `useAuditLog(filters)` con `queryKey: ['audit-log', filters]`, `queryFn: fetchAuditLog`, `refetchInterval: 4000` — patrón nuevo documentado en research.md §7
-- [ ] T022 [P] [US2] Crear `components/AuditLogTable.tsx` en `frontend/features/audit/components/AuditLogTable.tsx`: columnas timestamp, actor, rol, acción, entidad, resumen de metadata; estado vacío y skeleton (patrón `admin-donations`); UI copy en español
-- [ ] T023 [US2] Crear `page.tsx` en `frontend/app/admin/auditoria/page.tsx` renderizando `<AuditLogTable />` (solo ruta, sin lógica — constitución IV)
-- [ ] T024 [US2] Implementar filtro client-side por `entityType` en `components/AuditLogTable.tsx` sobre los datos ya cargados (sin request extra en el MVP)
+- [x] T019 [P] [US2] Crear `types/index.ts` y `schemas/audit.schema.ts` en `frontend/features/audit/` (tipos `AuditLogEntry`, `AuditLogFilters`, `AuditLogResponse`; zod filters)
+- [x] T020 [P] [US2] Crear `api/audit.endpoints.ts` en `frontend/features/audit/api/audit.endpoints.ts`: `fetchAuditLog(filters)` vía `authFetch` (`@/shared/api/admin-fetch`) a `/api/audit-log` con query params `since`/`entityType`/`limit` (cursor se envía en la siguiente página si se implementa)
+- [x] T021 [P] [US2] Crear `api/audit.queries.ts` en `frontend/features/audit/api/audit.queries.ts`: hook `useAuditLog(filters)` con `queryKey: ['audit-log', filters]`, `queryFn: fetchAuditLog`, `refetchInterval: 4000` — patrón nuevo documentado en research.md §7
+- [x] T022 [P] [US2] Crear `components/AuditLogTable.tsx` en `frontend/features/audit/components/AuditLogTable.tsx`: columnas timestamp, actor, rol, acción, entidad, resumen de metadata; estado vacío y skeleton (patrón `admin-donations`); UI copy en español
+- [x] T023 [US2] Crear `page.tsx` en `frontend/app/admin/auditoria/page.tsx` renderizando `<AuditLogList />` (solo ruta, sin lógica — constitución IV)
+- [x] T024 [US2] Implementar filtro client-side por `entityType` en `components/AuditLogTable.tsx` sobre los datos ya cargados (sin request extra en el MVP)
 
 **Checkpoint**: US2 complete — panel funcional con polling.
 
