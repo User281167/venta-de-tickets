@@ -315,7 +315,7 @@ export function TicketTypeForm({
                 onCheckedChange={(e) => setOnlyEgresados(e.checked)}
               >
                 <Switch.HiddenInput />
-                <Switch.Control>
+                <Switch.Control bg={onlyEgresados ? "green.400" : "red.400"}>
                   <Switch.Thumb />
                 </Switch.Control>
               </Switch.Root>

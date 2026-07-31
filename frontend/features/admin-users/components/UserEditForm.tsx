@@ -198,7 +198,7 @@ export function UserEditForm({ user, onSave, onCancel }: Props) {
                 onCheckedChange={(e) => setIsActive(e.checked)}
               >
                 <Switch.HiddenInput />
-                <Switch.Control>
+                <Switch.Control bg={isActive ? "green.400" : "red.400"}>
                   <Switch.Thumb />
                 </Switch.Control>
               </Switch.Root>
@@ -215,7 +215,7 @@ export function UserEditForm({ user, onSave, onCancel }: Props) {
                 onCheckedChange={(e) => setEgresado(e.checked)}
               >
                 <Switch.HiddenInput />
-                <Switch.Control>
+                <Switch.Control bg={egresado ? "green.400" : "red.400"}>
                   <Switch.Thumb />
                 </Switch.Control>
               </Switch.Root>
