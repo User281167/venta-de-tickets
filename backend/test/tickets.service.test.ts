@@ -138,6 +138,40 @@ describe('updateTicketType', () => {
     expect(repo.findById).toHaveBeenCalledWith(mockTicketType.id);
   });
 
+  it('emits ticket_type.name_updated when name changes', async () => {
+    vi.mocked(repo.findById).mockResolvedValue(mockTicketType);
+    vi.mocked(repo.update).mockResolvedValue({ ...mockTicketType, name: 'VIP' });
+    const auditService = await import('../src/modules/audit/audit.service.js');
+
+    await service.updateTicketType(mockTicketType.id, { name: 'VIP' }, mockActor);
+
+    expect(auditService.log).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action: 'ticket_type.name_updated',
+        entityType: 'TicketType',
+        entityId: mockTicketType.id,
+        actorId: mockActor.id,
+        metadata: expect.objectContaining({
+          nameBefore: 'General',
+          nameAfter: 'VIP',
+        }),
+      }),
+    );
+  });
+
+  it('does not emit name_updated when name is unchanged', async () => {
+    vi.mocked(repo.findById).mockResolvedValue(mockTicketType);
+    vi.mocked(repo.update).mockResolvedValue(mockTicketType);
+    const auditService = await import('../src/modules/audit/audit.service.js');
+
+    await service.updateTicketType(mockTicketType.id, { name: 'General' }, mockActor);
+
+    const nameCalls = vi.mocked(auditService.log).mock.calls.filter(
+      (c) => c[0].action === 'ticket_type.name_updated',
+    );
+    expect(nameCalls).toHaveLength(0);
+  });
+
   it('throws NotFoundError when ticket type not found', async () => {
     vi.mocked(repo.findById).mockResolvedValue(null);
 

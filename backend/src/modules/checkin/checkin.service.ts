@@ -125,6 +125,18 @@ export async function requestConfirmation(
     return;
   }
 
+  await auditService.log({
+    eventId: EVENT_ID,
+    actorId: checkerId,
+    action: 'ticket.confirmation_requested',
+    entityType: 'Ticket',
+    entityId: ticketId,
+    metadata: {
+      statusBefore: 'paid',
+      statusAfter: 'pending_confirmation',
+    },
+  });
+
   const token = signConfirmationToken(ticketId);
   const confirmationUrl = `${env.CONFIRMATION_LINK_BASE_URL}/confirmaciones?token=${token}`;
   const qrImageUrl = `${env.CONFIRMATION_LINK_BASE_URL}/mi-cuenta/entradas/${ticketId}`;

@@ -162,6 +162,102 @@ export async function updateTicketType(
     });
   }
 
+  if (data.name !== undefined && existing.name !== data.name) {
+    await auditService.log({
+      eventId: EVENT_ID,
+      actorId: actor.id,
+      action: 'ticket_type.name_updated',
+      entityType: 'TicketType',
+      entityId: id,
+      metadata: { nameBefore: existing.name, nameAfter: data.name },
+    });
+  }
+
+  if (
+    data.description !== undefined &&
+    (existing.description ?? null) !== (data.description ?? null)
+  ) {
+    await auditService.log({
+      eventId: EVENT_ID,
+      actorId: actor.id,
+      action: 'ticket_type.description_updated',
+      entityType: 'TicketType',
+      entityId: id,
+      metadata: {
+        descriptionBefore: existing.description,
+        descriptionAfter: data.description,
+      },
+    });
+  }
+
+  if (
+    data.quantityTotal !== undefined &&
+    existing.quantityTotal !== data.quantityTotal
+  ) {
+    await auditService.log({
+      eventId: EVENT_ID,
+      actorId: actor.id,
+      action: 'ticket_type.quantity_total_updated',
+      entityType: 'TicketType',
+      entityId: id,
+      metadata: {
+        quantityTotalBefore: existing.quantityTotal,
+        quantityTotalAfter: data.quantityTotal,
+      },
+    });
+  }
+
+  if (
+    data.maxPerUser !== undefined &&
+    (existing.maxPerUser ?? null) !== (data.maxPerUser ?? null)
+  ) {
+    await auditService.log({
+      eventId: EVENT_ID,
+      actorId: actor.id,
+      action: 'ticket_type.max_per_user_updated',
+      entityType: 'TicketType',
+      entityId: id,
+      metadata: {
+        maxPerUserBefore: existing.maxPerUser,
+        maxPerUserAfter: data.maxPerUser,
+      },
+    });
+  }
+
+  if (data.saleEndsAt !== undefined) {
+    const beforeIso = existing.saleEndsAt
+      ? existing.saleEndsAt.toISOString()
+      : null;
+    const afterIso = data.saleEndsAt ? new Date(data.saleEndsAt).toISOString() : null;
+    if (beforeIso !== afterIso) {
+      await auditService.log({
+        eventId: EVENT_ID,
+        actorId: actor.id,
+        action: 'ticket_type.sale_window_updated',
+        entityType: 'TicketType',
+        entityId: id,
+        metadata: { saleEndsAtBefore: beforeIso, saleEndsAtAfter: afterIso },
+      });
+    }
+  }
+
+  if (
+    data.onlyEgresados !== undefined &&
+    existing.onlyEgresados !== data.onlyEgresados
+  ) {
+    await auditService.log({
+      eventId: EVENT_ID,
+      actorId: actor.id,
+      action: 'ticket_type.egresado_flag_updated',
+      entityType: 'TicketType',
+      entityId: id,
+      metadata: {
+        egresadoBefore: existing.onlyEgresados,
+        egresadoAfter: data.onlyEgresados,
+      },
+    });
+  }
+
   logger.info(`Ticket type updated: id=${id}`);
 
   return updated;

@@ -45,7 +45,7 @@ export async function listUsers(req: Request, res: Response): Promise<void> {
 export async function createUser(req: Request, res: Response): Promise<void> {
   try {
     const data = createUserSchema.parse(req.body);
-    const user = await adminsService.createUser(data);
+    const user = await adminsService.createUser(data, { id: req.user!.id });
 
     res.status(201).json(user);
   } catch (err) {
@@ -70,7 +70,9 @@ export async function batchCreateUsers(
 ): Promise<void> {
   try {
     const dataArray = batchCreateUsersSchema.parse(req.body);
-    const users = await adminsService.batchCreateUsers(dataArray);
+    const users = await adminsService.batchCreateUsers(dataArray, {
+      id: req.user!.id,
+    });
 
     res.status(201).json(users);
   } catch (err) {
@@ -91,7 +93,9 @@ export async function batchCreateUsers(
 export async function updateUser(req: Request, res: Response): Promise<void> {
   try {
     const data = updateUserSchema.parse(req.body);
-    const user = await adminsService.updateUser(String(req.params.id), data);
+    const user = await adminsService.updateUser(String(req.params.id), data, {
+      id: req.user!.id,
+    });
 
     res.json(user);
   } catch (err) {
@@ -116,7 +120,11 @@ export async function updateUserRole(
 ): Promise<void> {
   try {
     const { role } = updateRoleSchema.parse(req.body);
-    const user = await adminsService.updateRole(String(req.params.id), role);
+    const user = await adminsService.updateRole(
+      String(req.params.id),
+      role,
+      { id: req.user!.id },
+    );
 
     res.json(user);
   } catch (err) {

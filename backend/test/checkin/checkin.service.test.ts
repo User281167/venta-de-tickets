@@ -200,6 +200,49 @@ describe('checkin.service', () => {
       expect(payload.confirmationUrl).toMatch(/^https:\/\/frontend\.test\/confirmaciones\?token=/);
     });
 
+    it('emits ticket.confirmation_requested audit log when sending link', async () => {
+      mockRequestConfirmation.mockResolvedValue({
+        ok: true,
+        buyer: {
+          fullName: 'Maria',
+          email: 'maria@example.com',
+          phone: null,
+        },
+      });
+      mockSendConfirmationLink.mockResolvedValue(undefined);
+      const auditService = await import('../../src/modules/audit/audit.service.js');
+
+      await checkinService.requestConfirmation('ticket-1', 'checker-1');
+
+      expect(auditService.log).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: 'ticket.confirmation_requested',
+          entityType: 'Ticket',
+          entityId: 'ticket-1',
+          actorId: 'checker-1',
+          metadata: {
+            statusBefore: 'paid',
+            statusAfter: 'pending_confirmation',
+          },
+        }),
+      );
+    });
+
+    it('does not emit audit log when buyer has no contact info', async () => {
+      mockRequestConfirmation.mockResolvedValue({
+        ok: true,
+        buyer: { fullName: 'Maria', email: null, phone: null },
+      });
+      const auditService = await import('../../src/modules/audit/audit.service.js');
+
+      await checkinService.requestConfirmation('ticket-1', 'checker-1');
+
+      const calls = vi.mocked(auditService.log).mock.calls.filter(
+        (c) => c[0].action === 'ticket.confirmation_requested',
+      );
+      expect(calls).toHaveLength(0);
+    });
+
     it('uses whatsapp when buyer has no email but has phone', async () => {
       mockRequestConfirmation.mockResolvedValue({
         ok: true,
