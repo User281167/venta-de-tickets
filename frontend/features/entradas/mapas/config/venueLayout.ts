@@ -77,7 +77,7 @@ export const venueLayout: VenueLayout = {
       y: 40,
       width: 144,
       height: 210,
-      label: "Zona técnica / acceso",
+      label: "",
     },
   ],
   zones: [
