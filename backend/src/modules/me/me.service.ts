@@ -121,6 +121,14 @@ export async function setPersonalInfo(
       );
     }
 
+    if (data.cedula && data.cedula !== existing?.cedula) {
+      const owner = await meRepo.findOwnerByCedula(data.cedula as string);
+
+      if (owner && owner.id !== userId) {
+        throw new ConflictError('La cédula ya está registrada por otro usuario');
+      }
+    }
+
     updateData.cedula = data.cedula;
   }
 

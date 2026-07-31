@@ -28,7 +28,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { useMe, useUpdateMe } from "../hooks/useProfile";
 import type { UpdateUserInput } from "../schemas/users.schema";
 import { updateUserSchema } from "../schemas/users.schema";
-import { ApiError } from "../api/users.client";
+import { formatApiError } from "@/shared/lib/format-api-error";
 
 const FIELDS: {
   key: keyof UpdateUserInput;
@@ -186,12 +186,9 @@ export function ProfileForm() {
           description: "Tus datos se han guardado correctamente",
         });
       },
-      onError: (err: Error) => {
-        const description =
-          err instanceof ApiError
-            ? `${err.message} (${err.code})`
-            : err.message || "No se pudo guardar la información";
-        toast.error("Error al actualizar", { description });
+      onError: (err: unknown) => {
+        const f = formatApiError(err);
+        toast.error(f.title, { description: f.description });
       },
     });
   };

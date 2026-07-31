@@ -12,6 +12,8 @@ vi.mock('../src/shared/services/user-resolver.js', () => ({
 
 vi.mock('../src/modules/me/me.repository.js', () => ({
   findByUserId: vi.fn(),
+  findEgresadoFlag: vi.fn(),
+  findOwnerByCedula: vi.fn(),
   upsert: vi.fn(),
 }));
 
@@ -67,11 +69,13 @@ const mockNullInfo = {
   phone: null,
   address: null,
   dateOfBirth: null,
+  egresado: false,
 };
 
 describe('GET /api/me', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(meRepo.findOwnerByCedula).mockResolvedValue(null);
     mockClientAuth();
   });
 
@@ -168,6 +172,7 @@ describe('GET /api/me/personal-info', () => {
 describe('PUT /api/me/personal-info (first time)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(meRepo.findOwnerByCedula).mockResolvedValue(null);
     mockClientAuth();
   });
 
@@ -254,6 +259,22 @@ describe('PUT /api/me/personal-info (first time)', () => {
     expect(res.status).toBe(200);
     expect(res.body.fullName).toBe(mockPersonalInfo.fullName);
     expect(res.body.cedula).toBe(mockPersonalInfo.cedula);
+  });
+
+  it('returns 409 when cedula already belongs to another user', async () => {
+    vi.mocked(meRepo.findByUserId).mockResolvedValue(null);
+    vi.mocked(meRepo.findOwnerByCedula).mockResolvedValue({
+      id: 'other-user-id',
+    });
+
+    const res = await request(app)
+      .put('/api/me/personal-info')
+      .set(authHeader())
+      .send(mockPersonalInfo);
+
+    expect(res.status).toBe(409);
+    expect(res.body.error.code).toBe('CONFLICT');
+    expect(res.body.error.message).toMatch(/c[eé]dula/i);
   });
 });
 

@@ -18,6 +18,7 @@ import { toast } from "sonner";
 
 import { adminUserUpdateSchema } from "../schemas/admin-user.schema";
 import type { UserRow, UpdateUserInput } from "../api/admin-users.queries";
+import { formatApiError } from "@/shared/lib/format-api-error";
 
 const ROLE_OPTIONS = createListCollection({
   items: [
@@ -102,9 +103,8 @@ export function UserEditForm({ user, onSave, onCancel }: Props) {
         toast.success("Usuario actualizado");
         onCancel();
       } catch (err) {
-        toast.error("Error al actualizar", {
-          description: (err as Error).message,
-        });
+        const f = formatApiError(err);
+        toast.error(f.title, { description: f.description });
       } finally {
         setSaving(false);
       }

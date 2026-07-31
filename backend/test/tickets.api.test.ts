@@ -127,14 +127,13 @@ describe('GET /api/tickets/:id (public get by ID)', () => {
     expect(res.status).toBe(422);
   });
 
-  it('returns data for blocked ticket type when fetched by ID', async () => {
+  it('returns 404 for blocked ticket type when fetched by ID', async () => {
     const blockedTicket = { ...mockTicketType, status: 'blocked' };
     mockPrisma.ticketType.findUnique.mockResolvedValue(blockedTicket);
 
     const res = await request(app).get(`/api/tickets/${mockTicketType.id}`);
 
-    expect(res.status).toBe(200);
-    expect(res.body.status).toBe('blocked');
+    expect(res.status).toBe(404);
   });
 });
 

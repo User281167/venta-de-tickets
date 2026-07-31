@@ -33,18 +33,25 @@ export async function authFetch<T>(path: string, options?: RequestInit): Promise
     }
 
     let code: string | undefined;
+    let message: string | undefined;
     let data: { emails?: string[]; cedulas?: string[] } | undefined;
     try {
       const body = (await res.json()) as {
         error?: { code?: string; message?: string; data?: { emails?: string[]; cedulas?: string[] } };
       };
       code = body?.error?.code;
+      message = body?.error?.message;
       data = body?.error?.data;
     } catch {
       /* response body not JSON — use defaults */
     }
 
-    throw new ApiError(res.status, `Error ${res.status}`, code, data);
+    throw new ApiError(
+      res.status,
+      message ?? `Error ${res.status}`,
+      code,
+      data,
+    );
   }
 
   return res.json() as Promise<T>;

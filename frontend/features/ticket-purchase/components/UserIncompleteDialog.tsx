@@ -28,8 +28,8 @@ import {
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useUpdateMe } from "@/features/users/hooks/useProfile";
-import { ApiError } from "@/features/users/api/users.client";
 import { updateUserSchema } from "@/features/users/schemas/users.schema";
+import { formatApiError } from "@/shared/lib/format-api-error";
 
 interface UserIncompleteDialogProps {
   open: boolean;
@@ -99,13 +99,9 @@ export function UserIncompleteDialog({
 
         onOpenChange(false);
       },
-      onError: (err: Error) => {
-        const description =
-          err instanceof ApiError
-            ? `${err.message} (${err.code})`
-            : err.message || "No se pudo guardar la información";
-
-        toast.error("Error al guardar", { description });
+      onError: (err: unknown) => {
+        const f = formatApiError(err);
+        toast.error(f.title, { description: f.description });
       },
     });
   };

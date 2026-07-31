@@ -22,6 +22,7 @@ import {
   useRequestConfirmation,
 } from "../api/checkin.queries";
 import type { CheckerAction } from "../schemas/checkin.schema";
+import { formatApiError } from "@/shared/lib/format-api-error";
 
 import { ActionButtons } from "./ActionButtons";
 import { ConfirmationPendingOverlay } from "./ConfirmationPendingOverlay";
@@ -60,6 +61,10 @@ const ACTION_MESSAGES: Record<
 
 function messageFromError(err: unknown): string {
   if (err instanceof ApiError) {
+    if (err.code === "CONFLICT" && /cédula|cedula/i.test(err.message)) {
+      return formatApiError(err).description;
+    }
+
     return ERROR_MESSAGES[err.code] ?? err.message;
   }
 

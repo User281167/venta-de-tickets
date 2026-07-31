@@ -1,5 +1,6 @@
 import { ForbiddenError } from '../../shared/errors/ForbiddenError.js';
 import { NotFoundError } from '../../shared/errors/NotFoundError.js';
+import { ConflictError } from '../../shared/errors/ConflictError.js';
 import { supabaseAdmin } from '../../shared/supabase/admin-client.js';
 import * as adminsRepo from './admins.repository.js';
 import * as paymentsService from '../payments/payments.service.js';
@@ -236,10 +237,7 @@ export async function updateUser(id: string, data: Record<string, unknown>) {
         `Cedula already in use by another user: cedula=${data.cedula}`,
       );
 
-      throw Object.assign(new Error('Cedula already in use by another user'), {
-        statusCode: 409,
-        code: 'CONFLICT',
-      });
+      throw new ConflictError('La cédula ya está registrada por otro usuario');
     }
   }
 

@@ -12,6 +12,7 @@ import { TicketQrExpand } from "./TicketQrExpand";
 import { TicketActionsMenu } from "./TicketActionsMenu";
 import { ConfirmTicketDialog } from "./ConfirmTicketDialog";
 import { formatDate } from "@/shared/utils/formats";
+import { formatApiError } from "@/shared/lib/format-api-error";
 
 const STATUS_BG: Record<string, string> = {
   reserved: "#eab308",
@@ -48,8 +49,13 @@ type DialogMode = "confirm" | "reject";
 
 function messageFromError(err: unknown): string {
   if (err instanceof ApiError) {
+    if (err.code === "CONFLICT" && /cédula|cedula/i.test(err.message)) {
+      return formatApiError(err).description;
+    }
+
     return ACTION_ERROR_MESSAGES[err.code] ?? err.message;
   }
+
   if (err instanceof Error) return err.message;
   return "Error desconocido";
 }

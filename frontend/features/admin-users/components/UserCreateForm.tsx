@@ -14,6 +14,7 @@ import { toast } from "sonner";
 
 import { adminUserCreateSchema } from "../schemas/admin-user.schema";
 import type { CreateUserInput } from "../api/admin-users.queries";
+import { formatApiError } from "@/shared/lib/format-api-error";
 
 const inputStyles = {
   bg: "rgba(255,255,255,0.03)",
@@ -77,9 +78,8 @@ export function UserCreateForm({ onSave, onCancel }: Props) {
       toast.success("Usuario creado");
       onCancel();
     } catch (err) {
-      toast.error("Error al crear usuario", {
-        description: (err as Error).message,
-      });
+      const f = formatApiError(err);
+      toast.error(f.title, { description: f.description });
     } finally {
       setSaving(false);
     }

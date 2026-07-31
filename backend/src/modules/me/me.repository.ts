@@ -15,6 +15,13 @@ export function findEgresadoFlag(userId: string) {
   });
 }
 
+export function findOwnerByCedula(cedula: string) {
+  return prisma.user.findUnique({
+    where: { cedula },
+    select: { id: true },
+  });
+}
+
 export function upsert(userId: string, data: Record<string, unknown>) {
   return prisma.user.update({
     where: { id: userId },
