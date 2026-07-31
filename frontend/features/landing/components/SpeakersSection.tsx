@@ -28,18 +28,18 @@ const SPEAKERS: Speaker[] = [
   },
   {
     name: "Jean Carlos Centeno",
-    role: "Voz líder del vallenato contemporáneo y grandes éxitos.",
+    role: "¡La voz de oro del vallenato romántico! Jean Carlos Centeno llega para enamorarte y hacerte revivir los himnos que marcaron a toda una generación.",
     image: "/invitados/Jean Carlos Centeno.webp",
   },
   {
     name: "Frankie Ruiz (Javier Mauricio Valencia Henao)",
-    role: "Homenaje al ídolo de la salsa con un show en vivo.",
+    role: "¡El eterno Papá de la Salsa! Sabor, calle y romance en su máxima expresión. Revive los éxitos inmortales del ícono indiscutible de la salsa romántica que sigue reinando en las pistas de baile.",
     image:
       "/invitados/Frankie Ruiz (Javier Mauricio Valencia Henao).jpeg",
   },
   {
-    name: "Concierto Electro",
-    role: "Inicio a puro ritmo electrónico.",
+    name: "Concierto Electro y Rock",
+    role: "¡Energía, distorsión y decibeles al límite! Una descarga brutal en vivo para los amantes del sonido pesado.",
     image: "/invitados/concierto-electro.jpeg",
   },
 ];
