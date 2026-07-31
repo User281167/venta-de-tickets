@@ -26,8 +26,8 @@
 
 **Purpose**: Precondiciones del entorno; sin código de feature
 
-- [ ] T001 Verificar acceso a la BD de staging (env `staging`) y que `pnpm prisma:generate` corre limpio en `backend/`
-- [ ] T002 Confirmar que no hay cambios de `schema.prisma` pendientes en el branch base antes de tocar el modelo
+- [x] T001 Verificar acceso a la BD de staging (env `staging`) y que `pnpm prisma:generate` corre limpio en `backend/`
+- [x] T002 Confirmar que no hay cambios de `schema.prisma` pendientes en el branch base antes de tocar el modelo
 
 **Checkpoint**: Entorno listo para schema y migración.
 
@@ -41,7 +41,7 @@
 
 ### Modelo y migración
 
-- [ ] T003 Agregar `model AuditLog` en `backend/prisma/schema.prisma` según `data-model.md` (SIN `eventId` — no existe tabla `events`; con `actorRole String`, `action String`, `metadata Json?`, `@@index([createdAt, id])`, `@@index([entityType, entityId])`, FK `actor → User` con `onDelete: Restrict`)
+- [x] T003 Agregar `model AuditLog` en `backend/prisma/schema.prisma` según `data-model.md` (SIN `eventId` — no existe tabla `events`; con `actorRole String`, `action String`, `metadata Json?`, `@@index([createdAt, id])`, `@@index([entityType, entityId])`, FK `actor → User` con `onDelete: Restrict`)
 - [ ] T004 Aplicar el cambio de schema a la BD de **staging** con la herramienta Prisma del proyecto (`pnpm prisma:generate` + migración/push) y verificar `prisma migrate status`; validar antes de producción
 
 ### Módulo `backend/src/modules/audit/`

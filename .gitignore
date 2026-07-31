@@ -29,3 +29,5 @@ Thumbs.db
 supabase/.branches
 supabase/.temp
 backend/src/modules/messaging/templates/payment-confirmed.html
+
+.codebase-memory
