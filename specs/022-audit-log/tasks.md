@@ -46,17 +46,14 @@
 
 ### Módulo `backend/src/modules/audit/`
 
-- [ ] T005 [P] Crear `audit.types.ts` en `backend/src/modules/audit/audit.types.ts` con `AuditLogInput` (actorId, actorRole, action, entityType, entityId, metadata), `AuditLogEntry` (data-model.md) y `ListAuditLogInput`
-- [ ] T006 [P] Crear `audit.validators.ts` en `backend/src/modules/audit/audit.validators.ts` con `listAuditLogQuerySchema` zod: `since` (ISO datetime opcional), `cursor` (string opcional), `entityType` (string opcional), `limit` (coerce int, default 50, max 100) — patrón `donaciones.schema.ts`
-- [ ] T007 Implementar `audit.repository.ts` en `backend/src/modules/audit/audit.repository.ts`: `create(input)` (insert simple vía Prisma) y `findMany({ since, cursor, entityType, limit })` con paginación por cursor `(createdAt, id)` e incluye `actor` (select `fullName`) para display
-- [ ] T008 Implementar `audit.service.ts` en `backend/src/modules/audit/audit.service.ts`: `log()` con try/catch interno que **nunca lanza** (logger.error + retorno) y `list()` que delega a `findMany` y arma `nextCursor` (null si no hay más) — research.md §4
-- [ ] T009 Implementar `audit.controller.ts` en `backend/src/modules/audit/audit.controller.ts` y `audit.routes.ts` en `backend/src/modules/audit/audit.routes.ts`: `GET /` con `authMiddleware` + `requireRole('super_admin')` (NO `resolveRole`, NO `visualizador`), respuesta `{ data, nextCursor, hasMore }` — contract `contracts/audit-log-api.md`
-- [ ] T010 Montar el router en `backend/src/app.ts`: `app.use('/api/audit-log', auditRouter)`
-
-### Tests del módulo (convención del proyecto: vitest por módulo)
-
-- [ ] T011 [P] Test de `audit.repository.findMany` (cursor `(createdAt, id)`, `since`, `entityType`, `limit`) en `backend/test/audit/audit.repository.test.ts`
-- [ ] T012 [P] Test de `audit.service.log` (no lanza si el repository falla; insert normal) en `backend/test/audit/audit.service.test.ts`
+- [x] T005 [P] Crear `audit.types.ts` en `backend/src/modules/audit/audit.types.ts` con `AuditLogInput` (actorId, actorRole, action, entityType, entityId, metadata), `AuditLogEntry` (data-model.md) y `ListAuditLogInput`
+- [x] T006 [P] Crear `audit.validators.ts` en `backend/src/modules/audit/audit.validators.ts` con `listAuditLogQuerySchema` zod: `since` (ISO datetime opcional), `cursor` (string opcional), `entityType` (string opcional), `limit` (coerce int, default 50, max 100) — patrón `donaciones.schema.ts`
+- [x] T007 Implementar `audit.repository.ts` en `backend/src/modules/audit/audit.repository.ts`: `create(input)` (insert simple vía Prisma) y `findMany({ since, cursor, entityType, limit })` con paginación por cursor `(createdAt, id)` e incluye `actor` (select `fullName`) para display
+- [x] T008 Implementar `audit.service.ts` en `backend/src/modules/audit/audit.service.ts`: `log()` con try/catch interno que **nunca lanza** (logger.error + retorno) y `list()` que delega a `findMany` y arma `nextCursor` (null si no hay más) — research.md §4
+- [x] T009 Implementar `audit.controller.ts` en `backend/src/modules/audit/audit.controller.ts` y `audit.routes.ts` en `backend/src/modules/audit/audit.routes.ts`: `GET /` con `authMiddleware` + `requireRole('super_admin')` (NO `resolveRole`, NO `visualizador`), respuesta `{ data, nextCursor, hasMore }` — contract `contracts/audit-log-api.md`
+- [x] T010 Montar el router en `backend/src/app.ts`: `app.use('/api/audit-log', auditRouter)`
+- [x] T011 [P] Test de `audit.repository.findMany` (cursor `(createdAt, id)`, `since`, `entityType`, `limit`) en `backend/test/audit/audit.repository.test.ts`
+- [x] T012 [P] Test de `audit.service.log` (no lanza si el repository falla; insert normal) en `backend/test/audit/audit.service.test.ts`
 
 **Checkpoint**: `GET /api/audit-log` responde solo para `super_admin`; foundation ready.
 
