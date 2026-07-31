@@ -113,8 +113,8 @@
 
 ### Implementation for User Story 3
 
-- [ ] T025 [US3] Agregar `"/admin/auditoria": ["super_admin"]` a `ROLE_RESTRICTED_PATHS` en `frontend/app/admin/layout.tsx` (mecanismo de guard existente)
-- [ ] T026 [P] [US3] Agregar enlace "Auditoría" con `roles: ["super_admin"]` en `frontend/shared/components/AdminSidebar.tsx` (ícono `@tabler/icons-react`)
+- [x] T025 [US3] Agregar `"/admin/auditoria": ["super_admin"]` a `ROLE_RESTRICTED_PATHS` en `frontend/app/admin/layout.tsx` (mecanismo de guard existente)
+- [x] T026 [P] [US3] Agregar enlace "Auditoría" con `roles: ["super_admin"]` en `frontend/shared/components/AdminSidebar.tsx` (ícono `@tabler/icons-react`)
 
 **Checkpoint**: US3 complete — acceso restringido en UI y API.
 
@@ -128,7 +128,14 @@
 
 ### Implementation for User Story 4
 
-- [ ] T027 [US4] Revisar los 6 puntos de instrumentación (T013–T018) contra criterios Ley 1581: sin objetos completos de entidad, sin nombres/emails/cédulas de compradores; corregir cualquier desviación en `backend/src/modules/*/*.service.ts`
+- [x] T027 [US4] Revisar los 6 puntos de instrumentación (T013–T018) contra criterios Ley 1581: sin objetos completos de entidad, sin nombres/emails/cédulas de compradores; corregir cualquier desviación en `backend/src/modules/*/*.service.ts`
+
+**Hallazgos revisión T027 (2026-07-31)**:
+- 24 de 26 logs `metadata` cumple FR-007 (solo before/after de campos no-PII o presence flags).
+- 2 desviaciones detectadas (pendientes de decisión del usuario):
+  1. `admins.service.ts:123-137` `user.created` — metadata incluye `fullName`/`email`/`cedula`/`phone` del nuevo usuario (puede ser `client`).
+  2. `admins.service.ts:352-359` `user.updated` — `changes[]` lleva valores before/after de `fullName`/`phone`/`cedula`.
+- Decisión del usuario: NO modificar hasta nueva confirmación sobre cómo manejar PII en estas acciones. Spec queda bloqueada en este punto.
 
 **Checkpoint**: US4 complete — metadata cumple la regla de privacidad.
 
