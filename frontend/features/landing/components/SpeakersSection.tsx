@@ -22,9 +22,14 @@ type Speaker = {
 
 const SPEAKERS: Speaker[] = [
   {
-    name: "Alci Acosta",
+    name: "Alci Acosta acompañado con la Orquesta Sinfónica de la UTP",
     role: "La leyenda del bolero como nunca antes la escuchaste. La inconfundible voz y el piano nostálgico del maestro Alci Acosta se elevan a otro nivel, acompañados por la majestuosidad de la Orquesta Sinfónica de la UTP.",
     image: "/invitados/Alci Acosta.png",
+  },
+  {
+    name: "El Checo Acosta",
+    role: "Aquí encontrarás el ritmo, la sabrosura y la alegría que solo el Príncipe del Carnaval sabe brindar. Conéctate con la energía inagotable de Checo Acosta.",
+    image: "/invitados/checo.jfif",
   },
   {
     name: "Jean Carlos Centeno",
@@ -106,7 +111,7 @@ export function SpeakersSection() {
           </h2>
         </motion.div>
 
-        <div className="!grid !grid-cols-1 !gap-5 sm:!grid-cols-2 lg:!grid-cols-4">
+        <div className="!grid !grid-cols-1 !gap-5 sm:!grid-cols-2 lg:!grid-cols-3">
           {SPEAKERS.map((speaker, i) => (
             <motion.article
               key={speaker.name}
@@ -141,7 +146,7 @@ export function SpeakersSection() {
                 />
               </div>
 
-              <div className="!relative !flex !w-full !flex-col !gap-1 !text-center">
+              <div className="!relative !flex !w-full !flex-1 !flex-col !justify-around !gap-1 !text-center">
                 <h3 className="!text-base !font-black !text-white">
                   {speaker.name}
                 </h3>
