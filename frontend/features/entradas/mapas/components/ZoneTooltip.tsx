@@ -37,7 +37,7 @@ export function ZoneTooltip({
         {title}
       </div>
       <div className="!text-white/65">
-        {available} disponibles de {total}
+        {total === 0 ? "Zona sin entradas" : `${available} disponibles de ${total}`}
       </div>
     </motion.div>
   );

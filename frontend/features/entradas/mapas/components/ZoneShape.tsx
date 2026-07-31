@@ -10,6 +10,7 @@ import {
 
 const COLOR_AVAILABLE = "#22c55e";
 const COLOR_OCCUPIED = "#e11d48";
+const COLOR_EMPTY = "rgba(255,255,255,0.28)";
 
 interface ZoneShapeProps {
   zone: VenueZone;
@@ -30,6 +31,7 @@ function ZoneSegmentView({
   occupancyRatio,
   highlighted,
   disabled,
+  hasEntries,
   onHover,
   onMove,
   onLeave,
@@ -41,6 +43,7 @@ function ZoneSegmentView({
   occupancyRatio: number;
   highlighted: boolean;
   disabled: boolean;
+  hasEntries: boolean;
   onHover: (zoneKey: string, e: React.MouseEvent) => void;
   onMove: (zoneKey: string, e: React.MouseEvent) => void;
   onLeave: () => void;
@@ -63,6 +66,8 @@ function ZoneSegmentView({
     [segment, occupiedSet],
   );
 
+  const effectivelyDisabled = disabled || !hasEntries;
+
   return (
     <g>
       {points.map((p) => (
@@ -71,8 +76,14 @@ function ZoneSegmentView({
           cx={p.cx}
           cy={p.cy}
           r={2.4}
-          fill={p.occupied ? COLOR_OCCUPIED : COLOR_AVAILABLE}
-          opacity={p.occupied ? 0.55 : disabled ? 0.5 : 0.9}
+          fill={
+            !hasEntries
+              ? COLOR_EMPTY
+              : p.occupied
+                ? COLOR_OCCUPIED
+                : COLOR_AVAILABLE
+          }
+          opacity={!hasEntries ? 0.45 : p.occupied ? 0.55 : disabled ? 0.5 : 0.9}
         />
       ))}
 
@@ -84,16 +95,18 @@ function ZoneSegmentView({
         rx={6}
         fill="transparent"
         stroke={
-          highlighted
-            ? zone.accent
-            : disabled
-              ? "rgba(255,255,255,0.1)"
-              : "rgba(255,255,255,0.18)"
+          !hasEntries
+            ? "rgba(255,255,255,0.08)"
+            : highlighted
+              ? zone.accent
+              : disabled
+                ? "rgba(255,255,255,0.1)"
+                : "rgba(255,255,255,0.18)"
         }
         strokeWidth={highlighted ? 2.5 : 1}
       />
 
-      {highlighted && (
+      {highlighted && hasEntries && (
         <rect
           x={segment.x}
           y={segment.y}
@@ -113,11 +126,11 @@ function ZoneSegmentView({
         height={segment.height}
         rx={6}
         fill="transparent"
-        style={{ cursor: disabled ? "not-allowed" : "pointer" }}
-        onMouseEnter={(e) => !disabled && onHover(zone.key, e)}
-        onMouseMove={(e) => !disabled && onMove(zone.key, e)}
+        style={{ cursor: effectivelyDisabled ? "not-allowed" : "pointer" }}
+        onMouseEnter={(e) => !effectivelyDisabled && onHover(zone.key, e)}
+        onMouseMove={(e) => !effectivelyDisabled && onMove(zone.key, e)}
         onMouseLeave={onLeave}
-        onClick={() => !disabled && onSelect(zone.key)}
+        onClick={() => !effectivelyDisabled && onSelect(zone.key)}
       />
     </g>
   );
@@ -145,6 +158,7 @@ export function ZoneShape({
 
   const highlighted = isHovered || isSelected;
   const isPending = !zone.confirmed;
+  const hasEntries = ticketTypes.length > 0;
   const segmentsToRender = isPending ? [] : segments;
 
   if (segments.length === 0) {
@@ -164,6 +178,7 @@ export function ZoneShape({
           occupancyRatio={occupancyRatio}
           highlighted={highlighted}
           disabled={disabled}
+          hasEntries={hasEntries}
           onHover={onHover}
           onMove={onMove}
           onLeave={onLeave}
@@ -174,13 +189,18 @@ export function ZoneShape({
       <text
         x={firstSegment.x + 8}
         y={firstSegment.y - 8}
-        fill={highlighted ? accent : "rgba(255,255,255,0.65)"}
+        fill={
+          !hasEntries
+            ? "rgba(255,255,255,0.4)"
+            : highlighted
+              ? accent
+              : "rgba(255,255,255,0.65)"
+        }
         fontSize={13}
         fontWeight={600}
         style={{ pointerEvents: "none" }}
       >
         {label}
-        {isPending && " (próximamente)"}
       </text>
     </g>
   );
