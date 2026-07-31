@@ -127,7 +127,7 @@ export function AgendaHero() {
               <HStack gap={2} color="brand.muted">
                 <IconMapPin size={22} color="#ff0f7b" />
                 <Text fontSize="md" fontWeight="medium">
-                  Centro de Convenciones UTP
+                  Centro UTP
                 </Text>
               </HStack>
             </HStack>
