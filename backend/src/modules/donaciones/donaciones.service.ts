@@ -10,6 +10,7 @@ import {
 import type { CreateDonationInput } from './donaciones.schema.js';
 import type { AdminListDonationsQuery } from './donaciones.schema.js';
 import type { Donation } from '@prisma/client';
+import { DONATION_EXPIRY_INTERVAL_MILLIS } from '../../shared/config/constants.js';
 
 function generateExternalReference(account: string): string {
   return `DON-${account}-${createDonationUUID()}`;
@@ -116,4 +117,17 @@ export async function listDonations(filters: AdminListDonationsQuery) {
     account: filters.account,
     search: filters.search,
   });
+}
+
+export async function sweepExpiredDonations(): Promise<number> {
+  const cutoff = new Date(Date.now() - DONATION_EXPIRY_INTERVAL_MILLIS);
+  const count = await donationRepository.expirePending(cutoff);
+
+  if (count > 0) {
+    logger.info(
+      `Donation sweep completed: expiredCount=${count}, cutoff=${cutoff.toISOString()}`,
+    );
+  }
+
+  return count;
 }
