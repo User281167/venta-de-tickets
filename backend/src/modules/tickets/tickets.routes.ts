@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { authMiddleware } from '../../shared/middlewares/auth.middleware.js';
-import { adminMiddleware } from '../../shared/middlewares/admin.middleware.js';
 import * as ctrl from './tickets.controller.js';
+import { requireRole } from '../../shared/middlewares/require-role.middleware.js';
 
 export const ticketsRouter = Router();
 
@@ -10,8 +10,8 @@ ticketsRouter.get('/:id', ctrl.getById);
 
 export const adminTicketsRouter = Router();
 
-adminTicketsRouter.use(authMiddleware, adminMiddleware);
+adminTicketsRouter.use(authMiddleware);
 
-adminTicketsRouter.get('/', ctrl.adminList);
-adminTicketsRouter.post('/', ctrl.create);
-adminTicketsRouter.patch('/:id', ctrl.update);
+adminTicketsRouter.get('/', requireRole('admin', 'super_admin'), ctrl.adminList);
+adminTicketsRouter.post('/', requireRole('admin'), ctrl.create);
+adminTicketsRouter.patch('/:id', requireRole('admin'), ctrl.update);
