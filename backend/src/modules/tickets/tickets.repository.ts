@@ -11,6 +11,7 @@ const selectTicketType = {
   saleEndsAt: true,
   status: true,
   onlyEgresados: true,
+  zona: true,
   createdAt: true,
   updatedAt: true,
 } as const;
@@ -46,6 +47,7 @@ export function create(data: {
   maxPerUser?: number;
   saleEndsAt?: Date;
   onlyEgresados?: boolean;
+  zona?: string | null;
 }) {
   return prisma.ticketType.create({
     data: {
@@ -56,6 +58,7 @@ export function create(data: {
       maxPerUser: data.maxPerUser ?? null,
       saleEndsAt: data.saleEndsAt ?? null,
       onlyEgresados: data.onlyEgresados ?? false,
+      zona: data.zona ?? null,
     },
     select: selectTicketType,
   });

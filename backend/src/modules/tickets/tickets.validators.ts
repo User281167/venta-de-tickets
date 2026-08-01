@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { DEFAULT_PAGE_LIMIT, MAX_PAGE_LIMIT } from './tickets.config.js';
 
 export const ticketTypeStatusSchema = z.enum(['enabled', 'disabled', 'blocked']);
+export const ticketTypeZonaSchema = z.enum(['vip', 'plata', 'bronce']);
 
 export const paginationSchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
@@ -23,6 +24,7 @@ export const createTicketSchema = z.object({
   maxPerUser: z.number().int().positive('Max per user must be greater than 0').optional(),
   saleEndsAt: z.string().datetime().optional(),
   onlyEgresados: z.boolean().optional(),
+  zona: ticketTypeZonaSchema.nullable().optional(),
 }).strict();
 
 export const updateTicketSchema = z.object({
@@ -34,6 +36,7 @@ export const updateTicketSchema = z.object({
   saleEndsAt: z.string().datetime().nullable().optional(),
   status: ticketTypeStatusSchema.optional(),
   onlyEgresados: z.boolean().optional(),
+  zona: ticketTypeZonaSchema.nullable().optional(),
 }).strict().refine((data) => Object.keys(data).length > 0, {
   message: 'At least one field must be provided',
 });

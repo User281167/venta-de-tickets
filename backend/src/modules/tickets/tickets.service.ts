@@ -56,6 +56,7 @@ export async function createTicketType(
     maxPerUser?: number;
     saleEndsAt?: string;
     onlyEgresados?: boolean;
+    zona?: string | null;
   },
   actor: { id: string },
 ) {
@@ -68,6 +69,7 @@ export async function createTicketType(
     maxPerUser: data.maxPerUser,
     saleEndsAt: data.saleEndsAt ? new Date(data.saleEndsAt) : undefined,
     onlyEgresados: data.onlyEgresados,
+    zona: data.zona ?? null,
   });
 
   await auditService.log({
@@ -80,6 +82,7 @@ export async function createTicketType(
       nombre: data.name,
       precio: data.price,
       'Cantidad Total': data.quantityTotal,
+      zona: data.zona ?? null,
     },
   });
 
@@ -98,6 +101,7 @@ export async function updateTicketType(
     saleEndsAt?: string | null;
     status?: 'enabled' | 'disabled' | 'blocked';
     onlyEgresados?: boolean;
+    zona?: string | null;
   },
   actor: { id: string },
 ) {
@@ -121,6 +125,7 @@ export async function updateTicketType(
   if (data.status !== undefined) updateData.status = data.status;
   if (data.onlyEgresados !== undefined)
     updateData.onlyEgresados = data.onlyEgresados;
+  if (data.zona !== undefined) updateData.zona = data.zona;
 
   if (data.quantityTotal !== undefined) {
     if (data.quantityTotal < existing.quantitySold) {
@@ -264,6 +269,21 @@ export async function updateTicketType(
       metadata: {
         'Flag Egresado Anterior': existing.onlyEgresados,
         'Flag Egresado Nuevo': data.onlyEgresados,
+      },
+    });
+  }
+
+  if (data.zona !== undefined && (existing.zona ?? null) !== (data.zona ?? null)) {
+    await auditService.log({
+      eventId: EVENT_ID,
+      actorId: actor.id,
+      action: AUDIT_ACTIONS.TICKET_TYPE_ZONA_ACTUALIZADA,
+      entityType: AUDIT_ENTITY_TYPES.TIPO_ENTRADA,
+      entityId: id,
+      metadata: {
+        'Entrada': data.name,
+        'Zona Anterior': existing.zona ?? null,
+        'Zona Nueva': data.zona ?? null,
       },
     });
   }
