@@ -105,11 +105,13 @@ model TicketType {
   saleEndsAt    DateTime?        @map("sale_ends_at") @db.Timestamptz
   status        TicketTypeStatus @default(enabled) @map("status")
   onlyEgresados Boolean          @default(false) @map("only_egresados")
+  zona          String?          @map("zona") @db.VarChar(20)
   createdAt     DateTime         @default(now()) @map("created_at") @db.Timestamptz
   updatedAt     DateTime         @updatedAt @map("updated_at") @db.Timestamptz
 
   tickets Ticket[]
 
+  @@index([zona])
   @@map("ticket_types")
 }
 
