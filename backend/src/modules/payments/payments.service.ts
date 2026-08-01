@@ -12,10 +12,17 @@ import {
   notifyPaymentUnfulfillable,
 } from '../messaging/notifications/payment-notifications.js';
 import * as auditService from '../audit/audit.service.js';
-import { EVENT_ID } from '../audit/audit.constants.js';
+import {
+  EVENT_ID,
+  AUDIT_ACTIONS,
+  AUDIT_ENTITY_TYPES,
+} from '../audit/audit.constants.js';
 
 import { logger } from '../../utils/logger.js';
-import { RESERVATION_EXPIRATION_INTERNAL_MILLIS , RESERVATION_EXPIRATION_PROVIDER_MILLIS } from '../../shared/config/constants.js';
+import {
+  RESERVATION_EXPIRATION_INTERNAL_MILLIS,
+  RESERVATION_EXPIRATION_PROVIDER_MILLIS,
+} from '../../shared/config/constants.js';
 import { findByUserId, findEgresadoFlag } from '../me/me.repository.js';
 
 function generateTicketCode(): string {
@@ -90,11 +97,9 @@ export async function createCheckout(
   if (!user.fullName) missingFields.push('fullName');
 
   if (missingFields.length > 0) {
-    throw new ValidationError(
-      'USER_INFO_INCOMPLETE',
-      'User info incomplete',
-      { missingFields },
-    );
+    throw new ValidationError('USER_INFO_INCOMPLETE', 'User info incomplete', {
+      missingFields,
+    });
   }
 
   const egresadoRow = await findEgresadoFlag(userId);
@@ -132,8 +137,12 @@ export async function createCheckout(
     });
   }
 
-  const reserveProviderExpiresAt = new Date(Date.now() + RESERVATION_EXPIRATION_PROVIDER_MILLIS);
-  const reserveExpiresAt = new Date(Date.now() + RESERVATION_EXPIRATION_INTERNAL_MILLIS );
+  const reserveProviderExpiresAt = new Date(
+    Date.now() + RESERVATION_EXPIRATION_PROVIDER_MILLIS,
+  );
+  const reserveExpiresAt = new Date(
+    Date.now() + RESERVATION_EXPIRATION_INTERNAL_MILLIS,
+  );
   const paymentId = randomUUID();
 
   // 1. DB primero: reserva atómica de TODO el checkout
@@ -166,7 +175,9 @@ export async function createCheckout(
     paymentId,
     checkoutUrl: checkoutResult.checkoutUrl,
     preferenceId: checkoutResult.providerTxId,
-    ...(checkoutResult.sessionId ? { sessionId: checkoutResult.sessionId } : {}),
+    ...(checkoutResult.sessionId
+      ? { sessionId: checkoutResult.sessionId }
+      : {}),
   };
 }
 
@@ -220,7 +231,9 @@ export async function processWebhook(
       });
 
       if (result.outcome === 'reclaimed') {
-        logger.info(`Reclaimed failed payment: paymentId=${payment.id}, tickets=${result.ticketIds.length}`);
+        logger.info(
+          `Reclaimed failed payment: paymentId=${payment.id}, tickets=${result.ticketIds.length}`,
+        );
 
         for (const ticketId of result.ticketIds) {
           await ticketsService.generateQrForTicket(ticketId);
@@ -229,37 +242,45 @@ export async function processWebhook(
         await auditService.log({
           eventId: EVENT_ID,
           actorId: 'system:webhook',
-          action: 'payment.status_changed',
-          entityType: 'Payment',
+          action: AUDIT_ACTIONS.PAGO_ESTADO_CAMBIADO,
+          entityType: AUDIT_ENTITY_TYPES.PAGOS,
           entityId: payment.id,
           metadata: {
-            statusBefore: 'failed',
-            statusAfter: 'completed',
-            totalCents: payment.totalCents,
+            'Estado Anterior': 'fallo',
+            'Estado Nuevo': 'completado',
+            'Total Centavos': payment.totalCents,
           },
         });
 
         void notifyPaymentConfirmed(payment.id);
       } else if (result.outcome === 'unfulfillable') {
-        await paymentsRepo.markUnfulfillable(payment.id, event.externalId, event.rawPayload as any);
-        logger.warn(`Payment unfulfillable (sold out on reclaim): paymentId=${payment.id}`);
+        await paymentsRepo.markUnfulfillable(
+          payment.id,
+          event.externalId,
+          event.rawPayload as any,
+        );
+        logger.warn(
+          `Payment unfulfillable (sold out on reclaim): paymentId=${payment.id}`,
+        );
 
         await auditService.log({
           eventId: EVENT_ID,
           actorId: 'system:webhook',
-          action: 'payment.status_changed',
-          entityType: 'Payment',
+          action: AUDIT_ACTIONS.PAGO_ESTADO_CAMBIADO,
+          entityType: AUDIT_ENTITY_TYPES.PAGOS,
           entityId: payment.id,
           metadata: {
-            statusBefore: 'failed',
-            statusAfter: 'completed_unfulfillable',
-            totalCents: payment.totalCents,
+            'Estado Anterior': 'fallo',
+            'Estado Nuevo': 'Completado sin disponibilidad',
+            'Total Centavos': payment.totalCents,
           },
         });
 
         void notifyPaymentUnfulfillable(payment.id);
       } else {
-        logger.info(`Reclaim already processed by concurrent webhook: paymentId=${payment.id}`);
+        logger.info(
+          `Reclaim already processed by concurrent webhook: paymentId=${payment.id}`,
+        );
       }
     }
 
@@ -269,7 +290,9 @@ export async function processWebhook(
   // Rama de reclamo: el pago fue barrido a expired antes de que llegara el webhook.
   if (payment.status === 'expired') {
     if (event.status !== 'approved') {
-      logger.info(`Declined/other event on expired payment: paymentId=${payment.id}`);
+      logger.info(
+        `Declined/other event on expired payment: paymentId=${payment.id}`,
+      );
       return { received: true };
     }
 
@@ -280,7 +303,9 @@ export async function processWebhook(
     });
 
     if (result.outcome === 'reclaimed') {
-      logger.info(`Reclaimed expired payment: paymentId=${payment.id}, tickets=${result.ticketIds.length}`);
+      logger.info(
+        `Reclaimed expired payment: paymentId=${payment.id}, tickets=${result.ticketIds.length}`,
+      );
 
       for (const ticketId of result.ticketIds) {
         await ticketsService.generateQrForTicket(ticketId);
@@ -289,37 +314,45 @@ export async function processWebhook(
       await auditService.log({
         eventId: EVENT_ID,
         actorId: 'system:webhook',
-        action: 'payment.status_changed',
-        entityType: 'Payment',
+        action: AUDIT_ACTIONS.PAGO_ESTADO_CAMBIADO,
+        entityType: AUDIT_ENTITY_TYPES.PAGOS,
         entityId: payment.id,
         metadata: {
-          statusBefore: 'expired',
-          statusAfter: 'completed',
-          totalCents: payment.totalCents,
+          'Estado Anterior': 'expirado',
+          'Estado Nuevo': 'completado',
+          'Total Centavos': payment.totalCents,
         },
       });
 
       void notifyPaymentConfirmed(payment.id);
     } else if (result.outcome === 'unfulfillable') {
-      await paymentsRepo.markUnfulfillable(payment.id, event.externalId, event.rawPayload as any);
-      logger.warn(`Payment unfulfillable (sold out on reclaim): paymentId=${payment.id}`);
+      await paymentsRepo.markUnfulfillable(
+        payment.id,
+        event.externalId,
+        event.rawPayload as any,
+      );
+      logger.warn(
+        `Payment unfulfillable (sold out on reclaim): paymentId=${payment.id}`,
+      );
 
       await auditService.log({
         eventId: EVENT_ID,
         actorId: 'system:webhook',
-        action: 'payment.status_changed',
-        entityType: 'Payment',
+        action: AUDIT_ACTIONS.PAGO_ESTADO_CAMBIADO,
+        entityType: AUDIT_ENTITY_TYPES.PAGOS,
         entityId: payment.id,
         metadata: {
-          statusBefore: 'expired',
-          statusAfter: 'completed_unfulfillable',
-          totalCents: payment.totalCents,
+          'Estado Anterior': 'expirado',
+          'Estado Nuevo': 'completado sin disponibilidad',
+          'Total Centavos': payment.totalCents,
         },
       });
 
       void notifyPaymentUnfulfillable(payment.id);
     } else {
-      logger.info(`Reclaim already processed by concurrent webhook: paymentId=${payment.id}`);
+      logger.info(
+        `Reclaim already processed by concurrent webhook: paymentId=${payment.id}`,
+      );
     }
 
     return { received: true };
@@ -327,7 +360,9 @@ export async function processWebhook(
 
   // Flujo normal: payment sigue pending.
   if (event.status === 'approved') {
-    logger.info(`Approved payment: paymentId=${payment.id}, externalId=${event.externalId}`);
+    logger.info(
+      `Approved payment: paymentId=${payment.id}, externalId=${event.externalId}`,
+    );
 
     const result = await paymentsRepo.processPaymentWebhook({
       paymentId: payment.id,
@@ -336,7 +371,9 @@ export async function processWebhook(
     });
 
     if (result.processed) {
-      const paymentWithTickets = await paymentsRepo.findByIdWithTickets(payment.id);
+      const paymentWithTickets = await paymentsRepo.findByIdWithTickets(
+        payment.id,
+      );
 
       if (paymentWithTickets) {
         for (const ticket of paymentWithTickets.tickets) {
@@ -347,37 +384,44 @@ export async function processWebhook(
       await auditService.log({
         eventId: EVENT_ID,
         actorId: 'system:webhook',
-        action: 'payment.status_changed',
-        entityType: 'Payment',
+        action: AUDIT_ACTIONS.PAGO_ESTADO_CAMBIADO,
+        entityType: AUDIT_ENTITY_TYPES.PAGOS,
         entityId: payment.id,
         metadata: {
-          statusBefore: 'pending',
-          statusAfter: 'completed',
-          totalCents: payment.totalCents,
+          'Estado Anterior': 'pendiente',
+          'Estado Nuevo': 'completado',
+          'Total Centavos': payment.totalCents,
         },
       });
 
       void notifyPaymentConfirmed(payment.id);
-      logger.info(`Processed payment: paymentId=${payment.id}, externalId=${event.externalId}`);
+      logger.info(
+        `Processed payment: paymentId=${payment.id}, externalId=${event.externalId}`,
+      );
     }
   } else if (event.status === 'declined') {
-    logger.info(`Declined payment: paymentId=${payment.id}, externalId=${event.externalId}`);
+    logger.info(
+      `Declined payment: paymentId=${payment.id}, externalId=${event.externalId}`,
+    );
     await paymentsRepo.update(payment.id, { status: 'failed' });
 
     await auditService.log({
       eventId: EVENT_ID,
       actorId: 'system:webhook',
-      action: 'payment.status_changed',
-      entityType: 'Payment',
+      action: AUDIT_ACTIONS.PAGO_ESTADO_CAMBIADO,
+      entityType: AUDIT_ENTITY_TYPES.PAGOS,
       entityId: payment.id,
       metadata: {
-        statusBefore: 'pending',
-        statusAfter: 'failed',
-        totalCents: payment.totalCents,
+        'Estado Anterior': 'pendiente',
+        'Estado Nuevo': 'fallo',
+        'Total Centavos': payment.totalCents,
       },
     });
 
-    void notifyPaymentFailed(payment.id, 'El proveedor de pagos rechazó la transacción.');
+    void notifyPaymentFailed(
+      payment.id,
+      'El proveedor de pagos rechazó la transacción.',
+    );
   }
 
   return { received: true };
@@ -602,14 +646,14 @@ export async function createAdminPayment(input: {
   await auditService.log({
     eventId: EVENT_ID,
     actorId: input.createdBy,
-    action: 'payment.admin_created',
-    entityType: 'Payment',
+    action: AUDIT_ACTIONS.ADMIN_CREO_PAGO_MANUAL,
+    entityType: AUDIT_ENTITY_TYPES.PAGOS,
     entityId: result.paymentId,
     metadata: {
-      provider: input.provider,
-      statusBefore: 'none',
-      statusAfter: 'completed',
-      totalCents: subtotalCents,
+      Proveedor: input.provider,
+      'Estado Anterior': 'none',
+      'Estado Nuevo': 'completed',
+      'Total Centavos': subtotalCents,
     },
   });
 
@@ -640,12 +684,12 @@ export async function processRefund(input: {
   await auditService.log({
     eventId: EVENT_ID,
     actorId: input.processedById,
-    action: 'payment.status_changed',
-    entityType: 'Payment',
+    action: AUDIT_ACTIONS.PAGO_ESTADO_CAMBIADO,
+    entityType: AUDIT_ENTITY_TYPES.PAGOS,
     entityId: input.paymentId,
     metadata: {
-      statusBefore: 'completed',
-      statusAfter: 'refunded',
+      'Estado Anterior': 'completed',
+      'Estado Nuevo': 'refunded',
     },
   });
 
@@ -653,12 +697,12 @@ export async function processRefund(input: {
     await auditService.log({
       eventId: EVENT_ID,
       actorId: input.processedById,
-      action: 'ticket.cancelled',
-      entityType: 'Ticket',
+      action: AUDIT_ACTIONS.ENTRADA_CANCELADA,
+      entityType: AUDIT_ENTITY_TYPES.ENTRADA,
       entityId: ticket.id,
       metadata: {
-        statusBefore: ticket.status,
-        statusAfter: 'cancelled',
+        'Estado Anterior': ticket.status,
+        'Estado Nuevo': 'cancelled',
       },
     });
   }

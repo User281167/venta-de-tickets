@@ -1,16 +1,15 @@
 "use client";
 
-import { Badge, Box, Table, Text } from "@chakra-ui/react";
+import { Badge, Box, Code, Table, Text } from "@chakra-ui/react";
 import { tableCss } from "@/shared/components/tablecss";
 import { formatDate } from "@/shared/utils/formats";
 import type { AuditLogEntry } from "../types";
 
 const ENTITY_TYPE_COLORS: Record<string, string> = {
-  TicketType: "#38bdf8",
-  Ticket: "#a78bfa",
-  Payment: "#34d399",
-  DiscountCode: "#fbbf24",
-  User: "#f472b6",
+  "Tipo de entrada": "#38bdf8",
+  Entrada: "#a78bfa",
+  Pagos: "#34d399",
+  Usuarios: "#f472b6",
 };
 
 const ROLE_COLORS: Record<string, string> = {
@@ -48,15 +47,15 @@ export function AuditLogTable({ entries }: { entries: AuditLogEntry[] }) {
       overflowX="auto"
       className="scrollbar-thin"
     >
-      <Table.Root css={tableCss} minW="1100px">
+      <Table.Root css={tableCss} minW="1300px">
         <Table.Header>
           <Table.Row>
-            <Table.ColumnHeader w="15%">Fecha</Table.ColumnHeader>
-            <Table.ColumnHeader w="20%">Actor</Table.ColumnHeader>
-            <Table.ColumnHeader w="10%">Rol</Table.ColumnHeader>
-            <Table.ColumnHeader w="20%">Acción</Table.ColumnHeader>
-            <Table.ColumnHeader w="12%">Entidad</Table.ColumnHeader>
-            <Table.ColumnHeader w="23%">Detalle</Table.ColumnHeader>
+            <Table.ColumnHeader w="12%">Fecha</Table.ColumnHeader>
+            <Table.ColumnHeader w="15%">Actor</Table.ColumnHeader>
+            <Table.ColumnHeader w="8%">Rol</Table.ColumnHeader>
+            <Table.ColumnHeader w="18%">Acción</Table.ColumnHeader>
+            <Table.ColumnHeader w="10%">Entidad</Table.ColumnHeader>
+            <Table.ColumnHeader w="37%">Detalle</Table.ColumnHeader>
           </Table.Row>
         </Table.Header>
 
@@ -122,14 +121,18 @@ export function AuditLogTable({ entries }: { entries: AuditLogEntry[] }) {
                   </Badge>
                 </Table.Cell>
                 <Table.Cell>
-                  <Text
+                  <Code
                     color="brand.muted"
                     fontSize="xs"
-                    fontFamily="mono"
-                    lineClamp={2}
+                    bg="transparent"
+                    p={0}
+                    whiteSpace="pre-wrap"
+                    wordBreak="break-word"
+                    display="block"
+                    w="full"
                   >
                     {formatMetadata(entry)}
-                  </Text>
+                  </Code>
                 </Table.Cell>
               </Table.Row>
             );

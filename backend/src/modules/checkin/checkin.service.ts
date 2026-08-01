@@ -6,7 +6,11 @@ import { ConflictError } from '../../shared/errors/ConflictError.js';
 import { InvalidQrError } from '../../shared/errors/InvalidQrError.js';
 import { logger } from '../../utils/logger.js';
 import * as auditService from '../audit/audit.service.js';
-import { EVENT_ID } from '../audit/audit.constants.js';
+import {
+  EVENT_ID,
+  AUDIT_ACTIONS,
+  AUDIT_ENTITY_TYPES,
+} from '../audit/audit.constants.js';
 
 import * as checkinRepo from './checkin.repository.js';
 import {
@@ -82,12 +86,12 @@ export async function confirmEntryDirect(
   await auditService.log({
     eventId: EVENT_ID,
     actorId: checkerId,
-    action: 'ticket.checked_in',
-    entityType: 'Ticket',
+    action: AUDIT_ACTIONS.ENTRADA_CHECK_IN_REALIZADO,
+    entityType: AUDIT_ENTITY_TYPES.ENTRADA,
     entityId: ticketId,
     metadata: {
-      statusBefore: 'paid',
-      statusAfter: 'used',
+      'Estado Anterior': 'pagada',
+      'Estado Nuevo': 'usada',
     },
   });
 
@@ -128,12 +132,12 @@ export async function requestConfirmation(
   await auditService.log({
     eventId: EVENT_ID,
     actorId: checkerId,
-    action: 'ticket.confirmation_requested',
-    entityType: 'Ticket',
+    action: AUDIT_ACTIONS.ENTRADA_CONFIRMACION_SOLICITADA,
+    entityType: AUDIT_ENTITY_TYPES.ENTRADA,
     entityId: ticketId,
     metadata: {
-      statusBefore: 'paid',
-      statusAfter: 'pending_confirmation',
+      'Estado Anterior': 'pagada',
+      'Estado Nuevo': 'pendiente de confirmación',
     },
   });
 
@@ -180,12 +184,12 @@ export async function allowEntry(
   await auditService.log({
     eventId: EVENT_ID,
     actorId: checkerId,
-    action: 'ticket.checked_in',
-    entityType: 'Ticket',
+    action: AUDIT_ACTIONS.ENTRADA_CHECK_IN_REALIZADO,
+    entityType: AUDIT_ENTITY_TYPES.ENTRADA,
     entityId: ticketId,
     metadata: {
-      statusBefore: 'confirmed',
-      statusAfter: 'used',
+      'Estado Anterior': 'confirmada',
+      'Estado Nuevo': 'usada',
     },
   });
 

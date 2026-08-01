@@ -156,11 +156,11 @@ describe('audit.service', () => {
       mockFindMany.mockResolvedValue([]);
       const since = new Date('2026-07-31T10:00:00.000Z');
 
-      await auditService.list({ since, entityType: 'Payment', limit: 25 });
+      await auditService.list({ since, entityType: 'Pagos', limit: 25 });
 
       expect(mockFindMany).toHaveBeenCalledWith({
         since,
-        entityType: 'Payment',
+        entityType: 'Pagos',
         limit: 25,
       });
     });

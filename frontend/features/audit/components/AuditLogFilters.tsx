@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Button, Flex, HStack, Text } from "@chakra-ui/react";
+import { Button, Flex, HStack, Text } from "@chakra-ui/react";
 import { IconFilter, IconX } from "@tabler/icons-react";
 import { AUDIT_ENTITY_TYPES, type AuditEntityType } from "../types";
 
@@ -28,7 +28,9 @@ export function AuditLogFilters({ selected, onChange }: Props) {
           borderColor="rgba(255,255,255,0.16)"
           borderRadius="full"
           bg={selected === null ? undefined : "transparent"}
-          _hover={{ bg: selected === null ? undefined : "rgba(255,255,255,0.06)" }}
+          _hover={{
+            bg: selected === null ? undefined : "rgba(255,255,255,0.06)",
+          }}
           onClick={() => onChange(null)}
         >
           Todas

@@ -1,9 +1,8 @@
 export type AuditEntityType =
-  | "TicketType"
-  | "Ticket"
-  | "Payment"
-  | "DiscountCode"
-  | "User";
+  | "Tipo de entrada"
+  | "Entrada"
+  | "Pagos"
+  | "Usuarios";
 
 export interface AuditLogEntry {
   id: string;
@@ -26,11 +25,10 @@ export interface AuditLogResponse {
 }
 
 export const AUDIT_ENTITY_TYPES: readonly AuditEntityType[] = [
-  "TicketType",
-  "Ticket",
-  "Payment",
-  "DiscountCode",
-  "User",
+  "Tipo de entrada",
+  "Entrada",
+  "Pagos",
+  "Usuarios",
 ] as const;
 
 export interface AuditLogFilters {

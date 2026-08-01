@@ -7,7 +7,11 @@ import * as adminsRepo from './admins.repository.js';
 import * as paymentsService from '../payments/payments.service.js';
 import { auditUserCache } from '../audit/auditUser.cache.js';
 import * as auditService from '../audit/audit.service.js';
-import { EVENT_ID } from '../audit/audit.constants.js';
+import {
+  EVENT_ID,
+  AUDIT_ACTIONS,
+  AUDIT_ENTITY_TYPES,
+} from '../audit/audit.constants.js';
 
 import { logger } from '../../utils/logger.js';
 import { notifyPaymentConfirmed } from '../messaging/index.js';
@@ -55,12 +59,12 @@ export async function updateRole(
     await auditService.log({
       eventId: EVENT_ID,
       actorId: actor.id,
-      action: 'user.role_changed',
-      entityType: 'User',
+      action: AUDIT_ACTIONS.USUARIO_ROL_CAMBIADO,
+      entityType: AUDIT_ENTITY_TYPES.USUARIOS,
       entityId: id,
       metadata: {
-        roleBefore: existing.role,
-        roleAfter: role,
+        'Rol Anterior': existing.role,
+        'Rol Nuevo': role,
       },
     });
   }
@@ -123,16 +127,16 @@ export async function createUser(
     await auditService.log({
       eventId: EVENT_ID,
       actorId: actor.id,
-      action: 'user.created',
-      entityType: 'User',
+      action: AUDIT_ACTIONS.USUARIO_CREADO,
+      entityType: AUDIT_ENTITY_TYPES.USUARIOS,
       entityId: userId,
       metadata: {
-        fullName: user.fullName,
-        email: user.email,
-        role: user.role,
-        cedula: user.cedula,
-        phone: user.phone,
-        isActive: user.isActive,
+        nombre: user.fullName,
+        correo: user.email,
+        rol: user.role,
+        cédula: user.cedula,
+        teléfono: user.phone,
+        activo: user.isActive,
       },
     });
 
@@ -148,7 +152,7 @@ export async function createUser(
       // si fallo por unique en email y cedula, auth trigger agrega de todos modos
       await supabaseAdmin.auth.admin.deleteUser(userId);
 
-      throw Object.assign(new Error('Email or cedula already exists'), {
+      throw Object.assign(new Error('Email or cédula already exists'), {
         statusCode: 409,
         code: 'CONFLICT',
         data: { emails: email ? [email] : [], cedulas: cedula ? [cedula] : [] },
@@ -268,10 +272,12 @@ export async function updateUser(
   if (data.isActive !== undefined) {
     updateData.isActive = data.isActive;
 
-    const { error: banError } =
-      await supabaseAdmin.auth.admin.updateUserById(id, {
+    const { error: banError } = await supabaseAdmin.auth.admin.updateUserById(
+      id,
+      {
         ban_duration: data.isActive ? 'none' : PERMANENT_BAN_HOURS,
-      });
+      },
+    );
 
     if (banError) {
       logger.error(
@@ -335,7 +341,8 @@ export async function updateUser(
 
   auditUserCache.invalidate(id);
 
-  const changes: Array<{ field: string; before: unknown; after: unknown }> = [];
+  const changes: Array<{ campo: string; antes: unknown; despues: unknown }> =
+    [];
   const trackedFields: Array<'fullName' | 'phone' | 'cedula'> = [
     'fullName',
     'phone',
@@ -344,7 +351,11 @@ export async function updateUser(
 
   for (const field of trackedFields) {
     if (data[field] !== undefined && existing[field] !== data[field]) {
-      changes.push({ field, before: existing[field], after: data[field] });
+      changes.push({
+        campo: field,
+        antes: existing[field],
+        despues: data[field],
+      });
     }
   }
 
@@ -352,10 +363,10 @@ export async function updateUser(
     await auditService.log({
       eventId: EVENT_ID,
       actorId: actor.id,
-      action: 'user.updated',
-      entityType: 'User',
+      action: AUDIT_ACTIONS.USUARIO_ACTUALIZADO,
+      entityType: AUDIT_ENTITY_TYPES.USUARIOS,
       entityId: id,
-      metadata: { changes } as Prisma.InputJsonValue,
+      metadata: { cambios: changes } as Prisma.InputJsonValue,
     });
   }
 
@@ -363,12 +374,12 @@ export async function updateUser(
     await auditService.log({
       eventId: EVENT_ID,
       actorId: actor.id,
-      action: 'user.status_changed',
-      entityType: 'User',
+      action: AUDIT_ACTIONS.USUARIO_ESTADO_CAMBIADO,
+      entityType: AUDIT_ENTITY_TYPES.USUARIOS,
       entityId: id,
       metadata: {
-        statusBefore: existing.isActive ? 'active' : 'inactive',
-        statusAfter: data.isActive ? 'active' : 'inactive',
+        'Estado Anterior': existing.isActive ? 'activo' : 'inactivo',
+        'Estado Nuevo': data.isActive ? 'activo' : 'inactivo',
       },
     });
   }
@@ -377,12 +388,12 @@ export async function updateUser(
     await auditService.log({
       eventId: EVENT_ID,
       actorId: actor.id,
-      action: 'user.role_changed',
-      entityType: 'User',
+      action: AUDIT_ACTIONS.USUARIO_ROL_CAMBIADO,
+      entityType: AUDIT_ENTITY_TYPES.USUARIOS,
       entityId: id,
       metadata: {
-        roleBefore: existing.role,
-        roleAfter: data.role,
+        'Rol Anterior': existing.role,
+        'Rol Nuevo': data.role,
       },
     });
   }

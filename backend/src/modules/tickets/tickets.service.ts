@@ -4,7 +4,11 @@ import { ValidationError } from '../../shared/errors/ValidationError.js';
 import { env } from '../../shared/config/env.js';
 import * as ticketsRepo from './tickets.repository.js';
 import * as auditService from '../audit/audit.service.js';
-import { EVENT_ID } from '../audit/audit.constants.js';
+import {
+  EVENT_ID,
+  AUDIT_ACTIONS,
+  AUDIT_ENTITY_TYPES,
+} from '../audit/audit.constants.js';
 
 import { logger } from '../../utils/logger.js';
 
@@ -69,13 +73,13 @@ export async function createTicketType(
   await auditService.log({
     eventId: EVENT_ID,
     actorId: actor.id,
-    action: 'ticket_type.created',
-    entityType: 'TicketType',
+    action: AUDIT_ACTIONS.TICKET_TYPE_CREADO,
+    entityType: AUDIT_ENTITY_TYPES.TIPO_ENTRADA,
     entityId: ticketType.id,
     metadata: {
-      name: data.name,
-      price: data.price,
-      quantityTotal: data.quantityTotal,
+      nombre: data.name,
+      precio: data.price,
+      'Cantidad Total': data.quantityTotal,
     },
   });
 
@@ -115,7 +119,8 @@ export async function updateTicketType(
     updateData.saleEndsAt = data.saleEndsAt ? new Date(data.saleEndsAt) : null;
   }
   if (data.status !== undefined) updateData.status = data.status;
-  if (data.onlyEgresados !== undefined) updateData.onlyEgresados = data.onlyEgresados;
+  if (data.onlyEgresados !== undefined)
+    updateData.onlyEgresados = data.onlyEgresados;
 
   if (data.quantityTotal !== undefined) {
     if (data.quantityTotal < existing.quantitySold) {
@@ -138,12 +143,12 @@ export async function updateTicketType(
     await auditService.log({
       eventId: EVENT_ID,
       actorId: actor.id,
-      action: 'ticket_type.price_updated',
-      entityType: 'TicketType',
+      action: AUDIT_ACTIONS.TICKET_TYPE_PRECIO_ACTUALIZADO,
+      entityType: AUDIT_ENTITY_TYPES.TIPO_ENTRADA,
       entityId: id,
       metadata: {
-        priceBefore: Number(existing.price),
-        priceAfter: data.price,
+        'Precio Anterior': Number(existing.price),
+        'Precio Nuevo': data.price,
       },
     });
   }
@@ -152,12 +157,12 @@ export async function updateTicketType(
     await auditService.log({
       eventId: EVENT_ID,
       actorId: actor.id,
-      action: 'ticket_type.status_updated',
-      entityType: 'TicketType',
+      action: AUDIT_ACTIONS.TICKET_TYPE_ESTADO_ACTUALIZADO,
+      entityType: AUDIT_ENTITY_TYPES.TIPO_ENTRADA,
       entityId: id,
       metadata: {
-        statusBefore: existing.status,
-        statusAfter: data.status,
+        'Estado Anterior': existing.status,
+        'Estado Nuevo': data.status,
       },
     });
   }
@@ -166,10 +171,10 @@ export async function updateTicketType(
     await auditService.log({
       eventId: EVENT_ID,
       actorId: actor.id,
-      action: 'ticket_type.name_updated',
-      entityType: 'TicketType',
+      action: AUDIT_ACTIONS.TICKET_TYPE_NOMBRE_ACTUALIZADO,
+      entityType: AUDIT_ENTITY_TYPES.TIPO_ENTRADA,
       entityId: id,
-      metadata: { nameBefore: existing.name, nameAfter: data.name },
+      metadata: { 'Nombre Anterior': existing.name, 'Nombre Nuevo': data.name },
     });
   }
 
@@ -180,12 +185,12 @@ export async function updateTicketType(
     await auditService.log({
       eventId: EVENT_ID,
       actorId: actor.id,
-      action: 'ticket_type.description_updated',
-      entityType: 'TicketType',
+      action: AUDIT_ACTIONS.TICKET_TYPE_DESCRIPCION_ACTUALIZADA,
+      entityType: AUDIT_ENTITY_TYPES.TIPO_ENTRADA,
       entityId: id,
       metadata: {
-        descriptionBefore: existing.description,
-        descriptionAfter: data.description,
+        'Descripción Anterior': existing.description,
+        'Descripción Nueva': data.description,
       },
     });
   }
@@ -197,12 +202,12 @@ export async function updateTicketType(
     await auditService.log({
       eventId: EVENT_ID,
       actorId: actor.id,
-      action: 'ticket_type.quantity_total_updated',
-      entityType: 'TicketType',
+      action: AUDIT_ACTIONS.TICKET_TYPE_CANTIDAD_TOTAL_ACTUALIZADA,
+      entityType: AUDIT_ENTITY_TYPES.TIPO_ENTRADA,
       entityId: id,
       metadata: {
-        quantityTotalBefore: existing.quantityTotal,
-        quantityTotalAfter: data.quantityTotal,
+        'Cantidad Total Anterior': existing.quantityTotal,
+        'Cantidad Total Nueva': data.quantityTotal,
       },
     });
   }
@@ -214,12 +219,12 @@ export async function updateTicketType(
     await auditService.log({
       eventId: EVENT_ID,
       actorId: actor.id,
-      action: 'ticket_type.max_per_user_updated',
-      entityType: 'TicketType',
+      action: AUDIT_ACTIONS.TICKET_TYPE_MAXIMO_POR_USUARIO_ACTUALIZADO,
+      entityType: AUDIT_ENTITY_TYPES.TIPO_ENTRADA,
       entityId: id,
       metadata: {
-        maxPerUserBefore: existing.maxPerUser,
-        maxPerUserAfter: data.maxPerUser,
+        'Máximo Por Usuario Anterior': existing.maxPerUser,
+        'Máximo Por Usuario Nuevo': data.maxPerUser,
       },
     });
   }
@@ -228,15 +233,20 @@ export async function updateTicketType(
     const beforeIso = existing.saleEndsAt
       ? existing.saleEndsAt.toISOString()
       : null;
-    const afterIso = data.saleEndsAt ? new Date(data.saleEndsAt).toISOString() : null;
+    const afterIso = data.saleEndsAt
+      ? new Date(data.saleEndsAt).toISOString()
+      : null;
     if (beforeIso !== afterIso) {
       await auditService.log({
         eventId: EVENT_ID,
         actorId: actor.id,
-        action: 'ticket_type.sale_window_updated',
-        entityType: 'TicketType',
+        action: AUDIT_ACTIONS.TICKET_TYPE_VENTANA_VENTA_ACTUALIZADA,
+        entityType: AUDIT_ENTITY_TYPES.TIPO_ENTRADA,
         entityId: id,
-        metadata: { saleEndsAtBefore: beforeIso, saleEndsAtAfter: afterIso },
+        metadata: {
+          'Fin Venta Anterior': beforeIso,
+          'Fin Venta Nuevo': afterIso,
+        },
       });
     }
   }
@@ -248,12 +258,12 @@ export async function updateTicketType(
     await auditService.log({
       eventId: EVENT_ID,
       actorId: actor.id,
-      action: 'ticket_type.egresado_flag_updated',
-      entityType: 'TicketType',
+      action: AUDIT_ACTIONS.TICKET_TYPE_FLAG_EGRESADO_ACTUALIZADO,
+      entityType: AUDIT_ENTITY_TYPES.TIPO_ENTRADA,
       entityId: id,
       metadata: {
-        egresadoBefore: existing.onlyEgresados,
-        egresadoAfter: data.onlyEgresados,
+        'Flag Egresado Anterior': existing.onlyEgresados,
+        'Flag Egresado Nuevo': data.onlyEgresados,
       },
     });
   }
