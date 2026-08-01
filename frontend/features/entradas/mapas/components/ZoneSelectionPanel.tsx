@@ -132,6 +132,16 @@ export function ZoneSelectionPanel({
           {zone.description}
         </p>
 
+        <div
+          className="!rounded-full !px-3 !py-1 !text-[10px] !font-bold !uppercase !text-white"
+          style={{
+            background: "#ff0f7b",
+            border: "1px solid rgba(255,255,255,.15)",
+          }}
+        >
+          Precio de salida
+        </div>
+
         {zoneTicketTypes.length === 0 ? (
           <div className="!rounded-xl !border !border-white/8 !bg-white/5 !p-4 !text-center !text-xs !text-white/55">
             Aún no hay tipos de entrada asociados a esta zona.

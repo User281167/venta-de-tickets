@@ -102,6 +102,29 @@ export function TicketTypeCard({ ticketType }: TicketTypeCardProps) {
       />
 
       <div
+        className="!absolute !left-0 !top-0 !overflow-hidden !z-20"
+        style={{ width: 120, height: 120 }}
+      >
+        <span
+          className="!absolute !-left-10 !top-7 !w-44"
+          style={{
+            transform: "rotate(-40deg)",
+            background: "linear-gradient(90deg,#ff0f7b,#a78bfa)",
+            padding: "5px 0",
+            fontSize: "10px",
+            fontWeight: 800,
+            letterSpacing: ".08em",
+            textTransform: "uppercase",
+            color: "#fff",
+            textAlign: "center",
+            boxShadow: "0 4px 12px rgba(0,0,0,.25)",
+          }}
+        >
+          Precio de salida
+        </span>
+      </div>
+
+      <div
         className="!pointer-events-none !absolute !-right-16 !-top-16 !h-40 !w-40 !rounded-full !opacity-40 !blur-3xl"
         style={{ background: GLOW_BG[status] }}
         aria-hidden="true"
