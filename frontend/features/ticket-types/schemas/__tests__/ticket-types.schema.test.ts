@@ -17,6 +17,7 @@ const validTicketType = {
   isSoldOut: false,
   isActive: true,
   onlyEgresados: false,
+  zona: null,
   status: "enabled",
 };
 
@@ -71,6 +72,7 @@ describe("adminTicketTypeSchema", () => {
     isActive: true,
     saleEndsAt: null,
     onlyEgresados: false,
+    zona: "bronce" as const,
     createdAt: "2026-06-01T00:00:00.000Z",
     updatedAt: "2026-06-15T00:00:00.000Z",
   };
@@ -102,6 +104,32 @@ describe("adminTicketTypeSchema", () => {
     const result = adminTicketTypeSchema.safeParse({
       ...validAdminTicketType,
       status: "archived",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("accepts nullable zona", () => {
+    const result = adminTicketTypeSchema.safeParse({
+      ...validAdminTicketType,
+      zona: null,
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts all valid zona values", () => {
+    for (const z of ["vip", "plata", "bronce"] as const) {
+      const result = adminTicketTypeSchema.safeParse({
+        ...validAdminTicketType,
+        zona: z,
+      });
+      expect(result.success).toBe(true);
+    }
+  });
+
+  it("rejects invalid zona", () => {
+    const result = adminTicketTypeSchema.safeParse({
+      ...validAdminTicketType,
+      zona: "oro",
     });
     expect(result.success).toBe(false);
   });
@@ -155,6 +183,36 @@ describe("createTicketTypeSchema (frontend)", () => {
       name: "VIP",
       price: -1,
       quantityTotal: 100,
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("accepts explicit zona", () => {
+    const result = createTicketTypeSchema.safeParse({
+      name: "VIP",
+      price: 250000,
+      quantityTotal: 100,
+      zona: "vip",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts null zona (sin zona)", () => {
+    const result = createTicketTypeSchema.safeParse({
+      name: "VIP",
+      price: 250000,
+      quantityTotal: 100,
+      zona: null,
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("rejects invalid zona value", () => {
+    const result = createTicketTypeSchema.safeParse({
+      name: "VIP",
+      price: 250000,
+      quantityTotal: 100,
+      zona: "oro",
     });
     expect(result.success).toBe(false);
   });

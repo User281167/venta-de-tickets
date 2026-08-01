@@ -30,6 +30,7 @@ function toClientTicketType(v: VenueTicketType): TicketType {
     isSoldOut: v.quantitySold >= v.quantityTotal,
     isActive: v.status === "enabled",
     onlyEgresados: v.onlyEgresados,
+    zona: v.zona,
     status: v.status,
   };
 }

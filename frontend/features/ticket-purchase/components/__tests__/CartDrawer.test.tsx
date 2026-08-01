@@ -31,6 +31,7 @@ const general: TicketType = {
   isSoldOut: false,
   isActive: true,
   onlyEgresados: false,
+  zona: null,
   status: "enabled",
 };
 

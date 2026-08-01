@@ -60,26 +60,16 @@ export type VenueLayout = {
   zones: VenueZone[];
 };
 
-const PLACEHOLDER = ["00000000-0000-0000-0000-000000000000"];
-const PLACE_VIPS = process.env.NEXT_PUBLIC_ZONA_VIP_IDS?.split(",") ?? PLACEHOLDER
-const PLACE_PLATA = process.env.NEXT_PUBLIC_ZONA_PLATA_IDS?.split(",") ?? PLACEHOLDER
-const PLACE_BRONCE = process.env.NEXT_PUBLIC_ZONA_BRONCE_IDS?.split(",") ?? PLACEHOLDER
-
 // Two-row layout matching the venue plan: each zone (Bronce/Plata/VIP) is
 // drawn as TWO physical blocks — a primary block in the main hall and a
 // secondary narrower block below — connected visually as one zone.
+//
+// ticketTypeIds is filled at runtime from the API response grouped by `zona`
+// (see VenueMapContent). No env vars.
 export const venueLayout: VenueLayout = {
   viewBox: { width: 720, height: 550 },
   stage: { x: 543, y: 95, width: 162, height: 180, label: "ESCENARIO" },
-  structures: [
-    // {
-    //   x: 350,
-    //   y: 40,
-    //   width: 144,
-    //   height: 210,
-    //   label: "",
-    // },
-  ],
+  structures: [],
   zones: [
     {
       key: "bronce",
@@ -94,7 +84,7 @@ export const venueLayout: VenueLayout = {
         { x: 120, y: 330, width: 171, height: 150, rows: 5, cols: 16 },
       ],
       entrances: [],
-      ticketTypeIds: PLACE_BRONCE,
+      ticketTypeIds: [],
       confirmed: true,
     },
     {
@@ -110,7 +100,7 @@ export const venueLayout: VenueLayout = {
         { x: 302, y: 330, width: 144, height: 150, rows: 5, cols: 12 },
       ],
       entrances: [],
-      ticketTypeIds: PLACE_PLATA,
+      ticketTypeIds: [],
       confirmed: true,
     },
     {
@@ -126,7 +116,7 @@ export const venueLayout: VenueLayout = {
         { x: 455, y: 330, width: 36, height: 150, rows: 5, cols: 3 },
       ],
       entrances: [],
-      ticketTypeIds: PLACE_VIPS,
+      ticketTypeIds: [],
       confirmed: true,
     },
     {

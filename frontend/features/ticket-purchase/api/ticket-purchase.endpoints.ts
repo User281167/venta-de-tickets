@@ -13,6 +13,7 @@ type BackendTicketType = {
   saleEndsAt: string | null;
   status: string;
   onlyEgresados: boolean;
+  zona: "vip" | "plata" | "bronce" | null;
 };
 
 type BackendResponse = {
@@ -42,6 +43,7 @@ export async function fetchActiveTicketTypes(): Promise<TicketType[]> {
     isSoldOut: tt.quantitySold >= tt.quantityTotal,
     isActive: tt.status === "enabled",
     onlyEgresados: tt.onlyEgresados,
+    zona: tt.zona,
     status: tt.status as 'enabled' | 'disabled' | 'blocked',
   }));
 }

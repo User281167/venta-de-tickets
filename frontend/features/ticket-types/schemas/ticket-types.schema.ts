@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+export const ticketTypeZonaSchema = z.enum(["vip", "plata", "bronce"]);
+export type TicketTypeZona = z.infer<typeof ticketTypeZonaSchema>;
+
 export const ticketTypeSchema = z.object({
   id: z.string().uuid(),
   name: z.string(),
@@ -11,6 +14,7 @@ export const ticketTypeSchema = z.object({
   isSoldOut: z.boolean(),
   isActive: z.boolean(),
   onlyEgresados: z.boolean(),
+  zona: ticketTypeZonaSchema.nullable(),
   status: z.enum(['enabled', 'disabled', 'blocked']),
 });
 
@@ -26,6 +30,7 @@ export const adminTicketTypeSchema = z.object({
   isActive: z.boolean(),
   saleEndsAt: z.string().nullable(),
   onlyEgresados: z.boolean(),
+  zona: ticketTypeZonaSchema.nullable(),
   createdAt: z.string(),
   updatedAt: z.string(),
 });
@@ -38,6 +43,7 @@ export const createTicketTypeSchema = z.object({
   maxPerUser: z.number().int().min(1).optional(),
   saleEndsAt: z.string().optional(),
   onlyEgresados: z.boolean().optional(),
+  zona: ticketTypeZonaSchema.nullable().optional(),
 });
 
 export const updateTicketTypeSchema = z.object({
@@ -49,6 +55,7 @@ export const updateTicketTypeSchema = z.object({
   status: z.enum(['enabled', 'disabled', 'blocked']).optional(),
   saleEndsAt: z.string().optional().nullable(),
   onlyEgresados: z.boolean().optional(),
+  zona: ticketTypeZonaSchema.nullable().optional(),
 });
 
 export type TicketType = z.infer<typeof ticketTypeSchema>;
