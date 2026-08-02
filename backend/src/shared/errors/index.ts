@@ -4,3 +4,4 @@ export { InvalidQrError } from './InvalidQrError.js';
 export { InvalidTokenError } from './InvalidTokenError.js';
 export { NotFoundError } from './NotFoundError.js';
 export { ValidationError } from './ValidationError.js';
+export { TooManyRequestsError } from './TooManyRequestsError.js';

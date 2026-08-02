@@ -1,11 +1,17 @@
 import { Router } from 'express';
 import { authMiddleware } from '../../shared/middlewares/auth.middleware.js';
 import { requireRole } from '../../shared/middlewares/require-role.middleware.js';
+import { rateLimit } from '../../shared/middlewares/rate-limit.middleware.js';
+import { POLICIES } from '../../shared/middlewares/rate-limit.policies.js';
 import * as ctrl from './analytics.controller.js';
 
 export const analyticsRouter = Router();
 
-analyticsRouter.use(authMiddleware, requireRole('super_admin', 'admin'));
+analyticsRouter.use(
+  authMiddleware,
+  requireRole('super_admin', 'admin'),
+  rateLimit(POLICIES.admin),
+);
 
 analyticsRouter.get('/sales/weekly', ctrl.getSalesWeekly);
 analyticsRouter.get('/revenue/cumulative', ctrl.getRevenueCumulative);
