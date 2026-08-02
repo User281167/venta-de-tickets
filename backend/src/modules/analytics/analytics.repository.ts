@@ -49,6 +49,13 @@ const soldStatuses: TicketStatus[] = [
   'pending_confirmation',
 ];
 
+const donationStates: Record<string, string> = {
+  rejected: 'Rechazado',
+  confirmed: 'Confirmado',
+  cancelled: 'Cancelado',
+  pending: 'Pendiente',
+}
+
 export const analyticsRepository = {
   async salesDaily(
     from: Date | undefined,
@@ -486,7 +493,7 @@ export const analyticsRepository = {
 
     return grouped.map((g) => ({
       account: g.account,
-      state: g.state,
+      state: donationStates[g.state] ?? g.state,
       count: g._count._all,
       amountPesos: Number(g._sum.amountCents ?? 0),
     }));

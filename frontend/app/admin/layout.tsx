@@ -21,6 +21,7 @@ const ROLE_RESTRICTED_PATHS: Record<string, string[]> = {
   "/admin/usuarios/carga-masiva": ["admin", "super_admin"],
   "/admin/pagos": ["admin", "super_admin"],
   "/admin/donaciones": ["admin", "super_admin"],
+  "/admin/analiticas": ["admin", "super_admin"],
   "/admin/auditoria": ["super_admin"],
 };
 
