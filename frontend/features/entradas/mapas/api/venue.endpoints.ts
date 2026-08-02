@@ -13,6 +13,7 @@ type BackendTicketType = {
   saleEndsAt: string | null;
   status: string;
   onlyEgresados: boolean;
+  zona: string | null;
 };
 
 type BackendResponse = {
@@ -41,6 +42,7 @@ export async function fetchVenueTicketTypes(): Promise<VenueTicketType[]> {
       quantitySold: Number(tt.quantitySold),
       status: tt.status,
       onlyEgresados: tt.onlyEgresados,
+      zona: tt.zona,
     }),
   );
 }

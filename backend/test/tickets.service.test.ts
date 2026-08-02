@@ -15,6 +15,10 @@ vi.mock('../src/modules/tickets/tickets.repository.js', () => ({
   findOwnedById: vi.fn(),
 }));
 
+vi.mock('../src/modules/audit/audit.service.js', () => ({
+  log: vi.fn(),
+}));
+
 const repo = await import('../src/modules/tickets/tickets.repository.js');
 const service = await import('../src/modules/tickets/tickets.service.js');
 
@@ -32,8 +36,12 @@ const mockTicketType = {
   updatedAt: '2026-07-01T00:00:00.000Z',
 };
 
+const mockActor = { id: 'admin-1' };
+
 describe('listTicketTypes', () => {
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   it('returns paginated public ticket types (no blocked)', async () => {
     vi.mocked(repo.findAllPublic).mockResolvedValue([mockTicketType]);
@@ -61,7 +69,9 @@ describe('listTicketTypes', () => {
 });
 
 describe('getTicketTypeById', () => {
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   it('returns ticket type when found', async () => {
     vi.mocked(repo.findById).mockResolvedValue(mockTicketType);
@@ -75,16 +85,27 @@ describe('getTicketTypeById', () => {
   it('throws NotFoundError when not found', async () => {
     vi.mocked(repo.findById).mockResolvedValue(null);
 
-    await expect(service.getTicketTypeById('nonexistent')).rejects.toThrow(NotFoundError);
+    await expect(service.getTicketTypeById('nonexistent')).rejects.toThrow(
+      NotFoundError,
+    );
   });
 });
 
 describe('listAllTicketTypes', () => {
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   it('returns all ticket types including blocked', async () => {
-    const blockedType = { ...mockTicketType, id: 'blocked-uuid', status: 'blocked' };
-    vi.mocked(repo.findAllAdmin).mockResolvedValue([mockTicketType, blockedType]);
+    const blockedType = {
+      ...mockTicketType,
+      id: 'blocked-uuid',
+      status: 'blocked',
+    };
+    vi.mocked(repo.findAllAdmin).mockResolvedValue([
+      mockTicketType,
+      blockedType,
+    ]);
     vi.mocked(repo.countAll).mockResolvedValue(2);
 
     const result = await service.listAllTicketTypes(1, 20);
@@ -96,16 +117,21 @@ describe('listAllTicketTypes', () => {
 });
 
 describe('createTicketType', () => {
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   it('creates ticket type with status enabled', async () => {
     vi.mocked(repo.create).mockResolvedValue(mockTicketType);
 
-    const result = await service.createTicketType({
-      name: 'General',
-      price: 50000,
-      quantityTotal: 100,
-    });
+    const result = await service.createTicketType(
+      {
+        name: 'General',
+        price: 50000,
+        quantityTotal: 100,
+      },
+      mockActor,
+    );
 
     expect(result.status).toBe('enabled');
     expect(repo.create).toHaveBeenCalledWith({
@@ -120,31 +146,94 @@ describe('createTicketType', () => {
 });
 
 describe('updateTicketType', () => {
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   it('updates ticket type fields successfully', async () => {
     vi.mocked(repo.findById).mockResolvedValue(mockTicketType);
-    vi.mocked(repo.update).mockResolvedValue({ ...mockTicketType, name: 'VIP' });
+    vi.mocked(repo.update).mockResolvedValue({
+      ...mockTicketType,
+      name: 'VIP',
+    });
 
-    const result = await service.updateTicketType(mockTicketType.id, { name: 'VIP' });
+    const result = await service.updateTicketType(
+      mockTicketType.id,
+      { name: 'VIP' },
+      mockActor,
+    );
 
     expect(result.name).toBe('VIP');
     expect(repo.findById).toHaveBeenCalledWith(mockTicketType.id);
+  });
+
+  it('emits name_updated log when name changes', async () => {
+    vi.mocked(repo.findById).mockResolvedValue(mockTicketType);
+    vi.mocked(repo.update).mockResolvedValue({
+      ...mockTicketType,
+      name: 'VIP',
+    });
+    const auditService = await import('../src/modules/audit/audit.service.js');
+
+    await service.updateTicketType(
+      mockTicketType.id,
+      { name: 'VIP' },
+      mockActor,
+    );
+
+    expect(auditService.log).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action: 'Tipo de entrada nombre actualizado',
+        entityType: 'Tipo de entrada',
+        entityId: mockTicketType.id,
+        actorId: mockActor.id,
+        metadata: expect.objectContaining({
+          'Nombre Anterior': 'General',
+          'Nombre Nuevo': 'VIP',
+        }),
+      }),
+    );
+  });
+
+  it('does not emit name_updated when name is unchanged', async () => {
+    vi.mocked(repo.findById).mockResolvedValue(mockTicketType);
+    vi.mocked(repo.update).mockResolvedValue(mockTicketType);
+    const auditService = await import('../src/modules/audit/audit.service.js');
+
+    await service.updateTicketType(
+      mockTicketType.id,
+      { name: 'General' },
+      mockActor,
+    );
+
+    const nameCalls = vi
+      .mocked(auditService.log)
+      .mock.calls.filter(
+        (c) => c[0].action === 'Tipo de entrada nombre actualizado',
+      );
+    expect(nameCalls).toHaveLength(0);
   });
 
   it('throws NotFoundError when ticket type not found', async () => {
     vi.mocked(repo.findById).mockResolvedValue(null);
 
     await expect(
-      service.updateTicketType('nonexistent', { name: 'VIP' }),
+      service.updateTicketType('nonexistent', { name: 'VIP' }, mockActor),
     ).rejects.toThrow(NotFoundError);
   });
 
   it('updates status successfully', async () => {
     vi.mocked(repo.findById).mockResolvedValue(mockTicketType);
-    vi.mocked(repo.update).mockResolvedValue({ ...mockTicketType, status: 'disabled' });
+    vi.mocked(repo.update).mockResolvedValue({
+      ...mockTicketType,
+      status: 'disabled',
+    });
 
-    const result = await service.updateTicketType(mockTicketType.id, { status: 'disabled' });
+    const result = await service.updateTicketType(
+      mockTicketType.id,
+      { status: 'disabled' },
+      mockActor,
+    );
 
     expect(result.status).toBe('disabled');
   });
@@ -153,34 +242,56 @@ describe('updateTicketType', () => {
     vi.mocked(repo.findById).mockResolvedValue(mockTicketType);
 
     await expect(
-      service.updateTicketType(mockTicketType.id, { quantityTotal: 10 }),
+      service.updateTicketType(
+        mockTicketType.id,
+        { quantityTotal: 10 },
+        mockActor,
+      ),
     ).rejects.toThrow(ValidationError);
   });
 
   it('accepts quantityTotal higher than quantitySold', async () => {
     vi.mocked(repo.findById).mockResolvedValue(mockTicketType);
-    vi.mocked(repo.update).mockResolvedValue({ ...mockTicketType, quantityTotal: 200 });
+    vi.mocked(repo.update).mockResolvedValue({
+      ...mockTicketType,
+      quantityTotal: 200,
+    });
 
-    const result = await service.updateTicketType(mockTicketType.id, { quantityTotal: 200 });
+    const result = await service.updateTicketType(
+      mockTicketType.id,
+      { quantityTotal: 200 },
+      mockActor,
+    );
 
     expect(result.quantityTotal).toBe(200);
   });
 
   it('accepts quantityTotal equal to quantitySold', async () => {
     vi.mocked(repo.findById).mockResolvedValue(mockTicketType);
-    vi.mocked(repo.update).mockResolvedValue({ ...mockTicketType, quantityTotal: 30 });
+    vi.mocked(repo.update).mockResolvedValue({
+      ...mockTicketType,
+      quantityTotal: 30,
+    });
 
-    const result = await service.updateTicketType(mockTicketType.id, { quantityTotal: 30 });
+    const result = await service.updateTicketType(
+      mockTicketType.id,
+      { quantityTotal: 30 },
+      mockActor,
+    );
 
     expect(result.quantityTotal).toBe(30);
   });
 });
 
 describe('listMyTickets', () => {
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   it('returns paginated tickets for the user', async () => {
-    const mockTickets = [{ id: 'ticket-1', ticketCode: 'TC001', status: 'paid' }];
+    const mockTickets = [
+      { id: 'ticket-1', ticketCode: 'TC001', status: 'paid' },
+    ];
     vi.mocked(repo.findByUserId).mockResolvedValue(mockTickets as any);
     vi.mocked(repo.countByUserId).mockResolvedValue(1);
 
@@ -206,7 +317,9 @@ describe('listMyTickets', () => {
 });
 
 describe('getMyTicketById', () => {
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   it('returns ticket when found and owned', async () => {
     const mockTicket = { id: 'ticket-1', ticketCode: 'TC001', status: 'paid' };
@@ -221,6 +334,8 @@ describe('getMyTicketById', () => {
   it('throws NotFoundError when ticket not found or not owned', async () => {
     vi.mocked(repo.findOwnedById).mockResolvedValue(null);
 
-    await expect(service.getMyTicketById('nonexistent', 'user-1')).rejects.toThrow(NotFoundError);
+    await expect(
+      service.getMyTicketById('nonexistent', 'user-1'),
+    ).rejects.toThrow(NotFoundError);
   });
 });

@@ -1,15 +1,25 @@
 import { ForbiddenError } from '../../shared/errors/ForbiddenError.js';
 import { NotFoundError } from '../../shared/errors/NotFoundError.js';
 import { ConflictError } from '../../shared/errors/ConflictError.js';
+import { Prisma } from '@prisma/client';
 import { supabaseAdmin } from '../../shared/supabase/admin-client.js';
 import * as adminsRepo from './admins.repository.js';
 import * as paymentsService from '../payments/payments.service.js';
+import { auditUserCache } from '../audit/auditUser.cache.js';
+import * as auditService from '../audit/audit.service.js';
+import {
+  EVENT_ID,
+  AUDIT_ACTIONS,
+  AUDIT_ENTITY_TYPES,
+} from '../audit/audit.constants.js';
 
 import { logger } from '../../utils/logger.js';
 import { notifyPaymentConfirmed } from '../messaging/index.js';
 
 const ROLES = ['admin', 'checker', 'client'];
 const NO_ALLOWED_ROLES = ['super_admin'];
+
+const CACHEABLE_ROLES = new Set(['admin', 'checker', 'super_admin']);
 // 100 años — effectively permanent, reversible via "none"
 const PERMANENT_BAN_HOURS = '876000h';
 
@@ -22,7 +32,11 @@ export async function listUsers(page: number, limit: number, search?: string) {
   return { data, total, page, limit };
 }
 
-export async function updateRole(id: string, role: string) {
+export async function updateRole(
+  id: string,
+  role: string,
+  actor: { id: string },
+) {
   logger.info(`Updating role for user ${id} to ${role}`);
 
   const existing = await adminsRepo.findById(id);
@@ -39,12 +53,31 @@ export async function updateRole(id: string, role: string) {
     }),
   ]);
 
+  auditUserCache.invalidate(id);
+
+  if (existing.role !== role) {
+    await auditService.log({
+      eventId: EVENT_ID,
+      actorId: actor.id,
+      action: AUDIT_ACTIONS.USUARIO_ROL_CAMBIADO,
+      entityType: AUDIT_ENTITY_TYPES.USUARIOS,
+      entityId: id,
+      metadata: {
+        'Rol Anterior': existing.role,
+        'Rol Nuevo': role,
+      },
+    });
+  }
+
   logger.info(`Role updated for user ${id} to ${role}`);
 
   return user;
 }
 
-export async function createUser(data: Record<string, unknown>) {
+export async function createUser(
+  data: Record<string, unknown>,
+  actor: { id: string },
+) {
   logger.info(
     `Creating user with email ${data.email} and cedula ${data.cedula}`,
   );
@@ -83,6 +116,30 @@ export async function createUser(data: Record<string, unknown>) {
       role: 'client',
     });
 
+    if (CACHEABLE_ROLES.has(user.role)) {
+      auditUserCache.set(userId, {
+        role: user.role,
+        fullName: user.fullName,
+        cedula: user.cedula,
+      });
+    }
+
+    await auditService.log({
+      eventId: EVENT_ID,
+      actorId: actor.id,
+      action: AUDIT_ACTIONS.USUARIO_CREADO,
+      entityType: AUDIT_ENTITY_TYPES.USUARIOS,
+      entityId: userId,
+      metadata: {
+        nombre: user.fullName,
+        correo: user.email,
+        rol: user.role,
+        cédula: user.cedula,
+        teléfono: user.phone,
+        activo: user.isActive,
+      },
+    });
+
     logger.info(`User created: ${userId}`);
 
     return user;
@@ -95,7 +152,7 @@ export async function createUser(data: Record<string, unknown>) {
       // si fallo por unique en email y cedula, auth trigger agrega de todos modos
       await supabaseAdmin.auth.admin.deleteUser(userId);
 
-      throw Object.assign(new Error('Email or cedula already exists'), {
+      throw Object.assign(new Error('Email or cédula already exists'), {
         statusCode: 409,
         code: 'CONFLICT',
         data: { emails: email ? [email] : [], cedulas: cedula ? [cedula] : [] },
@@ -106,7 +163,10 @@ export async function createUser(data: Record<string, unknown>) {
   }
 }
 
-export async function batchCreateUsers(dataArray: Record<string, unknown>[]) {
+export async function batchCreateUsers(
+  dataArray: Record<string, unknown>[],
+  actor: { id: string },
+) {
   logger.info(`Batch creating users: ${dataArray.length} users`);
 
   const allEmails = dataArray.map((d) => d.email as string);
@@ -140,7 +200,7 @@ export async function batchCreateUsers(dataArray: Record<string, unknown>[]) {
 
   for (const data of dataArray) {
     try {
-      const user = await createUser(data);
+      const user = await createUser(data, actor);
       results.push(user);
     } catch (err) {
       logger.error('Batch create failed for', (data as any).email, err);
@@ -186,7 +246,11 @@ export async function createAdminPayment(
   return result;
 }
 
-export async function updateUser(id: string, data: Record<string, unknown>) {
+export async function updateUser(
+  id: string,
+  data: Record<string, unknown>,
+  actor: { id: string },
+) {
   logger.info(`Updating user: id=${id}`);
   const existing = await adminsRepo.findById(id);
 
@@ -208,10 +272,12 @@ export async function updateUser(id: string, data: Record<string, unknown>) {
   if (data.isActive !== undefined) {
     updateData.isActive = data.isActive;
 
-    const { error: banError } =
-      await supabaseAdmin.auth.admin.updateUserById(id, {
+    const { error: banError } = await supabaseAdmin.auth.admin.updateUserById(
+      id,
+      {
         ban_duration: data.isActive ? 'none' : PERMANENT_BAN_HOURS,
-      });
+      },
+    );
 
     if (banError) {
       logger.error(
@@ -271,5 +337,66 @@ export async function updateUser(id: string, data: Record<string, unknown>) {
 
   logger.info(`User updated: id=${id}`);
 
-  return adminsRepo.update(id, updateData);
+  const updated = await adminsRepo.update(id, updateData);
+
+  auditUserCache.invalidate(id);
+
+  const changes: Array<{ campo: string; antes: unknown; despues: unknown }> =
+    [];
+  const trackedFields: Array<'fullName' | 'phone' | 'cedula'> = [
+    'fullName',
+    'phone',
+    'cedula',
+  ];
+
+  for (const field of trackedFields) {
+    if (data[field] !== undefined && existing[field] !== data[field]) {
+      changes.push({
+        campo: field,
+        antes: existing[field],
+        despues: data[field],
+      });
+    }
+  }
+
+  if (changes.length > 0) {
+    await auditService.log({
+      eventId: EVENT_ID,
+      actorId: actor.id,
+      action: AUDIT_ACTIONS.USUARIO_ACTUALIZADO,
+      entityType: AUDIT_ENTITY_TYPES.USUARIOS,
+      entityId: id,
+      metadata: { cambios: changes } as Prisma.InputJsonValue,
+    });
+  }
+
+  if (data.isActive !== undefined && existing.isActive !== data.isActive) {
+    await auditService.log({
+      eventId: EVENT_ID,
+      actorId: actor.id,
+      action: AUDIT_ACTIONS.USUARIO_ESTADO_CAMBIADO,
+      entityType: AUDIT_ENTITY_TYPES.USUARIOS,
+      entityId: id,
+      metadata: {
+        'Estado Anterior': existing.isActive ? 'activo' : 'inactivo',
+        'Estado Nuevo': data.isActive ? 'activo' : 'inactivo',
+      },
+    });
+  }
+
+  if (data.role !== undefined && existing.role !== data.role) {
+    await auditService.log({
+      eventId: EVENT_ID,
+      actorId: actor.id,
+      action: AUDIT_ACTIONS.USUARIO_ROL_CAMBIADO,
+      entityType: AUDIT_ENTITY_TYPES.USUARIOS,
+      entityId: id,
+      metadata: {
+        'Rol Anterior': existing.role,
+        'Rol Nuevo': data.role,
+      },
+    });
+  }
+
+  return updated;
 }

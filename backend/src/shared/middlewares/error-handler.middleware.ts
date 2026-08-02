@@ -42,6 +42,13 @@ export function errorHandler(
   const message =
     statusCode === 500 ? 'An unexpected error occurred' : err.message;
 
+  if (statusCode === 429 && (err as { retryAfter?: number }).retryAfter) {
+    res.setHeader(
+      'Retry-After',
+      String((err as { retryAfter?: number }).retryAfter),
+    );
+  }
+
   res.status(statusCode).json({
     error: { code, message, ...(err.data ? { data: err.data } : {}) },
   });

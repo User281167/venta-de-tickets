@@ -16,6 +16,7 @@ type BackendAdminTicketType = {
   saleEndsAt: string | null;
   status: "enabled" | "disabled" | "blocked";
   onlyEgresados: boolean;
+  zona: "vip" | "plata" | "bronce" | null;
   createdAt: string;
   updatedAt: string;
 };

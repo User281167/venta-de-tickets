@@ -85,6 +85,7 @@ UI wrappers. Domain logic MUST never live in `shared/`.
 | Backend hosting | Railway |
 | Rate limiting store | Upstash Redis (only Redis usage in the system) |
 | Ticket/PDF generation | PDFKit + `qrcode` |
+| Charts (admin analytics) | Recharts |
 | Unit/integration testing | Vitest |
 | E2E testing | Playwright |
 
@@ -157,4 +158,14 @@ sections requires:
 
 For runtime development guidance refer to `AGENTS.md`.
 
-**Version**: 1.0.0 | **Ratified**: 2026-07-08 | **Last Amended**: 2026-07-08
+**Version**: 1.1.0 | **Ratified**: 2026-07-08 | **Last Amended**: 2026-08-01
+
+### Amendment 1.1.0 — 2026-08-01
+- Added **Recharts** to the locked frontend stack for the admin analytics
+  module. Rationale: the only mature chart library already aligned with
+  React 19 + Next.js 16 + TypeScript strict; no internal chart abstraction
+  needed. New charts MUST use Recharts (or a wrapper on top of it) — no
+  parallel chart libraries.
+- Explicitly noted: no general-purpose cache layer introduced for analytics.
+  Queries re-run each request. Re-evaluate (e.g. introduce Upstash cache)
+  if traffic warrants, as a separate spec + amendment.

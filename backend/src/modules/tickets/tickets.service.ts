@@ -3,6 +3,12 @@ import { NotFoundError } from '../../shared/errors/NotFoundError.js';
 import { ValidationError } from '../../shared/errors/ValidationError.js';
 import { env } from '../../shared/config/env.js';
 import * as ticketsRepo from './tickets.repository.js';
+import * as auditService from '../audit/audit.service.js';
+import {
+  EVENT_ID,
+  AUDIT_ACTIONS,
+  AUDIT_ENTITY_TYPES,
+} from '../audit/audit.constants.js';
 
 import { logger } from '../../utils/logger.js';
 
@@ -41,15 +47,19 @@ export async function listAllTicketTypes(page: number, limit: number) {
   return { data, total, page, limit };
 }
 
-export async function createTicketType(data: {
-  name: string;
-  description?: string;
-  price: number;
-  quantityTotal: number;
-  maxPerUser?: number;
-  saleEndsAt?: string;
-  onlyEgresados?: boolean;
-}) {
+export async function createTicketType(
+  data: {
+    name: string;
+    description?: string;
+    price: number;
+    quantityTotal: number;
+    maxPerUser?: number;
+    saleEndsAt?: string;
+    onlyEgresados?: boolean;
+    zona?: string | null;
+  },
+  actor: { id: string },
+) {
   logger.info(`Creating ticket type: name=${data.name}`);
   const ticketType = await ticketsRepo.create({
     name: data.name,
@@ -59,6 +69,21 @@ export async function createTicketType(data: {
     maxPerUser: data.maxPerUser,
     saleEndsAt: data.saleEndsAt ? new Date(data.saleEndsAt) : undefined,
     onlyEgresados: data.onlyEgresados,
+    zona: data.zona ?? null,
+  });
+
+  await auditService.log({
+    eventId: EVENT_ID,
+    actorId: actor.id,
+    action: AUDIT_ACTIONS.TICKET_TYPE_CREADO,
+    entityType: AUDIT_ENTITY_TYPES.TIPO_ENTRADA,
+    entityId: ticketType.id,
+    metadata: {
+      nombre: data.name,
+      precio: data.price,
+      'Cantidad Total': data.quantityTotal,
+      zona: data.zona ?? null,
+    },
   });
 
   logger.info(`Ticket type created: id=${ticketType.id}`);
@@ -76,7 +101,9 @@ export async function updateTicketType(
     saleEndsAt?: string | null;
     status?: 'enabled' | 'disabled' | 'blocked';
     onlyEgresados?: boolean;
+    zona?: string | null;
   },
+  actor: { id: string },
 ) {
   logger.info(`Updating ticket type: id=${id}`);
   const existing = await ticketsRepo.findById(id);
@@ -96,7 +123,9 @@ export async function updateTicketType(
     updateData.saleEndsAt = data.saleEndsAt ? new Date(data.saleEndsAt) : null;
   }
   if (data.status !== undefined) updateData.status = data.status;
-  if (data.onlyEgresados !== undefined) updateData.onlyEgresados = data.onlyEgresados;
+  if (data.onlyEgresados !== undefined)
+    updateData.onlyEgresados = data.onlyEgresados;
+  if (data.zona !== undefined) updateData.zona = data.zona;
 
   if (data.quantityTotal !== undefined) {
     if (data.quantityTotal < existing.quantitySold) {
@@ -113,9 +142,155 @@ export async function updateTicketType(
     updateData.quantityTotal = data.quantityTotal;
   }
 
+  const updated = await ticketsRepo.update(id, updateData);
+
+  if (data.price !== undefined && Number(existing.price) !== data.price) {
+    await auditService.log({
+      eventId: EVENT_ID,
+      actorId: actor.id,
+      action: AUDIT_ACTIONS.TICKET_TYPE_PRECIO_ACTUALIZADO,
+      entityType: AUDIT_ENTITY_TYPES.TIPO_ENTRADA,
+      entityId: id,
+      metadata: {
+        'Precio Anterior': Number(existing.price),
+        'Precio Nuevo': data.price,
+      },
+    });
+  }
+
+  if (data.status !== undefined && existing.status !== data.status) {
+    await auditService.log({
+      eventId: EVENT_ID,
+      actorId: actor.id,
+      action: AUDIT_ACTIONS.TICKET_TYPE_ESTADO_ACTUALIZADO,
+      entityType: AUDIT_ENTITY_TYPES.TIPO_ENTRADA,
+      entityId: id,
+      metadata: {
+        'Estado Anterior': existing.status,
+        'Estado Nuevo': data.status,
+      },
+    });
+  }
+
+  if (data.name !== undefined && existing.name !== data.name) {
+    await auditService.log({
+      eventId: EVENT_ID,
+      actorId: actor.id,
+      action: AUDIT_ACTIONS.TICKET_TYPE_NOMBRE_ACTUALIZADO,
+      entityType: AUDIT_ENTITY_TYPES.TIPO_ENTRADA,
+      entityId: id,
+      metadata: { 'Nombre Anterior': existing.name, 'Nombre Nuevo': data.name },
+    });
+  }
+
+  if (
+    data.description !== undefined &&
+    (existing.description ?? null) !== (data.description ?? null)
+  ) {
+    await auditService.log({
+      eventId: EVENT_ID,
+      actorId: actor.id,
+      action: AUDIT_ACTIONS.TICKET_TYPE_DESCRIPCION_ACTUALIZADA,
+      entityType: AUDIT_ENTITY_TYPES.TIPO_ENTRADA,
+      entityId: id,
+      metadata: {
+        'Descripción Anterior': existing.description,
+        'Descripción Nueva': data.description,
+      },
+    });
+  }
+
+  if (
+    data.quantityTotal !== undefined &&
+    existing.quantityTotal !== data.quantityTotal
+  ) {
+    await auditService.log({
+      eventId: EVENT_ID,
+      actorId: actor.id,
+      action: AUDIT_ACTIONS.TICKET_TYPE_CANTIDAD_TOTAL_ACTUALIZADA,
+      entityType: AUDIT_ENTITY_TYPES.TIPO_ENTRADA,
+      entityId: id,
+      metadata: {
+        'Cantidad Total Anterior': existing.quantityTotal,
+        'Cantidad Total Nueva': data.quantityTotal,
+      },
+    });
+  }
+
+  if (
+    data.maxPerUser !== undefined &&
+    (existing.maxPerUser ?? null) !== (data.maxPerUser ?? null)
+  ) {
+    await auditService.log({
+      eventId: EVENT_ID,
+      actorId: actor.id,
+      action: AUDIT_ACTIONS.TICKET_TYPE_MAXIMO_POR_USUARIO_ACTUALIZADO,
+      entityType: AUDIT_ENTITY_TYPES.TIPO_ENTRADA,
+      entityId: id,
+      metadata: {
+        'Máximo Por Usuario Anterior': existing.maxPerUser,
+        'Máximo Por Usuario Nuevo': data.maxPerUser,
+      },
+    });
+  }
+
+  if (data.saleEndsAt !== undefined) {
+    const beforeIso = existing.saleEndsAt
+      ? existing.saleEndsAt.toISOString()
+      : null;
+    const afterIso = data.saleEndsAt
+      ? new Date(data.saleEndsAt).toISOString()
+      : null;
+    if (beforeIso !== afterIso) {
+      await auditService.log({
+        eventId: EVENT_ID,
+        actorId: actor.id,
+        action: AUDIT_ACTIONS.TICKET_TYPE_VENTANA_VENTA_ACTUALIZADA,
+        entityType: AUDIT_ENTITY_TYPES.TIPO_ENTRADA,
+        entityId: id,
+        metadata: {
+          'Fin Venta Anterior': beforeIso,
+          'Fin Venta Nuevo': afterIso,
+        },
+      });
+    }
+  }
+
+  if (
+    data.onlyEgresados !== undefined &&
+    existing.onlyEgresados !== data.onlyEgresados
+  ) {
+    await auditService.log({
+      eventId: EVENT_ID,
+      actorId: actor.id,
+      action: AUDIT_ACTIONS.TICKET_TYPE_FLAG_EGRESADO_ACTUALIZADO,
+      entityType: AUDIT_ENTITY_TYPES.TIPO_ENTRADA,
+      entityId: id,
+      metadata: {
+        'Flag Egresado Anterior': existing.onlyEgresados,
+        'Flag Egresado Nuevo': data.onlyEgresados,
+      },
+    });
+  }
+
+  if (data.zona !== undefined && (existing.zona ?? null) !== (data.zona ?? null)) {
+    await auditService.log({
+      eventId: EVENT_ID,
+      actorId: actor.id,
+      action: AUDIT_ACTIONS.TICKET_TYPE_ZONA_ACTUALIZADA,
+      entityType: AUDIT_ENTITY_TYPES.TIPO_ENTRADA,
+      entityId: id,
+      metadata: {
+        'Entrada': data.name,
+        'Zona Anterior': existing.zona ?? null,
+        'Zona Nueva': data.zona ?? null,
+      },
+    });
+  }
+
   logger.info(`Ticket type updated: id=${id}`);
 
-  return ticketsRepo.update(id, updateData);
+  return updated;
 }
 
 export async function generateQrForTicket(ticketId: string) {

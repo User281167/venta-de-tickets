@@ -43,6 +43,16 @@ const envSchema = z.object({
     .min(1, 'EPAYCO_CUST_ID_CLIENTE is required'),
   RESEND_API_KEY: z.string().min(1, 'RESEND_API_KEY is required'),
   EMAIL_FROM: z.string().min(1, 'EMAIL_FROM is required'),
+  UPSTASH_REDIS_REST_URL: z.string().url().optional(),
+  UPSTASH_REDIS_REST_TOKEN: z.string().min(1).optional(),
+  RATE_LIMIT_FAIL_OPEN: z
+    .enum(['true', 'false'])
+    .default('true')
+    .transform((v) => v === 'true'),
+  RATE_LIMIT_DISABLED: z
+    .enum(['true', 'false'])
+    .default('false')
+    .transform((v) => v === 'true'),
 });
 
 const dbURL = new URL(process.env.DATABASE_URL ?? '');
@@ -69,6 +79,10 @@ console.log({
   EPAYCO_CUST_ID_CLIENTE: !!process.env.EPAYCO_CUST_ID_CLIENTE,
   RESEND_API_KEY: !!process.env.RESEND_API_KEY,
   EMAIL_FROM: !!process.env.EMAIL_FROM,
+  UPSTASH_REDIS_REST_URL: !!process.env.UPSTASH_REDIS_REST_URL,
+  UPSTASH_REDIS_REST_TOKEN: !!process.env.UPSTASH_REDIS_REST_TOKEN,
+  RATE_LIMIT_FAIL_OPEN: process.env.RATE_LIMIT_FAIL_OPEN ?? 'true',
+  RATE_LIMIT_DISABLED: process.env.RATE_LIMIT_DISABLED ?? 'false',
   host: dbURL.hostname,
   port: dbURL.port,
   database: dbURL.pathname,

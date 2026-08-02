@@ -24,6 +24,7 @@ import {
   AdminTicketType,
   CreateTicketTypeInput,
   UpdateTicketTypeInput,
+  TicketTypeZona,
 } from "../schemas/ticket-types.schema";
 import {
   formatZodErrors,
@@ -70,6 +71,17 @@ const STATUS_OPTIONS = createListCollection({
   ],
 });
 
+const ZONA_OPTIONS = createListCollection({
+  items: [
+    { value: "__null__", label: "Sin zona" },
+    { value: "vip", label: "VIP" },
+    { value: "plata", label: "Plata" },
+    { value: "bronce", label: "Bronce" },
+  ],
+});
+
+const ZONA_VALUES: TicketTypeZona[] = ["vip", "plata", "bronce"];
+
 export function TicketTypeForm({
   ticketType,
   onCreate,
@@ -91,6 +103,9 @@ export function TicketTypeForm({
   const [onlyEgresados, setOnlyEgresados] = useState(
     ticketType?.onlyEgresados ?? false,
   );
+  const [zona, setZona] = useState<TicketTypeZona | null>(
+    ticketType?.zona ?? null,
+  );
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
 
@@ -104,6 +119,7 @@ export function TicketTypeForm({
       setSaleEndsAt(ticketType.saleEndsAt?.slice(0, 10) ?? "");
       setStatus(ticketType.status);
       setOnlyEgresados(ticketType.onlyEgresados);
+      setZona(ticketType.zona);
     }
   }, [ticketType]);
 
@@ -121,6 +137,7 @@ export function TicketTypeForm({
         saleEndsAt: toIsoEndOfDay(saleEndsAt),
         status,
         onlyEgresados,
+        zona,
       };
       const parsed = updateTicketTypeSchema.safeParse(payload);
 
@@ -161,6 +178,7 @@ export function TicketTypeForm({
         maxPerUser: maxPerUser ?? undefined,
         saleEndsAt: toIsoEndOfDay(saleEndsAt) ?? undefined,
         onlyEgresados,
+        zona,
       };
       const parsed = createTicketTypeSchema.safeParse(payload);
 
@@ -320,6 +338,43 @@ export function TicketTypeForm({
                 </Switch.Control>
               </Switch.Root>
             </HStack>
+          </Field.Root>
+
+          <Field.Root gridColumn={{ md: "span 2" }}>
+            <Field.Label color="brand.muted">Zona</Field.Label>
+            <Select.Root
+              collection={ZONA_OPTIONS}
+              value={[zona === null ? "__null__" : zona]}
+              onValueChange={({ value }) => {
+                const v = value[0];
+
+                if (v === "__null__") setZona(null);
+                else if (ZONA_VALUES.includes(v as TicketTypeZona))
+                  setZona(v as TicketTypeZona);
+              }}
+            >
+              <Select.HiddenSelect />
+              <Select.Control>
+                <Select.Trigger {...inputStyles}>
+                  <Select.ValueText placeholder="Selecciona una zona" />
+                </Select.Trigger>
+                <Select.IndicatorGroup>
+                  <Select.Indicator />
+                </Select.IndicatorGroup>
+              </Select.Control>
+              <Portal>
+                <Select.Positioner>
+                  <Select.Content>
+                    {ZONA_OPTIONS.items.map((opt) => (
+                      <Select.Item item={opt} key={opt.value}>
+                        <Text color="black">{opt.label}</Text>
+                        <Select.ItemIndicator />
+                      </Select.Item>
+                    ))}
+                  </Select.Content>
+                </Select.Positioner>
+              </Portal>
+            </Select.Root>
           </Field.Root>
         </Grid>
 

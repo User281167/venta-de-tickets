@@ -44,6 +44,7 @@ const mockTicketType: AdminTicketType = {
   status: "enabled",
   isActive: true,
   onlyEgresados: false,
+  zona: null,
   createdAt: "2024-01-01",
   updatedAt: "2024-01-01",
 };

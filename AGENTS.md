@@ -1,5 +1,5 @@
 <!-- SPECKIT START -->
-Current plan: specs/021-donation-dashboard/plan.md
+Current plan: specs/022-audit-log/plan.md
 <!-- SPECKIT END -->
 
 # AGENT.md

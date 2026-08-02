@@ -900,3 +900,14 @@ export async function refundTransaction(input: {
     return { paymentId: input.paymentId, status: 'refunded' as const };
   });
 }
+
+export async function findCancellableTicketsByPayment(paymentId: string): Promise<
+  Array<{ id: string; status: string }>
+> {
+  return prisma.$queryRaw<Array<{ id: string; status: string }>>`
+    SELECT id, status::text AS status
+    FROM tickets
+    WHERE payment_id = ${paymentId}::uuid
+      AND status IN ('paid', 'confirmed', 'pending_confirmation')
+  `;
+}

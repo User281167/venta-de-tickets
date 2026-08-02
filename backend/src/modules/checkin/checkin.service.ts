@@ -5,6 +5,12 @@ import { NotFoundError } from '../../shared/errors/NotFoundError.js';
 import { ConflictError } from '../../shared/errors/ConflictError.js';
 import { InvalidQrError } from '../../shared/errors/InvalidQrError.js';
 import { logger } from '../../utils/logger.js';
+import * as auditService from '../audit/audit.service.js';
+import {
+  EVENT_ID,
+  AUDIT_ACTIONS,
+  AUDIT_ENTITY_TYPES,
+} from '../audit/audit.constants.js';
 
 import * as checkinRepo from './checkin.repository.js';
 import {
@@ -77,6 +83,18 @@ export async function confirmEntryDirect(
     throw new ConflictError('Ticket not available for direct entry');
   }
 
+  await auditService.log({
+    eventId: EVENT_ID,
+    actorId: checkerId,
+    action: AUDIT_ACTIONS.ENTRADA_CHECK_IN_REALIZADO,
+    entityType: AUDIT_ENTITY_TYPES.ENTRADA,
+    entityId: ticketId,
+    metadata: {
+      'Estado Anterior': 'pagada',
+      'Estado Nuevo': 'usada',
+    },
+  });
+
   logger.info(
     `Checkin confirm-entry: ticketId=${ticketId} checkerId=${checkerId}`,
   );
@@ -110,6 +128,18 @@ export async function requestConfirmation(
     );
     return;
   }
+
+  await auditService.log({
+    eventId: EVENT_ID,
+    actorId: checkerId,
+    action: AUDIT_ACTIONS.ENTRADA_CONFIRMACION_SOLICITADA,
+    entityType: AUDIT_ENTITY_TYPES.ENTRADA,
+    entityId: ticketId,
+    metadata: {
+      'Estado Anterior': 'pagada',
+      'Estado Nuevo': 'pendiente de confirmación',
+    },
+  });
 
   const token = signConfirmationToken(ticketId);
   const confirmationUrl = `${env.CONFIRMATION_LINK_BASE_URL}/confirmaciones?token=${token}`;
@@ -150,6 +180,18 @@ export async function allowEntry(
     );
     throw new ConflictError('Ticket not available for allow entry');
   }
+
+  await auditService.log({
+    eventId: EVENT_ID,
+    actorId: checkerId,
+    action: AUDIT_ACTIONS.ENTRADA_CHECK_IN_REALIZADO,
+    entityType: AUDIT_ENTITY_TYPES.ENTRADA,
+    entityId: ticketId,
+    metadata: {
+      'Estado Anterior': 'confirmada',
+      'Estado Nuevo': 'usada',
+    },
+  });
 
   logger.info(
     `Checkin allow-entry: ticketId=${ticketId} checkerId=${checkerId}`,

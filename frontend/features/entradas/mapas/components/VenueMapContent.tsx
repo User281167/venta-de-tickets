@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { IconMap2 } from "@tabler/icons-react";
 import { OrderSummary } from "@/features/ticket-purchase/components/OrderSummary";
-import { venueLayout } from "../config/venueLayout";
+import { venueLayout, type VenueLayout } from "../config/venueLayout";
 import { useVenueTicketTypes } from "../api/venue.queries";
 import { VenueMap } from "./VenueMap";
 import { ZoneSelectionPanel } from "./ZoneSelectionPanel";
@@ -19,9 +19,32 @@ export function VenueMapContent({
   const { data: ticketTypes, isLoading, error } = useVenueTicketTypes();
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
 
+  const safeTicketTypes = ticketTypes ?? [];
+
+  const layout: VenueLayout = useMemo(() => {
+    const idsByZona: Record<string, string[]> = {
+      bronce: [],
+      plata: [],
+      vip: [],
+    };
+
+    for (const tt of safeTicketTypes) {
+      if (tt.zona && idsByZona[tt.zona]) {
+        idsByZona[tt.zona].push(tt.id);
+      }
+    }
+
+    return {
+      ...venueLayout,
+      zones: venueLayout.zones.map((z) =>
+        z.key in idsByZona ? { ...z, ticketTypeIds: idsByZona[z.key] } : z,
+      ),
+    };
+  }, [safeTicketTypes]);
+
   const selectedZone = useMemo(
-    () => venueLayout.zones.find((z) => z.key === selectedKey) ?? null,
-    [selectedKey],
+    () => layout.zones.find((z) => z.key === selectedKey) ?? null,
+    [layout, selectedKey],
   );
 
   if (isLoading) {
@@ -45,8 +68,6 @@ export function VenueMapContent({
       </p>
     );
   }
-
-  const safeTicketTypes = ticketTypes ?? [];
 
   return (
     <div className="!flex !w-full !flex-col !gap-6 lg:!flex-row lg:!items-start">
@@ -74,7 +95,7 @@ export function VenueMapContent({
         </div>
 
         <VenueMap
-          layout={venueLayout}
+          layout={layout}
           ticketTypes={safeTicketTypes}
           selectedKey={selectedKey}
           onSelect={setSelectedKey}
