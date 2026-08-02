@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { Box, Heading, SimpleGrid, VStack } from "@chakra-ui/react";
 import { formatCurrency } from "@/shared/utils/formats";
 import {
@@ -15,6 +16,13 @@ type Props = {
   range: AnalyticsDateRange;
 };
 
+const donationStates: Record<string, string> = {
+  rejected: 'Rechazado',
+  confirmed: 'Confirmado',
+  cancelled: 'Cancelado',
+  pending: 'Pendiente',
+}
+
 const ACCOUNT_LABELS: Record<string, string> = {
   LA_CONVENCION: "La Convención",
   BARRANQUEROS_UTP: "Barranqueros UTP",
@@ -23,6 +31,24 @@ const ACCOUNT_LABELS: Record<string, string> = {
 export function DonationsTab({ range: _range }: Props) {
   const daily = useDonationsDaily("confirmed");
   const summary = useDonationsSummary();
+
+  const dailyByDay = useMemo(() => {
+    const map = new Map<
+      string,
+      { day: string; label: string; amountPesos: number }
+    >();
+    for (const p of daily.data ?? []) {
+      const cur = map.get(p.day);
+      if (cur) cur.amountPesos += p.amountPesos;
+      else
+        map.set(p.day, {
+          day: p.day,
+          label: p.label,
+          amountPesos: p.amountPesos,
+        });
+    }
+    return [...map.values()].sort((a, b) => a.day.localeCompare(b.day));
+  }, [daily.data]);
 
   const totalConfirmed = (summary.data ?? [])
     .filter((s) => s.state === "confirmed")
@@ -54,7 +80,7 @@ export function DonationsTab({ range: _range }: Props) {
   ];
 
   const summaryData = (summary.data ?? []).map((s) => ({
-    status: `${ACCOUNT_LABELS[s.account] ?? s.account} · ${s.state}`,
+    status: `${ACCOUNT_LABELS[s.account] ?? s.account} · ${donationStates[s.state] ?? s.state}`,
     count: s.count,
   }));
 
@@ -65,13 +91,11 @@ export function DonationsTab({ range: _range }: Props) {
       <SimpleGrid columns={{ base: 1, lg: 2 }} gap={6}>
         <ChartCard title="Donaciones confirmadas por día (COP)">
           <WeeklyLineChart
-            data={
-              daily.data?.map((p) => ({
-                day: p.day,
-                label: p.label,
-                value: p.amountPesos * 100,
-              })) ?? []
-            }
+            data={dailyByDay.map((p) => ({
+              day: p.day,
+              label: p.label,
+              value: p.amountPesos * 100,
+            }))}
             isLoading={daily.isLoading}
             isError={daily.isError}
             color="#00d5b8"
