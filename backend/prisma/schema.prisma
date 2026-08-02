@@ -69,6 +69,7 @@ model User {
   createdPayments    Payment[]           @relation("CreatedPayments")
   checkedInTickets   Ticket[]            @relation("CheckedInBy")
 
+  @@index([createdAt])
   @@map("users")
 }
 
@@ -159,6 +160,7 @@ model Ticket {
   @@index([ticketTypeId])
   @@index([paymentId])
   @@index([status])
+  @@index([createdAt])
   @@index([status, reserveExpiresAt], map: "idx_tickets_reserved_expiry") //  no soporta índices parciales nativamente
   @@map("tickets")
 }
@@ -184,6 +186,8 @@ model Payment {
   tickets      Ticket[]
 
   @@index([userId])
+  @@index([createdAt])
+  @@index([status])
   @@map("payments")
 }
 

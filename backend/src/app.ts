@@ -16,6 +16,7 @@ import { checkinRouter } from './modules/checkin/index.js';
 import { confirmationsRouter } from './modules/confirmations/confirmations.routes.js';
 import { donacionesRouter } from './modules/donaciones/donaciones.routes.js';
 import { auditRouter } from './modules/audit/audit.routes.js';
+import { analyticsRouter } from './modules/analytics/analytics.routes.js';
 
 import { logger } from './utils/logger.js';
 
@@ -50,5 +51,6 @@ app.use('/internal/checkin', checkinRouter);
 app.use('/api/confirmations', confirmationsRouter);
 app.use('/api/donaciones', donacionesRouter);
 app.use('/api/audit-log', auditRouter);
+app.use('/api/admin/analytics', analyticsRouter);
 
 app.use(errorHandler);
