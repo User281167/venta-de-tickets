@@ -49,7 +49,7 @@ const formSchema = z.object({
   amount: z
     .number({ message: "Ingresa un monto válido" })
     .int()
-    .min(2000, "El monto mínimo es $2.000 COP"),
+    .min(5000, "El monto mínimo es $5.000 COP"),
 });
 
 interface Props {
@@ -237,7 +237,7 @@ export function DonationForm({ account, open, onClose, onSubmitting }: Props) {
                   borderColor="whiteAlpha.200"
                 />
 
-                <Field.HelperText>Mínimo $2.000 COP</Field.HelperText>
+                <Field.HelperText>Mínimo $5.000 COP</Field.HelperText>
                 <Field.ErrorText>{errors.amount}</Field.ErrorText>
               </Field.Root>
             </Stack>
