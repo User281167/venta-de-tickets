@@ -224,6 +224,8 @@ describe('checkin.service', () => {
           entityId: 'ticket-1',
           actorId: 'checker-1',
           metadata: {
+            'Email': 'maria@example.com',
+            'Nombre': 'Maria',
             'Estado Anterior': 'pagada',
             'Estado Nuevo': 'pendiente de confirmación',
           },

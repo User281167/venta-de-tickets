@@ -136,6 +136,8 @@ export async function requestConfirmation(
     entityType: AUDIT_ENTITY_TYPES.ENTRADA,
     entityId: ticketId,
     metadata: {
+      'Nombre': result.buyer.fullName,
+      'Email': result.buyer.email,
       'Estado Anterior': 'pagada',
       'Estado Nuevo': 'pendiente de confirmación',
     },

@@ -194,6 +194,7 @@ export async function updateTicketType(
       entityType: AUDIT_ENTITY_TYPES.TIPO_ENTRADA,
       entityId: id,
       metadata: {
+        'Entrada': data.name,
         'Descripción Anterior': existing.description,
         'Descripción Nueva': data.description,
       },
@@ -211,6 +212,7 @@ export async function updateTicketType(
       entityType: AUDIT_ENTITY_TYPES.TIPO_ENTRADA,
       entityId: id,
       metadata: {
+        'Entrada': data.name,
         'Cantidad Total Anterior': existing.quantityTotal,
         'Cantidad Total Nueva': data.quantityTotal,
       },
@@ -228,6 +230,7 @@ export async function updateTicketType(
       entityType: AUDIT_ENTITY_TYPES.TIPO_ENTRADA,
       entityId: id,
       metadata: {
+        'Entrada': data.name,
         'Máximo Por Usuario Anterior': existing.maxPerUser,
         'Máximo Por Usuario Nuevo': data.maxPerUser,
       },
@@ -249,6 +252,7 @@ export async function updateTicketType(
         entityType: AUDIT_ENTITY_TYPES.TIPO_ENTRADA,
         entityId: id,
         metadata: {
+          'Entrada': data.name,
           'Fin Venta Anterior': beforeIso,
           'Fin Venta Nuevo': afterIso,
         },
@@ -267,6 +271,7 @@ export async function updateTicketType(
       entityType: AUDIT_ENTITY_TYPES.TIPO_ENTRADA,
       entityId: id,
       metadata: {
+        'Entrada': data.name,
         'Flag Egresado Anterior': existing.onlyEgresados,
         'Flag Egresado Nuevo': data.onlyEgresados,
       },

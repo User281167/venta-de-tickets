@@ -63,6 +63,7 @@ export async function updateRole(
       entityType: AUDIT_ENTITY_TYPES.USUARIOS,
       entityId: id,
       metadata: {
+        Usuario: existing.fullName,
         'Rol Anterior': existing.role,
         'Rol Nuevo': role,
       },
@@ -366,7 +367,10 @@ export async function updateUser(
       action: AUDIT_ACTIONS.USUARIO_ACTUALIZADO,
       entityType: AUDIT_ENTITY_TYPES.USUARIOS,
       entityId: id,
-      metadata: { cambios: changes } as Prisma.InputJsonValue,
+      metadata: {
+        Usuario: existing.fullName,
+        cambios: changes,
+      } as Prisma.InputJsonValue,
     });
   }
 
@@ -378,6 +382,7 @@ export async function updateUser(
       entityType: AUDIT_ENTITY_TYPES.USUARIOS,
       entityId: id,
       metadata: {
+        'Usuario': existing.fullName,
         'Estado Anterior': existing.isActive ? 'activo' : 'inactivo',
         'Estado Nuevo': data.isActive ? 'activo' : 'inactivo',
       },
@@ -392,6 +397,7 @@ export async function updateUser(
       entityType: AUDIT_ENTITY_TYPES.USUARIOS,
       entityId: id,
       metadata: {
+        'Usuario': existing.fullName,
         'Rol Anterior': existing.role,
         'Rol Nuevo': data.role,
       },

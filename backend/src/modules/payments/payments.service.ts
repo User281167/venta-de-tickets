@@ -246,6 +246,7 @@ export async function processWebhook(
           entityType: AUDIT_ENTITY_TYPES.PAGOS,
           entityId: payment.id,
           metadata: {
+            'Proveedor': providerName,
             'Estado Anterior': 'fallo',
             'Estado Nuevo': 'completado',
             'Total Centavos': payment.totalCents,
@@ -270,6 +271,7 @@ export async function processWebhook(
           entityType: AUDIT_ENTITY_TYPES.PAGOS,
           entityId: payment.id,
           metadata: {
+            'Proveedor': providerName,
             'Estado Anterior': 'fallo',
             'Estado Nuevo': 'Completado sin disponibilidad',
             'Total Centavos': payment.totalCents,
@@ -318,6 +320,7 @@ export async function processWebhook(
         entityType: AUDIT_ENTITY_TYPES.PAGOS,
         entityId: payment.id,
         metadata: {
+          'Proveedor': providerName,
           'Estado Anterior': 'expirado',
           'Estado Nuevo': 'completado',
           'Total Centavos': payment.totalCents,
@@ -342,6 +345,7 @@ export async function processWebhook(
         entityType: AUDIT_ENTITY_TYPES.PAGOS,
         entityId: payment.id,
         metadata: {
+          'Proveedor': providerName,
           'Estado Anterior': 'expirado',
           'Estado Nuevo': 'completado sin disponibilidad',
           'Total Centavos': payment.totalCents,
@@ -388,6 +392,7 @@ export async function processWebhook(
         entityType: AUDIT_ENTITY_TYPES.PAGOS,
         entityId: payment.id,
         metadata: {
+          'Proveedor': providerName,
           'Estado Anterior': 'pendiente',
           'Estado Nuevo': 'completado',
           'Total Centavos': payment.totalCents,
@@ -412,6 +417,7 @@ export async function processWebhook(
       entityType: AUDIT_ENTITY_TYPES.PAGOS,
       entityId: payment.id,
       metadata: {
+        'Proveedor': providerName,
         'Estado Anterior': 'pendiente',
         'Estado Nuevo': 'fallo',
         'Total Centavos': payment.totalCents,
@@ -685,6 +691,7 @@ export async function processRefund(input: {
     entityType: AUDIT_ENTITY_TYPES.PAGOS,
     entityId: input.paymentId,
     metadata: {
+      "Razon": input.reason,
       'Estado Anterior': 'completed',
       'Estado Nuevo': 'refunded',
     },
