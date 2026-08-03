@@ -62,49 +62,10 @@ Sirve como **proveedor de servicio** para el módulo `me` (`me.controller.ts` ll
 |--------|--------|-------|
 | `UNAUTHORIZED` | 401 | JWT faltante o inválido |
 
-## Flujo: Aceptar Privacidad
+## Reglas de Negocio
 
-```mermaid
-sequenceDiagram
-    participant C as Cliente
-    participant API as POST /privacy-acceptance
-    participant S as Service
-    participant DB as PostgreSQL
-
-    C->>API: POST (body vacío)
-    API->>API: authMiddleware
-    API->>S: acceptPrivacy(userId, ip, userAgent)
-    S->>DB: findPrivacyAcceptance
-    alt Ya aceptó antes
-        DB-->>S: acceptance existente
-        S-->>API: { status: 'accepted', acceptedAt, policyVersion }
-    else Primera vez
-        DB-->>S: null
-        S->>DB: createPrivacyAcceptance
-        DB-->>S: acceptance nuevo
-        S-->>API: { status: 'accepted', acceptedAt, policyVersion }
-    end
-    API-->>C: 200
-```
-
-## Flujo: GET privacy-status (usado por me)
-
-```mermaid
-sequenceDiagram
-    participant API as me.controller.ts
-    participant S as usersService
-    participant DB as PostgreSQL
-
-    API->>S: getPrivacyStatus(userId)
-    S->>DB: findPrivacyAcceptance(userId, version, type)
-    alt Aceptó
-        DB-->>S: acceptance
-        S-->>API: { consentStatus: { acceptedAt, policyVersion } }
-    else No ha aceptado
-        DB-->>S: null
-        S-->>API: { consentStatus: { acceptedAt: null } }
-    end
-```
+- `acceptPrivacy` es **idempotente**: re-aceptar la misma política devuelve el estado ya registrado sin crear duplicado
+- Se persiste IP + User-Agent del aceptante (traza de consentimiento — Ley 1581)
 
 ## Arquitectura del Módulo
 

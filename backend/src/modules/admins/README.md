@@ -57,6 +57,22 @@ Solo rol `admin` (Prisma enum) puede acceder.
 | POST | `/api/admin/payments/:id/refund` | Reembolsar pago completo (borra tickets, restaura stock) |
 | POST | `/api/admin/payments/manual` | Pago manual/gift + tickets en transacción |
 
+## Rutas: Donaciones (delegadas)
+
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| GET | `/api/admin/donations?page=&limit=&state=&account=&search=` | Listar donaciones paginadas (handler de `donaciones.controller`) |
+
+## Autenticación
+
+Todas las rutas requieren JWT. Rol por ruta:
+
+| Ruta | Rol |
+|------|-----|
+| GET `/api/admin/me` | cualquiera autenticado |
+| GET `/api/admin/users`, `/api/admin/payments`, `/api/admin/donations` | `admin`, `super_admin` |
+| POST/PATCH `/api/admin/users*`, `/api/admin/payments/*`, `/api/admin/payments/manual` | `admin` |
+
 ## Códigos de Error
 
 | Código | Status | Causa |
@@ -76,28 +92,6 @@ Solo rol `admin` (Prisma enum) puede acceder.
 - `isActive: false` bloquea usuario.
 
 ## Flujos
-
-### Crear cliente individual
-
-```mermaid
-sequenceDiagram
-    participant Admin
-    participant API as POST /users
-    participant Auth as Supabase Auth
-    participant DB as PostgreSQL
-
-    Admin->>API: { email, password, fullName, cedula?, phone? }
-    API->>DB: verificar email único
-    API->>DB: verificar cédula única
-    alt Email o cédula duplicado
-        API-->>Admin: 409 CONFLICT
-    end
-    API->>Auth: createUser(email, password, role=client)
-    Auth-->>API: user.id
-    API->>DB: INSERT users (id, email, fullName, cedula, phone, role=client)
-    DB-->>API: user DTO
-    API-->>Admin: 201 + user
-```
 
 ### Carga masiva desde Excel (batch)
 
@@ -126,83 +120,7 @@ sequenceDiagram
     Frontend-->>Admin: "N usuarios creados exitosamente"
 ```
 
-### Modificar usuario (rol / cédula / bloqueo)
-
-```mermaid
-sequenceDiagram
-    participant Admin
-    participant API as PATCH /users/:id
-    participant Auth as Supabase Auth
-    participant DB as PostgreSQL
-
-    Admin->>API: { role?, cedula?, isActive?, fullName?, phone? }
-    API->>DB: buscar usuario
-    alt No existe
-        API-->>Admin: 404 NOT_FOUND
-    end
-    alt Viene cédula nueva
-        API->>DB: verificar cédula no usada por otro
-        alt Ya en uso
-            API-->>Admin: 409 CONFLICT
-        end
-    end
-    alt Viene role
-        API->>Auth: updateUserById(app_metadata.role)
-        API->>DB: UPDATE role
-    end
-    alt Viene isActive
-        API->>DB: UPDATE isActive
-    end
-    API-->>Admin: 200 + user DTO
-```
-
-### Reembolsar pago
-
-```mermaid
-sequenceDiagram
-    participant A as Admin
-    participant FE as Frontend
-    participant API as POST /payments/:id/refund
-    participant S as Service
-    participant DB as PostgreSQL
-
-    A->>FE: Click "Reembolsar" en detalle de pago
-    FE->>FE: Abre diálogo, admin escribe motivo
-    A->>FE: Confirma reembolso
-    FE->>API: POST { reason }
-    API->>S: processRefund(paymentId, reason, adminId)
-    S->>DB: SELECT payment FOR UPDATE
-    S->>S: valida status === 'completed'
-    S->>DB: SELECT tickets por payment_id
-    S->>DB: DELETE tickets por payment_id
-    S->>DB: UPDATE ticket_types quantity_sold -= count
-    S->>DB: UPDATE payments SET status = 'refunded'
-    S-->>API: { paymentId, status }
-    API-->>FE: 201
-    FE-->>A: Toast "Reembolso procesado exitosamente"
-    FE->>FE: Refresca detalle del pago
-```
-
-### Pago manual
-
-```mermaid
-sequenceDiagram
-    participant A as Admin
-    participant FE as Frontend
-    participant API as POST /admin/payments/manual
-    participant S as Service
-    participant DB as PostgreSQL
-
-    A->>FE: Modal: selecciona proveedor + tipos entrada + cantidades
-    FE->>API: POST { userId, provider, tickets[{ticketTypeId, quantity}] }
-    API->>S: createAdminPayment(userId, provider, tickets, adminId)
-    S->>S: valida stock cada tipo, calcula total
-    S->>DB: $transaction (FOR UPDATE, INSERT payment, INSERT tickets, quantity_sold++)
-    S->>S: Genera QR cada ticket
-    S-->>API: { paymentId, ticketIds }
-    API-->>FE: 201 { paymentId, provider, subtotalCents, totalCents, status, createdBy, ticketIds }
-    FE-->>A: "Pago creado exitosamente"
-```
+**Pagos (refund y manual):** flujos transaccionales en `payments` module — ver `payments/README.md`.
 
 ## Arquitectura del Módulo
 
@@ -220,15 +138,23 @@ graph LR
     subgraph Repository
         Repo[admins.repository.ts]
     end
+    subgraph payments
+        PS[payments.service.ts]
+    end
+    subgraph donaciones
+        DC[donaciones.controller.ts]
+    end
     subgraph External
         Auth[Supabase Auth]
         DB[(PostgreSQL<br/>users)]
     end
 
-    R -->|authMiddleware + adminMiddleware + requireRole| C
+    R -->|authMiddleware + requireRole| C
+    R -->|delega donations| DC
     C -->|Zod validation| C
     C -->|delega| S
     S -->|CRUD users| Repo
     S -->|createUser / updateRole| Auth
+    S -->|createAdminPayment / processRefund / list| PS
     Repo -->|Prisma| DB
 ```

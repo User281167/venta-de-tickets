@@ -16,14 +16,18 @@ Endpoints agrupados bajo `/api/me`. Actúa como **agregador usuario autenticado*
 
 | Método | Input | Output | Dependencias |
 |--------|-------|--------|-------------|
-| `getPersonalInfo` | userId | DTO con `{ cedula, fullName, phone, address, dateOfBirth }` | `meRepo.findByUserId` |
-| `setPersonalInfo` | userId, data (parcial) | DTO actualizado | `meRepo.findByUserId`, `meRepo.upsert` |
+| `getPersonalInfo` | userId | DTO con `{ cedula, fullName, phone, address, dateOfBirth, egresado }` | `meRepo.findByUserId` |
+| `setPersonalInfo` | userId, data (parcial) | DTO actualizado | `meRepo.findByUserId`, `meRepo.findOwnerByCedula`, `meRepo.upsert` |
+| `confirmMyTicket` | ticketId, userId | `'confirmed'` o `NotFoundError`/`ConflictError` | `checkinRepo.confirmTicket` |
+| `rejectMyTicket` | ticketId, userId | `'rejected'` o `NotFoundError`/`ConflictError` | `checkinRepo.rejectConfirmation` |
 
 ### Capa Repository
 
 | Método | Query | Uso |
 |--------|-------|-----|
 | `findByUserId` | `findUnique` con `personalInfoSelect` | Obtener datos actuales |
+| `findEgresadoFlag` | `findUnique` select `egresado` | Flag de egresado (agregado al DTO) |
+| `findOwnerByCedula` | `findUnique` por cedula | Validar que la cédula no la use otro usuario |
 | `upsert` | `update` por id | Guardar/actualizar datos |
 
 ## Rutas
@@ -36,8 +40,8 @@ Endpoints agrupados bajo `/api/me`. Actúa como **agregador usuario autenticado*
 | PATCH | `/api/me/personal-info` | `authMiddleware` | Actualizar info personal (cédula inmutable) | me |
 | GET | `/api/me/tickets` | `authMiddleware` | Listar tickets propios (paginado) | tickets |
 | GET | `/api/me/tickets/:id` | `authMiddleware` | Detalle de un ticket propio | tickets |
-| POST | `/api/me/tickets/:id/confirm` | `authMiddleware` | Confirmar ticket | tickets |
-| POST | `/api/me/tickets/:id/reject` | `authMiddleware` | Rechazar ticket | tickets |
+| POST | `/api/me/tickets/:id/confirm` | `authMiddleware` | Confirmar ingreso (owner) `pending_confirmation → confirmed` | me |
+| POST | `/api/me/tickets/:id/reject` | `authMiddleware` | Rechazar ingreso (owner) `pending_confirmation → paid` | me |
 | GET | `/api/me/payments` | `authMiddleware` | Listar pagos propios (paginado) | payments |
 
 ## Códigos de Error
@@ -50,11 +54,13 @@ Endpoints agrupados bajo `/api/me`. Actúa como **agregador usuario autenticado*
 | `CEDULA_INVALIDATION` | 422 | Cédula ya fue establecida y no se puede modificar |
 | `UNAUTHORIZED` | 401 | JWT faltante o inválido |
 
-### Heredados de tickets/pagos (delegados)
+### Heredados de tickets/pagos/checkin (delegados)
 
 | Código | Status | Módulo | Causa |
 |--------|--------|--------|-------|
-| `NOT_FOUND` | 404 | tickets | Ticket no existe, o el id/código no pertenece al usuario (404 reemplaza el antiguo 422 cuando el id no es UUID) |
+| `NOT_FOUND` | 404 | tickets | Ticket no existe o no pertenece al usuario |
+| `CONFLICT` | 409 | me/checkin | Ticket ya no está en `pending_confirmation` |
+| `CONFLICT` | 409 | me | Cédula ya registrada por otro usuario |
 | `FORBIDDEN` | 403 | tickets | Ticket no pertenece al usuario |
 | `NOT_FOUND` | 404 | payments | Pago no encontrado |
 

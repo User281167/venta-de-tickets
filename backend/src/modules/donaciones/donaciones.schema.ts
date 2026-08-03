@@ -4,7 +4,7 @@ import { DonationAccount, DonationStatus } from '@prisma/client';
 export const createDonationSchema = z.object({
   fullName: z.string().max(150).optional().nullable(),
   email: z.string().email().max(255).optional().nullable(),
-  amountCents: z.number().int().min(2000, 'El monto mínimo es 2000 COP'),
+  amountCents: z.number().int().min(5000, 'El monto mínimo es 5000 COP'),
   account: z.nativeEnum(DonationAccount),
   backUrl: z.string().url(),
   provider: z.enum(['epayco']).default('epayco'),

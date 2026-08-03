@@ -17,6 +17,12 @@ de sesión para que el frontend consulte el rol del usuario autenticado.
 |--------|------|-----------|-------------|
 | GET | `/api/auth/session` | `authMiddleware` | Devuelve `{ role }` del token. `401 { role: null }` si no hay sesión |
 
+## Códigos de Error
+
+| Código | Status | Causa |
+|--------|--------|-------|
+| `UNAUTHORIZED` | 401 | Sin sesión — el controller responde `{ role: null }` |
+
 ## Dependencias externas
 
 - `shared/middlewares/auth.middleware.ts` — verifica y decodifica JWT de Supabase

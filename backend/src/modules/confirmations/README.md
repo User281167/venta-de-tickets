@@ -1,7 +1,7 @@
 # Módulo Confirmations — Confirmación Remota del Comprador
 
 Permite al comprador (titular real del ticket) confirmar o rechazar de forma remota que autoriza el ingreso de la persona que porta físicamente el QR.
-Sin sesión — autenticado únicamente por el token que llega en el link de email/WhatsApp.
+Sin sesión — autenticado únicamente por el token que llega en el link de email.
 
 ## Estructura del Módulo
 
@@ -51,7 +51,7 @@ Montadas bajo `/confirmations` en `app.ts`. **Sin autenticación de sesión** �
 | POST | `/confirmations/confirm` | Comprador confirma ingreso (`pending_confirmation → confirmed`) |
 | POST | `/confirmations/reject` | Comprador rechaza ingreso (`pending_confirmation → paid`) |
 
-**Token en el body, no en la URL**: el link del email/WhatsApp lleva el token en query string (`?token=...`) para que la página de confirmación del frontend pueda recibirlo. La página lo extrae y lo envía en el POST body para que no quede en logs de acceso del API.
+**Token en el body, no en la URL**: el link del email lleva el token en query string (`?token=...`) para que la página de confirmación del frontend pueda recibirlo. La página lo extrae y lo envía en el POST body para que no quede en logs de acceso del API.
 
 ## Códigos de Error
 
@@ -67,7 +67,7 @@ Montadas bajo `/confirmations` en `app.ts`. **Sin autenticación de sesión** �
 ```mermaid
 sequenceDiagram
     participant B as Buyer
-    participant ML as Email/WhatsApp
+    participant ML as Email
     participant FE as Frontend
     participant API as confirmations module
     participant Repo as checkin.repository
@@ -96,33 +96,6 @@ sequenceDiagram
         API-->>FE: 409 TICKET_NOT_AVAILABLE
         FE-->>B: link ya usado o expirado
     end
-```
-
-## Diagrama de Secuencia — Token Inválido
-
-```mermaid
-sequenceDiagram
-    participant B as Buyer
-    participant FE as Frontend
-    participant API as confirmations module
-    participant JWT as jsonwebtoken
-
-    B->>FE: link con token manipulado/expirado
-    FE->>API: POST /confirmations/confirm { token }
-    API->>JWT: verify(token, CONFIRMATION_JWT_SECRET)
-
-    alt TokenExpiredError
-        JWT-->>API: expired
-        API-->>FE: 400 INVALID_TOKEN "Confirmation link has expired"
-    else JsonWebTokenError
-        JWT-->>API: invalid signature/format
-        API-->>FE: 400 INVALID_TOKEN "Invalid confirmation link"
-    else purpose !== 'confirm'
-        JWT-->>API: valid JWT but wrong purpose
-        API-->>FE: 400 INVALID_TOKEN "Token is not a confirmation token"
-    end
-
-    FE-->>B: mensaje de error, opción de pedir nuevo link al checker
 ```
 
 ## Arquitectura del Módulo

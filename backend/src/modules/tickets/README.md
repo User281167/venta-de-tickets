@@ -8,7 +8,7 @@ Sirve como **proveedor de servicio** para `me` (rutas de tickets del cliente) y 
 
 | Archivo | Capa | Responsabilidad |
 |---------|------|----------------|
-| `tickets.routes.ts` | Route | Dos routers: público (sin auth) y admin (auth + adminMiddleware) |
+| `tickets.routes.ts` | Route | Dos routers: público (sin auth) y admin (auth + `requireRole`) |
 | `tickets.controller.ts` | Controller | 7 handlers: list, getById, adminList, create, update, listMyTicketsHandler, getMyTicketByIdHandler |
 | `tickets.service.ts` | Service | 8 métodos: CRUD ticket types, QR generation, consulta de tickets del cliente |
 | `tickets.repository.ts` | Repository | Consultas Prisma sobre tablas `ticket_type` y `ticket` |
@@ -27,8 +27,7 @@ Sirve como **proveedor de servicio** para `me` (rutas de tickets del cliente) y 
 | `updateTicketType` | id, data (parcial) | `TicketTypeDTO` | `ticketsRepo.findById`, `ticketsRepo.update` |
 | `generateQrForTicket` | ticketId | qrToken (JWT string) | `jwt.sign` + `ticketsRepo.updateQrToken` |
 | `listMyTickets` | userId, page, limit | `{ data, total, page, limit }` | `ticketsRepo.findByUserId`, `ticketsRepo.countByUserId` |
-| `getMyTicketById` | ticketId, userId | ticket DTO o throw | `ticketsRepo.findOwnedById` (UUID lookup) |
-| `getMyTicketByCode` | ticketCode, userId | ticket DTO o throw | `ticketsRepo.findOwnedByCode` (ticketCode lookup, 32 hex) |
+| `getMyTicketById` | ticketId, userId | ticket DTO o throw | `ticketsRepo.findOwnedById` |
 
 ### Capa Repository
 
@@ -44,8 +43,7 @@ Sirve como **proveedor de servicio** para `me` (rutas de tickets del cliente) y 
 | `updateQrToken` | `ticket` | `update` por id con qrToken | Guardar QR JWT |
 | `findByUserId` | `ticket` | `findMany` por userId (status ≠ expired) | Tickets del cliente |
 | `countByUserId` | `ticket` | `count` por userId (status ≠ expired) | Total del cliente |
-| `findOwnedById` | `ticket` | `findFirst` por id + userId | Detalle de ticket propio (UUID) |
-| `findOwnedByCode` | `ticket` | `findFirst` por ticketCode + userId | Detalle de ticket propio (código público, 32 hex) |
+| `findOwnedById` | `ticket` | `findFirst` por id + userId | Detalle de ticket propio |
 
 ## Rutas Públicas
 
@@ -58,7 +56,7 @@ Montadas bajo `/api/tickets`. Sin autenticación.
 
 ## Rutas Admin
 
-Montadas bajo `/api/admin/tickets`. Requieren JWT + rol `admin`.
+Montadas bajo `/api/admin/tickets`. Requieren JWT + rol: GET `admin`/`super_admin`, POST/PATCH `admin`.
 
 | Método | Ruta | Descripción |
 |--------|------|-------------|
@@ -68,19 +66,19 @@ Montadas bajo `/api/admin/tickets`. Requieren JWT + rol `admin`.
 
 ## Rutas de Cliente (delegadas desde me)
 
-Montadas bajo `/api/me/tickets`. Requieren JWT + rol `client`. Manejadas por `tickets.controller.ts`.
+Montadas bajo `/api/me/tickets`. Requieren JWT (cualquier rol autenticado). Manejadas por `tickets.controller.ts`.
 
 | Método | Ruta | Descripción |
 |--------|------|-------------|
-| GET | `/api/me/tickets?page=&limit=` | Listar tickets del cliente (excluye expirados) |
-| GET | `/api/me/tickets/:id` | Detalle de un ticket propio (acepta UUID o ticketCode de 32 hex) |
+| GET | `/api/me/tickets?page=&limit=` | Listar tickets del usuario (excluye expirados) |
+| GET | `/api/me/tickets/:id` | Detalle de un ticket propio (UUID) |
 
 ## Códigos de Error
 
 | Código | Status | Causa |
 |--------|--------|-------|
 | `VALIDATION_ERROR` | 422 | Precio ≤ 0, cantidad ≤ 0, cantidad < vendidas, UUID inválido (en CRUD admin), body vacío, status inválido |
-| `NOT_FOUND` | 404 | ID de entrada no existe; o ticket del cliente (UUID o ticketCode) no encontrado o no pertenece al usuario |
+| `NOT_FOUND` | 404 | ID de entrada no existe; o ticket del cliente no encontrado o no pertenece al usuario |
 | `FORBIDDEN` | 403 | Rol no es `admin` |
 | `UNAUTHORIZED` | 401 | Token JWT faltante o inválido |
 
@@ -100,72 +98,7 @@ Montadas bajo `/api/me/tickets`. Requieren JWT + rol `client`. Manejadas por `ti
 |----------|-------------|-----------|
 | `payments.service.ts` | `ticketsService.generateQrForTicket` | Generar QR tras pago exitoso o reclaim |
 | `me.routes.ts` | `ticketsController.listMyTicketsHandler` | Delegación de ruta `/api/me/tickets` |
-| `me.routes.ts` | `ticketsController.getMyTicketByIdHandler` | Delegación de ruta `/api/me/tickets/:id` (acepta UUID o ticketCode) |
-
-## Flujos
-
-### Crear tipo de entrada (admin)
-
-```mermaid
-sequenceDiagram
-    participant Admin
-    participant API as POST /admin/tickets
-    participant DB as PostgreSQL
-
-    Admin->>API: { name, price, quantityTotal, description?, maxPerUser?, saleEndsAt? }
-    API->>API: validar price > 0, quantityTotal > 0
-    alt Validación falla
-        API-->>Admin: 422 VALIDATION_ERROR
-    end
-    API->>DB: INSERT ticket_type (status=enabled)
-    DB-->>API: ticket type DTO
-    API-->>Admin: 201 + ticket type
-```
-
-### Listar entradas (público)
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant API as GET /tickets?page=1&limit=20
-    participant DB as PostgreSQL
-
-    User->>API: GET /api/tickets
-    API->>DB: SELECT ticket_types WHERE status != 'blocked'
-    API->>DB: COUNT ticket_types WHERE status != 'blocked'
-    DB-->>API: results + total
-    API-->>User: 200 { data: [...], total, page, limit }
-```
-
-### Modificar tipo de entrada + cambiar estado (admin)
-
-```mermaid
-sequenceDiagram
-    participant Admin
-    participant API as PATCH /admin/tickets/:id
-    participant DB as PostgreSQL
-
-    Admin->>API: { price?, quantityTotal?, status?, name?, ... }
-    API->>DB: buscar ticket_type por id
-    alt No existe
-        API-->>Admin: 404 NOT_FOUND
-    end
-    alt Viene quantityTotal
-        API->>DB: verificar quantityTotal >= quantitySold
-        alt Es menor
-            API-->>Admin: 422 VALIDATION_ERROR
-        end
-    end
-    alt Viene status
-        API->>API: validar status enum
-        alt Inválido
-            API-->>Admin: 422 VALIDATION_ERROR
-        end
-    end
-    API->>DB: UPDATE ticket_type
-    DB-->>API: ticket type DTO
-    API-->>Admin: 200 + ticket type
-```
+| `me.routes.ts` | `ticketsController.getMyTicketByIdHandler` | Delegación de ruta `/api/me/tickets/:id` |
 
 ## Arquitectura del Módulo
 
@@ -186,7 +119,7 @@ graph LR
     end
 
     R -->|público| C
-    R2[adminTicketsRouter] -->|auth + adminMiddleware| C
+    R2[adminTicketsRouter] -->|auth + requireRole| C
     C -->|delega| S
     S -->|CRUD ticket_types| Repo
     S -->|QR / tickets cliente| Repo
