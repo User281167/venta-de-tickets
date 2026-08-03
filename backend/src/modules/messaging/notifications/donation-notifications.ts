@@ -30,7 +30,7 @@ export async function notifyDonationConfirmed(
     await messagingService.sendDonationConfirmation({
       donorName: donation.full_name ?? 'Anónimo',
       donorEmail: donation.email,
-      amountCents: Number(donation.amountCents) * 100,
+      amountCents: Number(donation.amountCents),
       account: donation.account,
       confirmedAt: donation.updatedAt,
     });
@@ -64,7 +64,7 @@ export async function notifyDonationRejected(
     await messagingService.sendDonationRejection({
       donorName: donation.full_name ?? 'Anónimo',
       donorEmail: donation.email,
-      amountCents: Number(donation.amountCents) * 100,
+      amountCents: Number(donation.amountCents),
       account: donation.account,
       rejectedAt: donation.updatedAt,
     });
@@ -98,7 +98,7 @@ export async function notifyDonationCancelled(
     await messagingService.sendDonationCancellation({
       donorName: donation.full_name ?? 'Anónimo',
       donorEmail: donation.email,
-      amountCents: Number(donation.amountCents) * 100,
+      amountCents: Number(donation.amountCents),
       account: donation.account,
       cancelledAt: donation.updatedAt,
     });

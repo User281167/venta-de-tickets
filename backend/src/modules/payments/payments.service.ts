@@ -121,8 +121,8 @@ export async function createCheckout(
 
     validateTicketType(item, ticketType);
 
-    // precio en con cents para payment
-    const unitPriceCents = Number(ticketType.price) * 100;
+    // precio ya en cents desde ticket_types
+    const unitPriceCents = Number(ticketType.priceCents);
     subtotalCents += unitPriceCents * item.quantity;
 
     logger.info(
@@ -621,7 +621,7 @@ export async function createAdminPayment(input: {
       item.ticketTypeId,
     );
 
-    const unitPriceCents = Number(ticketType.price) * 100;
+    const unitPriceCents = Number(ticketType.priceCents);
     subtotalCents += unitPriceCents * item.quantity;
     ticketsWithPrice.push({ ...item, unitPriceCents });
   }

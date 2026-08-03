@@ -10,6 +10,7 @@ export type TicketStatus =
 export type TicketTypeInfo = {
   id: string;
   name: string;
+  priceCents: number;
 };
 
 export type TicketItem = {

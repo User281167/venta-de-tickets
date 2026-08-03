@@ -27,10 +27,9 @@ type Props = {
 };
 
 function compactCop(cents: number): string {
-  const pesos = cents / 100;
-  if (pesos >= 1_000_000) return `$${(pesos / 1_000_000).toFixed(1)}M`;
-  if (pesos >= 1_000) return `$${(pesos / 1_000).toFixed(0)}K`;
-  return `$${pesos.toFixed(0)}`;
+  if (cents >= 1_000_000) return `$${(cents / 1_000_000).toFixed(1)}M`;
+  if (cents >= 1_000) return `$${(cents / 1_000).toFixed(0)}K`;
+  return `$${cents.toFixed(0)}`;
 }
 
 export function WeeklyLineChart({

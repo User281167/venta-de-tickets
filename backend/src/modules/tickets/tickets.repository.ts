@@ -4,7 +4,7 @@ const selectTicketType = {
   id: true,
   name: true,
   description: true,
-  price: true,
+  priceCents: true,
   quantityTotal: true,
   quantitySold: true,
   maxPerUser: true,
@@ -42,7 +42,7 @@ export function findById(id: string) {
 export function create(data: {
   name: string;
   description?: string;
-  price: number;
+  priceCents: number;
   quantityTotal: number;
   maxPerUser?: number;
   saleEndsAt?: Date;
@@ -53,7 +53,7 @@ export function create(data: {
     data: {
       name: data.name,
       description: data.description ?? null,
-      price: data.price,
+      priceCents: data.priceCents,
       quantityTotal: data.quantityTotal,
       maxPerUser: data.maxPerUser ?? null,
       saleEndsAt: data.saleEndsAt ?? null,

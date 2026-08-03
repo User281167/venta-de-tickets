@@ -73,8 +73,8 @@ describe("PaymentsTable", () => {
 
   it("renders formatted currency", () => {
     renderTable();
-    expect(screen.getByText(/5\.000/)).toBeInTheDocument();
-    expect(screen.getByText(/2\.500/)).toBeInTheDocument();
+    expect(screen.getByText(/500\.000/)).toBeInTheDocument();
+    expect(screen.getByText(/250\.000/)).toBeInTheDocument();
   });
 
   it("renders status labels in Spanish", () => {

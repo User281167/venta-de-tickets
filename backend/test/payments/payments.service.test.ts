@@ -56,7 +56,7 @@ const paymentsService = await import('../../src/modules/payments/payments.servic
 const mockTicketType = {
   id: 'tt-1',
   name: 'VIP',
-  price: 50000,
+  priceCents: 50000,
   quantityTotal: 100,
   quantitySold: 5,
   maxPerUser: 4,
@@ -147,8 +147,8 @@ describe('payments.service', () => {
 
     it('handles multiple ticket types in single request', async () => {
       vi.mocked(meRepo.findByUserId).mockResolvedValue(mockUser);
-      const mockTT1 = { ...mockTicketType, id: 'tt-1', price: 50000, maxPerUser: null };
-      const mockTT2 = { ...mockTicketType, id: 'tt-2', name: 'General', price: 25000, maxPerUser: null };
+      const mockTT1 = { ...mockTicketType, id: 'tt-1', priceCents: 50000, maxPerUser: null };
+      const mockTT2 = { ...mockTicketType, id: 'tt-2', name: 'General', priceCents: 25000, maxPerUser: null };
 
       vi.mocked(ticketsService.getTicketTypeById)
         .mockResolvedValueOnce(mockTT1)
@@ -171,8 +171,8 @@ describe('payments.service', () => {
       expect(mockCreateCheckout).toHaveBeenCalledWith(
         expect.objectContaining({
           items: expect.arrayContaining([
-            expect.objectContaining({ ticketTypeId: 'tt-1', quantity: 1, unitPriceCents: 5000000 }),
-            expect.objectContaining({ ticketTypeId: 'tt-2', quantity: 3, unitPriceCents: 2500000 }),
+            expect.objectContaining({ ticketTypeId: 'tt-1', quantity: 1, unitPriceCents: 50000 }),
+            expect.objectContaining({ ticketTypeId: 'tt-2', quantity: 3, unitPriceCents: 25000 }),
           ]),
         }),
       );

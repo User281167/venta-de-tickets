@@ -27,7 +27,7 @@ const baseTicketType = {
   id: "tt-1",
   name: "General",
   description: "Entrada general",
-  price: 120000,
+  priceCents: 120000,
   quantityTotal: 500,
   quantitySold: 120,
   maxPerUser: 4,

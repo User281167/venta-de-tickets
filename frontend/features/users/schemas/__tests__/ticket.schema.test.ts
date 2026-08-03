@@ -26,7 +26,7 @@ describe("ticketItemSchema", () => {
     status: "paid",
     purchasedAt: "2026-07-10T12:00:00Z",
     createdAt: "2026-07-10T12:00:00Z",
-    ticketType: { id: "tt-1", name: "General", price: 50000 },
+    ticketType: { id: "tt-1", name: "General", priceCents: 50000 },
   };
 
   it("accepts valid ticket", () => {
@@ -61,7 +61,7 @@ describe("ticketListResponseSchema", () => {
         status: "paid",
         purchasedAt: null,
         createdAt: "2026-07-10T12:00:00Z",
-        ticketType: { id: "tt-1", name: "General", price: 50000 },
+        ticketType: { id: "tt-1", name: "General", priceCents: 50000 },
       },
     ],
     total: 1,

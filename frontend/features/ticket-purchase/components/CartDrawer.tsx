@@ -163,7 +163,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                         color="utp.azul"
                         lineHeight="1"
                       >
-                        {formatCurrency(subtotalCents * 100)}
+                        {formatCurrency(subtotalCents)}
                       </Text>
                     </Flex>
 

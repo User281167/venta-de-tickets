@@ -51,7 +51,7 @@ export async function createTicketType(
   data: {
     name: string;
     description?: string;
-    price: number;
+    priceCents: number;
     quantityTotal: number;
     maxPerUser?: number;
     saleEndsAt?: string;
@@ -64,7 +64,7 @@ export async function createTicketType(
   const ticketType = await ticketsRepo.create({
     name: data.name,
     description: data.description,
-    price: data.price,
+    priceCents: data.priceCents,
     quantityTotal: data.quantityTotal,
     maxPerUser: data.maxPerUser,
     saleEndsAt: data.saleEndsAt ? new Date(data.saleEndsAt) : undefined,
@@ -80,7 +80,7 @@ export async function createTicketType(
     entityId: ticketType.id,
     metadata: {
       nombre: data.name,
-      precio: data.price,
+      precio: data.priceCents,
       'Cantidad Total': data.quantityTotal,
       zona: data.zona ?? null,
     },
@@ -95,7 +95,7 @@ export async function updateTicketType(
   data: {
     name?: string;
     description?: string | null;
-    price?: number;
+    priceCents?: number;
     quantityTotal?: number;
     maxPerUser?: number | null;
     saleEndsAt?: string | null;
@@ -117,7 +117,7 @@ export async function updateTicketType(
 
   if (data.name !== undefined) updateData.name = data.name;
   if (data.description !== undefined) updateData.description = data.description;
-  if (data.price !== undefined) updateData.price = data.price;
+  if (data.priceCents !== undefined) updateData.priceCents = data.priceCents;
   if (data.maxPerUser !== undefined) updateData.maxPerUser = data.maxPerUser;
   if (data.saleEndsAt !== undefined) {
     updateData.saleEndsAt = data.saleEndsAt ? new Date(data.saleEndsAt) : null;
@@ -144,7 +144,7 @@ export async function updateTicketType(
 
   const updated = await ticketsRepo.update(id, updateData);
 
-  if (data.price !== undefined && Number(existing.price) !== data.price) {
+  if (data.priceCents !== undefined && Number(existing.priceCents) !== data.priceCents) {
     await auditService.log({
       eventId: EVENT_ID,
       actorId: actor.id,
@@ -152,8 +152,8 @@ export async function updateTicketType(
       entityType: AUDIT_ENTITY_TYPES.TIPO_ENTRADA,
       entityId: id,
       metadata: {
-        'Precio Anterior': Number(existing.price),
-        'Precio Nuevo': data.price,
+        'Precio Anterior': Number(existing.priceCents),
+        'Precio Nuevo': data.priceCents,
       },
     });
   }

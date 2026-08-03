@@ -14,7 +14,7 @@ function makeTicket(overrides?: Partial<TicketItem>): TicketItem {
     status: "pending_confirmation",
     purchasedAt: null,
     createdAt: new Date().toISOString(),
-    ticketType: { id: "tt-1", name: "General" },
+    ticketType: { id: "tt-1", name: "General", priceCents: 50000 },
     ...overrides,
   };
 }

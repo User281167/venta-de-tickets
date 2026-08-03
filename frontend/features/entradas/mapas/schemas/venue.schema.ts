@@ -6,7 +6,7 @@ export const venueTicketTypeSchema = z.object({
   id: z.string(),
   name: z.string(),
   description: z.string().nullable(),
-  price: z.number(),
+  priceCents: z.number(),
   quantityTotal: z.number(),
   quantitySold: z.number(),
   status: z.enum(["enabled", "disabled", "blocked"]),

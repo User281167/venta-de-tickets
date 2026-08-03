@@ -10,7 +10,7 @@ function formatCop(cents: number): string {
     style: 'currency',
     currency: 'COP',
     minimumFractionDigits: 0,
-  }).format(cents / 100);
+  }).format(cents);
 }
 
 function formatDate(value: Date | string): string {

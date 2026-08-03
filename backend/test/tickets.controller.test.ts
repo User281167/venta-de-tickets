@@ -102,7 +102,7 @@ describe('create', () => {
 
   it('returns 201 with created ticket type', async () => {
     const req = mockReq({
-      body: { name: 'General', price: 50000, quantityTotal: 100 },
+      body: { name: 'General', priceCents: 50000, quantityTotal: 100 },
       user: { id: 'admin-1', role: 'admin' },
     });
     const res = mockRes();
@@ -121,7 +121,7 @@ describe('create', () => {
   });
 
   it('returns 422 with invalid body', async () => {
-    const req = mockReq({ body: { price: -100 } });
+    const req = mockReq({ body: { priceCents: -100 } });
     const res = mockRes();
 
     await ctrl.create(req, res);

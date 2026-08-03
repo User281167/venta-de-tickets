@@ -60,7 +60,7 @@ export function DonationsTab({ range: _range }: Props) {
   const kpis = [
     {
       label: "Total confirmado",
-      value: summary.data ? formatCurrency(totalConfirmed * 100) : "—",
+      value: summary.data ? formatCurrency(totalConfirmed) : "—",
       color: "#00d5b8",
     },
     {
@@ -94,7 +94,7 @@ export function DonationsTab({ range: _range }: Props) {
             data={dailyByDay.map((p) => ({
               day: p.day,
               label: p.label,
-              value: p.amountPesos * 100,
+              value: p.amountPesos,
             }))}
             isLoading={daily.isLoading}
             isError={daily.isError}

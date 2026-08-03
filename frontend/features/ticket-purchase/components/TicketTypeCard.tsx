@@ -208,7 +208,7 @@ export const TicketTypeCard = memo(function TicketTypeCard({
                 color: "transparent",
               }}
             >
-              {formatCurrency(Number(ticketType.price) * 100)}
+              {formatCurrency(ticketType.priceCents)}
             </div>
           </div>
         </div>

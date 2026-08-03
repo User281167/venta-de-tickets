@@ -47,7 +47,7 @@ export const CartItemRow = memo(function CartItemRow({
           </Text>
 
           <Text fontSize="xs" color="brand.muted" mt={0.5}>
-            {formatCurrency(item.unitPriceCents * 100)} c/u
+            {formatCurrency(item.unitPriceCents)} c/u
           </Text>
         </Box>
 
@@ -80,7 +80,7 @@ export const CartItemRow = memo(function CartItemRow({
           textAlign="right"
           minW="90px"
         >
-          {formatCurrency(lineTotal * 100)}
+          {formatCurrency(lineTotal)}
         </Text>
       </Flex>
     </Flex>

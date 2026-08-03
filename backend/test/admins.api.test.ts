@@ -665,7 +665,7 @@ describe('GET /api/admin/payments/:id', () => {
         id: 'ticket-1',
         ticketCode: 'ABC123',
         status: 'paid',
-        ticketType: { id: 'tt-1', name: 'VIP', price: 25000 },
+        ticketType: { id: 'tt-1', name: 'VIP', priceCents: 25000 },
       },
     ],
   };

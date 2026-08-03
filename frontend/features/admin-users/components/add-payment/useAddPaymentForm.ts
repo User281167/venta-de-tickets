@@ -29,7 +29,7 @@ export function useAddPaymentForm(user: UserRow | null, onClose: () => void) {
 
   const total = useMemo(() => {
     return activeTicketTypes.reduce(
-      (sum, tt) => sum + tt.price * (quantities[tt.id] ?? 0),
+      (sum, tt) => sum + tt.priceCents * (quantities[tt.id] ?? 0),
       0,
     );
   }, [activeTicketTypes, quantities]);

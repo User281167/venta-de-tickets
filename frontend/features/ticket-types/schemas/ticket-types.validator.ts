@@ -2,7 +2,7 @@ import { ZodError } from "zod";
 
 export interface FieldErrors {
   name?: string;
-  price?: string;
+  priceCents?: string;
   quantityTotal?: string;
 }
 
@@ -14,8 +14,8 @@ export function formatZodErrors(error: ZodError): FieldErrors {
 
     if (field && !fieldErrors[field]) {
       if (field === "name") fieldErrors.name = "El nombre es obligatorio";
-      else if (field === "price")
-        fieldErrors.price = "El precio debe ser mayor a 0";
+      else if (field === "priceCents")
+        fieldErrors.priceCents = "El precio debe ser mayor a 0";
       else if (field === "quantityTotal")
         fieldErrors.quantityTotal = "La cantidad debe ser mayor a 0";
     }

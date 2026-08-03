@@ -24,7 +24,7 @@ const general: TicketType = {
   id: "tt-1",
   name: "General",
   description: "Entrada general",
-  price: 50000,
+  priceCents: 50000,
   availableCount: 100,
   maxPerUser: 4,
   saleEndsAt: null,

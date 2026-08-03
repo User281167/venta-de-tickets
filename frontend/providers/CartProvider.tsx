@@ -82,7 +82,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         {
           ticketTypeId: ticketType.id,
           name: ticketType.name,
-          unitPriceCents: ticketType.price,
+          unitPriceCents: ticketType.priceCents,
           quantity: 1,
           maxPerUser: ticketType.maxPerUser,
           availableStock: ticketType.availableCount,

@@ -24,7 +24,7 @@ const mockTicketRow = {
   ticketType: {
     id: 'tt-1',
     name: 'General',
-    price: 50000,
+    priceCents: 50000,
   },
 };
 

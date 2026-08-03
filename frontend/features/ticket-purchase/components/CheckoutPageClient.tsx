@@ -194,7 +194,7 @@ export function CheckoutPageClient() {
                 </h3>
 
                 <p className="!text-xs !text-white/50 sm:!text-sm">
-                  {formatCurrency(item.unitPriceCents * 100)} c/u
+                  {formatCurrency(item.unitPriceCents)} c/u
                 </p>
               </div>
 
@@ -228,7 +228,7 @@ export function CheckoutPageClient() {
                     color: "transparent",
                   }}
                 >
-                  {formatCurrency(item.unitPriceCents * item.quantity * 100)}
+                  {formatCurrency(item.unitPriceCents * item.quantity)}
                 </span>
               </div>
             </motion.article>

@@ -59,7 +59,7 @@ describe("PaymentsList", () => {
   it("renders payment rows from data", () => {
     renderPage();
     expect(screen.getByText("Ana Pérez")).toBeInTheDocument();
-    expect(screen.getByText(/5\.000/)).toBeInTheDocument();
+    expect(screen.getByText(/500\.000/)).toBeInTheDocument();
   });
 
   it("shows pagination info", () => {

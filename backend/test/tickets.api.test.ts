@@ -39,7 +39,7 @@ const mockTicketType = {
   id: '550e8400-e29b-41d4-a716-446655440000',
   name: 'General',
   description: 'Standard entry',
-  price: 50000,
+  priceCents: 50000,
   quantityTotal: 100,
   quantitySold: 30,
   maxPerUser: 4,
@@ -154,7 +154,7 @@ describe('POST /api/admin/tickets (admin create)', () => {
     const res = await request(app)
       .post('/api/admin/tickets')
       .set(authHeader())
-      .send({ name: 'General', price: 50000, quantityTotal: 100 });
+      .send({ name: 'General', priceCents: 50000, quantityTotal: 100 });
 
     expect(res.status).toBe(201);
     expect(res.body.name).toBe('General');
@@ -163,7 +163,7 @@ describe('POST /api/admin/tickets (admin create)', () => {
   it('returns 401 without auth header', async () => {
     const res = await request(app)
       .post('/api/admin/tickets')
-      .send({ name: 'General', price: 50000, quantityTotal: 100 });
+      .send({ name: 'General', priceCents: 50000, quantityTotal: 100 });
 
     expect(res.status).toBe(401);
   });
@@ -179,7 +179,7 @@ describe('POST /api/admin/tickets (admin create)', () => {
     const res = await request(app)
       .post('/api/admin/tickets')
       .set(authHeader('user.jwt.token'))
-      .send({ name: 'General', price: 50000, quantityTotal: 100 });
+      .send({ name: 'General', priceCents: 50000, quantityTotal: 100 });
 
     expect(res.status).toBe(403);
   });
@@ -197,7 +197,7 @@ describe('POST /api/admin/tickets (admin create)', () => {
     const res = await request(app)
       .post('/api/admin/tickets')
       .set(authHeader())
-      .send({ name: 'Test', price: -100, quantityTotal: 10 });
+      .send({ name: 'Test', priceCents: -100, quantityTotal: 10 });
 
     expect(res.status).toBe(422);
   });
@@ -206,7 +206,7 @@ describe('POST /api/admin/tickets (admin create)', () => {
     const res = await request(app)
       .post('/api/admin/tickets')
       .set(authHeader())
-      .send({ name: 'Test', price: 100, quantityTotal: 0 });
+      .send({ name: 'Test', priceCents: 100, quantityTotal: 0 });
 
     expect(res.status).toBe(422);
   });

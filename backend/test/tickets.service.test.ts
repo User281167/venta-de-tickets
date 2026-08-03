@@ -26,7 +26,7 @@ const mockTicketType = {
   id: '550e8400-e29b-41d4-a716-446655440000',
   name: 'General',
   description: 'Standard entry',
-  price: 50000,
+  priceCents: 50000,
   quantityTotal: 100,
   quantitySold: 30,
   maxPerUser: 4,
@@ -127,7 +127,7 @@ describe('createTicketType', () => {
     const result = await service.createTicketType(
       {
         name: 'General',
-        price: 50000,
+        priceCents: 50000,
         quantityTotal: 100,
       },
       mockActor,
@@ -136,11 +136,13 @@ describe('createTicketType', () => {
     expect(result.status).toBe('enabled');
     expect(repo.create).toHaveBeenCalledWith({
       name: 'General',
-      price: 50000,
+      priceCents: 50000,
       quantityTotal: 100,
       description: undefined,
       maxPerUser: undefined,
       saleEndsAt: undefined,
+      onlyEgresados: undefined,
+      zona: null,
     });
   });
 });

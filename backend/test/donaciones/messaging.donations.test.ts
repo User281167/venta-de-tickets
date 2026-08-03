@@ -56,7 +56,7 @@ describe('donation messaging', () => {
       });
 
       const html = mockSend.mock.calls[0][2] as string;
-      expect(html).toContain('$\u00A02.500');
+      expect(html).toContain('$\u00A0250.000');
       expect(html).toContain('Barranqueros UTP');
       expect(html).toContain('Ana');
     });

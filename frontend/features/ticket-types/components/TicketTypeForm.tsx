@@ -91,7 +91,9 @@ export function TicketTypeForm({
   const isEditing = !!ticketType;
   const [name, setName] = useState(ticketType?.name ?? "");
   const [description, setDescription] = useState(ticketType?.description ?? "");
-  const [price, setPrice] = useState<number>(num(ticketType?.price));
+  const [price, setPrice] = useState<number>(
+    num(ticketType ? ticketType.priceCents : 0),
+  );
   const [quantityTotal, setQuantityTotal] = useState<number>(
     num(ticketType?.quantityTotal),
   );
@@ -113,7 +115,7 @@ export function TicketTypeForm({
     if (ticketType) {
       setName(ticketType.name);
       setDescription(ticketType.description ?? "");
-      setPrice(num(ticketType.price));
+      setPrice(num(ticketType.priceCents));
       setQuantityTotal(num(ticketType.quantityTotal));
       setMaxPerUser(ticketType.maxPerUser);
       setSaleEndsAt(ticketType.saleEndsAt?.slice(0, 10) ?? "");
@@ -131,7 +133,7 @@ export function TicketTypeForm({
       const payload = {
         name: name || undefined,
         description: description || undefined,
-        price: price || undefined,
+        priceCents: price ? price : undefined,
         quantityTotal: quantityTotal || undefined,
         maxPerUser: maxPerUser ?? undefined,
         saleEndsAt: toIsoEndOfDay(saleEndsAt),
@@ -173,7 +175,7 @@ export function TicketTypeForm({
       const payload = {
         name,
         description: description || undefined,
-        price,
+        priceCents: price,
         quantityTotal,
         maxPerUser: maxPerUser ?? undefined,
         saleEndsAt: toIsoEndOfDay(saleEndsAt) ?? undefined,
@@ -244,7 +246,7 @@ export function TicketTypeForm({
             />
           </Field.Root>
 
-          <Field.Root required invalid={!!errors.price}>
+          <Field.Root required invalid={!!errors.priceCents}>
             <Field.Label color="brand.muted">Precio (COP)</Field.Label>
             <Input
               type="number"
@@ -257,7 +259,9 @@ export function TicketTypeForm({
               placeholder="Ej: 120000"
               {...inputStyles}
             />
-            {errors.price && <Field.ErrorText>{errors.price}</Field.ErrorText>}
+            {errors.priceCents && (
+              <Field.ErrorText>{errors.priceCents}</Field.ErrorText>
+            )}
           </Field.Root>
 
           <Field.Root required invalid={!!errors.quantityTotal}>

@@ -96,7 +96,7 @@ function TicketTypeCard({
         </HStack>
 
         <Text color="white" fontSize="2xl" fontWeight="black" className="gradient-text" mb={4}>
-          {formatCurrency(Number(tt.price * 100))}
+          {formatCurrency(tt.priceCents)}
         </Text>
 
         <Stack gap={3} mt="auto">

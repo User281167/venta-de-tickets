@@ -9,7 +9,7 @@ type BackendAdminTicketType = {
   id: string;
   name: string;
   description: string | null;
-  price: number;
+  priceCents: number;
   quantityTotal: number;
   quantitySold: number;
   maxPerUser: number | null;

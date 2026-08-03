@@ -10,7 +10,7 @@ import {
 describe('createTicketSchema', () => {
   const validPayload = {
     name: 'General',
-    price: 50000,
+    priceCents: 50000,
     quantityTotal: 100,
   };
 
@@ -41,12 +41,12 @@ describe('createTicketSchema', () => {
   });
 
   it('rejects zero price', () => {
-    const result = createTicketSchema.safeParse({ ...validPayload, price: 0 });
+    const result = createTicketSchema.safeParse({ ...validPayload, priceCents: 0 });
     expect(result.success).toBe(false);
   });
 
   it('rejects negative price', () => {
-    const result = createTicketSchema.safeParse({ ...validPayload, price: -1 });
+    const result = createTicketSchema.safeParse({ ...validPayload, priceCents: -1 });
     expect(result.success).toBe(false);
   });
 
@@ -78,7 +78,7 @@ describe('updateTicketSchema', () => {
   });
 
   it('accepts partial update with price only', () => {
-    const result = updateTicketSchema.safeParse({ price: 75000 });
+    const result = updateTicketSchema.safeParse({ priceCents: 75000 });
     expect(result.success).toBe(true);
   });
 
@@ -91,7 +91,7 @@ describe('updateTicketSchema', () => {
     const result = updateTicketSchema.safeParse({
       name: 'VIP',
       description: 'Updated desc',
-      price: 100000,
+      priceCents: 100000,
       quantityTotal: 200,
       maxPerUser: 3,
       saleEndsAt: '2026-09-01T00:00:00.000Z',
@@ -115,7 +115,7 @@ describe('updateTicketSchema', () => {
   });
 
   it('rejects negative price', () => {
-    const result = updateTicketSchema.safeParse({ price: -100 });
+    const result = updateTicketSchema.safeParse({ priceCents: -100 });
     expect(result.success).toBe(false);
   });
 

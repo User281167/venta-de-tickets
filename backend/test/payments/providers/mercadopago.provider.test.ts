@@ -62,7 +62,7 @@ describe('MercadoPagoProvider', () => {
               id: 'tt-vip',
               title: 'VIP Access',
               quantity: 2,
-              unit_price: 250,
+              unit_price: 25000,
             },
           ],
           external_reference: 'payment-123',
@@ -115,17 +115,17 @@ describe('MercadoPagoProvider', () => {
         id: 'tt-vip',
         title: 'VIP Access',
         quantity: 1,
-        unit_price: 500,
+        unit_price: 50000,
       });
       expect(callBody.items[1]).toEqual({
         id: 'tt-general',
         title: 'General Admission',
         quantity: 3,
-        unit_price: 150,
+        unit_price: 15000,
       });
     });
 
-    it('converts unitPriceCents to integer pesos (divide by 100, round)', async () => {
+    it('sends raw unitPriceCents to gateway without conversion', async () => {
       mockPreferenceCreate.mockResolvedValue({
         id: 'pref-1',
         init_point: 'https://checkout.url',
@@ -144,7 +144,7 @@ describe('MercadoPagoProvider', () => {
       });
 
       const callBody = mockPreferenceCreate.mock.calls[0][0].body;
-      expect(callBody.items[0].unit_price).toBe(100);
+      expect(callBody.items[0].unit_price).toBe(9999);
     });
 
     it('omits payer when payerEmail not provided', async () => {

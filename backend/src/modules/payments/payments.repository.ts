@@ -655,7 +655,7 @@ export function findPaymentByIdWithUser(id: string) {
             select: {
               id: true,
               name: true,
-              price: true,
+              priceCents: true,
             },
           },
         },

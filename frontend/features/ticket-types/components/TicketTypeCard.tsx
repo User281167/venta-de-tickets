@@ -84,7 +84,7 @@ export function TicketTypeCard({ ticketType }: TicketTypeCardProps) {
 
   const badge = badgeConfig[status];
   const StatusIcon = badge.icon;
-  const priceLabel = formatCurrency(Number(ticketType.price * 100));
+  const priceLabel = formatCurrency(ticketType.priceCents);
   const canBuy = status === "available" || status === "low";
 
   return (

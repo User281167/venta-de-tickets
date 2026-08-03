@@ -19,7 +19,7 @@ const baseTicket: TicketType = {
   id: "tt-1",
   name: "General",
   description: "Entrada general al evento",
-  price: 12000000,
+  priceCents: 12000000,
   availableCount: 400,
   maxPerUser: 4,
   saleEndsAt: null,
@@ -130,7 +130,7 @@ describe("TicketTypeCard", () => {
   });
 
   it("formats price with Colombian locale", () => {
-    render(<TicketTypeCard ticketType={{ ...baseTicket, price: 250000000 }} />, {
+    render(<TicketTypeCard ticketType={{ ...baseTicket, priceCents: 250000000 }} />, {
       wrapper: TestWrapper,
     });
 

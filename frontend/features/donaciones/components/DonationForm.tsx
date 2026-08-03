@@ -261,7 +261,7 @@ export function DonationForm({ account, open, onClose, onSubmitting }: Props) {
               color="white"
               _hover={{ opacity: 0.9 }}
             >
-              Donar {amount ? formatCurrency(Number(amount) * 100) : "0"} COP
+              Donar {amount ? formatCurrency(Number(amount)) : "0"} COP
             </Button>
           </DialogFooter>
 

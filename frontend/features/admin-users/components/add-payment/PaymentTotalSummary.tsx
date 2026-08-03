@@ -28,7 +28,7 @@ export function PaymentTotalSummary({ total }: PaymentTotalSummaryProps) {
         fontWeight="black"
         className="gradient-text"
       >
-        {formatCurrency(Number(total * 100))}
+        {formatCurrency(total)}
       </Text>
     </Box>
   );

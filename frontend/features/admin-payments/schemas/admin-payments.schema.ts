@@ -67,7 +67,7 @@ export interface PaymentDetailResponse {
     ticketType: {
       id: string;
       name: string;
-      price: number;
+      priceCents: number;
     };
   }>;
 }

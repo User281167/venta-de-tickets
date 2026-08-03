@@ -24,7 +24,7 @@ export function TicketQuantityCard({
   onChange,
 }: TicketQuantityCardProps) {
   const available = Math.max(0, ticketType.quantityTotal - ticketType.quantitySold);
-  const priceCents = Number(ticketType.price * 100);
+  const priceCents = Number(ticketType.priceCents);
 
   const decrement = () => onChange(Math.max(0, quantity - 1));
   const increment = () => onChange(Math.min(available, quantity + 1));

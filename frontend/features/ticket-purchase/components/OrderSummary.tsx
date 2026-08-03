@@ -127,12 +127,12 @@ export const OrderSummary = memo(function OrderSummary({
                     </p>
 
                     <p className="!text-xs !whitespace-nowrap !text-white/50">
-                      {formatCurrency(item.unitPriceCents * 100)} c/u
+                      {formatCurrency(item.unitPriceCents)} c/u
                     </p>
                   </div>
 
                   <p className="!shrink-0 !text-right !text-sm !font-black !whitespace-nowrap !text-white">
-                    {formatCurrency(item.unitPriceCents * item.quantity * 100)}
+                    {formatCurrency(item.unitPriceCents * item.quantity)}
                   </p>
                 </div>
               ))}
@@ -162,7 +162,7 @@ export const OrderSummary = memo(function OrderSummary({
                   color: "transparent",
                 }}
               >
-                {formatCurrency(subtotalCents * 100)}
+                {formatCurrency(subtotalCents)}
               </p>
             </div>
           </div>

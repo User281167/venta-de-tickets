@@ -23,7 +23,7 @@ function toClientTicketType(v: VenueTicketType): TicketType {
     id: v.id,
     name: v.name,
     description: v.description,
-    price: v.price,
+    priceCents: v.priceCents,
     availableCount: Math.max(0, v.quantityTotal - v.quantitySold),
     maxPerUser: null,
     saleEndsAt: null,
@@ -206,7 +206,7 @@ export function ZoneSelectionPanel({
                         color: "transparent",
                       }}
                     >
-                      {formatCurrency(tt.price * 100)}
+                      {formatCurrency(tt.priceCents)}
                     </div>
                   </div>
 

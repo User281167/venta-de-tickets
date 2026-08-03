@@ -41,7 +41,7 @@ export const TicketTypesTable = React.memo(function TicketTypesTable({
                   <Table.Cell fontWeight="medium">{tt.name}</Table.Cell>
 
                   <Table.Cell>
-                    {formatCurrency(Number(tt.price * 100))}
+                    {formatCurrency(tt.priceCents)}
                   </Table.Cell>
 
                   <Table.Cell>

@@ -36,7 +36,7 @@ const mockTicketType: AdminTicketType = {
   id: "tt-1",
   name: "VIP",
   description: null,
-  price: 100000,
+  priceCents: 100000,
   quantityTotal: 10,
   quantitySold: 2,
   maxPerUser: null,

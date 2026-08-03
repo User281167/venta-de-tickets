@@ -11,7 +11,7 @@ export function createMockTicket(overrides?: Partial<TicketItem>): TicketItem {
     status: "paid",
     purchasedAt: new Date(2026, 6, counter).toISOString(),
     createdAt: new Date(2026, 6, counter).toISOString(),
-    ticketType: { id: "tt-1", name: "General", price: 50000 },
+    ticketType: { id: "tt-1", name: "General", priceCents: 50000 },
     ...overrides,
   };
 }
@@ -22,7 +22,7 @@ export function createMockTicketList(
 ): TicketListResponse {
   return {
     data: Array.from({ length: count }, (_, i) =>
-      createMockTicket({ ticketType: { id: `tt-${i}`, name: `Tipo ${i + 1}`, price: (i + 1) * 10000 } }),
+      createMockTicket({ ticketType: { id: `tt-${i}`, name: `Tipo ${i + 1}`, priceCents: (i + 1) * 10000 } }),
     ),
     total: count,
     page: 1,

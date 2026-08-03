@@ -26,7 +26,7 @@ const mockDetail = {
       ticketCode: "abc123def456",
       status: "paid",
       unitPriceCents: 500000,
-      ticketType: { id: "tt1", name: "Entrada General", price: 500000 },
+      ticketType: { id: "tt1", name: "Entrada General", priceCents: 500000 },
     },
   ],
 };
@@ -85,7 +85,7 @@ describe("PaymentDetail", () => {
 
   it("renders formatted currency for total", () => {
     renderPage();
-    expect(screen.getAllByText(/5\.000/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/500\.000/).length).toBeGreaterThan(0);
   });
 
   it("shows refund button and callout for completed_unfulfillable", () => {

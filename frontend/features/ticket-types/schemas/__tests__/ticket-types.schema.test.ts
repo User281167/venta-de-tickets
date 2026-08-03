@@ -10,7 +10,7 @@ const validTicketType = {
   id: "550e8400-e29b-41d4-a716-446655440000",
   name: "General",
   description: "Entrada general al evento",
-  price: 120000,
+  priceCents: 120000,
   availableCount: 400,
   maxPerUser: 4,
   saleEndsAt: null,
@@ -53,7 +53,7 @@ describe("ticketTypeSchema (public)", () => {
   it("rejects non-numeric price", () => {
     const result = ticketTypeSchema.safeParse({
       ...validTicketType,
-      price: "free",
+      priceCents: "free",
     });
     expect(result.success).toBe(false);
   });
@@ -64,7 +64,7 @@ describe("adminTicketTypeSchema", () => {
     id: "550e8400-e29b-41d4-a716-446655440000",
     name: "General",
     description: "Entrada general",
-    price: 120000,
+    priceCents: 120000,
     quantityTotal: 500,
     quantitySold: 100,
     maxPerUser: 4,
@@ -151,7 +151,7 @@ describe("createTicketTypeSchema (frontend)", () => {
   it("accepts valid create payload", () => {
     const result = createTicketTypeSchema.safeParse({
       name: "VIP",
-      price: 250000,
+      priceCents: 250000,
       quantityTotal: 100,
     });
     expect(result.success).toBe(true);
@@ -160,7 +160,7 @@ describe("createTicketTypeSchema (frontend)", () => {
   it("accepts payload with all optional fields", () => {
     const result = createTicketTypeSchema.safeParse({
       name: "VIP",
-      price: 250000,
+      priceCents: 250000,
       quantityTotal: 100,
       description: "Experiencia VIP",
       maxPerUser: 2,
@@ -172,7 +172,7 @@ describe("createTicketTypeSchema (frontend)", () => {
   it("rejects empty name", () => {
     const result = createTicketTypeSchema.safeParse({
       name: "",
-      price: 250000,
+      priceCents: 250000,
       quantityTotal: 100,
     });
     expect(result.success).toBe(false);
@@ -181,7 +181,7 @@ describe("createTicketTypeSchema (frontend)", () => {
   it("rejects negative price", () => {
     const result = createTicketTypeSchema.safeParse({
       name: "VIP",
-      price: -1,
+      priceCents: -1,
       quantityTotal: 100,
     });
     expect(result.success).toBe(false);
@@ -190,7 +190,7 @@ describe("createTicketTypeSchema (frontend)", () => {
   it("accepts explicit zona", () => {
     const result = createTicketTypeSchema.safeParse({
       name: "VIP",
-      price: 250000,
+      priceCents: 250000,
       quantityTotal: 100,
       zona: "vip",
     });
@@ -200,7 +200,7 @@ describe("createTicketTypeSchema (frontend)", () => {
   it("accepts null zona (sin zona)", () => {
     const result = createTicketTypeSchema.safeParse({
       name: "VIP",
-      price: 250000,
+      priceCents: 250000,
       quantityTotal: 100,
       zona: null,
     });
@@ -210,7 +210,7 @@ describe("createTicketTypeSchema (frontend)", () => {
   it("rejects invalid zona value", () => {
     const result = createTicketTypeSchema.safeParse({
       name: "VIP",
-      price: 250000,
+      priceCents: 250000,
       quantityTotal: 100,
       zona: "oro",
     });
@@ -235,7 +235,7 @@ describe("updateTicketTypeSchema (frontend)", () => {
   });
 
   it("rejects negative price", () => {
-    const result = updateTicketTypeSchema.safeParse({ price: -100 });
+    const result = updateTicketTypeSchema.safeParse({ priceCents: -100 });
     expect(result.success).toBe(false);
   });
 

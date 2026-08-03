@@ -181,7 +181,7 @@ describe('payments.repository', () => {
           ticketType: {
             id: 'tt-1',
             name: 'VIP',
-            price: 25000,
+            priceCents: 25000,
           },
         },
       ],
@@ -196,7 +196,7 @@ describe('payments.repository', () => {
         user: { select: { id: true, email: true, fullName: true } },
         tickets: {
           include: {
-            ticketType: { select: { id: true, name: true, price: true } },
+            ticketType: { select: { id: true, name: true, priceCents: true } },
           },
         },
       },

@@ -4,7 +4,7 @@ export interface TicketTypeDTO {
   id: string;
   name: string;
   description: string | null;
-  price: number;
+  priceCents: number;
   quantityTotal: number;
   quantitySold: number;
   maxPerUser: number | null;
@@ -24,7 +24,7 @@ export interface PaginatedResponse<T> {
 export interface CreateTicketInput {
   name: string;
   description?: string;
-  price: number;
+  priceCents: number;
   quantityTotal: number;
   maxPerUser?: number;
   saleEndsAt?: string;
@@ -33,7 +33,7 @@ export interface CreateTicketInput {
 export interface UpdateTicketInput {
   name?: string;
   description?: string | null;
-  price?: number;
+  priceCents?: number;
   quantityTotal?: number;
   maxPerUser?: number | null;
   saleEndsAt?: string | null;

@@ -4,7 +4,7 @@ export function formatCurrency(cents: number): string {
     currency: "COP",
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
-  }).format(cents / 100);
+  }).format(cents);
 }
 
 export function formatDate(iso: string): string {

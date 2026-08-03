@@ -6,7 +6,7 @@ type BackendTicketType = {
   id: string;
   name: string;
   description: string | null;
-  price: number;
+  priceCents: number;
   quantityTotal: number;
   quantitySold: number;
   maxPerUser: number | null;
@@ -36,7 +36,7 @@ export async function fetchActiveTicketTypes(): Promise<TicketType[]> {
     id: tt.id,
     name: tt.name,
     description: tt.description,
-    price: tt.price,
+    priceCents: tt.priceCents,
     availableCount: tt.quantityTotal - tt.quantitySold,
     maxPerUser: tt.maxPerUser,
     saleEndsAt: tt.saleEndsAt,

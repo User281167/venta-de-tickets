@@ -19,7 +19,7 @@ export class EpaycoProvider implements PaymentProvider {
     const token = await apifyAuthService.getToken();
 
     const totalAmount = input.items.reduce(
-      (sum, item) => sum + (item.unitPriceCents / 100) * item.quantity,
+      (sum, item) => sum + item.unitPriceCents * item.quantity,
       0,
     );
 

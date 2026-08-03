@@ -6,13 +6,13 @@
   - Added the required column `price_cents` to the `ticket_types` table without a default value. This is not possible if the table is not empty.
 
 */
--- ticket_types: rename + conversión con escala en un solo paso atómico
+-- ticket_types: rename + conversión de tipo (mismo valor, 1000 = 1 mil)
 ALTER TABLE "ticket_types" RENAME COLUMN "price" TO "price_cents";
 ALTER TABLE "ticket_types"
   ALTER COLUMN "price_cents" TYPE INTEGER
-  USING ROUND("price_cents" * 100)::INTEGER;
+  USING ROUND("price_cents")::INTEGER;
 
--- donations: mismo nombre de columna, solo cambia tipo + escala
+-- donations: mismo nombre de columna, solo cambia tipo (mismo valor)
 ALTER TABLE "donations"
   ALTER COLUMN "amount_cents" TYPE INTEGER
-  USING ROUND("amount_cents" * 100)::INTEGER;
+  USING ROUND("amount_cents")::INTEGER;
