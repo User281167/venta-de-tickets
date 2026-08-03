@@ -14,7 +14,8 @@ export function useAdmin() {
     queryKey: ["admin", "me"],
     queryFn: () => authFetch<AdminProfile>("/api/admin/me"),
     retry: false,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 10,
+    gcTime: 1000 * 60 * 60,
   });
 
   return {

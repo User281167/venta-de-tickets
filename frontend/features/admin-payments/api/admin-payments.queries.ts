@@ -36,6 +36,8 @@ export function usePayments(filters: PaymentFilters) {
     queryKey: ["admin", "payments", filters],
     queryFn: () => fetchPayments(filters),
     placeholderData: keepPreviousData,
+    staleTime: 1000 * 30,
+    gcTime: 1000 * 60 * 10,
   });
 }
 
@@ -48,6 +50,8 @@ export function usePaymentDetail(id: string) {
     queryKey: ["admin", "payments", id],
     queryFn: () => fetchPaymentDetail(id),
     enabled: !!id,
+    staleTime: 1000 * 30,
+    gcTime: 1000 * 60 * 10,
   });
 }
 

@@ -17,5 +17,6 @@ export function useEpaycoStatus(paymentId: string | null, refPayco?: string) {
     enabled: !!paymentId,
     refetchInterval: (query) =>
       query.state.data?.status === "pending" ? 2000 : false,
+    gcTime: 1000 * 60,
   });
 }

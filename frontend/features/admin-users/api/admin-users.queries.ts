@@ -64,6 +64,8 @@ export function useUsers(page: number, limit: number, search?: string) {
     queryKey: ["admin", "users", page, limit, search],
     queryFn: () => fetchUsers(page, limit, search),
     placeholderData: keepPreviousData,
+    staleTime: 1000 * 30,
+    gcTime: 1000 * 60 * 10,
   });
 }
 

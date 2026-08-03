@@ -6,7 +6,17 @@ import EmotionRegistry from "./emotion-registry";
 import { system } from "./theme";
 
 export default function Provider({ children }: { children: React.ReactNode }) {
-  const [queryClient] = useState(() => new QueryClient());
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            staleTime: 1000 * 30,
+            gcTime: 1000 * 60 * 10,
+          },
+        },
+      }),
+  );
 
   return (
     <EmotionRegistry>

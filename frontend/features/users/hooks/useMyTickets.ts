@@ -15,6 +15,8 @@ export function useMyTickets(page = 1, limit = 20) {
   return useQuery<TicketListResponse>({
     queryKey: [...TICKETS_KEY, page, limit] as const,
     queryFn: () => fetchMyTickets(page, limit),
+    staleTime: 1000 * 30,
+    gcTime: 1000 * 60 * 10,
   });
 }
 
@@ -23,6 +25,8 @@ export function useMyTicketById(ticketId: string) {
     queryKey: [...TICKETS_KEY, ticketId] as const,
     queryFn: () => fetchMyTicketById(ticketId),
     enabled: Boolean(ticketId),
+    staleTime: 1000 * 30,
+    gcTime: 1000 * 60 * 10,
   });
 }
 

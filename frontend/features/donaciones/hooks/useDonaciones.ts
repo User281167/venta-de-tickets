@@ -20,5 +20,6 @@ export function useDonationStatus(externalReference: string | null) {
     enabled: !!externalReference,
     refetchInterval: (query) =>
       query.state.data?.state === "pending" ? 3000 : false,
+    gcTime: 1000 * 60 * 10,
   });
 }

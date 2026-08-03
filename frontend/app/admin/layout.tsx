@@ -1,14 +1,11 @@
 "use client";
 
 import { Flex, Text } from "@chakra-ui/react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AdminSidebar } from "@/shared/components/AdminSidebar";
 import { AccessDenied } from "@/shared/components/AccessDenied";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, type ReactNode } from "react";
-
-const queryClient = new QueryClient();
 
 // Paths inside /admin/* that are restricted to a subset of ADMIN_ROLES.
 // `/admin/checkin` is intentionally NOT listed — it must be reachable by
@@ -77,8 +74,6 @@ function AdminLayoutInner({ children }: { children: ReactNode }) {
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AdminLayoutInner>{children}</AdminLayoutInner>
-    </QueryClientProvider>
+    <AdminLayoutInner>{children}</AdminLayoutInner>
   );
 }

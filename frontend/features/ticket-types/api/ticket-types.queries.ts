@@ -16,6 +16,8 @@ export function useAdminTicketTypes() {
   return useQuery({
     queryKey: ["admin", "ticket-types"],
     queryFn: () => fetchAdminTicketTypes(),
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 30,
   });
 }
 

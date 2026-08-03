@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { signOut } from "@/features/admin-auth/api/admin-auth.client";
 import {
@@ -94,6 +95,7 @@ const ALL_LINKS: SidebarLink[] = [
 export function AdminSidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { role } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -103,6 +105,7 @@ export function AdminSidebar() {
 
   async function handleLogout() {
     await signOut();
+    queryClient.clear();
     router.push("/login");
   }
 

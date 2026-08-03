@@ -48,6 +48,8 @@ export function useSalesDaily(range: AnalyticsDateRange) {
       return parse(responseSchemas.dayPointList, raw).data;
     },
     placeholderData: keepPreviousData,
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 30,
   });
 }
 
@@ -61,6 +63,8 @@ export function useRevenueCumulative(range: AnalyticsDateRange) {
       return parse(responseSchemas.cumulativePointList, raw).data;
     },
     placeholderData: keepPreviousData,
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 30,
   });
 }
 
@@ -74,6 +78,8 @@ export function useSalesByTicketType(range: AnalyticsDateRange) {
       return parse(responseSchemas.salesByTicketType, raw);
     },
     placeholderData: keepPreviousData,
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 30,
   });
 }
 
@@ -87,6 +93,8 @@ export function useSalesSummary(range: AnalyticsDateRange) {
       return parse(responseSchemas.salesSummary, raw).data;
     },
     placeholderData: keepPreviousData,
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 30,
   });
 }
 
@@ -99,6 +107,8 @@ export function useFunnel() {
       );
       return parse(responseSchemas.funnelList, raw).data;
     },
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 30,
   });
 }
 
@@ -111,6 +121,8 @@ export function useTicketsStatusBreakdown() {
       );
       return parse(responseSchemas.statusBreakdown, raw).data;
     },
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 30,
   });
 }
 
@@ -124,6 +136,8 @@ export function useNoShows(range: AnalyticsDateRange) {
       return parse(responseSchemas.noShows, raw).data;
     },
     placeholderData: keepPreviousData,
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 30,
   });
 }
 
@@ -137,6 +151,8 @@ export function useUsersDailySignups(range: AnalyticsDateRange) {
       return parse(responseSchemas.dayPointList, raw).data;
     },
     placeholderData: keepPreviousData,
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 30,
   });
 }
 
@@ -149,6 +165,8 @@ export function useUsersByRole() {
       )) as { data: RoleBreakdown[] };
       return raw.data;
     },
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 30,
   });
 }
 
@@ -162,6 +180,8 @@ export function useLoginActivity(range: AnalyticsDateRange) {
       return parse(responseSchemas.loginActivityList, raw).data;
     },
     placeholderData: keepPreviousData,
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 30,
   });
 }
 
@@ -175,6 +195,8 @@ export function useRefundsDaily(range: AnalyticsDateRange) {
       return parse(responseSchemas.refundDayList, raw).data;
     },
     placeholderData: keepPreviousData,
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 30,
   });
 }
 
@@ -188,6 +210,8 @@ export function useRefundsRate(range: AnalyticsDateRange) {
       return parse(responseSchemas.refundRate, raw).data;
     },
     placeholderData: keepPreviousData,
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 30,
   });
 }
 
@@ -203,6 +227,8 @@ export function useDonationsDaily(state?: string) {
       );
       return parse(responseSchemas.donationDayList, raw).data;
     },
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 30,
   });
 }
 
@@ -215,6 +241,8 @@ export function useDonationsSummary() {
       );
       return parse(responseSchemas.donationSummary, raw).data;
     },
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 30,
   });
 }
 
@@ -227,6 +255,8 @@ export function useCheckinProgress() {
       );
       return parse(responseSchemas.checkinProgress, raw).data;
     },
+    staleTime: 1000 * 30,
+    gcTime: 1000 * 60 * 10,
   });
 }
 
@@ -238,6 +268,8 @@ export function useWeeklyReport(week: string) {
         `/api/admin/analytics/weekly-report?week=${encodeURIComponent(week)}`,
       ),
     enabled: !!week,
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 30,
   });
 }
 

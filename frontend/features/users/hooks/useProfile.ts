@@ -15,6 +15,8 @@ export function useMe(options?: { enabled?: boolean }) {
     queryKey: ME_KEY,
     queryFn: fetchMe,
     enabled: options?.enabled,
+    staleTime: 1000 * 60 * 10,
+    gcTime: 1000 * 60 * 60,
   });
 }
 

@@ -26,5 +26,7 @@ export function useDonations(filters: DonationFilters) {
     queryKey: ["admin", "donations", filters],
     queryFn: () => fetchDonations(filters),
     placeholderData: keepPreviousData,
+    staleTime: 1000 * 30,
+    gcTime: 1000 * 60 * 10,
   });
 }

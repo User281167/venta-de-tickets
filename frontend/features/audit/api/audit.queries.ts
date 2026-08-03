@@ -25,5 +25,7 @@ export function useAuditLog(filters: AuditLogFilters) {
     queryKey: ["audit-log", filters],
     queryFn: () => fetchAuditLog(filters),
     refetchInterval: 4000,
+    staleTime: 1000 * 3,
+    gcTime: 1000 * 60 * 10,
   });
 }

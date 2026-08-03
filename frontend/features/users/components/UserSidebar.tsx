@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { signOut } from "@/features/auth/api/auth.client";
 import {
   IconCreditCard,
@@ -49,9 +50,11 @@ export function UserSidebar({
 }) {
   const pathname = usePathname();
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   async function handleLogout() {
     await signOut();
+    queryClient.clear();
     router.push("/login");
   }
 

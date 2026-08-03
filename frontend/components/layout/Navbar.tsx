@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import NextLink from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   IconLogout,
   IconMenu2,
@@ -55,6 +56,7 @@ export function Navbar() {
   const { user, role, isLoading } = useAuth();
   const { totalItems } = useCart();
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 0);
@@ -78,6 +80,7 @@ export function Navbar() {
 
   const handleLogout = async () => {
     await signOut();
+    queryClient.clear();
     setUserOpen(false);
     router.push("/");
   };

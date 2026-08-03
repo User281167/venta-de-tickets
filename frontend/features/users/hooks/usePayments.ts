@@ -9,5 +9,7 @@ export function useMyPayments(page = 1, limit = 20) {
   return useQuery({
     queryKey: [...PAYMENTS_KEY, page, limit] as const,
     queryFn: () => fetchMyPayments(page, limit),
+    staleTime: 1000 * 30,
+    gcTime: 1000 * 60 * 10,
   });
 }
