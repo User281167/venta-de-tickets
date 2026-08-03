@@ -533,7 +533,6 @@ export async function listAllPayments(input: {
     provider: p.provider,
     providerTxId: p.providerTxId,
     subtotalCents: p.subtotalCents,
-    discountCents: p.discountCents,
     totalCents: p.totalCents,
     status: p.status,
     createdAt: p.createdAt,
@@ -590,7 +589,6 @@ export async function getPaymentStatus(
     status: payment.status,
     totalCents: payment.totalCents,
     subtotalCents: payment.subtotalCents,
-    discountCents: payment.discountCents,
     provider: payment.provider,
     tickets: payment.tickets.map((t) => ({
       id: t.id,
@@ -632,7 +630,6 @@ export async function createAdminPayment(input: {
     userId: input.userId,
     provider: input.provider,
     subtotalCents,
-    discountCents: 0,
     totalCents: subtotalCents,
     createdBy: input.createdBy,
     tickets: ticketsWithPrice,

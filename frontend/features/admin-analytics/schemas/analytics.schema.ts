@@ -88,15 +88,6 @@ const refundRateSchema = z.object({
   }),
 });
 
-const topDiscountCodeSchema = z.object({
-  id: z.string(),
-  code: z.string(),
-  usedCount: z.number(),
-  maxUses: z.number().nullable(),
-  conversionPercent: z.number().nullable(),
-  discountCents: z.number(),
-});
-
 const donationDayPointSchema = z.object({
   day: z.string(),
   label: z.string(),
@@ -137,7 +128,6 @@ export const responseSchemas = {
   roleBreakdown: roleBreakdownSchema,
   refundDayList: z.object({ data: z.array(refundDayPointSchema) }),
   refundRate: refundRateSchema,
-  topDiscountCodes: z.object({ data: z.array(topDiscountCodeSchema) }),
   donationDayList: z.object({ data: z.array(donationDayPointSchema) }),
   donationSummary: donationSummarySchema,
   checkinProgress: checkinProgressSchema,
@@ -151,7 +141,6 @@ export type RoleBreakdown = z.infer<
 >["data"][number];
 export type RefundDayPoint = z.infer<typeof refundDayPointSchema>;
 export type RefundRate = z.infer<typeof refundRateSchema>["data"];
-export type TopDiscountCode = z.infer<typeof topDiscountCodeSchema>;
 export type DonationDayPoint = z.infer<typeof donationDayPointSchema>;
 export type DonationSummary = z.infer<typeof donationSummarySchema>["data"];
 export type CheckinProgress = z.infer<typeof checkinProgressSchema>["data"];

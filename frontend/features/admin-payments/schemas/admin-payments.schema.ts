@@ -23,7 +23,6 @@ export type RefundFormData = z.infer<typeof refundFormSchema>;
 export interface PaymentListRow {
   id: string;
   subtotalCents: number;
-  discountCents: number;
   totalCents: number;
   status: string;
   provider: string;
@@ -49,7 +48,6 @@ export interface PaymentDetailResponse {
   id: string;
   userId: string;
   subtotalCents: number;
-  discountCents: number;
   totalCents: number;
   status: string;
   provider: string;
@@ -89,7 +87,6 @@ export interface CreateAdminPaymentResponse {
   paymentId: string;
   provider: string;
   subtotalCents: number;
-  discountCents: number;
   totalCents: number;
   status: string;
   createdBy: string;

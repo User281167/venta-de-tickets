@@ -13,7 +13,6 @@ const payments: PaymentListRow[] = [
   {
     id: "p1",
     subtotalCents: 500000,
-    discountCents: 0,
     totalCents: 500000,
     status: "completed",
     provider: "mercadopago",
@@ -26,7 +25,6 @@ const payments: PaymentListRow[] = [
   {
     id: "p2",
     subtotalCents: 250000,
-    discountCents: 0,
     totalCents: 250000,
     status: "refunded",
     provider: "mercadopago",
@@ -39,7 +37,6 @@ const payments: PaymentListRow[] = [
   {
     id: "p3",
     subtotalCents: 100000,
-    discountCents: 0,
     totalCents: 100000,
     status: "completed_unfulfillable",
     provider: "mercadopago",
@@ -52,7 +49,6 @@ const payments: PaymentListRow[] = [
   {
     id: "p4",
     subtotalCents: 80000,
-    discountCents: 0,
     totalCents: 80000,
     status: "expired",
     provider: "mercadopago",

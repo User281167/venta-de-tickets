@@ -68,23 +68,6 @@ export type RefundRate = {
   refundRatePercent: number;
 };
 
-export type TopDiscountCode = {
-  id: string;
-  code: string;
-  usedCount: number;
-  maxUses: number | null;
-  conversionPercent: number | null;
-  discountCents: number;
-};
-
-export type ConversionDiscountCode = {
-  id: string;
-  code: string;
-  usedCount: number;
-  maxUses: number | null;
-  conversionPercent: number | null;
-};
-
 export type DonationDayPoint = {
   day: string;
   label: string;

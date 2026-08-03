@@ -22,14 +22,6 @@ export const dateRangeQuerySchema = dateRangeSchema;
 
 export type DateRangeQuery = z.infer<typeof dateRangeQuerySchema>;
 
-export const topDiscountCodesQuerySchema = z.object({
-  limit: z.coerce.number().int().min(1).max(50).default(10),
-});
-
-export type TopDiscountCodesQuery = z.infer<
-  typeof topDiscountCodesQuerySchema
->;
-
 export const donationsQuerySchema = dateRangeSchema.extend({
   state: z.enum(['pending', 'confirmed', 'rejected', 'cancelled']).optional(),
 });

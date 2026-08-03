@@ -29,10 +29,6 @@ analyticsRouter.get('/users/login-activity', ctrl.getLoginActivity);
 analyticsRouter.get('/refunds/weekly', ctrl.getRefundsWeekly);
 analyticsRouter.get('/refunds/rate', ctrl.getRefundsRate);
 
-analyticsRouter.get('/discounts/top-codes', ctrl.getTopDiscountCodes);
-analyticsRouter.get('/discounts/total-amount', ctrl.getDiscountsTotalAmount);
-analyticsRouter.get('/discounts/conversion', ctrl.getDiscountsConversion);
-
 analyticsRouter.get('/donations/weekly', ctrl.getDonationsWeekly);
 analyticsRouter.get('/donations/summary', ctrl.getDonationsSummary);
 

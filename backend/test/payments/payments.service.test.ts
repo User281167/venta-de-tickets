@@ -360,7 +360,6 @@ describe('payments.service', () => {
       userId: 'user-1',
       status: 'completed',
       subtotalCents: 50000,
-      discountCents: 0,
       totalCents: 50000,
       provider: 'mercadopago',
       tickets: [

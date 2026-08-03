@@ -13,7 +13,6 @@ const mockPaymentsData = {
     {
       id: "p1",
       subtotalCents: 500000,
-      discountCents: 0,
       totalCents: 500000,
       status: "completed",
       provider: "mercadopago",

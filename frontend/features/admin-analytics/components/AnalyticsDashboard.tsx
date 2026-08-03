@@ -9,7 +9,6 @@ import { SalesTab } from "./SalesTab";
 import { FunnelTab } from "./FunnelTab";
 import { UsersTab } from "./UsersTab";
 import { RefundsTab } from "./RefundsTab";
-import { DiscountsTab } from "./DiscountsTab";
 import { DonationsTab } from "./DonationsTab";
 import { CheckinTab } from "./CheckinTab";
 import { useDateRange } from "../hooks/useDateRange";
@@ -19,7 +18,6 @@ const TABS = [
   { key: "funnel", label: "Entradas" },
   { key: "users", label: "Usuarios" },
   { key: "refunds", label: "Reembolsos" },
-  // { key: "discounts", label: "Descuentos" },
   { key: "donations", label: "Donaciones" },
   { key: "checkin", label: "Check-in" },
 ] as const;
@@ -55,8 +53,8 @@ export function AnalyticsDashboard() {
             Analíticas
           </Heading>
           <Text color="brand.muted" maxW="600px">
-            Historial por día de ventas, entradas, usuarios, pagos, reembolsos,
-            descuentos y check-in.
+            Historial por día de ventas, entradas, usuarios, pagos, reembolsos
+            y check-in.
           </Text>
         </VStack>
       </motion.div>
@@ -99,7 +97,6 @@ export function AnalyticsDashboard() {
         {active === "funnel" && <FunnelTab range={range} />}
         {active === "users" && <UsersTab range={range} />}
         {active === "refunds" && <RefundsTab range={range} />}
-        {/*{active === "discounts" && <DiscountsTab range={range} />}*/}
         {active === "donations" && <DonationsTab range={range} />}
         {active === "checkin" && <CheckinTab />}
       </Box>

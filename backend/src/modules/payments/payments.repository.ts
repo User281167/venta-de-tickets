@@ -233,8 +233,8 @@ async function insertPaymentRow(
   },
 ): Promise<void> {
   await tx.$executeRaw`
-    INSERT INTO payments (id, user_id, status, subtotal_cents, discount_cents, total_cents, provider, created_at, updated_at)
-    VALUES (${input.paymentId}::uuid, ${input.userId}::uuid, 'pending', ${input.subtotalCents}, 0, ${input.totalCents}, ${input.provider}, now(), now())
+    INSERT INTO payments (id, user_id, status, subtotal_cents, total_cents, provider, created_at, updated_at)
+    VALUES (${input.paymentId}::uuid, ${input.userId}::uuid, 'pending', ${input.subtotalCents}, ${input.totalCents}, ${input.provider}, now(), now())
   `;
 }
 
@@ -522,7 +522,6 @@ const selectPaymentHistory = {
   id: true,
   provider: true,
   subtotalCents: true,
-  discountCents: true,
   totalCents: true,
   status: true,
   createdBy: true,
@@ -558,7 +557,6 @@ const selectPaymentAdmin = {
   provider: true,
   providerTxId: true,
   subtotalCents: true,
-  discountCents: true,
   totalCents: true,
   status: true,
   createdBy: true,
@@ -676,7 +674,6 @@ export async function createAdminPaymentTransaction(input: {
   userId: string;
   provider: string;
   subtotalCents: number;
-  discountCents: number;
   totalCents: number;
   createdBy: string;
   tickets: Array<{
@@ -786,8 +783,8 @@ export async function createAdminPaymentTransaction(input: {
     }
 
     const paymentRow = await tx.$queryRaw<Array<{ id: string }>>`
-      INSERT INTO payments (id, user_id, provider, subtotal_cents, discount_cents, total_cents, status, created_by, created_at, updated_at)
-      VALUES (gen_random_uuid(), ${input.userId}::uuid, ${input.provider}, ${input.subtotalCents}, ${input.discountCents}, ${input.totalCents}, 'completed', ${input.createdBy}::uuid, now(), now())
+      INSERT INTO payments (id, user_id, provider, subtotal_cents, total_cents, status, created_by, created_at, updated_at)
+      VALUES (gen_random_uuid(), ${input.userId}::uuid, ${input.provider}, ${input.subtotalCents}, ${input.totalCents}, 'completed', ${input.createdBy}::uuid, now(), now())
       RETURNING id
     `;
 
@@ -803,7 +800,6 @@ export async function createAdminPaymentTransaction(input: {
       paymentId,
       ticketIds,
       subtotalCents: input.subtotalCents,
-      discountCents: input.discountCents,
       totalCents: input.totalCents,
     };
   });

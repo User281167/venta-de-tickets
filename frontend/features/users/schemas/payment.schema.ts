@@ -12,7 +12,6 @@ export const paymentItemSchema = z.object({
   id: z.string(),
   provider: z.string(),
   subtotalCents: z.number().int().nonnegative(),
-  discountCents: z.number().int().nonnegative(),
   totalCents: z.number().int().nonnegative(),
   status: paymentStatusSchema,
   createdAt: z.string(),

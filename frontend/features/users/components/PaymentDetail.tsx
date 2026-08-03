@@ -177,12 +177,6 @@ export function PaymentDetail({ payment }: { payment: PaymentItem }) {
           Subtotal: {formatCurrency(payment.subtotalCents)}
         </Text>
 
-        {payment.discountCents > 0 && (
-          <Text fontSize="sm" color="brand.muted">
-            Descuento: -{formatCurrency(payment.discountCents)}
-          </Text>
-        )}
-
         <Text fontSize="lg" fontWeight="black" color="white">
           Total: {formatCurrency(payment.totalCents)}
         </Text>

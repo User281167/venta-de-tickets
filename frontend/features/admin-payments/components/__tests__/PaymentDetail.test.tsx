@@ -13,7 +13,6 @@ const mockDetail = {
   id: "p1",
   userId: "u1",
   subtotalCents: 500000,
-  discountCents: 0,
   totalCents: 500000,
   status: "completed",
   provider: "mercadopago",

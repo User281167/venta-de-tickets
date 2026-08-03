@@ -2,7 +2,6 @@ import { analyticsRepository } from './analytics.repository.js';
 import type {
   CumulativePoint,
   CheckinProgress,
-  ConversionDiscountCode,
   DonationSummaryRow,
   DonationDayPoint,
   FunnelStep,
@@ -14,7 +13,6 @@ import type {
   SalesSummary,
   StackedDayPoint,
   StatusBreakdown,
-  TopDiscountCode,
   DayPoint,
   WeeklyReport,
 } from './analytics.types.js';
@@ -280,49 +278,6 @@ export const analyticsService = {
       refundRatePercent:
         total > 0 ? Number(((refunded / total) * 100).toFixed(2)) : 0,
     };
-  },
-
-  async topDiscountCodes(
-    limit: number,
-    from: Date | undefined,
-    to: Date | undefined,
-  ): Promise<TopDiscountCode[]> {
-    const rows = await analyticsRepository.topDiscountCodes(limit, from, to);
-    return rows.map((r) => ({
-      id: r.id,
-      code: r.code,
-      usedCount: r.usedCount,
-      maxUses: r.maxUses,
-      conversionPercent:
-        r.maxUses && r.maxUses > 0
-          ? Number(((r.usedCount / r.maxUses) * 100).toFixed(2))
-          : null,
-      discountCents: r.discountCents,
-    }));
-  },
-
-  async discountsTotalAmount(
-    from: Date | undefined,
-    to: Date | undefined,
-  ): Promise<{ amountCents: number; uses: number }> {
-    return analyticsRepository.discountsTotalAmount(from, to);
-  },
-
-  async discountsConversion(
-    from: Date | undefined,
-    to: Date | undefined,
-  ): Promise<ConversionDiscountCode[]> {
-    const rows = await analyticsRepository.topDiscountCodes(50, from, to);
-    return rows.map((r) => ({
-      id: r.id,
-      code: r.code,
-      usedCount: r.usedCount,
-      maxUses: r.maxUses,
-      conversionPercent:
-        r.maxUses && r.maxUses > 0
-          ? Number(((r.usedCount / r.maxUses) * 100).toFixed(2))
-          : null,
-    }));
   },
 
   async donationsDaily(

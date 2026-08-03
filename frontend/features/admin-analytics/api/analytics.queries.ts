@@ -19,7 +19,6 @@ import {
   type SalesByTicketType,
   type SalesSummary,
   type StatusBreakdownRow,
-  type TopDiscountCode,
   type DayPoint,
 } from "../schemas/analytics.schema";
 
@@ -192,45 +191,6 @@ export function useRefundsRate(range: AnalyticsDateRange) {
   });
 }
 
-export function useTopDiscountCodes() {
-  return useQuery<TopDiscountCode[]>({
-    queryKey: ["analytics", "top-discounts"],
-    queryFn: async () => {
-      const raw = await authFetch<{ data: TopDiscountCode[] }>(
-        `/api/admin/analytics/discounts/top-codes?limit=10`,
-      );
-      return parse(responseSchemas.topDiscountCodes, raw).data;
-    },
-  });
-}
-
-export function useDiscountsTotalAmount(range: AnalyticsDateRange) {
-  return useQuery<{ amountCents: number; uses: number }>({
-    queryKey: ["analytics", "discounts-total", ...rangeKey(range)],
-    queryFn: async () => {
-      const raw = await authFetch<{
-        data: { amountCents: number; uses: number };
-      }>(
-        `/api/admin/analytics/discounts/total-amount${buildRangeParams(range)}`,
-      );
-      return raw.data;
-    },
-    placeholderData: keepPreviousData,
-  });
-}
-
-export function useDiscountsConversion() {
-  return useQuery<TopDiscountCode[]>({
-    queryKey: ["analytics", "discounts-conversion"],
-    queryFn: async () => {
-      const raw = await authFetch<{ data: TopDiscountCode[] }>(
-        `/api/admin/analytics/discounts/conversion`,
-      );
-      return parse(responseSchemas.topDiscountCodes, raw).data;
-    },
-  });
-}
-
 export function useDonationsDaily(state?: string) {
   return useQuery<DonationDayPoint[]>({
     queryKey: ["analytics", "donations-daily", state ?? "all"],
@@ -293,7 +253,6 @@ export type {
   RoleBreakdown,
   RefundDayPoint,
   RefundRate,
-  TopDiscountCode,
   DonationDayPoint,
   DonationSummary,
   CheckinProgress,

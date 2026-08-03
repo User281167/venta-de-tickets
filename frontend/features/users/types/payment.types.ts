@@ -16,7 +16,6 @@ export type PaymentItem = {
   id: string;
   provider: string;
   subtotalCents: number;
-  discountCents: number;
   totalCents: number;
   status: PaymentStatus;
   createdAt: string;

@@ -4,7 +4,6 @@ import { analyticsService } from './analytics.service.js';
 import {
   dateRangeQuerySchema,
   donationsQuerySchema,
-  topDiscountCodesQuerySchema,
   weeklyReportQuerySchema,
 } from './analytics.validators.js';
 
@@ -171,49 +170,6 @@ export async function getRefundsRate(
   if (!range.ok) return;
 
   const data = await analyticsService.refundsRate(range.from, range.to);
-  res.json({ data });
-}
-
-export async function getTopDiscountCodes(
-  req: Request,
-  res: Response,
-): Promise<void> {
-  const parsed = parseQuery(req, res, topDiscountCodesQuerySchema);
-  if (!parsed.ok) return;
-
-  const data = await analyticsService.topDiscountCodes(
-    parsed.value.limit,
-    undefined,
-    undefined,
-  );
-  res.json({ data });
-}
-
-export async function getDiscountsTotalAmount(
-  req: Request,
-  res: Response,
-): Promise<void> {
-  const range = parseDateRange(req, res);
-  if (!range.ok) return;
-
-  const data = await analyticsService.discountsTotalAmount(
-    range.from,
-    range.to,
-  );
-  res.json({ data });
-}
-
-export async function getDiscountsConversion(
-  req: Request,
-  res: Response,
-): Promise<void> {
-  const range = parseDateRange(req, res);
-  if (!range.ok) return;
-
-  const data = await analyticsService.discountsConversion(
-    range.from,
-    range.to,
-  );
   res.json({ data });
 }
 

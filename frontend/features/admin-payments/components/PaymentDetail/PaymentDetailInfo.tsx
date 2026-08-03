@@ -88,17 +88,6 @@ export function PaymentDetailInfo({ data }: PaymentDetailInfoProps) {
           </VStack>
         </GridItem>
 
-        {data.discountCents > 0 && (
-          <GridItem>
-            <VStack align="start" gap={1}>
-              <Text {...labelStyle}>Descuento</Text>
-              <Text color="green.400" fontWeight="semibold">
-                -{formatCurrency(data.discountCents)}
-              </Text>
-            </VStack>
-          </GridItem>
-        )}
-
         <GridItem>
           <VStack align="start" gap={1}>
             <Text {...labelStyle}>Total</Text>
