@@ -32,11 +32,6 @@ enum PaymentStatus {
   completed_unfulfillable // webhook notifica tarde y ya no hay entradas disponibles, pendiente de reembolso
 }
 
-enum DiscountType {
-  percentage
-  fixed
-}
-
 enum PolicyType {
   privacy_policy
   terms_of_service
@@ -65,7 +60,6 @@ model User {
   privacyAcceptances PrivacyAcceptance[]
   tickets            Ticket[]
   payments           Payment[]
-  createdDiscounts   DiscountCode[]      @relation("CreatedBy")
   createdPayments    Payment[]           @relation("CreatedPayments")
   checkedInTickets   Ticket[]            @relation("CheckedInBy")
 
@@ -116,24 +110,6 @@ model TicketType {
   @@map("ticket_types")
 }
 
-model DiscountCode {
-  id            String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  code          String       @unique @db.VarChar(50)
-  discountType  DiscountType @map("discount_type")
-  discountValue Decimal      @map("discount_value") @db.Decimal(10, 2)
-  maxUses       Int?         @map("max_uses")
-  usedCount     Int          @default(0) @map("used_count")
-  validUntil    DateTime?    @map("valid_until") @db.Timestamptz
-  isActive      Boolean      @default(true) @map("is_active")
-  createdAt     DateTime     @default(now()) @map("created_at") @db.Timestamptz
-  createdBy     String       @map("created_by") @db.Uuid
-
-  creator  User      @relation("CreatedBy", fields: [createdBy], references: [id])
-  payments Payment[]
-
-  @@map("discount_codes")
-}
-
 model Ticket {
   id                      String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   ticketTypeId            String       @map("ticket_type_id") @db.Uuid
@@ -171,9 +147,7 @@ model Payment {
   provider       String        @db.VarChar(50)
   providerTxId   String?       @map("provider_tx_id") @db.VarChar(255)
   subtotalCents  Int           @map("subtotal_cents")
-  discountCents  Int           @default(0) @map("discount_cents")
   totalCents     Int           @map("total_cents")
-  discountCodeId String?       @map("discount_code_id") @db.Uuid
   status         PaymentStatus @default(pending)
   createdBy      String?       @map("created_by") @db.Uuid
   metadata       Json?
@@ -182,7 +156,6 @@ model Payment {
 
   user         User          @relation(fields: [userId], references: [id])
   creator      User?         @relation("CreatedPayments", fields: [createdBy], references: [id])
-  discountCode DiscountCode? @relation(fields: [discountCodeId], references: [id])
   tickets      Ticket[]
 
   @@index([userId])
