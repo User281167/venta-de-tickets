@@ -2,57 +2,42 @@
 Current plan: specs/022-audit-log/plan.md
 <!-- SPECKIT END -->
 
-# AGENT.md
+# AGENTS.md
 
-Guidance for AI coding agents working in this repository.
+Event ticketing platform. Monorepo: `backend/` (Express+TS), `frontend/`
+(Next.js App Router), `whatsapp-bot/` (standalone). Colombian market — privacy
+(Ley 1581) matters. Full rules in `constitution.md`; read before specs/plans/code.
+Conversation/specs: Spanish. Code/identifiers/comments: English.
 
-## Project
-Event ticketing platform. Monorepo: `backend/` (API), `frontend/`
-(Next.js), `whatsapp-bot/` (standalone service). Colombian market — privacy
-compliance (Ley 1581) matters.
+## Dev environment
+- Backend, run from `backend/`: `pnpm dev`, `pnpm build`, `pnpm prisma:generate`.
+- Frontend, run from `frontend/`: `pnpm dev`, `pnpm build`.
+- Prisma/Supabase CLIs are never used to modify the DB.
 
-Full architectural rules live in `constitution.md` — read it before generating
-specs, plans, or code. This file is just the quick reference.
+## Feature folders (frontend)
+- All logic lives in `frontend/features/<domain>/`.
+- Subfolders: `components/`, `hooks/`, `api/` (`.client.ts` fetchers +
+  TanStack `*.queries.ts`), `schemas/` (Zod), `types/`.
+- `app/` is routes/layouts only — no fetching, no logic, no schemas.
+- Tests co-located in `__tests__/` next to what they test.
 
-## Stack
-- Backend: Express + TypeScript
-- Frontend: Next.js (App Router) + TypeScript + Chakra UI + TanStack Query
-- Validation: Zod (both ends)
-- DB/Auth/Storage: Supabase + Prisma ORM
-- Payments: Mercado Pago | Messaging: Infobip | Hosting: Railway
-- Rate limit store: Upstash Redis (only Redis usage in the system)
-- PDFs/QR: PDFKit + `qrcode`
-- Tests: Vitest (unit/integration) + Playwright (E2E)
+## Modules (backend)
+- All logic lives in `backend/src/modules/<name>/`. One file per concern —
+  never merge controller, service, repository, etc. into one file.
+- Layers, named `<name>.<layer>.ts`:
+  `routes.ts` (path wiring) → `controller.ts` (HTTP + validate) →
+  `service.ts` (business) → `repository.ts` (Prisma/DB only).
+  Plus `validators.ts` (Zod), `types.ts`, optional `config.ts`/`constants.ts`.
+- External integrations in `*.client.ts` or `providers/` subfolder.
+- No cross-module repo access — call other modules' services only.
+- Tests live in `backend/test/<module>/`.
 
-## Architecture rules
-- Layered, not strict hexagonal: `routes → controller → service → repository`,
-  organized per module under `src/modules/<name>/`.
-- `service` layer never imports Express or Supabase directly — only through
-  `repository` / `*.client.ts` files.
-- No cross-module repository access; only call other modules' services.
-- `whatsapp-bot` is a separate service, talks to the API only via
-  `/internal/*` endpoints. Not a shared package with `messaging`.
-- Frontend: business logic lives in `src/features/<domain>/`. `app/` is
-  routes/layouts only — no fetching, no validation logic there.
-- `shared/` (either side) is infrastructure/cross-cutting only — never domain
-  logic.
+## Testing
+- Backend (`backend/`): `pnpm test`, `pnpm test:watch`, `pnpm lint`.
+- Frontend (`frontend/`): `pnpm test`, `pnpm test:watch`, `pnpm lint`.
+- Fix all test/type/lint errors until green; add/update tests for any code you
+  change, even if unasked.
+- Always run `pnpm lint` and `pnpm test` for the touched package before commit.
 
-## Conventions
-- DB: UUID PKs, `snake_case`, `TIMESTAMPTZ` for timestamps.
-- Separate `users` and `admins` tables — no shared identity table.
-- Notifications are not persisted.
-- Don't introduce new abstractions (DI, factories, interfaces) unless there's
-  a concrete current need.
-
-## Working style
-- Work incrementally: schema → API → UI, one layer at a time.
-- Comments only where intent isn't obvious (business rules, trade-offs).
-- Docs go in `docs/`: architecture decisions, critical rules, simple Mermaid
-  diagrams only — no documenting the obvious.
-- Conversation/spec language: Spanish. Code, identifiers, and comments:
-  English.
-
-## Before changing stack or architecture
-Don't silently deviate. Any change to stack choices or layering rules requires
-updating `constitution.md` first, with a stated reason (cost, scale, or
-technical constraint).
+## PR instructions
+- Title: `[backend|frontend|whatsapp-bot] <Title>`.

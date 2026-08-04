@@ -29,6 +29,6 @@ Supabase (`@supabase/ssr`).
 - Never run cli or script for prisma or supabase for modify BD.
 
 ## Conventions
-- Code/identifiers: English. comments and UI copy: Spanish.
+- Code/identifiers: English. comments and UI: Spanish.
 - Comments only where intent isn't obvious.
 - No new abstractions unless there's a concrete current need.
