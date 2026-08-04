@@ -16,6 +16,8 @@ const selectForScan = {
   ticketType: {
     select: {
       name: true,
+      description: true,
+      zona: true,
     },
   },
 } as const;
@@ -38,6 +40,8 @@ export async function findTicketForScan(
     attendeeName: ticket.user.fullName,
     attendeeCedula: ticket.user.cedula,
     ticketTypeName: ticket.ticketType.name,
+    ticketTypeDescription: ticket.ticketType.description,
+    ticketTypeZona: ticket.ticketType.zona,
     checkedInAt: ticket.checkedInAt ? ticket.checkedInAt.toISOString() : null,
     allowedActions: [],
   };

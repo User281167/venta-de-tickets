@@ -16,6 +16,8 @@ export interface TicketSummary {
   attendeeName: string;
   attendeeCedula: string | null;
   ticketTypeName: string;
+  ticketTypeDescription: string | null;
+  ticketTypeZona: string | null;
   checkedInAt: string | null;
   allowedActions: CheckerAction[];
 }

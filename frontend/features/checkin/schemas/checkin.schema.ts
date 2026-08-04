@@ -22,6 +22,8 @@ export const scanResponseSchema = z.object({
   attendeeName: z.string(),
   attendeeCedula: z.string().nullable(),
   ticketTypeName: z.string(),
+  ticketTypeDescription: z.string().nullable(),
+  ticketTypeZona: z.string().nullable(),
   checkedInAt: z.string().nullable(),
   allowedActions: z.array(checkerActionSchema),
 });

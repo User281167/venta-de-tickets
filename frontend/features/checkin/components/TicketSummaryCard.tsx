@@ -4,6 +4,7 @@ import { Box, HStack, Stack, Text } from "@chakra-ui/react";
 import {
   IconCalendar,
   IconId,
+  IconMapPin,
   IconTicket,
   IconUser,
 } from "@tabler/icons-react";
@@ -54,25 +55,48 @@ export function TicketSummaryCard({ ticket }: { ticket: TicketSummaryType }) {
       bg="brand.panel"
     >
       <HStack justify="space-between" align="flex-start" mb={5}>
-        <Stack gap={1}>
-          <Text
-            color="utp.azul"
-            fontSize="xs"
-            fontWeight="black"
-            textTransform="uppercase"
-            letterSpacing="0.15em"
-          >
-            Ticket
-          </Text>
-
-          <Text color="white" fontSize="xl" fontWeight="bold" lineClamp={1}>
-            {ticket.ticketTypeName}
-          </Text>
-        </Stack>
+        <Text
+          color="utp.azul"
+          fontSize="xs"
+          fontWeight="black"
+          textTransform="uppercase"
+          letterSpacing="0.15em"
+        >
+          Entrada
+        </Text>
         <StatusBadge status={ticket.status} />
       </HStack>
 
-      <Stack gap={4}>
+      <Stack gap={2} align="center" wrap="wrap">
+        <Text color="white" fontSize="xl" fontWeight="bold" lineClamp={1}>
+          {ticket.ticketTypeName}
+        </Text>
+
+        {ticket.ticketTypeZona && (
+          <HStack
+            gap={1}
+            px={2}
+            py={0.5}
+            borderRadius="md"
+            bg="rgba(0,207,230,0.12)"
+            border="1px solid rgba(0,207,230,0.3)"
+            color="brand.cyan"
+            fontSize="xs"
+            fontWeight="bold"
+          >
+            <IconMapPin size={12} aria-hidden />
+            <Text>{ticket.ticketTypeZona}</Text>
+          </HStack>
+        )}
+
+        {ticket.ticketTypeDescription && (
+          <Text color="brand.muted" fontSize="sm">
+            {ticket.ticketTypeDescription}
+          </Text>
+        )}
+      </Stack>
+
+      <Stack gap={4} mt={4}>
         <InfoRow
           icon={IconUser}
           label="Asistente"
