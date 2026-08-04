@@ -14,6 +14,7 @@ import { PartnersSection } from "@/features/landing/components/PartnersSection";
 import { DonationSection } from "@/features/landing/components/DonationSection";
 import { AsociacionSection } from "@/features/sponsor/components/AsociacionSection";
 import { ImpactoSocialSection } from "@/features/sponsor/components/ImpactoSocialSection";
+import { TicketPurchaseClient } from "@/features/ticket-purchase/components/TicketPurchaseClient";
 
 export default function LandingPage() {
   return (
@@ -22,7 +23,8 @@ export default function LandingPage() {
       <Navbar />
       <main>
         <HeroSection />
-        <TicketSection />
+        <TicketPurchaseClient />
+        {/*<TicketSection />*/}
         <DonationSection />
         <AboutSection />
         <FullWidthSlider />
