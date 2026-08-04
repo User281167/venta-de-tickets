@@ -67,14 +67,9 @@ export async function createDonation(
 export async function handleWebhook(
   providerName: string,
   payload: unknown,
-  headers: Record<string, string>,
+  _headers: Record<string, string>,
 ): Promise<void> {
   const provider = getDonationProvider(providerName);
-
-  const isValid = provider.verifySignature(payload, headers);
-  if (!isValid) {
-    return;
-  }
 
   const event = await provider.parseWebhook(payload);
 
@@ -83,7 +78,7 @@ export async function handleWebhook(
     return;
   }
 
-  const updated = await donationRepository.updateStateByExternalReference(
+  const donation = await donationRepository.updateStateByExternalReference(
     event.reference,
     {
       state: newState,
@@ -92,25 +87,17 @@ export async function handleWebhook(
     },
   );
 
-  if (updated === 0) {
+  if (!donation) {
     logger.warn(
       `Donation webhook: no row updated for reference=${event.reference}, status=${event.status}, externalId=${event.externalId}. Current state likely doesn't allow transition.`,
     );
     return;
   }
 
-  if (newState === 'confirmed' || newState === 'rejected') {
-    const donation = await donationRepository.findByExternalReference(
-      event.reference,
-    );
-
-    if (donation) {
-      if (newState === 'confirmed') {
-        void notifyDonationConfirmed(donation.id);
-      } else {
-        void notifyDonationRejected(donation.id);
-      }
-    }
+  if (newState === 'confirmed') {
+    void notifyDonationConfirmed(donation.id);
+  } else if (newState === 'rejected') {
+    void notifyDonationRejected(donation.id);
   }
 }
 

@@ -15,51 +15,9 @@ export async function createDonation(req: Request, res: Response): Promise<void>
   res.status(201).json(result);
 }
 
-export async function handleLaConvencionWebhook(
-  req: Request,
-  res: Response,
-): Promise<void> {
+export async function handleWebhook(req: Request, res: Response): Promise<void> {
   await donacionesService.handleWebhook(
-    'mercadopago-la-convencion',
-    req.body,
-    req.headers as Record<string, string>,
-  );
-
-  res.status(200).json({ status: 'processed' });
-}
-
-export async function handleBarranquerosWebhook(
-  req: Request,
-  res: Response,
-): Promise<void> {
-  await donacionesService.handleWebhook(
-    'mercadopago-barranqueros-utp',
-    req.body,
-    req.headers as Record<string, string>,
-  );
-
-  res.status(200).json({ status: 'processed' });
-}
-
-export async function handleEpaycoLaConvencionWebhook(
-  req: Request,
-  res: Response,
-): Promise<void> {
-  await donacionesService.handleWebhook(
-    'epayco-la-convencion',
-    req.body,
-    req.headers as Record<string, string>,
-  );
-
-  res.status(200).json({ status: 'processed' });
-}
-
-export async function handleEpaycoBarranquerosWebhook(
-  req: Request,
-  res: Response,
-): Promise<void> {
-  await donacionesService.handleWebhook(
-    'epayco-barranqueros-utp',
+    req.params.provider as string,
     req.body,
     req.headers as Record<string, string>,
   );

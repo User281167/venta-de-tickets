@@ -59,19 +59,32 @@ export const donationRepository = {
   updateStateByExternalReference: async (
     externalReference: string,
     data: UpdateDonationData,
-  ): Promise<number> => {
-    const result = await prisma.donation.updateMany({
-      where: {
-        externalReference: externalReference,
-        state: data.state === 'confirmed' ? { in: ['pending', 'rejected'] } : 'pending',
-      },
-      data: {
-        state: data.state,
-        paymentId: data.paymentId,
-        metadata: data.metadata,
-      },
+  ): Promise<Donation | null> => {
+    return prisma.$transaction(async (tx) => {
+      const existing = await tx.donation.findUnique({
+        where: { externalReference: externalReference },
+      });
+
+      if (!existing) {
+        return null;
+      }
+
+      const allowedStates =
+        data.state === 'confirmed' ? ['pending', 'rejected'] : ['pending'];
+
+      if (!allowedStates.includes(existing.state)) {
+        return null;
+      }
+
+      return tx.donation.update({
+        where: { externalReference: externalReference },
+        data: {
+          state: data.state,
+          paymentId: data.paymentId,
+          metadata: data.metadata,
+        },
+      });
     });
-    return result.count;
   },
 
   findById: async (id: string): Promise<Donation | null> => {

@@ -10,28 +10,10 @@ export const donacionesRouter = Router();
 
 donacionesRouter.post('/', rateLimit(POLICIES.publicWrite), ctrl.createDonation);
 donacionesRouter.post(
-  '/webhook/mercadopago-la-convencion',
-  verifyDonationsWebhookSignature('mercadopago-la-convencion'),
+  '/webhook/:provider',
+  verifyDonationsWebhookSignature,
   rateLimit(POLICIES.webhookGlobal),
-  ctrl.handleLaConvencionWebhook,
-);
-donacionesRouter.post(
-  '/webhook/mercadopago-barranqueros-utp',
-  verifyDonationsWebhookSignature('mercadopago-barranqueros-utp'),
-  rateLimit(POLICIES.webhookGlobal),
-  ctrl.handleBarranquerosWebhook,
-);
-donacionesRouter.post(
-  '/webhook/epayco-la-convencion',
-  verifyDonationsWebhookSignature('epayco-la-convencion'),
-  rateLimit(POLICIES.webhookGlobal),
-  ctrl.handleEpaycoLaConvencionWebhook,
-);
-donacionesRouter.post(
-  '/webhook/epayco-barranqueros-utp',
-  verifyDonationsWebhookSignature('epayco-barranqueros-utp'),
-  rateLimit(POLICIES.webhookGlobal),
-  ctrl.handleEpaycoBarranquerosWebhook,
+  ctrl.handleWebhook,
 );
 donacionesRouter.get(
   '/:externalReference/status',

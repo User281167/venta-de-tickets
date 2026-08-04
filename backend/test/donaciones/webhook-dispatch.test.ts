@@ -1,16 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const mockVerifySignature = vi.hoisted(() => vi.fn());
 const mockParseWebhook = vi.hoisted(() => vi.fn());
 const mockUpdateState = vi.hoisted(() => vi.fn());
-const mockFindByExternalReference = vi.hoisted(() => vi.fn());
 const mockNotifyConfirmed = vi.hoisted(() => vi.fn());
 const mockNotifyRejected = vi.hoisted(() => vi.fn());
 const mockNotifyCancelled = vi.hoisted(() => vi.fn());
 
 vi.mock('../../src/modules/donaciones/providers/donation-provider.registry.js', () => ({
   getDonationProvider: () => ({
-    verifySignature: mockVerifySignature,
     parseWebhook: mockParseWebhook,
   }),
 }));
@@ -18,9 +15,9 @@ vi.mock('../../src/modules/donaciones/providers/donation-provider.registry.js', 
 vi.mock('../../src/modules/donaciones/donaciones.repository.js', () => ({
   donationRepository: {
     updateStateByExternalReference: mockUpdateState,
-    findByExternalReference: mockFindByExternalReference,
     create: vi.fn(),
     findById: vi.fn(),
+    findByExternalReference: vi.fn(),
     findAllAdmin: vi.fn(),
     expirePending: vi.fn(),
   },
@@ -39,7 +36,6 @@ const { handleWebhook } = await import(
 describe('donation webhook dispatch', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockVerifySignature.mockReturnValue(true);
   });
 
   it('fires confirmation email when webhook status is approved', async () => {
@@ -48,8 +44,7 @@ describe('donation webhook dispatch', () => {
       reference: 'DON-LA_CONVENCION-uuid',
       externalId: 'mp-1',
     });
-    mockUpdateState.mockResolvedValue(1);
-    mockFindByExternalReference.mockResolvedValue({
+    mockUpdateState.mockResolvedValue({
       id: 'don-1',
       full_name: 'Ana',
       email: 'ana@test.com',
@@ -68,8 +63,7 @@ describe('donation webhook dispatch', () => {
       reference: 'DON-LA_CONVENCION-uuid',
       externalId: 'mp-1',
     });
-    mockUpdateState.mockResolvedValue(1);
-    mockFindByExternalReference.mockResolvedValue({
+    mockUpdateState.mockResolvedValue({
       id: 'don-2',
       full_name: 'Luis',
       email: 'luis@test.com',
@@ -103,21 +97,10 @@ describe('donation webhook dispatch', () => {
       reference: 'DON-LA_CONVENCION-uuid',
       externalId: 'mp-1',
     });
-    mockUpdateState.mockResolvedValue(0);
+    mockUpdateState.mockResolvedValue(null);
 
     await handleWebhook('epayco-la-convencion', { x: 1 }, {});
 
     expect(mockNotifyConfirmed).not.toHaveBeenCalled();
-    expect(mockFindByExternalReference).not.toHaveBeenCalled();
-  });
-
-  it('returns silently when signature is invalid', async () => {
-    mockVerifySignature.mockReturnValue(false);
-
-    await handleWebhook('epayco-la-convencion', { x: 1 }, {});
-
-    expect(mockParseWebhook).not.toHaveBeenCalled();
-    expect(mockNotifyConfirmed).not.toHaveBeenCalled();
-    expect(mockNotifyRejected).not.toHaveBeenCalled();
   });
 });

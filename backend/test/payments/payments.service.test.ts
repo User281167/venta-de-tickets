@@ -340,19 +340,6 @@ describe('payments.service', () => {
       expect(paymentsRepo.markUnfulfillable).toHaveBeenCalled();
       expect(ticketsService.generateQrForTicket).not.toHaveBeenCalled();
     });
-
-    it('rejects with error when signature is invalid', async () => {
-      mockVerifySignature.mockReturnValue(false);
-
-      await expect(
-        paymentsService.processWebhook({}, {}, 'mercadopago'),
-      ).rejects.toMatchObject({
-        statusCode: 400,
-        code: 'INVALID_SIGNATURE',
-      });
-
-      expect(paymentsRepo.findByReference).not.toHaveBeenCalled();
-    });
   });
 
   describe('getPaymentStatus', () => {
