@@ -19,7 +19,6 @@ export const donationStatusSchema = z.object({
   state: z.nativeEnum(DonationStatus),
   account: z.nativeEnum(DonationAccount),
   amountCents: z.number().int(),
-  fullName: z.string().nullable().optional(),
   createdAt: z.string().datetime(),
 });
 

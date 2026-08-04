@@ -471,8 +471,7 @@ export async function getEpaycoStatusByRef(refPayco: string) {
       x_response?: string;
       x_ref_payco?: string;
       x_transaction_id?: string;
-      x_amount?: string;
-      x_currency_code?: string;
+      x_response_reason_text?: string;
       [key: string]: unknown;
     };
   };
@@ -481,7 +480,9 @@ export async function getEpaycoStatusByRef(refPayco: string) {
     return { status: 'pending' as const };
   }
 
-  const xResponse = data.data?.x_response ?? '';
+  const raw = data.data ?? {};
+  const xResponse = raw.x_response ?? '';
+
   let status: 'completed' | 'failed' | 'pending';
   switch (xResponse) {
     case 'Aceptada':
@@ -495,7 +496,17 @@ export async function getEpaycoStatusByRef(refPayco: string) {
       status = 'pending';
   }
 
-  return { status, validation: data.data };
+  // Proyección solo campos no sensibles. La respuesta cruda de
+  // ePayco incluye x_customer_*, x_billing_*, x_amount, x_currency_code y
+  // otros datos personales/financieros que no se exponen al público.
+  const validation = {
+    x_response: raw.x_response,
+    x_ref_payco: raw.x_ref_payco,
+    x_transaction_id: raw.x_transaction_id,
+    x_response_reason_text: raw.x_response_reason_text,
+  };
+
+  return { status, validation };
 }
 
 export async function listMyPayments(

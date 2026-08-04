@@ -34,7 +34,6 @@ export async function getStatus(req: Request, res: Response): Promise<void> {
     state: donation.state,
     account: donation.account,
     amountCents: Number(donation.amountCents),
-    fullName: donation.full_name,
     createdAt: donation.createdAt.toISOString(),
   });
 }

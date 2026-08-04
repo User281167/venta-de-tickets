@@ -50,7 +50,6 @@ export type DonationStatusResponse = {
   state: string;
   account: string;
   amountCents: number;
-  fullName: string | null;
   createdAt: string;
 };
 
