@@ -6,10 +6,6 @@ vi.mock('../src/shared/services/auth.service.js', () => ({
   verifyToken: vi.fn(),
 }));
 
-vi.mock('../src/shared/services/user-resolver.js', () => ({
-  resolveUser: vi.fn(),
-}));
-
 vi.mock('../src/modules/me/me.repository.js', () => ({
   findByUserId: vi.fn(),
   findEgresadoFlag: vi.fn(),
@@ -20,15 +16,16 @@ vi.mock('../src/modules/me/me.repository.js', () => ({
 vi.mock('../src/modules/payments/payments.repository.js', () => ({
   findAllByUserId: vi.fn(),
   countByUserId: vi.fn(),
+  findByIdWithUserAndTickets: vi.fn(),
 }));
 
 vi.mock('../src/modules/users/users.service.js', () => ({
   getPrivacyStatus: vi.fn(),
+  getUserAuthInfo: vi.fn(),
 }));
 
 const { verifyToken } = await import('../src/shared/services/auth.service.js');
-const { resolveUser } = await import('../src/shared/services/user-resolver.js');
-const { getPrivacyStatus } = await import('../src/modules/users/users.service.js');
+const { getPrivacyStatus, getUserAuthInfo } = await import('../src/modules/users/users.service.js');
 
 const meRepo = await import('../src/modules/me/me.repository.js');
 const paymentsRepo = await import('../src/modules/payments/payments.repository.js');
@@ -38,7 +35,7 @@ function authHeader(token = 'valid.jwt.token') {
 }
 
 function mockClientAuth() {
-  vi.mocked(resolveUser).mockResolvedValue({ role: 'client', isActive: true });
+  vi.mocked(getUserAuthInfo).mockResolvedValue({ role: 'client', isActive: true });
   vi.mocked(verifyToken).mockResolvedValue({
     id: 'user-123',
     email: 'test@example.com',
@@ -47,7 +44,7 @@ function mockClientAuth() {
 }
 
 function mockNonClientAuth(role: string) {
-  vi.mocked(resolveUser).mockResolvedValue({ role, isActive: true });
+  vi.mocked(getUserAuthInfo).mockResolvedValue({ role, isActive: true });
   vi.mocked(verifyToken).mockResolvedValue({
     id: 'user-123',
     email: 'test@example.com',

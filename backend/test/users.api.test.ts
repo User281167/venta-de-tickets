@@ -6,19 +6,14 @@ vi.mock('../src/shared/services/auth.service.js', () => ({
   verifyToken: vi.fn(),
 }));
 
-vi.mock('../src/shared/services/user-resolver.js', () => ({
-  resolveUser: vi.fn(),
-}));
-
-vi.mock('../src/modules/users/users.repository.js', () => ({
-  findPrivacyAcceptance: vi.fn(),
-  createPrivacyAcceptance: vi.fn(),
+vi.mock('../src/modules/users/users.service.js', () => ({
+  getUserAuthInfo: vi.fn(),
+  getPrivacyStatus: vi.fn(),
+  acceptPrivacy: vi.fn(),
 }));
 
 const { verifyToken } = await import('../src/shared/services/auth.service.js');
-const { resolveUser } = await import('../src/shared/services/user-resolver.js');
-
-const repo = await import('../src/modules/users/users.repository.js');
+const { getUserAuthInfo, getPrivacyStatus, acceptPrivacy } = await import('../src/modules/users/users.service.js');
 
 function authHeader(token = 'valid.jwt.token') {
   return { Authorization: `Bearer ${token}` };
@@ -27,7 +22,7 @@ function authHeader(token = 'valid.jwt.token') {
 describe('POST /api/users/me/privacy-acceptance', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(resolveUser).mockResolvedValue({ role: null, isActive: true });
+    vi.mocked(getUserAuthInfo).mockResolvedValue({ role: null, isActive: true });
     vi.mocked(verifyToken).mockResolvedValue({
       id: 'user-123',
       email: 'test@example.com',
@@ -41,12 +36,10 @@ describe('POST /api/users/me/privacy-acceptance', () => {
 
   it('creates acceptance and returns status + acceptedAt', async () => {
     const now = new Date();
-    vi.mocked(repo.findPrivacyAcceptance).mockResolvedValue(null);
-    vi.mocked(repo.createPrivacyAcceptance).mockResolvedValue({
-      id: 'acc-1',
+    vi.mocked(acceptPrivacy).mockResolvedValue({
+      status: 'accepted',
+      acceptedAt: now.toISOString(),
       policyVersion: '1.0.0',
-      policyType: 'privacy_policy',
-      acceptedAt: now,
     });
 
     const res = await request(app)
@@ -60,8 +53,9 @@ describe('POST /api/users/me/privacy-acceptance', () => {
 
   it('returns existing acceptance if already accepted', async () => {
     const now = new Date();
-    vi.mocked(repo.findPrivacyAcceptance).mockResolvedValue({
-      acceptedAt: now,
+    vi.mocked(acceptPrivacy).mockResolvedValue({
+      status: 'accepted',
+      acceptedAt: now.toISOString(),
       policyVersion: '1.0.0',
     });
 
@@ -78,7 +72,7 @@ describe('POST /api/users/me/privacy-acceptance', () => {
 describe('GET /api/users/me/privacy-status', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(resolveUser).mockResolvedValue({ role: null, isActive: true });
+    vi.mocked(getUserAuthInfo).mockResolvedValue({ role: null, isActive: true });
     vi.mocked(verifyToken).mockResolvedValue({
       id: 'user-123',
       email: 'test@example.com',
@@ -87,9 +81,12 @@ describe('GET /api/users/me/privacy-status', () => {
 
   it('returns consent status', async () => {
     const acceptedAt = new Date('2025-06-01');
-    vi.mocked(repo.findPrivacyAcceptance).mockResolvedValue({
-      acceptedAt,
-      policyVersion: '1.0.0',
+    vi.mocked(getPrivacyStatus).mockResolvedValue({
+      consentStatus: {
+        required: true,
+        acceptedAt: acceptedAt.toISOString(),
+        policyVersion: '1.0.0',
+      },
     });
 
     const res = await request(app)

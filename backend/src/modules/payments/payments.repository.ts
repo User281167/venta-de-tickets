@@ -69,6 +69,23 @@ export function findByIdWithTickets(id: string) {
   });
 }
 
+export function findByIdWithUserAndTickets(id: string) {
+  return prisma.payment.findUnique({
+    where: { id },
+    include: {
+      user: { select: { id: true, email: true, fullName: true } },
+      tickets: {
+        select: {
+          id: true,
+          ticketCode: true,
+          qrToken: true,
+          ticketType: { select: { name: true } },
+        },
+      },
+    },
+  });
+}
+
 // Sweep: función interna, recibe tx, reutilizable dentro de otras transacciones
 async function sweepExpiredReservationsInternal(
   tx: Prisma.TransactionClient,

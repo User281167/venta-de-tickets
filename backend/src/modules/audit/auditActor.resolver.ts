@@ -1,5 +1,5 @@
-import { prisma } from '../../shared/database/prisma.client.js';
 import { auditUserCache, type AuditActorSnapshot } from './auditUser.cache.js';
+import * as usersService from '../users/users.service.js';
 
 export async function resolveActorSnapshot(
   actorId: string,
@@ -9,10 +9,7 @@ export async function resolveActorSnapshot(
     return cached;
   }
 
-  const user = await prisma.user.findUnique({
-    where: { id: actorId },
-    select: { role: true, fullName: true, cedula: true },
-  });
+  const user = await usersService.getUserSnapshot(actorId);
 
   if (!user) {
     return { role: 'unknown', fullName: null, cedula: null };

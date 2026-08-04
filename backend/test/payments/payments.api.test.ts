@@ -24,6 +24,7 @@ vi.mock('../../src/modules/payments/payments.repository.js', () => ({
   createCheckoutTransaction: vi.fn(),
   processPaymentWebhook: vi.fn(),
   findByIdWithTickets: vi.fn(),
+  findByIdWithUserAndTickets: vi.fn(),
   findByReference: vi.fn(),
   update: vi.fn(),
   create: vi.fn(),

@@ -1,6 +1,20 @@
 import { prisma } from '../../shared/database/prisma.client.js';
 import { PolicyType } from '@prisma/client';
 
+export function findAuthUser(userId: string) {
+  return prisma.user.findUnique({
+    where: { id: userId },
+    select: { role: true, isActive: true },
+  });
+}
+
+export function findUserSnapshot(userId: string) {
+  return prisma.user.findUnique({
+    where: { id: userId },
+    select: { role: true, fullName: true, cedula: true },
+  });
+}
+
 export function createPrivacyAcceptance(
   userId: string,
   policyVersion: string,

@@ -1,18 +1,16 @@
-import { prisma } from '../../../shared/database/prisma.client.js';
 import { logger } from '../../../utils/logger.js';
 import { messagingService } from '../messaging.service.js';
+import * as donacionesService from '../../donaciones/donaciones.service.js';
 
-async function findDonationById(donationId: string) {
-  return prisma.donation.findUnique({
-    where: { id: donationId },
-  });
+async function getDonationData(donationId: string) {
+  return donacionesService.getDonationForNotification(donationId);
 }
 
 export async function notifyDonationConfirmed(
   donationId: string,
 ): Promise<void> {
   try {
-    const donation = await findDonationById(donationId);
+    const donation = await getDonationData(donationId);
     if (!donation) {
       logger.warn(
         `Cannot send donation confirmation email: donationId=${donationId} not found`,
@@ -46,7 +44,7 @@ export async function notifyDonationRejected(
   donationId: string,
 ): Promise<void> {
   try {
-    const donation = await findDonationById(donationId);
+    const donation = await getDonationData(donationId);
     if (!donation) {
       logger.warn(
         `Cannot send donation rejection email: donationId=${donationId} not found`,
@@ -80,7 +78,7 @@ export async function notifyDonationCancelled(
   donationId: string,
 ): Promise<void> {
   try {
-    const donation = await findDonationById(donationId);
+    const donation = await getDonationData(donationId);
     if (!donation) {
       logger.warn(
         `Cannot send donation cancellation email: donationId=${donationId} not found`,

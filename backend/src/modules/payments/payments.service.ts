@@ -563,6 +563,10 @@ export async function getPaymentDetail(paymentId: string) {
   return payment;
 }
 
+export async function getPaymentForNotification(paymentId: string) {
+  return paymentsRepo.findByIdWithUserAndTickets(paymentId);
+}
+
 export async function getPaymentStatus(
   paymentId: string,
   userId: string,

@@ -22,14 +22,14 @@ vi.mock('../src/shared/services/auth.service.js', () => ({
   verifyToken: vi.fn(),
 }));
 
-vi.mock('../src/shared/services/user-resolver.js', () => ({
-  resolveUser: vi.fn(),
+vi.mock('../src/modules/users/users.service.js', () => ({
+  getUserAuthInfo: vi.fn(),
 }));
 
 import { app } from '../src/app.js';
 
 const { verifyToken } = await import('../src/shared/services/auth.service.js');
-const { resolveUser } = await import('../src/shared/services/user-resolver.js');
+const { getUserAuthInfo } = await import('../src/modules/users/users.service.js');
 
 function authHeader(token = 'admin.jwt.token') {
   return { Authorization: `Bearer ${token}` };
@@ -145,7 +145,7 @@ describe('POST /api/admin/tickets (admin create)', () => {
       email: 'admin@test.com',
       role: 'admin',
     });
-    vi.mocked(resolveUser).mockResolvedValue({ role: 'admin', isActive: true });
+    vi.mocked(getUserAuthInfo).mockResolvedValue({ role: 'admin', isActive: true });
   });
 
   it('returns 201 with created ticket type', async () => {
@@ -174,7 +174,7 @@ describe('POST /api/admin/tickets (admin create)', () => {
       email: 'user@test.com',
       role: 'client',
     });
-    vi.mocked(resolveUser).mockResolvedValue({ role: 'client', isActive: true });
+    vi.mocked(getUserAuthInfo).mockResolvedValue({ role: 'client', isActive: true });
 
     const res = await request(app)
       .post('/api/admin/tickets')
@@ -220,7 +220,7 @@ describe('PATCH /api/admin/tickets/:id (admin update)', () => {
       email: 'admin@test.com',
       role: 'admin',
     });
-    vi.mocked(resolveUser).mockResolvedValue({ role: 'admin', isActive: true });
+    vi.mocked(getUserAuthInfo).mockResolvedValue({ role: 'admin', isActive: true });
   });
 
   it('returns 200 with updated ticket type', async () => {
@@ -261,7 +261,7 @@ describe('PATCH /api/admin/tickets/:id (admin update)', () => {
       email: 'user@test.com',
       role: 'client',
     });
-    vi.mocked(resolveUser).mockResolvedValue({ role: 'client', isActive: true });
+    vi.mocked(getUserAuthInfo).mockResolvedValue({ role: 'client', isActive: true });
 
     const res = await request(app)
       .patch(`/api/admin/tickets/${mockTicketType.id}`)
@@ -332,7 +332,7 @@ describe('GET /api/admin/tickets (admin list all)', () => {
       email: 'admin@test.com',
       role: 'admin',
     });
-    vi.mocked(resolveUser).mockResolvedValue({ role: 'admin', isActive: true });
+    vi.mocked(getUserAuthInfo).mockResolvedValue({ role: 'admin', isActive: true });
   });
 
   it('returns 200 with all statuses including blocked', async () => {
@@ -360,7 +360,7 @@ describe('GET /api/admin/tickets (admin list all)', () => {
       email: 'user@test.com',
       role: 'client',
     });
-    vi.mocked(resolveUser).mockResolvedValue({ role: 'client', isActive: true });
+    vi.mocked(getUserAuthInfo).mockResolvedValue({ role: 'client', isActive: true });
 
     const res = await request(app)
       .get('/api/admin/tickets')

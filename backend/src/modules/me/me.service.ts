@@ -1,22 +1,14 @@
 import { ValidationError } from '../../shared/errors/ValidationError.js';
 import { ConflictError } from '../../shared/errors/ConflictError.js';
-import { NotFoundError } from '../../shared/errors/NotFoundError.js';
-import { prisma } from '../../shared/database/prisma.client.js';
 import * as checkinRepo from '../checkin/checkin.repository.js';
 import * as meRepo from './me.repository.js';
+import * as ticketsService from '../tickets/tickets.service.js';
 import { logger } from '../../utils/logger.js';
 
 export type ConfirmationResult = 'confirmed' | 'rejected';
 
 async function findOwnedTicket(ticketId: string, userId: string) {
-  const ticket = await prisma.ticket.findUnique({
-    where: { id: ticketId },
-    select: { id: true, userId: true, status: true },
-  });
-
-  if (!ticket || ticket.userId !== userId) {
-    throw new NotFoundError('Ticket not found');
-  }
+  const ticket = await ticketsService.getMyTicketById(ticketId, userId);
 
   if (ticket.status !== 'pending_confirmation') {
     throw new ConflictError('Ticket is no longer pending confirmation');

@@ -128,6 +128,10 @@ export async function getStatus(
   return donation;
 }
 
+export async function getDonationForNotification(donationId: string) {
+  return donationRepository.findById(donationId);
+}
+
 export async function listDonations(filters: AdminListDonationsQuery) {
   return donationRepository.findAllAdmin({
     page: filters.page,

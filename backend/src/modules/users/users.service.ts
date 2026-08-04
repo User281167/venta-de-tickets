@@ -5,6 +5,18 @@ import {
 import * as usersRepo from './users.repository.js';
 import { logger } from '../../utils/logger.js';
 
+export async function getUserAuthInfo(
+  userId: string,
+  jwtRole: string | null,
+): Promise<{ role: string; isActive: boolean } | null> {
+  const user = await usersRepo.findAuthUser(userId);
+  if (!user) return null;
+  return { role: jwtRole ?? user.role, isActive: user.isActive ?? false };
+}
+
+export async function getUserSnapshot(userId: string) {
+  return usersRepo.findUserSnapshot(userId);
+}
 
 export async function getPrivacyStatus(userId: string) {
   const acceptance = await usersRepo.findPrivacyAcceptance(

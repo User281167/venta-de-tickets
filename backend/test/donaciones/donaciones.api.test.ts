@@ -6,8 +6,8 @@ vi.mock('../../src/shared/services/auth.service.js', () => ({
   verifyToken: vi.fn(),
 }));
 
-vi.mock('../../src/shared/services/user-resolver.js', () => ({
-  resolveUser: vi.fn(),
+vi.mock('../../src/modules/users/users.service.js', () => ({
+  getUserAuthInfo: vi.fn(),
 }));
 
 vi.mock('../../src/modules/donaciones/donaciones.repository.js', () => ({
@@ -29,7 +29,7 @@ vi.mock('../../src/modules/donaciones/donaciones.repository.js', () => ({
 }));
 
 const { verifyToken } = await import('../../src/shared/services/auth.service.js');
-const { resolveUser } = await import('../../src/shared/services/user-resolver.js');
+const { getUserAuthInfo } = await import('../../src/modules/users/users.service.js');
 const repo = await import('../../src/modules/donaciones/donaciones.repository.js');
 const donationRepositoryMock = repo.donationRepository;
 
@@ -38,7 +38,7 @@ function authHeader() {
 }
 
 function mockAdminAuth(role: 'admin' | 'super_admin' = 'admin') {
-  vi.mocked(resolveUser).mockResolvedValue({ role, isActive: true });
+  vi.mocked(getUserAuthInfo).mockResolvedValue({ role, isActive: true });
   vi.mocked(verifyToken).mockResolvedValue({
     id: `${role}-1`,
     email: `${role}@test.com`,

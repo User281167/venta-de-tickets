@@ -1,28 +1,15 @@
-import { prisma } from '../../../shared/database/prisma.client.js';
 import { logger } from '../../../utils/logger.js';
 import { messagingService } from '../messaging.service.js';
 import { generateQrPngBuffer } from '../qr.js';
+import * as paymentsService from '../../payments/payments.service.js';
 
-async function findPaymentWithUser(paymentId: string) {
-  return prisma.payment.findUnique({
-    where: { id: paymentId },
-    include: {
-      user: { select: { id: true, email: true, fullName: true } },
-      tickets: {
-        select: {
-          id: true,
-          ticketCode: true,
-          qrToken: true,
-          ticketType: { select: { name: true } },
-        },
-      },
-    },
-  });
+async function getPaymentData(paymentId: string) {
+  return paymentsService.getPaymentForNotification(paymentId);
 }
 
 export async function notifyPaymentConfirmed(paymentId: string): Promise<void> {
   try {
-    const payment = await findPaymentWithUser(paymentId);
+    const payment = await getPaymentData(paymentId);
     if (!payment || !payment.user) {
       logger.warn(
         `Cannot send payment confirmation email: paymentId=${paymentId} or user missing`,
@@ -80,7 +67,7 @@ export async function notifyPaymentFailed(
   reason: string,
 ): Promise<void> {
   try {
-    const payment = await findPaymentWithUser(paymentId);
+    const payment = await getPaymentData(paymentId);
     if (!payment || !payment.user) {
       logger.warn(
         `Cannot send payment failed email: paymentId=${paymentId} or user missing`,
@@ -107,7 +94,7 @@ export async function notifyPaymentUnfulfillable(
   paymentId: string,
 ): Promise<void> {
   try {
-    const payment = await findPaymentWithUser(paymentId);
+    const payment = await getPaymentData(paymentId);
     if (!payment || !payment.user) {
       logger.warn(
         `Cannot send unfulfillable email: paymentId=${paymentId} or user missing`,
@@ -135,7 +122,7 @@ export async function notifyPaymentRefunded(input: {
   reason: string;
 }): Promise<void> {
   try {
-    const payment = await findPaymentWithUser(input.paymentId);
+    const payment = await getPaymentData(input.paymentId);
     if (!payment || !payment.user) {
       logger.warn(
         `Cannot send refund email: paymentId=${input.paymentId} or user missing`,

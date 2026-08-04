@@ -6,8 +6,8 @@ vi.mock('../src/shared/services/auth.service.js', () => ({
   verifyToken: vi.fn(),
 }));
 
-vi.mock('../src/shared/services/user-resolver.js', () => ({
-  resolveUser: vi.fn(),
+vi.mock('../src/modules/users/users.service.js', () => ({
+  getUserAuthInfo: vi.fn(),
 }));
 
 vi.mock('../src/modules/admins/admins.repository.js', () => ({
@@ -42,6 +42,7 @@ vi.mock('../src/modules/payments/payments.repository.js', () => ({
   findByProviderTxId: vi.fn(),
   findByReference: vi.fn(),
   findByIdWithTickets: vi.fn(),
+  findByIdWithUserAndTickets: vi.fn(),
   findAllByUserId: vi.fn(),
   countByUserId: vi.fn(),
   createPaymentRow: vi.fn(),
@@ -51,7 +52,7 @@ vi.mock('../src/modules/payments/payments.repository.js', () => ({
 }));
 
 const { verifyToken } = await import('../src/shared/services/auth.service.js');
-const { resolveUser } = await import('../src/shared/services/user-resolver.js');
+const { getUserAuthInfo } = await import('../src/modules/users/users.service.js');
 const adminsRepo = await import('../src/modules/admins/admins.repository.js');
 const { supabaseAdmin } =
   await import('../src/shared/supabase/admin-client.js');
@@ -62,7 +63,7 @@ function authHeader(token = 'valid.jwt.token') {
 }
 
 function mockAdminAuth() {
-  vi.mocked(resolveUser).mockResolvedValue({ role: 'admin', isActive: true });
+  vi.mocked(getUserAuthInfo).mockResolvedValue({ role: 'admin', isActive: true });
   vi.mocked(verifyToken).mockResolvedValue({
     id: 'admin-123',
     email: 'admin@example.com',
@@ -71,7 +72,7 @@ function mockAdminAuth() {
 }
 
 function mockRoleAuth(role: string) {
-  vi.mocked(resolveUser).mockResolvedValue({ role, isActive: true });
+  vi.mocked(getUserAuthInfo).mockResolvedValue({ role, isActive: true });
   vi.mocked(verifyToken).mockResolvedValue({
     id: `user-${role}`,
     email: `${role}@test.com`,
