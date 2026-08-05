@@ -117,7 +117,7 @@ export const TicketTypeCard = memo(function TicketTypeCard({
           style={{ background: "rgba(2, 4, 20, 0.55)" }}
         >
           <span
-            className="!inline-flex !items-center !gap-1.5 !rounded-full !px-4 !py-1.5 !text-xs !font-bold !uppercase !tracking-[0.12em]"
+            className="!inline-flex !items-center !gap-1.5 !rounded-full !px-4 !py-1.5 !text-sm !font-bold !uppercase !tracking-[0.12em]"
             style={
               isSoldOut
                 ? {
@@ -158,7 +158,7 @@ export const TicketTypeCard = memo(function TicketTypeCard({
 
             {isLowStock ? (
               <span
-                className="!inline-flex !w-fit !items-center !gap-1.5 !rounded-full !px-2.5 !py-1 !text-xs !font-semibold"
+                className="!inline-flex !w-fit !items-center !gap-1.5 !rounded-full !px-2.5 !py-1 !text-sm !font-semibold"
                 style={{
                   background: "rgba(255, 159, 28, 0.15)",
                   border: "1px solid rgba(255, 159, 28, 0.3)",
@@ -169,7 +169,7 @@ export const TicketTypeCard = memo(function TicketTypeCard({
               </span>
             ) : !isInactive ? (
               <span
-                className="!inline-flex !w-fit !items-center !gap-1.5 !rounded-full !px-2.5 !py-1 !text-xs !font-semibold"
+                className="!inline-flex !w-fit !items-center !gap-1.5 !rounded-full !px-2.5 !py-1 !text-sm !font-semibold"
                 style={{
                   background: "rgba(34, 197, 94, 0.12)",
                   border: "1px solid rgba(34, 197, 94, 0.3)",
@@ -182,7 +182,7 @@ export const TicketTypeCard = memo(function TicketTypeCard({
 
             {onlyEgresados && !isInactive && (
               <span
-                className="!inline-flex !w-fit !items-center !gap-1.5 !rounded-full !px-2.5 !py-1 !text-xs !font-semibold"
+                className="!inline-flex !w-fit !items-center !gap-1.5 !rounded-full !px-2.5 !py-1 !text-sm !font-semibold"
                 style={{
                   background: "rgba(167, 139, 250, 0.12)",
                   border: "1px solid rgba(167, 139, 250, 0.3)",
@@ -195,7 +195,7 @@ export const TicketTypeCard = memo(function TicketTypeCard({
           </div>
 
           <div>
-            <div className="!text-[10px] !font-medium !uppercase !tracking-[0.18em] !text-white/40">
+            <div className="!text-sm !font-medium !uppercase !tracking-[0.18em] !text-white/40">
               Por persona
             </div>
 
@@ -214,7 +214,7 @@ export const TicketTypeCard = memo(function TicketTypeCard({
         </div>
 
         {ticketType.description && (
-          <p className="!text-sm !leading-relaxed !text-white/65">
+          <p className="!text-md !leading-relaxed !text-white/65">
             {ticketType.description}
           </p>
         )}
@@ -223,7 +223,7 @@ export const TicketTypeCard = memo(function TicketTypeCard({
           className="!mt-auto !flex !items-center !justify-between !gap-4 !border-t !pt-4"
           style={{ borderColor: "rgba(255,255,255,0.06)" }}
         >
-          <span className="!text-xs !text-white/55">
+          <span className="!text-sm !text-white/55">
             {isSoldOut
               ? "No hay unidades disponibles"
               : isDisabled
@@ -232,11 +232,11 @@ export const TicketTypeCard = memo(function TicketTypeCard({
           </span>
 
           {isInactive ? (
-            <span className="!inline-flex !items-center !gap-1.5 !rounded-xl !border !border-white/10 !bg-white/5 !px-3 !py-2 !text-xs !font-bold !text-white/40">
+            <span className="!inline-flex !items-center !gap-1.5 !rounded-xl !border !border-white/10 !bg-white/5 !px-3 !py-2 !text-sm !font-bold !text-white/40">
               {isSoldOut ? "Agotado" : "No disponible"}
             </span>
           ) : isEgresadoBlocked ? (
-            <span className="!inline-flex !items-center !gap-1.5 !rounded-xl !border !border-white/10 !bg-white/5 !px-3 !py-2 !text-xs !font-bold !text-white/40">
+            <span className="!inline-flex !items-center !gap-1.5 !rounded-xl !border !border-white/10 !bg-white/5 !px-3 !py-2 !text-sm !font-bold !text-white/40">
               Solo egresados
             </span>
           ) : quantity === 0 ? (

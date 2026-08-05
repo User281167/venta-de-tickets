@@ -20,7 +20,7 @@ export const QuantitySpinner = memo(function CartQuantitySpinner({
 }: QuantitySpinnerProps) {
   return (
     <div
-      className="!inline-flex !items-center !overflow-hidden !rounded-xl !border"
+      className="!inline-flex !w-fit !items-center !overflow-hidden !rounded-xl !border"
       style={{ borderColor: "rgba(255,255,255,0.16)" }}
     >
       <button

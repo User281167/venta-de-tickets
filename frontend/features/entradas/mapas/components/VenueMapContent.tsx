@@ -90,7 +90,7 @@ export function VenueMapContent({
           >
             <IconMap2 size={18} color="#00e5ff" />
           </span>
-          <h2 className="!text-sm !font-semibold !uppercase !tracking-[0.18em] !text-white/85">
+          <h2 className="!font-semibold !uppercase !tracking-[0.18em] !text-white/85">
             Mapa del evento
           </h2>
         </div>
@@ -108,7 +108,7 @@ export function VenueMapContent({
 
         <div className="!mt-4 !flex !flex-wrap !items-center !justify-between !gap-3">
           <ZoneLegend />
-          <span className="!text-[11px] !text-white/40">
+          <span className="!text-white/40">
             Los puntos representan la disponibilidad proporcional de la zona.
           </span>
         </div>

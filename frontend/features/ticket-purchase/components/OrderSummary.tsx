@@ -97,7 +97,7 @@ export const OrderSummary = memo(function OrderSummary({
                 Tu carrito está vacío
               </h3>
 
-              <p className="!text-sm !text-white/55">
+              <p className="!text-md !text-white/55">
                 Selecciona tus entradas para ver el resumen
               </p>
             </div>
@@ -108,30 +108,32 @@ export const OrderSummary = memo(function OrderSummary({
               {items.map((item) => (
                 <div
                   key={item.ticketTypeId}
-                  className="!flex !flex-wrap !items-center !gap-2.5"
+                  className="!flex !flex-wrap !justify-between !items-center !gap-2.5"
                 >
-                  <span
-                    className="!inline-flex !shrink-0 !items-center !justify-center !rounded-lg !px-2 !py-1 !text-xs !font-black !whitespace-nowrap"
-                    style={{
-                      background: "rgba(0,229,255,0.12)",
-                      border: "1px solid rgba(0,229,255,0.3)",
-                      color: "#7dd3fc",
-                    }}
-                  >
-                    x{item.quantity}
-                  </span>
+                  <div className="flex gap-2">
+                    <span
+                      className="!inline-flex !shrink-0 !items-center !justify-center !rounded-lg !px-2 !py-1 !text-md !font-black !whitespace-nowrap"
+                      style={{
+                        background: "rgba(0,229,255,0.12)",
+                        border: "1px solid rgba(0,229,255,0.3)",
+                        color: "#7dd3fc",
+                      }}
+                    >
+                      x{item.quantity}
+                    </span>
 
-                  <div className="!min-w-0 !flex-wrap sm:!flex-1">
-                    <p className="!truncate !text-sm !font-semibold !text-white">
-                      {item.name}
-                    </p>
+                    <div className="!min-w-0 !flex-wrap sm:!flex-1">
+                      <p className="!truncate !text-md !font-semibold !text-white">
+                        {item.name}
+                      </p>
 
-                    <p className="!text-xs !whitespace-nowrap !text-white/50">
-                      {formatCurrency(item.unitPriceCents)} c/u
-                    </p>
+                      <p className="!text-md !whitespace-nowrap !text-white/50">
+                        {formatCurrency(item.unitPriceCents)} c/u
+                      </p>
+                    </div>
                   </div>
 
-                  <p className="!shrink-0 !text-right !text-sm !font-black !whitespace-nowrap !text-white">
+                  <p className="!shrink-0 !text-right !text-md !font-black !whitespace-nowrap !text-white">
                     {formatCurrency(item.unitPriceCents * item.quantity)}
                   </p>
                 </div>
@@ -144,11 +146,11 @@ export const OrderSummary = memo(function OrderSummary({
             />
 
             <div className="!mb-1 !flex !items-center !justify-between">
-              <p className="!text-sm !text-white/55">
+              <p className="!text-md !text-white/55">
                 {totalTickets} entrada{totalTickets !== 1 ? "s" : ""}
               </p>
 
-              <p className="!text-xs !text-white/45">IVA incluido</p>
+              <p className="!text-md !text-white/45">IVA incluido</p>
             </div>
 
             <div className="!flex !flex-wrap !items-center !justify-between">
@@ -173,7 +175,7 @@ export const OrderSummary = memo(function OrderSummary({
             type="button"
             disabled={isEmpty}
             onClick={handleBuy}
-            className="!mt-6 !flex !w-full !items-center !justify-center !gap-2 !rounded-xl !border !px-5 !py-3.5 !text-sm !font-bold !text-white !transition !duration-300 disabled:!cursor-not-allowed disabled:!opacity-50 cursor-pointer hover:-translate-y-0.5 hover:shadow-lg/20 shadow-brand-blue"
+            className="!mt-6 !flex !w-full !items-center !justify-center !gap-2 !rounded-xl !border !px-5 !py-3.5 !text-md !font-bold !text-white !transition !duration-300 disabled:!cursor-not-allowed disabled:!opacity-50 cursor-pointer hover:-translate-y-0.5 hover:shadow-lg/20 shadow-brand-blue"
             style={{
               background: isEmpty
                 ? "rgba(255,255,255,0.04)"

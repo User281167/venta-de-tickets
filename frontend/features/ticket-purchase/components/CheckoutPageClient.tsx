@@ -193,13 +193,13 @@ export function CheckoutPageClient() {
                   {item.name}
                 </h3>
 
-                <p className="!text-xs !text-white/50 sm:!text-sm">
+                <p className="!text-md !text-white/50 sm:!text-md">
                   {formatCurrency(item.unitPriceCents)} c/u
                 </p>
               </div>
 
               <div className="!col-span-2 !flex !items-center !justify-between !gap-2 !whitespace-nowrap sm:!col-span-1 sm:!flex-col sm:!justify-center">
-                <span className="!text-[10px] !font-medium !uppercase !tracking-[0.18em] !text-white/40">
+                <span className="!text-xs !font-medium !uppercase !tracking-[0.18em] !text-white/40">
                   Cantidad
                 </span>
 
@@ -215,7 +215,7 @@ export function CheckoutPageClient() {
               </div>
 
               <div className="!col-span-2 !flex !items-center !justify-between !gap-2 !whitespace-nowrap sm:!col-span-1 sm:!flex-col sm:!items-end sm:!justify-center">
-                <span className="!text-[10px] !font-medium !uppercase !tracking-[0.18em] !text-white/40">
+                <span className="!text-xs !font-medium !uppercase !tracking-[0.18em] !text-white/40">
                   Subtotal
                 </span>
 
@@ -306,7 +306,7 @@ export function CheckoutPageClient() {
                   )}
                 </button>
 
-                <p className="!flex !items-center !justify-center !gap-1.5 !text-[10px] !uppercase !tracking-[0.18em] !text-white/35">
+                <p className="!flex !items-center !justify-center !gap-1.5 !text-xs !uppercase !tracking-[0.18em] !text-white/35">
                   <IconLock size={11} />
                   Pago seguro Mercado Pago
                 </p>
@@ -322,7 +322,7 @@ export function CheckoutPageClient() {
                     <IconAlertCircle size={16} color="#f59e0b" />
 
                     <p
-                      className="!text-xs !leading-tight !text-amber-200"
+                      className="!text-md !leading-tight !text-amber-200"
                       data-testid="profile-incomplete-hint"
                     >
                       Completa tu cédula y nombre para pagar

@@ -95,10 +95,10 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                   <IconShoppingCart size={22} color="#7c3cff" />
                 </Box>
                 <Box>
-                  <DrawerTitle fontSize="xl" fontWeight="black" color="white">
+                  <DrawerTitle fontSize="2xl" fontWeight="black" color="white">
                     Tu carrito
                   </DrawerTitle>
-                  <Text fontSize="xs" color="brand.muted">
+                  <Text fontSize="md" color="brand.muted">
                     {totalTickets} entrada{totalTickets !== 1 ? "s" : ""}
                   </Text>
                 </Box>
@@ -123,7 +123,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                     <Text fontSize="md" fontWeight="semibold" color="white">
                       No has seleccionado entradas
                     </Text>
-                    <Text fontSize="sm" color="brand.muted">
+                    <Text fontSize="md" color="brand.muted">
                       Explora las opciones disponibles y agrégalas aquí
                     </Text>
                   </VStack>

@@ -70,23 +70,6 @@ function ZoneSegmentView({
 
   return (
     <g>
-      {points.map((p) => (
-        <circle
-          key={p.idx}
-          cx={p.cx}
-          cy={p.cy}
-          r={2.4}
-          fill={
-            !hasEntries
-              ? COLOR_EMPTY
-              : p.occupied
-                ? COLOR_OCCUPIED
-                : COLOR_AVAILABLE
-          }
-          opacity={!hasEntries ? 0.45 : p.occupied ? 0.55 : disabled ? 0.5 : 0.9}
-        />
-      ))}
-
       <rect
         x={segment.x}
         y={segment.y}
@@ -106,18 +89,16 @@ function ZoneSegmentView({
         strokeWidth={highlighted ? 2.5 : 1}
       />
 
-      {highlighted && hasEntries && (
-        <rect
-          x={segment.x}
-          y={segment.y}
-          width={segment.width}
-          height={segment.height}
-          rx={6}
-          fill={zone.accent}
-          opacity={0.08}
-          style={{ pointerEvents: "none" }}
-        />
-      )}
+      <rect
+        x={segment.x}
+        y={segment.y}
+        width={segment.width}
+        height={segment.height}
+        rx={6}
+        fill={zone.accent}
+        opacity={0.2}
+        style={{ pointerEvents: "none" }}
+      />
 
       <rect
         x={segment.x}
@@ -132,6 +113,23 @@ function ZoneSegmentView({
         onMouseLeave={onLeave}
         onClick={() => !effectivelyDisabled && onSelect(zone.key)}
       />
+
+      {points.map((p) => (
+        <circle
+          key={p.idx}
+          cx={p.cx}
+          cy={p.cy}
+          r={2.4}
+          fill={
+            !hasEntries
+              ? COLOR_EMPTY
+              : p.occupied
+                ? COLOR_OCCUPIED
+                : COLOR_AVAILABLE
+          }
+          opacity={!hasEntries ? 0.45 : p.occupied ? 0.55 : disabled ? 0.5 : 0.9}
+        />
+      ))}
     </g>
   );
 }

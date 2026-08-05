@@ -65,7 +65,7 @@ export function ZoneSelectionPanel({
         whileInView="show"
         viewport={VIEWPORT}
         variants={fadeUp}
-        className="!flex !h-full !min-h-[260px] !items-center !justify-center !rounded-3xl !border !border-dashed !p-6 !text-center !text-sm !text-white/55"
+        className="!flex !h-full !min-h-[260px] !items-center !justify-center !rounded-3xl !border !border-dashed !p-6 !text-center !text-sm !text-white"
         style={{
           background: "rgba(15, 18, 38, 0.45)",
           borderColor: "rgba(255,255,255,0.12)",
@@ -89,7 +89,7 @@ export function ZoneSelectionPanel({
         transition={{ duration: 0.25 }}
         className="!relative !flex !flex-col !gap-4 !overflow-hidden !rounded-3xl glass !p-5 sm:!p-6"
         style={{
-          background: "rgba(15, 18, 38, 0.55)",
+          background: accent+"3f",
           WebkitBackdropFilter: "blur(14px) saturate(140%)",
           backdropFilter: "blur(14px) saturate(140%)",
         }}
@@ -109,11 +109,11 @@ export function ZoneSelectionPanel({
 
         <div className="!relative !flex !items-start !justify-between !gap-3">
           <div>
-            <div className="!text-[10px] !font-semibold !uppercase !tracking-[0.18em] !text-white/45">
+            <div className="!text-sm !font-semibold !uppercase !tracking-[0.18em] !text-white/45">
               Zona
             </div>
             <h3
-              className="!text-2xl !font-black !uppercase !tracking-wide"
+              className="!text-3xl !font-black !uppercase !tracking-wide"
               style={{ color: accent }}
             >
               {zone.label}
@@ -122,19 +122,19 @@ export function ZoneSelectionPanel({
           <button
             type="button"
             onClick={onClose}
-            className="!rounded-lg !p-1.5 !text-white/55 !transition hover:!bg-white/5 hover:!text-white"
+            className="!rounded-lg !p-1.5 !text-white !transition hover:!bg-white/5 hover:!text-white"
             aria-label="Cerrar panel"
           >
             <IconX size={18} />
           </button>
         </div>
 
-        <p className="!relative !text-sm !leading-relaxed !text-white/65">
+        <p className="!relative !leading-relaxed !text-white/65">
           {zone.description}
         </p>
 
         <div
-          className="!rounded-full !px-3 !py-1 !text-[10px] !font-bold !uppercase !text-white"
+          className="!rounded-full !px-3 !py-1 !font-bold !uppercase !text-white"
           style={{
             background: "#ff0f7b",
             border: "1px solid rgba(255,255,255,.15)",
@@ -144,7 +144,7 @@ export function ZoneSelectionPanel({
         </div>
 
         {zoneTicketTypes.length === 0 ? (
-          <div className="!rounded-xl !border !border-white/8 !bg-white/5 !p-4 !text-center !text-xs !text-white/55">
+          <div className="!rounded-xl !border !border-white/8 !bg-white/5 !p-4 !text-center !text-base !text-white">
             Aún no hay tipos de entrada asociados a esta zona.
           </div>
         ) : (
@@ -177,6 +177,7 @@ export function ZoneSelectionPanel({
                         <span className="!text-base !font-bold !text-white">
                           {tt.name}
                         </span>
+
                         {tt.onlyEgresados && (
                           <span
                             className="!inline-flex !items-center !rounded-full !px-2 !py-0.5 !text-[10px] !font-semibold !uppercase !tracking-wider"
@@ -190,12 +191,13 @@ export function ZoneSelectionPanel({
                           </span>
                         )}
                       </div>
-                      {tt.description && (
-                        <p className="!mt-1 !text-xs !text-white/55">
-                          {tt.description}
-                        </p>
-                      )}
                     </div>
+
+                    {tt.description && (
+                      <p className="!mt-1 !text-base !text-white">
+                        {tt.description}
+                      </p>
+                    )}
 
                     <div
                       className="!text-right !text-lg !font-black"
@@ -210,14 +212,14 @@ export function ZoneSelectionPanel({
                     </div>
                   </div>
 
-                  <div className="!flex flex-wrap !items-center !justify-between !gap-3">
-                    <span className="!inline-flex flex-wrap !items-center !gap-1.5 !text-xs !text-white/55">
+                  <div className="!flex !flex-col !justify-between !gap-3">
+                    <span className="!inline-flex flex-wrap !items-center !gap-1.5 !text-base !text-white">
                       <IconUsers size={14} />
                       {client.availableCount} disponibles de {tt.quantityTotal}
                     </span>
 
                     {blocked ? (
-                      <span className="!inline-flex !items-center !rounded-lg !border !border-white/10 !bg-white/5 !px-3 !py-1.5 !text-xs !font-bold !text-white/40">
+                      <span className="!inline-flex !w-fit !items-center !rounded-lg !border !border-white/10 !bg-white/5 !px-3 !py-1.5 !text-base !font-bold !text-white/40">
                         {isSoldOut
                           ? "Agotado"
                           : isDisabled
@@ -232,7 +234,7 @@ export function ZoneSelectionPanel({
                           addItem(client);
                           setTimeout(() => setPendingId(null), 350);
                         }}
-                        className="!inline-flex !items-center !gap-1.5 !rounded-lg !border !px-3 !py-1.5 !text-xs !font-bold !transition hover:!scale-[1.02]"
+                        className="!inline-flex !w-fit !items-center !gap-1.5 !rounded-lg !border !px-3 !py-1.5 !text-base !font-bold !transition hover:!scale-[1.02]"
                         style={{
                           background: `${accent}22`,
                           borderColor: `${accent}66`,
@@ -259,7 +261,7 @@ export function ZoneSelectionPanel({
         )}
 
         {zoneTicketTypes.length > 1 && (
-          <p className="!relative !text-[11px] !text-white/45">
+          <p className="!relative !text-white">
             Esta zona tiene varios tipos de entrada. Selecciona el que prefieras
             antes de continuar al pago.
           </p>

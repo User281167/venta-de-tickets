@@ -37,7 +37,7 @@ export const CartItemRow = memo(function CartItemRow({
       <Flex justify="space-between" align="flex-start" gap={3}>
         <Box flex={1} minW={0}>
           <Text
-            fontSize="md"
+            fontSize="xl"
             fontWeight="black"
             color="white"
             truncate
@@ -46,7 +46,7 @@ export const CartItemRow = memo(function CartItemRow({
             {item.name}
           </Text>
 
-          <Text fontSize="xs" color="brand.muted" mt={0.5}>
+          <Text fontSize="md" color="brand.muted" mt={0.5}>
             {formatCurrency(item.unitPriceCents)} c/u
           </Text>
         </Box>
@@ -54,7 +54,7 @@ export const CartItemRow = memo(function CartItemRow({
         <IconButton
           aria-label="Eliminar entrada"
           variant="ghost"
-          size="sm"
+          size="md"
           color="brand.muted"
           borderRadius="xl"
           _hover={{ color: "red.400", bg: "rgba(239,68,68,0.1)" }}

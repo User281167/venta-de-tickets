@@ -179,6 +179,7 @@ export default function AdminDashboard() {
                       p={5}
                       transition="all 0.25s ease"
                       cursor="pointer"
+                      h="full"
                     >
                       <Flex
                         w={12}
