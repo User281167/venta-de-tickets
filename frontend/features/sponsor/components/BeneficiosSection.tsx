@@ -76,7 +76,7 @@ export function BeneficiosSection() {
             </div>
           </div>
 
-          <div className="reveal !grid !grid-cols-2 !gap-3" data-reveal-index="1">
+          <div className="reveal !grid !grid-cols-1 md:!grid-cols-2 !gap-3" data-reveal-index="1">
             {BENEFITS.map((b, i) => (
               <BenefitChip
                 key={b.label}
