@@ -99,7 +99,7 @@ export function SpeakersSection() {
           className="!mb-12 !flex !flex-col !items-center !gap-4 !text-center"
         >
           <span
-            className="!text-xs !font-black !uppercase !tracking-[0.22em]"
+            className="!text-xl !font-black !uppercase !tracking-[0.22em]"
             style={GRADIENT_TEXT}
           >
             Invitados confirmados
@@ -147,10 +147,10 @@ export function SpeakersSection() {
               </div>
 
               <div className="!relative !flex !w-full !flex-1 !flex-col !justify-around !gap-1 !text-center">
-                <h3 className="!text-base !font-black !text-white">
+                <h3 className="!text-xl !font-black !text-white">
                   {speaker.name}
                 </h3>
-                <p className="!text-xs !leading-snug !text-white/55">
+                <p className="!leading-snug !text-white/55">
                   {speaker.role}
                 </p>
               </div>

@@ -145,7 +145,7 @@ export function AboutSection() {
               className="!flex !flex-col !gap-5"
             >
               <span
-                className="!w-fit !text-xs !font-black !uppercase !tracking-[0.22em]"
+                className="!w-fit !text-xl !font-black !uppercase !tracking-[0.22em]"
                 style={{
                   background:
                     "linear-gradient(100deg, #7dd3fc 0%, #a78bfa 35%, #f0abfc 65%, #fdba74 100%)",

@@ -95,7 +95,7 @@ export function VenueMapContent({
           </h2>
         </div>
 
-        <Text className="!text-sm !text-white/40">
+        <Text className="!text-white">
            Todas las entradas tienen acceso completo a todos los espacios de la convención, la variación es en la ubicación.
         </Text>
 

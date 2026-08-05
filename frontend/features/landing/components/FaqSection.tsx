@@ -121,7 +121,7 @@ export function FaqSection() {
           className="!mb-12 !flex !flex-col !items-center !gap-4 !text-center"
         >
           <span
-            className="!text-xs !font-black !uppercase !tracking-[0.22em]"
+            className="!text-xl !font-black !uppercase !tracking-[0.22em]"
             style={GRADIENT_TEXT}
           >
             Información clave

@@ -36,7 +36,7 @@ export function PartnersSection() {
       <div className="!relative !z-10 !mx-auto !w-full !max-w-7xl !px-4 sm:!px-6">
         <div className="!mb-12 !flex !flex-col !items-center !gap-4 !text-center">
           <span
-            className="!text-xs !font-black !uppercase !tracking-[0.22em]"
+            className="!text-xl !font-black !uppercase !tracking-[0.22em]"
             style={GRADIENT_TEXT}
           >
             Aliados estratégicos

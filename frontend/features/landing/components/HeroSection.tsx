@@ -162,7 +162,7 @@ export function HeroSection() {
                 <div className="!text-xl !font-semibold !text-white sm:!text-2xl">
                   22, 23 y 24
                 </div>
-                <div className="!text-sm !text-white/70">
+                <div className="!text-xl !text-white">
                   de octubre de <span style={{ color: "#00e5ff" }}>2026</span>
                 </div>
               </div>
@@ -187,10 +187,10 @@ export function HeroSection() {
                 <IconMapPin size={22} color="#00e5ff" />
               </span>
               <div>
-                <div className="!text-sm !font-semibold !text-white">
+                <div className="!font-semibold !text-white">
                   Universidad Tecnológica de Pereira
                 </div>
-                <div className="!text-xs !text-white/70">
+                <div className="!text-white/70">
                   Pereira, Risaralda · Colombia
                 </div>
               </div>

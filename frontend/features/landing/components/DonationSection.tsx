@@ -22,7 +22,7 @@ export function DonationSection() {
       <Stack align="center" gap={6} px={4}>
         <IconHeartFilled size={32} color="#ff0f7b" />
         <Text
-          fontSize={{ base: "2xl", md: "3xl" }}
+          fontSize="3xl"
           fontWeight="bold"
           color="white"
           textAlign="center"
@@ -30,7 +30,7 @@ export function DonationSection() {
           Haz tu donación
         </Text>
         <Text
-          fontSize="sm"
+          fontSize="xl"
           color="brand.muted"
           textAlign="center"
           maxW="500px"

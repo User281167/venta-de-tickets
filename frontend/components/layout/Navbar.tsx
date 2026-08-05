@@ -29,7 +29,6 @@ const CENTER_ITEMS: NavItem[] = [
 
 const MORE_ITEMS: NavItem[] = [
   { label: "Inicio", href: "/#hero" },
-  { label: "La Convención", href: "/#convencion" },
   { label: "Agenda", href: "/agenda" },
   { label: "Actividades", href: "/#actividades" },
   { label: "Invitados", href: "/#invitados" },
