@@ -8,6 +8,7 @@ import { useVenueTicketTypes } from "../api/venue.queries";
 import { VenueMap } from "./VenueMap";
 import { ZoneSelectionPanel } from "./ZoneSelectionPanel";
 import { ZoneLegend } from "./ZoneLegend";
+import { Text } from "@chakra-ui/react";
 
 interface VenueMapContentProps {
   hideOrderSummary?: boolean;
@@ -93,6 +94,10 @@ export function VenueMapContent({
             Mapa del evento
           </h2>
         </div>
+
+        <Text className="!text-sm !text-white/40">
+           Todas las entradas tienen acceso completo a todos los espacios de la convención, la variación es en la ubicación.
+        </Text>
 
         <VenueMap
           layout={layout}
