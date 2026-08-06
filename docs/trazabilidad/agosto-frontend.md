@@ -20,3 +20,15 @@ Fuente: `git log -- frontend/` del monorepo.
 - Agregar tiempo de cache en TanStack Query para las queries (provider global + queries de analytics, admin-donations, admin-payments, admin-users, audit).
 - Agregar mínimo de donación ePayco: solo acepta >= 5.000.
 - Docs: README de configuración y ejecución del proyecto.
+
+## 04/Ago/2026 — React Doctor y limpieza
+
+- Agregar skill `react-doctor` (`.agents/skills` y `.windsurf/skills`) + dependencias.
+- No retornar datos innecesarios de pagos (donaciones client).
+
+## 05/Ago/2026 — UI responsive y tipsografía
+
+- Fix: UI se rompe con grid en pantallas pequeñas (`BeneficiosSection`).
+- Fix: `ResizeObserver` necesario en `test/setup.ts` para tests de componentes.
+- Incrementar texto en tarjetas y agregar fondo con alpha en tarjetas del mapa (zonas, drawer carrito, checkout).
+- Refactor: aumentar tamaño de letra en hero-títulos, eliminar fotos de sliders (landing).

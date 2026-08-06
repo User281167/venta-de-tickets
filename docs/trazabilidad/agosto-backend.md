@@ -20,3 +20,8 @@ Fuente: `git log -- backend/` del monorepo.
 - Docs: actualiza README de módulos del backend (admins, analytics, audit, confirmations, donaciones).
 - Mejorar mensajes de audit log.
 - Fix: MercadoPago y ePayco no usan cents, no requieren conversión — sin divisores.
+
+## 04/Ago/2026 — Refactor payments
+
+- Refactor: dividir `payments.service.ts` (745 líneas) en archivos por funcionalidad: `checkout`, `admin`, `webhook`, `epayco`, `queries`.
+- No retornar datos innecesarios de pagos (donaciones: controller, schema, client frontend).
