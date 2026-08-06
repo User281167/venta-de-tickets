@@ -42,7 +42,7 @@ export function DonationSection() {
           <DonationButton account="LA_CONVENCION" />
           <DonationButton
             account="BARRANQUEROS_UTP"
-            socialMedia="https://vicerrectorias.utp.edu.co/viie/ecosistema-de-emprendimiento-barranqueros-utp/"
+            socialMedia="https://www.instagram.com/barranqueros_utp"
           />
         </HStack>
       </Stack>
