@@ -40,7 +40,10 @@ export function DonationSection() {
         </Text>
         <HStack gap={4} wrap="wrap" justify="center">
           <DonationButton account="LA_CONVENCION" />
-          <DonationButton account="BARRANQUEROS_UTP" />
+          <DonationButton
+            account="BARRANQUEROS_UTP"
+            socialMedia="https://vicerrectorias.utp.edu.co/viie/ecosistema-de-emprendimiento-barranqueros-utp/"
+          />
         </HStack>
       </Stack>
     </section>

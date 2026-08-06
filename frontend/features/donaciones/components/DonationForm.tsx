@@ -16,10 +16,11 @@ import {
   DialogTitle,
   Field,
   Input,
+  Link,
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { IconHeart } from "@tabler/icons-react";
+import { IconHeart, IconNetwork } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { useCreateDonation } from "../hooks/useDonaciones";
 import { formatCurrency } from "@/shared/utils/formats";
@@ -54,12 +55,13 @@ const formSchema = z.object({
 
 interface Props {
   account: DonationAccount;
+  socialMedia?: string;
   open: boolean;
   onClose: () => void;
   onSubmitting?: (submitting: boolean) => void;
 }
 
-export function DonationForm({ account, open, onClose, onSubmitting }: Props) {
+export function DonationForm({ account, socialMedia, open, onClose, onSubmitting }: Props) {
   const router = useRouter();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -240,6 +242,13 @@ export function DonationForm({ account, open, onClose, onSubmitting }: Props) {
                 <Field.HelperText>Mínimo $5.000 COP</Field.HelperText>
                 <Field.ErrorText>{errors.amount}</Field.ErrorText>
               </Field.Root>
+
+              {socialMedia && (
+                <Link href={socialMedia} target="_blank" color="white" variant="underline">
+                  <IconNetwork />
+                  Conoce más sobre {accountLabel}
+                </Link>
+              )}
             </Stack>
           </DialogBody>
 

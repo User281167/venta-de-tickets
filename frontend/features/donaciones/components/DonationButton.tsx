@@ -8,9 +8,10 @@ import type { DonationAccount } from "./DonationForm";
 interface Props {
   account: DonationAccount;
   label?: string;
+  socialMedia?: string;
 }
 
-export function DonationButton({ account, label }: Props) {
+export function DonationButton({ account, label, socialMedia }: Props) {
   const [open, setOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -43,7 +44,7 @@ export function DonationButton({ account, label }: Props) {
 
         <span>{buttonLabel}</span>
       </Button>
-      <DonationForm account={account} open={open} onClose={() => setOpen(false)} onSubmitting={setSubmitting} />
+      <DonationForm account={account} socialMedia={socialMedia} open={open} onClose={() => setOpen(false)} onSubmitting={setSubmitting} />
     </>
   );
 }
