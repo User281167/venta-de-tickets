@@ -24,28 +24,28 @@ const SPEAKERS: Speaker[] = [
   {
     name: "Alci Acosta acompañado con la Orquesta Sinfónica de la UTP",
     role: "La leyenda del bolero como nunca antes la escuchaste. La inconfundible voz y el piano nostálgico del maestro Alci Acosta se elevan a otro nivel, acompañados por la majestuosidad de la Orquesta Sinfónica de la UTP.",
-    image: "/invitados/Alci Acosta.png",
+    image: "/assets/invitados/Alci Acosta.png",
   },
   {
     name: "El Checo Acosta",
     role: "Aquí encontrarás el ritmo, la sabrosura y la alegría que solo el Príncipe del Carnaval sabe brindar. Conéctate con la energía inagotable de Checo Acosta.",
-    image: "/invitados/checo.png",
+    image: "/assets/invitados/checo.png",
   },
   {
     name: "Jean Carlos Centeno",
     role: "¡La voz de oro del vallenato romántico! Jean Carlos Centeno llega para enamorarte y hacerte revivir los himnos que marcaron a toda una generación.",
-    image: "/invitados/Jean Carlos Centeno.webp",
+    image: "/assets/invitados/Jean Carlos Centeno.webp",
   },
   {
     name: "Frankie Ruiz (Javier Mauricio Valencia Henao)",
     role: "¡El eterno Papá de la Salsa! Sabor, calle y romance en su máxima expresión. Revive los éxitos inmortales del ícono indiscutible de la salsa romántica que sigue reinando en las pistas de baile.",
     image:
-      "/invitados/Frankie Ruiz (Javier Mauricio Valencia Henao).jpeg",
+      "/assets/invitados/Frankie Ruiz (Javier Mauricio Valencia Henao).jpeg",
   },
   {
     name: "Concierto Electro y Rock",
     role: "¡Energía, distorsión y decibeles al límite! Una descarga brutal en vivo para los amantes del sonido pesado.",
-    image: "/invitados/concierto-electro.jpeg",
+    image: "/assets/invitados/concierto-electro.jpeg",
   },
 ];
 

@@ -29,4 +29,3 @@ Fuente: `git log -- backend/` del monorepo.
 ## 06/Ago/2026 — Templates de email y assets
 
 - `messaging`: crear templates de signup confirmation y reset de password (HTML).
-- Eliminar imágenes no usadas y mover los assets a subcarpeta pública para cache `/assets/*` en Cloudflare (templates de donation, payment, ticket actualizados).

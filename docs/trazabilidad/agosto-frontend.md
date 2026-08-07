@@ -32,3 +32,7 @@ Fuente: `git log -- frontend/` del monorepo.
 - Fix: `ResizeObserver` necesario en `test/setup.ts` para tests de componentes.
 - Incrementar texto en tarjetas y agregar fondo con alpha en tarjetas del mapa (zonas, drawer carrito, checkout).
 - Refactor: aumentar tamaño de letra en hero-títulos, eliminar fotos de sliders (landing).
+
+## 06/Ago/2026 — Templates de email y assets
+
+- Eliminar imágenes no usadas y mover los assets a subcarpeta pública para cache `/assets/*` en Cloudflare (templates de donation, payment, ticket actualizados).
