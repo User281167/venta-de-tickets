@@ -110,7 +110,7 @@ export function Navbar() {
         >
           <NextLink href="/" className="!flex !shrink-0 !items-center" aria-label="UTP">
             <img
-              src="/utp-logo.png"
+              src="/assets/utp-logo.png"
               alt="Universidad Tecnológica de Pereira"
               className="!h-9 !w-auto sm:!h-10"
             />

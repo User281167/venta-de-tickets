@@ -42,7 +42,7 @@ export function CtaSection() {
       <div
         className="!pointer-events-none !absolute !inset-0 !opacity-15"
         style={{
-          backgroundImage: "url(/header.png)",
+          backgroundImage: "url(/assets/header.png)",
           backgroundSize: "cover",
           backgroundPosition: "center",
           mixBlendMode: "overlay",

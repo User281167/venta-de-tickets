@@ -7,13 +7,13 @@ import { useEffect, useState } from "react";
 import { AnimatedSection } from "@/shared/components/AnimatedSection";
 
 const SLIDES = [
-  { src: "/ase-oficial/0.jpg", alt: "Networking y comunidad", offsetY: "50%" },
-  { src: "/ase-oficial/1.jpg", alt: "Momentos de la convención", offsetY: "50%" },
-  { src: "/ase-oficial/4.jpg", alt: "Experiencias UTP", offsetY: "35%" },
-  { src: "/ase-oficial/5.webp", alt: "Networking y comunidad", offsetY: "60%" },
-  { src: "/ase-oficial/7.jpg", alt: "Ponencias inspiradoras", offsetY: "60%" },
-  { src: "/ase-oficial/9.jpg", alt: "Experiencias UTP", offsetY: "45%" },
-  { src: "/ase-oficial/21.webp", alt: "Experiencias UTP", offsetY: "80%" },
+  { src: "/assets/ase-oficial/0.jpg", alt: "Networking y comunidad", offsetY: "50%" },
+  { src: "/assets/ase-oficial/1.jpg", alt: "Momentos de la convención", offsetY: "50%" },
+  { src: "/assets/ase-oficial/4.jpg", alt: "Experiencias UTP", offsetY: "35%" },
+  { src: "/assets/ase-oficial/5.webp", alt: "Networking y comunidad", offsetY: "60%" },
+  { src: "/assets/ase-oficial/7.jpg", alt: "Ponencias inspiradoras", offsetY: "60%" },
+  { src: "/assets/ase-oficial/9.jpg", alt: "Experiencias UTP", offsetY: "45%" },
+  { src: "/assets/ase-oficial/21.webp", alt: "Experiencias UTP", offsetY: "80%" },
 ];
 
 const AUTO_PLAY_INTERVAL = 5000;

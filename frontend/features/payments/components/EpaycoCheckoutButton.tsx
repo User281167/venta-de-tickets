@@ -140,7 +140,7 @@ export function EpaycoCheckoutButton({ backUrl, onError }: EpaycoCheckoutButtonP
         ) : (
           <div className="!relative !h-full !w-full">
             <NextImage
-              src="/logo-epayco.webp"
+              src="/assets/logo-epayco.webp"
               alt="ePayco"
               fill
               sizes="200px"

@@ -20,7 +20,7 @@ export default function AuthLayout({
       justify="center"
       minH="100vh"
       minW="100%"
-      background="url(/wave-bg.jpg) center/cover no-repeat"
+      background="url(/assets/wave-bg.jpg) center/cover no-repeat"
       position="relative"
       overflow="hidden"
     >
@@ -106,7 +106,7 @@ export default function AuthLayout({
         justify="space-around"
       >
         <Flex gap="4" align="center" hideBelow="xl">
-          <Image src="/logos-la-u/Horizontal - letras blancas.png" w="2xl" />
+          <Image src="/assets/logos-la-u/Horizontal - letras blancas.png" w="2xl" />
         </Flex>
 
         {children}

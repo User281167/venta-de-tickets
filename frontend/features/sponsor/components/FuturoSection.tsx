@@ -22,7 +22,7 @@ const ITEMS: DimensionItem[] = [
     description:
       "Campus conectados con sensores, datos y plataformas inteligentes que mejoran la experiencia universitaria.",
     icon: <IconCpu {...ICON} />,
-    image: "/smart-campus.jpg",
+    image: "/assets/smart-campus.jpg",
   },
   {
     key: "transformacion",
@@ -62,7 +62,7 @@ export function FuturoSection() {
       }
       subtitle="Cinco dimensiones que redefinen el rol de la UTP en la región y en el país."
       items={ITEMS}
-      defaultImage="/smart-campus.jpg"
+      defaultImage="/assets/smart-campus.jpg"
       accentColor="cyan"
     />
   );

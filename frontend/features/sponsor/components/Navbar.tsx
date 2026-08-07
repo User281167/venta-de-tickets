@@ -69,7 +69,7 @@ export function SponsorNavbar() {
             aria-label="Inicio aliados"
           >
             <img
-              src="/logos-la-u/Horizontal - letras blancas.png"
+              src="/assets/logos-la-u/Horizontal - letras blancas.png"
               alt="La U del Futuro"
               className="!h-8 !w-auto sm:!h-9"
             />

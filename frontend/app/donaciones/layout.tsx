@@ -13,7 +13,7 @@ export default function CheckoutStatusLayout({
       justify="center"
       minH="100vh"
       minW="100%"
-      background="url(/blue-wave-bg.jpg) center/cover no-repeat"
+      background="url(/assets/blue-wave-bg.jpg) center/cover no-repeat"
       position="relative"
       overflow="hidden"
     >

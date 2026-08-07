@@ -5,7 +5,7 @@ import { IconMail, IconMessageCircle, IconBrandInstagram } from "@tabler/icons-r
 
 const ICON = { size: 16, stroke: 2 } as const;
 
-const LOGO = "/logos-la-u/Vertical - letras blancas.png";
+const LOGO = "/assets/logos-la-u/Vertical - letras blancas.png";
 
 const LINKS = [
   {

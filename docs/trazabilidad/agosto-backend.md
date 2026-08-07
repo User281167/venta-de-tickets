@@ -25,3 +25,8 @@ Fuente: `git log -- backend/` del monorepo.
 
 - Refactor: dividir `payments.service.ts` (745 líneas) en archivos por funcionalidad: `checkout`, `admin`, `webhook`, `epayco`, `queries`.
 - No retornar datos innecesarios de pagos (donaciones: controller, schema, client frontend).
+
+## 06/Ago/2026 — Templates de email y assets
+
+- `messaging`: crear templates de signup confirmation y reset de password (HTML).
+- Eliminar imágenes no usadas y mover los assets a subcarpeta pública para cache `/assets/*` en Cloudflare (templates de donation, payment, ticket actualizados).

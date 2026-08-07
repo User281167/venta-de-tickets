@@ -30,7 +30,7 @@ description: "Implementation tasks for admin user batch upload from Excel"
 
 - [x] T001 Create directory `frontend/features/admin-users/hooks/` for custom hooks
 - [x] T002 [P] Create route directory `frontend/app/admin/usuarios/carga-masiva/` and add `page.tsx` that renders `BatchUploadPage` from `@/features/admin-users/components/BatchUploadPage`
-- [x] T003 [P] Create template file `frontend/public/load_users_template.xlsx` with headers: nombre completo, cédula, teléfono, correo electrónico, contraseña (1 empty row below headers)
+- [x] T003 [P] Create template file `frontend/public/assets/load_users_template.xlsx` with headers: nombre completo, cédula, teléfono, correo electrónico, contraseña (1 empty row below headers)
 
 ---
 

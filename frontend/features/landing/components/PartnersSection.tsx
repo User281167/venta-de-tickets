@@ -4,14 +4,14 @@ import NextImage from "next/image";
 import { Particles } from "@/shared/components/Particles";
 
 const PARTNERS = [
-  { name: "GHL - Hoteles Sonesta", image: "/aliados/sonesta - GHL holetes - logo.webp" },
-  { name: "Publik", image: "/aliados/publik.png" },
-  { name: "Sueje", image: "/aliados/sueje.png" },
-  { name: "Tecnodiesel", image: "/aliados/tecnodiesel.svg" },
-  { name: "GHL - Hoteles Sonesta", image: "/aliados/sonesta - GHL holetes - logo.webp" },
-  { name: "Publik", image: "/aliados/publik.png" },
-  { name: "Sueje", image: "/aliados/sueje.png" },
-  { name: "Tecnodiesel", image: "/aliados/tecnodiesel.svg" },
+  { name: "GHL - Hoteles Sonesta", image: "/assets/aliados/sonesta - GHL holetes - logo.webp" },
+  { name: "Publik", image: "/assets/aliados/publik.png" },
+  { name: "Sueje", image: "/assets/aliados/sueje.png" },
+  { name: "Tecnodiesel", image: "/assets/aliados/tecnodiesel.svg" },
+  { name: "GHL - Hoteles Sonesta", image: "/assets/aliados/sonesta - GHL holetes - logo.webp" },
+  { name: "Publik", image: "/assets/aliados/publik.png" },
+  { name: "Sueje", image: "/assets/aliados/sueje.png" },
+  { name: "Tecnodiesel", image: "/assets/aliados/tecnodiesel.svg" },
 ];
 
 const GRADIENT_TEXT = {

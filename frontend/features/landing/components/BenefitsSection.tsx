@@ -70,7 +70,7 @@ const ACTIVITIES: Activity[] = [
     description: "El Ecosistema de Emprendimiento Barranqueros UTP",
     color: "verde",
     icon: <Image
-      src="/barranqueros-logo.png"
+      src="/assets/barranqueros-logo.png"
       m="auto"
       w="auto"
       h="full"

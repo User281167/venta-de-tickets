@@ -35,7 +35,7 @@ export function AsociacionSection() {
 
               <div className="!mt-6 !w-fit !rounded-2xl !bg-white !p-4 !shadow-lg">
                 <img
-                  src="/aseutp-logo.png"
+                  src="/assets/aseutp-logo.png"
                   alt="Logo ASE UTP - Asociación de Egresados Universidad Tecnológica de Pereira"
                   className="!h-16 !w-auto sm:!h-20"
                   loading="lazy"

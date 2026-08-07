@@ -36,7 +36,7 @@ export function DonationButton({ account, label, socialMedia }: Props) {
       >
         {account === "BARRANQUEROS_UTP" && (
           <img
-            src="/barranqueros-logo.png"
+            src="/assets/barranqueros-logo.png"
             alt="Barranqueros UTP"
             className="!h-6 !w-6 !object-contain"
           />

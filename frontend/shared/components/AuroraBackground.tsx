@@ -4,7 +4,7 @@ import NextImage from "next/image";
 import { useMemo } from "react";
 import { generateParticles } from "@/features/sponsor/hooks/particles";
 
-const HERO_BG = "/hero-aurora.jpg";
+const HERO_BG = "/assets/hero-aurora.jpg";
 
 const AURORA_BLOBS = [
   {

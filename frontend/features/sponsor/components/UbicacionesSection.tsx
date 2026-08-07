@@ -13,42 +13,42 @@ type Zone = {
 
 const ZONES: Zone[] = [
   {
-    image: "/entradas-sponsort/zona-deportiva-1.png",
+    image: "/assets/entradas-sponsort/zona-deportiva-1.png",
     title: "Rumbaterapia y activación",
     description:
       "Tu marca en tarimas, pendones y vallas rodeada de energía, movimiento y comunidad activa.",
     badge: "Zona Deportiva & Bienestar",
   },
   {
-    image: "/entradas-sponsort/zona-deportiva-2.png",
+    image: "/assets/entradas-sponsort/zona-deportiva-2.png",
     title: "Cancha central y zona familiar",
     description:
       "Presencia visible en el corazón deportivo del evento, con alto tráfico de familias y egresados.",
     badge: "Zona Deportiva & Bienestar",
   },
   {
-    image: "/entradas-sponsort/entrada-principal.png",
+    image: "/assets/entradas-sponsort/entrada-principal.png",
     title: "Punto de mayor flujo",
     description:
       "El primer impacto visual: tu marca recibe a miles de asistentes en el acceso principal a la UTP.",
     badge: "Entrada Principal",
   },
   {
-    image: "/entradas-sponsort/tarima.png",
+    image: "/assets/entradas-sponsort/tarima.png",
     title: "Escenario central",
     description:
       "Visibilidad premium durante conferencias, shows y momentos estelares transmitidos y fotografiados.",
     badge: "Tarima Principal",
   },
   {
-    image: "/entradas-sponsort/lado-tarima.png",
+    image: "/assets/entradas-sponsort/lado-tarima.png",
     title: "Stands al lado de la tarima",
     description:
       "Espacio propio junto al escenario para activaciones, muestras comerciales y relacionamiento directo.",
     badge: "Zona Patrocinadores",
   },
   {
-    image: "/entradas-sponsort/sendero-principal.png",
+    image: "/assets/entradas-sponsort/sendero-principal.png",
     title: "Zona aledaña y circulación",
     description:
       "Pendones y stands a lo largo del corredor por donde transita permanentemente toda la comunidad.",

@@ -296,7 +296,7 @@ export function CheckoutPageClient() {
                   ) : (
                     <div className="!relative !h-full !w-full">
                       <NextImage
-                        src="/logo-mercado-libre.png"
+                        src="/assets/logo-mercado-libre.png"
                         alt="Mercado Pago"
                         fill
                         sizes="200px"

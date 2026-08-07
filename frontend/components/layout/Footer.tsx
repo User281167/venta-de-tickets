@@ -103,7 +103,7 @@ export function Footer() {
             <Eyebrow>Organiza</Eyebrow>
             <div className="!flex !items-start !gap-3">
               <img
-                src="/ASE-icon.png"
+                src="/assets/ASE-icon.png"
                 alt="ASE UTP"
                 className="!h-12 !w-12 !object-contain"
                 loading="lazy"
@@ -142,7 +142,7 @@ export function Footer() {
           <div className="!flex !flex-col !items-start !gap-4">
             <Eyebrow>Organiza</Eyebrow>
             <img
-              src="/utp-logo.png"
+              src="/assets/utp-logo.png"
               alt="Universidad Tecnológica de Pereira"
               className="!h-12 !w-auto"
               loading="lazy"

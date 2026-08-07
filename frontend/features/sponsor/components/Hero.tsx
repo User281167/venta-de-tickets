@@ -5,8 +5,8 @@ import NextImage from "next/image";
 import { useRevealAll } from "@/features/sponsor/hooks/useRevealAll";
 import { generateParticles } from "@/features/sponsor/hooks/particles";
 
-const HERO_BG = "/hero-aurora.jpg";
-const LOGO = "/logos-la-u/Vertical - letras blancas.png";
+const HERO_BG = "/assets/hero-aurora.jpg";
+const LOGO = "/assets/logos-la-u/Vertical - letras blancas.png";
 const WHATSAPP = "https://wa.me/3113167816";
 
 const AURORA_BLOBS = [

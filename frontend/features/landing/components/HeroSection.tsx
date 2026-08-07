@@ -14,7 +14,7 @@ import { GradientText } from "@/shared/components/GradientText";
 import { useRevealAll } from "@/features/sponsor/hooks/useRevealAll";
 import { DefaultWaves } from "@/shared/components/Waves";
 
-const LOGO = "/logos-la-u/Vertical - letras blancas.png";
+const LOGO = "/assets/logos-la-u/Vertical - letras blancas.png";
 
 export function HeroSection() {
   useRevealAll();

@@ -12,25 +12,25 @@ type LogoVariant = {
 
 const VARIANTS: LogoVariant[] = [
   {
-    src: "/logos-la-u/Vertical - letras azules.png",
+    src: "/assets/logos-la-u/Vertical - letras azules.png",
     label: "Vertical · fondo claro",
     bg: "utp.artico",
     textColor: "utp.noche",
   },
   {
-    src: "/logos-la-u/Vertical - letras blancas.png",
+    src: "/assets/logos-la-u/Vertical - letras blancas.png",
     label: "Vertical · fondo oscuro",
     bg: "utp.noche",
     textColor: "utp.artico",
   },
   {
-    src: "/logos-la-u/Horizontal - letras azules.png",
+    src: "/assets/logos-la-u/Horizontal - letras azules.png",
     label: "Horizontal · encabezados",
     bg: "utp.artico",
     textColor: "utp.noche",
   },
   {
-    src: "/logos-la-u/Horizontal - letras blancas.png",
+    src: "/assets/logos-la-u/Horizontal - letras blancas.png",
     label: "Horizontal · escenario",
     bg: "utp.noche",
     textColor: "utp.artico",

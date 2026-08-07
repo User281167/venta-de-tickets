@@ -53,7 +53,7 @@ export function BatchUploadPage() {
 
   function handleDownloadTemplate() {
     const link = document.createElement("a");
-    link.href = "/load_users_template.xlsx";
+    link.href = "/assets/load_users_template.xlsx";
     link.download = "load_users_template.xlsx";
     document.body.appendChild(link);
     link.click();
