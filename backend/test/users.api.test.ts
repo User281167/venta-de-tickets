@@ -181,4 +181,18 @@ describe('GET /api/users/policies/:type (public)', () => {
     const res = await request(app).get('/api/users/policies/terms_of_service');
     expect(res.status).toBe(404);
   });
+
+  it('rate-limits by IP (keySource=ip), not by user — returns 200 without auth header', async () => {
+    vi.mocked(getCurrentPolicyContent).mockResolvedValue({
+      type: 'privacy_policy',
+      version: '1.0.0',
+      content: 'privacy policy text',
+      publishedAt: '2026-08-14T00:00:00.000Z',
+    });
+
+    const res = await request(app).get('/api/users/policies/privacy_policy');
+
+    expect(res.status).toBe(200);
+    expect(res.body.type).toBe('privacy_policy');
+  });
 });

@@ -9,7 +9,7 @@ const usersRouter = Router();
 
 usersRouter.get(
   '/policies/:type',
-  rateLimit(POLICIES.client),
+  rateLimit(POLICIES.publicRead),
   usersController.getPolicyContent,
 );
 
