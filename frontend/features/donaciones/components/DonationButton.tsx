@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@chakra-ui/react";
 import { DonationForm } from "./DonationForm";
-import type { DonationAccount } from "./DonationForm";
+import { DONATION_ACCOUNT_LABELS, DonationAccount } from "@/shared/utils/donation-status";
 
 interface Props {
   account: DonationAccount;
@@ -14,12 +14,7 @@ interface Props {
 export function DonationButton({ account, label, socialMedia }: Props) {
   const [open, setOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-
-  const buttonLabel =
-    label ??
-    (account === "LA_CONVENCION"
-      ? "Donar a La Convención"
-      : "Donar a Barranqueros UTP");
+  const buttonLabel = label ?? ("Donar a " + DONATION_ACCOUNT_LABELS[account]);
 
   return (
     <>

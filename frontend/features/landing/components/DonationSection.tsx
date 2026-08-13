@@ -35,7 +35,7 @@ export function DonationSection() {
           textAlign="center"
           maxW="500px"
         >
-          Apoya a La Convención o a Barranqueros UTP con tu donación.
+          Apoya a La Convención, Barranqueros UTP o a los Víctimas y Damnificados por el sismo en Colombia con tu donación.
           Cada aporte cuenta.
         </Text>
         <HStack gap={4} wrap="wrap" justify="center">
@@ -43,6 +43,10 @@ export function DonationSection() {
           <DonationButton
             account="BARRANQUEROS_UTP"
             socialMedia="https://www.instagram.com/barranqueros_utp"
+          />
+          <DonationButton
+            account="VICTIMAS"
+            label="Víctimas/Damnificados por el Sismo"
           />
         </HStack>
       </Stack>

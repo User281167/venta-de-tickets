@@ -36,11 +36,12 @@ export const DONATION_STATE_FILTER_OPTIONS: ReadonlyArray<{
   { value: "cancelled", label: "Cancelada" },
 ];
 
-export type DonationAccount = "LA_CONVENCION" | "BARRANQUEROS_UTP";
+export type DonationAccount = "LA_CONVENCION" | "BARRANQUEROS_UTP" | "VICTIMAS";
 
 export const DONATION_ACCOUNT_LABELS: Record<DonationAccount, string> = {
   LA_CONVENCION: "La Convención",
   BARRANQUEROS_UTP: "Barranqueros UTP",
+  VICTIMAS: "Víctimas y damnificados"
 };
 
 export const DONATION_ACCOUNT_FILTER_OPTIONS: ReadonlyArray<{
@@ -50,4 +51,5 @@ export const DONATION_ACCOUNT_FILTER_OPTIONS: ReadonlyArray<{
   { value: "", label: "Todas las cuentas" },
   { value: "LA_CONVENCION", label: "La Convención" },
   { value: "BARRANQUEROS_UTP", label: "Barranqueros UTP" },
+  { value: "VICTIMAS", label: "Víctimas y damnificados" },
 ];

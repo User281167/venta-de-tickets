@@ -24,6 +24,7 @@ import { IconHeart, IconNetwork } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { useCreateDonation } from "../hooks/useDonaciones";
 import { formatCurrency } from "@/shared/utils/formats";
+import { DONATION_ACCOUNT_LABELS, DonationAccount } from "@/shared/utils/donation-status";
 
 declare const ePayco: {
   checkout: {
@@ -41,8 +42,6 @@ declare const ePayco: {
     };
   };
 };
-
-export type DonationAccount = "LA_CONVENCION" | "BARRANQUEROS_UTP";
 
 const formSchema = z.object({
   fullName: z.string().optional(),
@@ -90,8 +89,7 @@ export function DonationForm({ account, socialMedia, open, onClose, onSubmitting
     document.body.appendChild(script);
   }, []);
 
-  const accountLabel =
-    account === "LA_CONVENCION" ? "La Convención" : "Barranqueros UTP";
+  const accountLabel = DONATION_ACCOUNT_LABELS[account]
 
   async function handleSubmit() {
     const parsed = formSchema.safeParse({
@@ -188,7 +186,7 @@ export function DonationForm({ account, socialMedia, open, onClose, onSubmitting
               </DialogTitle>
 
               <Text fontSize="sm" color="brand.muted" textAlign="center">
-                Tu donación apoya {account === "LA_CONVENCION" ? "la Convención de Egresados" : "a Barranqueros UTP"}
+                Tu donación apoya {DONATION_ACCOUNT_LABELS[account]}
               </Text>
             </Stack>
           </DialogHeader>

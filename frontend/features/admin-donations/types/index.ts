@@ -1,10 +1,10 @@
+import { DonationAccount } from "@/shared/utils/donation-status";
+
 export type DonationState =
   | "pending"
   | "confirmed"
   | "rejected"
   | "cancelled";
-
-export type DonationAccount = "LA_CONVENCION" | "BARRANQUEROS_UTP";
 
 export interface DonationListRow {
   id: string;

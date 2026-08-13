@@ -1,3 +1,5 @@
+import { DonationAccount } from "@/shared/utils/donation-status";
+
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
 export class ApiError extends Error {
@@ -36,7 +38,7 @@ export type CreateDonationInput = {
   fullName?: string | null;
   email?: string | null;
   amountCents: number;
-  account: "LA_CONVENCION" | "BARRANQUEROS_UTP";
+  account: DonationAccount;
   backUrl: string;
   provider?: string;
 };

@@ -16,6 +16,7 @@ import {
   notifyDonationRejected,
   notifyDonationCancelled,
 } from '../messaging/index.js';
+import { DONATION_ACCOUNT_LABELS } from './donaciones.types.js';
 
 function generateExternalReference(account: string): string {
   return `DON-${account}-${createDonationUUID()}`;
@@ -39,13 +40,17 @@ export async function createDonation(
 ): Promise<{ initPoint: string; sessionId?: string }> {
   const externalReference = generateExternalReference(input.account);
 
+
   const providerName = `${input.provider}-${input.account.toLowerCase().replace(/_/g, '-')}`;
+  console.log('========================')
+  console.log(providerName)
+  console.log('========================')
   const provider = getDonationProvider(providerName);
 
   const result = await provider.createPreference({
     externalReference,
     amountCents: input.amountCents,
-    description: `Donación para ${input.account === 'LA_CONVENCION' ? 'La Convención' : 'Barranqueros UTP'}`,
+    description: `Donación para ${DONATION_ACCOUNT_LABELS[input.account]}`,
     backUrl: input.backUrl,
     payerEmail: input.email ?? undefined,
   });

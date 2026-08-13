@@ -35,6 +35,12 @@ function registerKnownDonationProviders() {
     account: 'BARRANQUEROS_UTP',
     notificationUrl: `${env.API_URL}/api/donaciones/webhook/epayco-barranqueros-utp`,
   }));
+
+  registerDonationProvider('epayco-victimas', new EpaycoDonationProvider({
+    providerName: 'epayco-victimas',
+    account: 'VICTIMAS',
+    notificationUrl: `${env.API_URL}/api/donaciones/webhook/epayco-la-convencion`,
+  }));
 }
 
 registerKnownDonationProviders();
