@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { z } from "zod";
 import {
   Button,
+  Checkbox,
   DialogBackdrop,
   DialogBody,
   DialogCloseTrigger,
@@ -15,6 +16,7 @@ import {
   DialogRoot,
   DialogTitle,
   Field,
+  HStack,
   Input,
   Link,
   Stack,
@@ -24,7 +26,10 @@ import { IconHeart, IconNetwork } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { useCreateDonation } from "../hooks/useDonaciones";
 import { formatCurrency } from "@/shared/utils/formats";
-import { DONATION_ACCOUNT_LABELS, DonationAccount } from "@/shared/utils/donation-status";
+import {
+  DONATION_ACCOUNT_LABELS,
+  DonationAccount,
+} from "@/shared/utils/donation-status";
 
 declare const ePayco: {
   checkout: {
@@ -50,6 +55,7 @@ const formSchema = z.object({
     .number({ message: "Ingresa un monto válido" })
     .int()
     .min(5000, "El monto mínimo es $5.000 COP"),
+  consentGiven: z.boolean().default(false),
 });
 
 interface Props {
@@ -60,13 +66,20 @@ interface Props {
   onSubmitting?: (submitting: boolean) => void;
 }
 
-export function DonationForm({ account, socialMedia, open, onClose, onSubmitting }: Props) {
+export function DonationForm({
+  account,
+  socialMedia,
+  open,
+  onClose,
+  onSubmitting,
+}: Props) {
   const router = useRouter();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [amount, setAmount] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [scriptReady, setScriptReady] = useState(false);
+  const [consentGiven, setConsentGiven] = useState(false);
 
   const mutation = useCreateDonation();
 
@@ -89,7 +102,7 @@ export function DonationForm({ account, socialMedia, open, onClose, onSubmitting
     document.body.appendChild(script);
   }, []);
 
-  const accountLabel = DONATION_ACCOUNT_LABELS[account]
+  const accountLabel = DONATION_ACCOUNT_LABELS[account];
 
   async function handleSubmit() {
     const parsed = formSchema.safeParse({
@@ -141,11 +154,15 @@ export function DonationForm({ account, socialMedia, open, onClose, onSubmitting
             checkout.setHooks({
               onResponse: (response) => {
                 const params = new URLSearchParams();
-                if (response.x_ref_payco) params.set("ref_payco", response.x_ref_payco);
+                if (response.x_ref_payco)
+                  params.set("ref_payco", response.x_ref_payco);
 
                 const qs = params.toString();
-                const status = response.x_response === "Aceptada" ? "success" : "failure";
-                router.push(`/donaciones/retorno/state/${status}${qs ? `?${qs}` : ""}`);
+                const status =
+                  response.x_response === "Aceptada" ? "success" : "failure";
+                router.push(
+                  `/donaciones/retorno/state/${status}${qs ? `?${qs}` : ""}`,
+                );
               },
               onErrors: () => {
                 onSubmitting?.(false);
@@ -165,7 +182,9 @@ export function DonationForm({ account, socialMedia, open, onClose, onSubmitting
         onError: (err) => {
           onSubmitting?.(false);
           const msg =
-            err instanceof Error ? err.message : "Error al crear donación. Intenta de nuevo más tarde.";
+            err instanceof Error
+              ? err.message
+              : "Error al crear donación. Intenta de nuevo más tarde.";
           toast.error(msg);
         },
       },
@@ -173,10 +192,23 @@ export function DonationForm({ account, socialMedia, open, onClose, onSubmitting
   }
 
   return (
-    <DialogRoot open={open} onOpenChange={(e) => { if (!e.open) onClose(); }} placement="center" size="md">
+    <DialogRoot
+      open={open}
+      onOpenChange={(e) => {
+        if (!e.open) onClose();
+      }}
+      placement="center"
+      size="md"
+    >
       <DialogBackdrop bg="rgba(2,4,20,0.85)" backdropFilter="blur(6px)" />
       <DialogPositioner>
-        <DialogContent bg="brand.panel" color="brand.light" border="1px solid" borderRadius="2xl" maxW="440px">
+        <DialogContent
+          bg="brand.panel"
+          color="brand.light"
+          border="1px solid"
+          borderRadius="2xl"
+          maxW="440px"
+        >
           <DialogHeader pt={6} m="auto">
             <Stack align="center" gap={2}>
               <IconHeart size={32} color="#ff0f7b" />
@@ -239,10 +271,45 @@ export function DonationForm({ account, socialMedia, open, onClose, onSubmitting
 
                 <Field.HelperText>Mínimo $5.000 COP</Field.HelperText>
                 <Field.ErrorText>{errors.amount}</Field.ErrorText>
+
+                <Field.Root invalid={!!errors.consentGiven}>
+                  <HStack gap={3} align="flex-start">
+                    <Checkbox.Root
+                      checked={consentGiven}
+                      onCheckedChange={(details) =>
+                        setConsentGiven(!!details.checked)
+                      }
+                    >
+                      <Checkbox.HiddenInput />
+
+                      <Checkbox.Control
+                        borderColor="rgba(255,255,255,0.5)"
+                        _checked={{ bg: "teal.500", borderColor: "teal.500" }}
+                      />
+                    </Checkbox.Root>
+
+                    <Text
+                      as="span"
+                      color="white"
+                      fontSize="sm"
+                      lineHeight="1.5"
+                    >
+                      Declaro que los recursos entregados en donación provienen
+                      de una fuente lícita.
+                    </Text>
+                  </HStack>
+
+                  <Field.ErrorText>{errors.consentGiven}</Field.ErrorText>
+                </Field.Root>
               </Field.Root>
 
               {socialMedia && (
-                <Link href={socialMedia} target="_blank" color="white" variant="underline">
+                <Link
+                  href={socialMedia}
+                  target="_blank"
+                  color="white"
+                  variant="underline"
+                >
                   <IconNetwork />
                   Conoce más sobre {accountLabel}
                 </Link>
@@ -267,6 +334,7 @@ export function DonationForm({ account, socialMedia, open, onClose, onSubmitting
               bgGradient="linear(100deg, #ff0f7b, #7c3cff)"
               color="white"
               _hover={{ opacity: 0.9 }}
+              disabled={!consentGiven || mutation.isPending}
             >
               Donar {amount ? formatCurrency(Number(amount)) : "0"} COP
             </Button>
