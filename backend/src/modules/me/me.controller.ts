@@ -5,17 +5,17 @@ import {
   setPersonalInfoSchema,
   updatePersonalInfoSchema,
 } from './me.validators.js';
-import { is } from 'zod/v4/locales';
 
 export async function meHandler(req: Request, res: Response): Promise<void> {
-  const privacyStatus = await usersService.getPrivacyStatus(req.user!.id);
+  const policyStatus = await usersService.getPolicyStatus(req.user!.id);
   const personalInfo = await meService.getPersonalInfo(req.user!.id);
+
   res.json({
     user: {
       ...req.user,
       ...personalInfo,
     },
-    consentStatus: privacyStatus.consentStatus,
+    policyStatus,
   });
 }
 
@@ -32,8 +32,7 @@ export async function setPersonalInfoHandler(
   res: Response,
 ): Promise<void> {
   const existing = await meService.getPersonalInfo(req.user!.id);
-  const isFirstTime =
-    existing.cedula === null && existing.fullName === null;
+  const isFirstTime = existing.cedula === null && existing.fullName === null;
 
   const schema = isFirstTime ? setPersonalInfoSchema : updatePersonalInfoSchema;
   const parsed = schema.safeParse(req.body);

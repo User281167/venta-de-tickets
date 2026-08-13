@@ -1,5 +1,4 @@
 import { prisma } from '../../shared/database/prisma.client.js';
-import { PolicyType } from '@prisma/client';
 
 export function findAuthUser(userId: string) {
   return prisma.user.findUnique({
@@ -15,40 +14,54 @@ export function findUserSnapshot(userId: string) {
   });
 }
 
-export function createPrivacyAcceptance(
+export function findUserAcceptancesByType(userId: string) {
+  return prisma.privacyAcceptance.findMany({
+    where: { userId },
+    select: {
+      acceptedAt: true,
+      policyVersion: {
+        select: {
+          id: true,
+          version: true,
+          policyType: true,
+        },
+      },
+    },
+  });
+}
+
+export function findAcceptanceByVersion(
   userId: string,
-  policyVersion: string,
-  policyType: (typeof PolicyType)[keyof typeof PolicyType],
+  policyVersionId: string,
+) {
+  return prisma.privacyAcceptance.findUnique({
+    where: {
+      userId_policyVersionId: { userId, policyVersionId },
+    },
+    select: {
+      acceptedAt: true,
+      policyVersionId: true,
+    },
+  });
+}
+
+export async function createAcceptance(
+  userId: string,
+  policyVersionId: string,
   ipAddress: string,
   userAgent: string,
 ) {
   return prisma.privacyAcceptance.create({
     data: {
       userId,
-      policyVersion,
-      policyType,
+      policyVersionId,
       ipAddress,
       userAgent,
     },
     select: {
       id: true,
-      policyVersion: true,
-      policyType: true,
+      policyVersionId: true,
       acceptedAt: true,
-    },
-  });
-}
-
-export function findPrivacyAcceptance(
-  userId: string,
-  policyVersion: string,
-  policyType: (typeof PolicyType)[keyof typeof PolicyType],
-) {
-  return prisma.privacyAcceptance.findFirst({
-    where: { userId, policyVersion, policyType },
-    select: {
-      acceptedAt: true,
-      policyVersion: true,
     },
   });
 }

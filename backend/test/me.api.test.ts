@@ -20,12 +20,12 @@ vi.mock('../src/modules/payments/payments.repository.js', () => ({
 }));
 
 vi.mock('../src/modules/users/users.service.js', () => ({
-  getPrivacyStatus: vi.fn(),
+  getPolicyStatus: vi.fn(),
   getUserAuthInfo: vi.fn(),
 }));
 
 const { verifyToken } = await import('../src/shared/services/auth.service.js');
-const { getPrivacyStatus, getUserAuthInfo } = await import('../src/modules/users/users.service.js');
+const { getPolicyStatus, getUserAuthInfo } = await import('../src/modules/users/users.service.js');
 
 const meRepo = await import('../src/modules/me/me.repository.js');
 const paymentsRepo = await import('../src/modules/payments/payments.repository.js');
@@ -101,12 +101,21 @@ describe('GET /api/me', () => {
   });
 
   it('returns 200 with user object when valid token provided', async () => {
-    vi.mocked(getPrivacyStatus).mockResolvedValue({
-      consentStatus: {
-        required: true,
-        acceptedAt: null,
-        policyVersion: '1.0',
-      },
+    vi.mocked(getPolicyStatus).mockResolvedValue({
+      policies: [
+        {
+          type: 'privacy_policy',
+          currentVersion: '1.0.0',
+          accepted: false,
+          acceptedAt: null,
+        },
+        {
+          type: 'terms_of_service',
+          currentVersion: '1.0.0',
+          accepted: false,
+          acceptedAt: null,
+        },
+      ],
     });
 
     const res = await request(app).get('/api/me').set(authHeader());
@@ -116,11 +125,8 @@ describe('GET /api/me', () => {
       id: 'user-123',
       email: 'test@example.com',
     });
-    expect(res.body.consentStatus).toMatchObject({
-      required: true,
-      acceptedAt: null,
-      policyVersion: '1.0',
-    });
+    expect(res.body.policyStatus.policies).toHaveLength(2);
+    expect(res.body.policyStatus.policies[0].type).toBe('privacy_policy');
   });
 });
 

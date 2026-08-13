@@ -4,6 +4,7 @@ import { env } from './shared/config/env.js';
 import { errorHandler } from './shared/middlewares/error-handler.middleware.js';
 import { meRouter } from './modules/me/index.js';
 import { usersRouter } from './modules/users/index.js';
+import * as policiesRepo from './modules/users/policies.repository.js';
 
 import { adminsRouter } from './modules/admins/admins.routes.js';
 import { authRouter } from './modules/auth/index.js';
@@ -54,3 +55,9 @@ app.use('/api/audit-log', auditRouter);
 app.use('/api/admin/analytics', analyticsRouter);
 
 app.use(errorHandler);
+
+if (env.NODE_ENV !== 'test') {
+  policiesRepo.seedAllPolicies().catch((err) => {
+    logger.error({ err }, 'Failed to seed policies at startup');
+  });
+}

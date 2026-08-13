@@ -8,7 +8,7 @@ vi.mock('../src/shared/services/auth.service.js', () => ({
 }));
 
 vi.mock('../src/modules/users/users.service.js', () => ({
-  getPrivacyStatus: vi.fn(),
+  getPolicyStatus: vi.fn(),
   getUserAuthInfo: vi.fn(),
 }));
 
@@ -17,7 +17,7 @@ vi.mock('../src/modules/me/me.service.js', () => ({
 }));
 
 const { verifyToken } = await import('../src/shared/services/auth.service.js');
-const { getPrivacyStatus, getUserAuthInfo } = await import('../src/modules/users/users.service.js');
+const { getPolicyStatus, getUserAuthInfo } = await import('../src/modules/users/users.service.js');
 const { getPersonalInfo } = await import('../src/modules/me/me.service.js');
 
 describe('Auth Middleware', () => {
@@ -76,12 +76,21 @@ describe('Auth Middleware', () => {
       role: 'super_admin',
     });
     vi.mocked(getUserAuthInfo).mockResolvedValueOnce({ role: 'super_admin', isActive: true });
-    vi.mocked(getPrivacyStatus).mockResolvedValue({
-      consentStatus: {
-        required: true,
-        acceptedAt: null,
-        policyVersion: '1.0',
-      },
+    vi.mocked(getPolicyStatus).mockResolvedValue({
+      policies: [
+        {
+          type: 'privacy_policy',
+          currentVersion: '1.0.0',
+          accepted: false,
+          acceptedAt: null,
+        },
+        {
+          type: 'terms_of_service',
+          currentVersion: '1.0.0',
+          accepted: false,
+          acceptedAt: null,
+        },
+      ],
     });
     vi.mocked(getPersonalInfo).mockResolvedValue({
       fullName: null,

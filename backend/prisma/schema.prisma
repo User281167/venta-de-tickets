@@ -73,18 +73,32 @@ model EgresadosList {
   @@map("egresados_list")
 }
 
+model PolicyVersion {
+  id          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  policyType  PolicyType @map("policy_type")
+  version     String     @db.VarChar(20)
+  content     String     @db.Text
+  contentHash String     @map("content_hash") @db.VarChar(64)
+  publishedAt DateTime   @default(now()) @map("published_at") @db.Timestamptz
+
+  acceptances PrivacyAcceptance[]
+
+  @@unique([policyType, version])
+  @@index([policyType, publishedAt])
+  @@map("policy_versions")
+}
+
 model PrivacyAcceptance {
-  id            String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userId        String     @map("user_id") @db.Uuid
-  policyVersion String     @map("policy_version") @db.VarChar(20)
-  policyType    PolicyType @map("policy_type")
-  acceptedAt    DateTime   @default(now()) @map("accepted_at") @db.Timestamptz
-  ipAddress     String     @map("ip_address") @db.Inet
-  userAgent     String     @map("user_agent")
-  content       String?
+  id              String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId          String        @map("user_id") @db.Uuid
+  policyVersionId String        @map("policy_version_id") @db.Uuid
+  acceptedAt      DateTime      @default(now()) @map("accepted_at") @db.Timestamptz
+  ipAddress       String        @map("ip_address") @db.Inet
+  userAgent       String        @map("user_agent")
+  user            User          @relation(fields: [userId], references: [id])
+  policyVersion   PolicyVersion @relation(fields: [policyVersionId], references: [id])
 
-  user User @relation(fields: [userId], references: [id])
-
+  @@unique([userId, policyVersionId])
   @@index([userId])
   @@map("privacy_acceptances")
 }
