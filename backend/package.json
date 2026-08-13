@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "prisma:generate": "prisma generate",
-    "build": "pnpm prisma:generate && tsc && pnpm copy-templates",
+    "build": "pnpm prisma:generate && tsc && pnpm copy-templates && pnpm copy-policies",
     "start": "node dist/server.js",
     "postinstall": "prisma generate",
     "test": "vitest run",
@@ -15,7 +15,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier . --write",
-    "copy-templates": "copyfiles -u 2 \"src/modules/messaging/templates/**/*.html\" dist/modules"
+    "copy-templates": "copyfiles -u 2 \"src/modules/messaging/templates/**/*.html\" dist/modules",
+    "copy-policies": "copyfiles -u 2 \"src/shared/policies/*.txt\" dist/shared"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
