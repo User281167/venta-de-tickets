@@ -28,7 +28,7 @@ import { useMyTickets } from "../hooks/useMyTickets";
 import { useMyPayments } from "../hooks/usePayments";
 import { PaymentRow } from "./PaymentRow";
 import { formatCurrency } from "@/shared/utils/formats";
-import type { GetMeResponse } from "../api/users.client";
+import { GetMeResponse } from "../types/user.types";
 
 const PROFILE_FIELDS: (keyof GetMeResponse["user"])[] = [
   "fullName",
@@ -250,12 +250,7 @@ function ProfileCompletionCard({
 
 function EmptyRecentPayments() {
   return (
-    <Box
-      className="glass-card"
-      borderRadius="2xl"
-      p={8}
-      textAlign="center"
-    >
+    <Box className="glass-card" borderRadius="2xl" p={8} textAlign="center">
       <Box
         w={16}
         h={16}
@@ -348,7 +343,8 @@ export function DashboardOverview() {
             Resumen de tu cuenta
           </Heading>
           <Text color="brand.muted" maxW="600px">
-            Aquí encuentras un vistazo de tus entradas, pagos y progreso de perfil.
+            Aquí encuentras un vistazo de tus entradas, pagos y progreso de
+            perfil.
           </Text>
 
           <Button
@@ -387,10 +383,7 @@ export function DashboardOverview() {
             href="/mi-cuenta/pagos"
             cta="Ver pagos"
           />
-          <ProfileCompletionCard
-            user={profile!.user}
-            completion={completion}
-          />
+          <ProfileCompletionCard user={profile!.user} completion={completion} />
         </Grid>
 
         <Stack gap={6}>

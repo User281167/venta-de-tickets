@@ -141,7 +141,7 @@ export function ProfileForm() {
     );
   }
 
-  const { user, consentStatus } = data;
+  const { user, policyStatus } = data;
   const completedCount = [
     user.fullName,
     user.phone,
@@ -471,7 +471,7 @@ export function ProfileForm() {
           </Box>
         </motion.div>
 
-        {consentStatus?.acceptedAt && (
+        {policyStatus?.policies?.some((p) => p.accepted && p.acceptedAt) && (
           <motion.div
             initial={reduced ? {} : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -486,13 +486,22 @@ export function ProfileForm() {
               <Text fontSize="sm" color="brand.muted">
                 Consentimiento de privacidad aceptado el{" "}
                 <Text as="span" color="white" fontWeight="medium">
-                  {new Date(consentStatus.acceptedAt).toLocaleDateString(
-                    "es-CO",
-                  )}
+                  {(() => {
+                    const latest = policyStatus.policies
+                      .filter((p) => p.acceptedAt)
+                      .sort((a, b) =>
+                        (b.acceptedAt ?? "").localeCompare(a.acceptedAt ?? ""),
+                      )[0];
+                    return latest
+                      ? new Date(
+                          latest.acceptedAt as string,
+                        ).toLocaleDateString("es-CO")
+                      : "";
+                  })()}
                 </Text>
               </Text>
               <Text fontSize="xs" color="brand.muted" mt={1}>
-                Versión: {consentStatus.policyVersion}
+                Versión actual: {policyStatus.policies[0]?.currentVersion}
               </Text>
             </Box>
           </motion.div>

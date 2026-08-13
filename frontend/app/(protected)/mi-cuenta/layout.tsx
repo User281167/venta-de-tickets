@@ -82,7 +82,7 @@ export default function MiCuentaLayout({
   }
 
   const needsConsent =
-    data?.consentStatus?.required && !data?.consentStatus?.acceptedAt;
+    data?.policyStatus?.policies?.some((p) => !p.accepted) ?? false;
 
   if (needsConsent) {
     return <PrivacyConsentModal />;

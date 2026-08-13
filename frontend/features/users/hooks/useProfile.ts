@@ -1,12 +1,9 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  acceptPrivacy,
-  fetchMe,
-  updateMe,
-} from "../api/users.client";
+import { acceptPolicies, fetchMe, updateMe } from "../api/users.client";
 import type { UpdateUserInput } from "../schemas/users.schema";
+import type { PolicyType } from "../types/policy.types";
 
 const ME_KEY = ["me"] as const;
 
@@ -31,11 +28,11 @@ export function useUpdateMe() {
   });
 }
 
-export function useAcceptPrivacy() {
+export function useAcceptPolicies() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: acceptPrivacy,
+    mutationFn: (types: PolicyType[]) => acceptPolicies(types),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ME_KEY });
     },
