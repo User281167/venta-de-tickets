@@ -22,9 +22,7 @@ function generateExternalReference(account: string): string {
   return `DON-${account}-${createDonationUUID()}`;
 }
 
-function mapWebhookStatus(
-  webhookStatus: string,
-): DonationStatus | undefined {
+function mapWebhookStatus(webhookStatus: string): DonationStatus | undefined {
   switch (webhookStatus) {
     case 'approved':
       return 'confirmed';
@@ -40,11 +38,7 @@ export async function createDonation(
 ): Promise<{ initPoint: string; sessionId?: string }> {
   const externalReference = generateExternalReference(input.account);
 
-
   const providerName = `${input.provider}-${input.account.toLowerCase().replace(/_/g, '-')}`;
-  console.log('========================')
-  console.log(providerName)
-  console.log('========================')
   const provider = getDonationProvider(providerName);
 
   const result = await provider.createPreference({
@@ -58,6 +52,7 @@ export async function createDonation(
   await donationRepository.create({
     fullName: input.fullName,
     email: input.email,
+    company: input.company,
     amountCents: input.amountCents,
     account: input.account,
     externalReference,
@@ -106,12 +101,9 @@ export async function handleWebhook(
   }
 }
 
-export async function getStatus(
-  externalReference: string,
-): Promise<Donation> {
-  const donation = await donationRepository.findByExternalReference(
-    externalReference,
-  );
+export async function getStatus(externalReference: string): Promise<Donation> {
+  const donation =
+    await donationRepository.findByExternalReference(externalReference);
 
   if (!donation) {
     throw new NotFoundError('Donación no encontrada');
