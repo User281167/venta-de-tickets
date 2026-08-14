@@ -48,13 +48,15 @@ const STATS: Stat[] = [
   },
   {
     value: "Inteligencia Artificial (IA)",
-    label: "Evento que conecta todas las disciplinas en nuestro Campus Inteligente.",
+    label:
+      "Evento que conecta todas las disciplinas en nuestro Campus Inteligente.",
     color: "cyan",
     icon: <IconSparkles size={20} stroke={2} />,
   },
   {
     value: "La U del Futuro",
-    label: "Liderando la conversación del mañana con enfoque en liderazgo regional y sostenibilidad.",
+    label:
+      "Liderando la conversación del mañana con enfoque en liderazgo regional y sostenibilidad.",
     color: "orange",
     icon: <IconWorld size={20} stroke={2} />,
   },
@@ -102,7 +104,7 @@ export function AboutSection() {
             <div className="!relative !aspect-[4/3] !w-full">
               <NextImage
                 src={HERO_IMAGE}
-                alt="Asistentes en una conferencia de la Convención"
+                alt="Asistentes en una conferencia de la Asociación de Egresados UTP"
                 fill
                 sizes="(min-width: 1024px) 50vw, 100vw"
                 style={{ objectFit: "cover" }}
@@ -154,7 +156,7 @@ export function AboutSection() {
                   color: "transparent",
                 }}
               >
-                La Convención
+                La Asociación de Egresados UTP
               </span>
 
               <h2 className="!text-4xl !font-black !uppercase !leading-[1.02] !tracking-tight !text-white sm:!text-5xl">
@@ -173,7 +175,10 @@ export function AboutSection() {
               </h2>
 
               <p className="!text-base !leading-relaxed !text-white/70 sm:!text-lg">
-                Esta convención es academia + networking, alianzas, bienestar, cultura y entretenimiento, articulados alrededor de una conversación transversal durante los días 22, 23 y 24 de octubre.
+                Esta Asociación de Egresados UTP es academia + networking,
+                alianzas, bienestar, cultura y entretenimiento, articulados
+                alrededor de una conversación transversal durante los días 22,
+                23 y 24 de octubre.
               </p>
             </motion.div>
 

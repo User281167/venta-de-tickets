@@ -17,14 +17,14 @@ type Props = {
 };
 
 const donationStates: Record<string, string> = {
-  rejected: 'Rechazado',
-  confirmed: 'Confirmado',
-  cancelled: 'Cancelado',
-  pending: 'Pendiente',
-}
+  rejected: "Rechazado",
+  confirmed: "Confirmado",
+  cancelled: "Cancelado",
+  pending: "Pendiente",
+};
 
 const ACCOUNT_LABELS: Record<string, string> = {
-  LA_CONVENCION: "La Convención",
+  LA_CONVENCION: "Asociación de Egresados UTP",
   BARRANQUEROS_UTP: "Barranqueros UTP",
 };
 

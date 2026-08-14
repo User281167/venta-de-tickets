@@ -86,7 +86,7 @@ export function AgendaHero() {
             >
               Agenda de{" "}
               <Box as="span" className="gradient-text">
-                La Convención
+                Asociación de Egresados UTP
               </Box>
             </Heading>
           </motion.div>

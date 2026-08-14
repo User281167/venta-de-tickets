@@ -50,9 +50,9 @@ export function DonationSection() {
           textAlign="center"
           maxW="500px"
         >
-          Apoya a La Convención, Barranqueros UTP o a los Víctimas y
-          Damnificados por el sismo en Colombia con tu donación. Cada aporte
-          cuenta.
+          Apoya a La Asociación de Egresados UTP, Barranqueros UTP o a los
+          Víctimas y Damnificados por el sismo en Colombia con tu donación. Cada
+          aporte cuenta.
         </Text>
 
         <HStack gap={4} wrap="wrap" justify="center">

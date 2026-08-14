@@ -100,7 +100,7 @@ export function RegisterForm() {
           </Heading>
 
           <Text textAlign="center" fontSize="sm" color="white" opacity={0.7}>
-            Accede a La Convención
+            Accede a La Asociación de Egresados UTP
           </Text>
         </Stack>
 

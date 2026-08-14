@@ -7,13 +7,33 @@ import { useEffect, useState } from "react";
 import { AnimatedSection } from "@/shared/components/AnimatedSection";
 
 const SLIDES = [
-  { src: "/assets/ase-oficial/0.jpg", alt: "Networking y comunidad", offsetY: "50%" },
-  { src: "/assets/ase-oficial/1.jpg", alt: "Momentos de la convención", offsetY: "50%" },
+  {
+    src: "/assets/ase-oficial/0.jpg",
+    alt: "Networking y comunidad",
+    offsetY: "50%",
+  },
+  {
+    src: "/assets/ase-oficial/1.jpg",
+    alt: "Momentos de la Asociación de Egresados UTP",
+    offsetY: "50%",
+  },
   { src: "/assets/ase-oficial/4.jpg", alt: "Experiencias UTP", offsetY: "35%" },
-  { src: "/assets/ase-oficial/5.webp", alt: "Networking y comunidad", offsetY: "60%" },
-  { src: "/assets/ase-oficial/7.jpg", alt: "Ponencias inspiradoras", offsetY: "60%" },
+  {
+    src: "/assets/ase-oficial/5.webp",
+    alt: "Networking y comunidad",
+    offsetY: "60%",
+  },
+  {
+    src: "/assets/ase-oficial/7.jpg",
+    alt: "Ponencias inspiradoras",
+    offsetY: "60%",
+  },
   { src: "/assets/ase-oficial/9.jpg", alt: "Experiencias UTP", offsetY: "45%" },
-  { src: "/assets/ase-oficial/21.webp", alt: "Experiencias UTP", offsetY: "80%" },
+  {
+    src: "/assets/ase-oficial/21.webp",
+    alt: "Experiencias UTP",
+    offsetY: "80%",
+  },
 ];
 
 const AUTO_PLAY_INTERVAL = 5000;
@@ -47,90 +67,105 @@ export function FullWidthSlider() {
       <Box
         w="full"
         h={{ base: "260px", sm: "340px", md: "440px", lg: "560px" }}
-      position="relative"
-      overflow="hidden"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-    >
-      <Flex
-        w="full"
-        h="full"
-        transition="transform 0.7s cubic-bezier(0.4, 0, 0.2, 1)"
-        transform={`translateX(-${current * 100}%)`}
+        position="relative"
+        overflow="hidden"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
       >
-        {SLIDES.map((slide, i) => (
-          <Box key={i} minW="100%" h="full" flexShrink={0} position="relative">
-            <Image
-              src={slide.src}
-              alt={slide.alt}
-              fill
-              style={{ objectFit: "cover", objectPosition: `center ${slide.offsetY}` }}
-              priority={i === 0}
-            />
+        <Flex
+          w="full"
+          h="full"
+          transition="transform 0.7s cubic-bezier(0.4, 0, 0.2, 1)"
+          transform={`translateX(-${current * 100}%)`}
+        >
+          {SLIDES.map((slide, i) => (
             <Box
-              position="absolute"
-              inset={0}
-              bg="linear-gradient(90deg, rgba(2,4,20,0.45), transparent 60%)"
+              key={i}
+              minW="100%"
+              h="full"
+              flexShrink={0}
+              position="relative"
+            >
+              <Image
+                src={slide.src}
+                alt={slide.alt}
+                fill
+                style={{
+                  objectFit: "cover",
+                  objectPosition: `center ${slide.offsetY}`,
+                }}
+                priority={i === 0}
+              />
+              <Box
+                position="absolute"
+                inset={0}
+                bg="linear-gradient(90deg, rgba(2,4,20,0.45), transparent 60%)"
+              />
+            </Box>
+          ))}
+        </Flex>
+
+        <IconButton
+          aria-label="Anterior"
+          position="absolute"
+          left={{ base: 3, md: 6 }}
+          top="50%"
+          transform="translateY(-50%)"
+          bg="blackAlpha.500"
+          color="white"
+          _hover={{
+            bg: "blackAlpha.700",
+            transform: "translateY(-50%) scale(1.05)",
+          }}
+          rounded="full"
+          size={{ base: "sm", md: "md" }}
+          onClick={prev}
+          transition="all 0.2s ease"
+        >
+          <IconArrowLeft />
+        </IconButton>
+
+        <IconButton
+          aria-label="Siguiente"
+          position="absolute"
+          right={{ base: 3, md: 6 }}
+          top="50%"
+          transform="translateY(-50%)"
+          bg="blackAlpha.500"
+          color="white"
+          _hover={{
+            bg: "blackAlpha.700",
+            transform: "translateY(-50%) scale(1.05)",
+          }}
+          rounded="full"
+          size={{ base: "sm", md: "md" }}
+          onClick={next}
+          transition="all 0.2s ease"
+        >
+          <IconArrowRight />
+        </IconButton>
+
+        <Flex
+          position="absolute"
+          bottom={{ base: 4, md: 6 }}
+          left="50%"
+          transform="translateX(-50%)"
+          gap={3}
+        >
+          {SLIDES.map((_, i) => (
+            <Box
+              key={i}
+              w={{ base: 2.5, md: 3 }}
+              h={{ base: 2.5, md: 3 }}
+              rounded="full"
+              bg={i === current ? "brand.cyan" : "whiteAlpha.500"}
+              cursor="pointer"
+              transition="all 0.3s"
+              onClick={() => goTo(i)}
+              _hover={{ bg: i === current ? "brand.cyan" : "whiteAlpha.700" }}
             />
-          </Box>
-        ))}
-      </Flex>
-
-      <IconButton
-        aria-label="Anterior"
-        position="absolute"
-        left={{ base: 3, md: 6 }}
-        top="50%"
-        transform="translateY(-50%)"
-        bg="blackAlpha.500"
-        color="white"
-        _hover={{ bg: "blackAlpha.700", transform: "translateY(-50%) scale(1.05)" }}
-        rounded="full"
-        size={{ base: "sm", md: "md" }}
-        onClick={prev}
-        transition="all 0.2s ease"
-      >
-        <IconArrowLeft />
-      </IconButton>
-
-      <IconButton
-        aria-label="Siguiente"
-        position="absolute"
-        right={{ base: 3, md: 6 }}
-        top="50%"
-        transform="translateY(-50%)"
-        bg="blackAlpha.500"
-        color="white"
-        _hover={{ bg: "blackAlpha.700", transform: "translateY(-50%) scale(1.05)" }}
-        rounded="full"
-        size={{ base: "sm", md: "md" }}
-        onClick={next}
-        transition="all 0.2s ease"
-      >
-        <IconArrowRight />
-      </IconButton>
-
-      <Flex
-        position="absolute"
-        bottom={{ base: 4, md: 6 }}
-        left="50%"
-        transform="translateX(-50%)"
-        gap={3}
-      >
-        {SLIDES.map((_, i) => (
-          <Box
-            key={i}
-            w={{ base: 2.5, md: 3 }}
-            h={{ base: 2.5, md: 3 }}
-            rounded="full"
-            bg={i === current ? "brand.cyan" : "whiteAlpha.500"}
-            cursor="pointer"
-            transition="all 0.3s"
-            onClick={() => goTo(i)}
-            _hover={{ bg: i === current ? "brand.cyan" : "whiteAlpha.700" }}
-          />
-        ))}
-      </Flex>
+          ))}
+        </Flex>
       </Box>
     </AnimatedSection>
   );

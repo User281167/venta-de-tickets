@@ -35,7 +35,7 @@ export function TicketPurchaseClient() {
     return (
       <PageShell
         eyebrow="Compra tus entradas"
-        title="La Convención"
+        title="Asociación de Egresados UTP"
         subtitle="Selecciona el tipo de entrada que deseas adquirir. Las unidades son limitadas."
         compact
       >
@@ -59,7 +59,7 @@ export function TicketPurchaseClient() {
 
   if (showError) {
     return (
-      <PageShell title="La Convención">
+      <PageShell title="Asociación de Egresados UTP">
         <p className="!text-center !text-white/60">
           {error instanceof Error
             ? error.message
@@ -71,7 +71,7 @@ export function TicketPurchaseClient() {
 
   if (isEmpty && viewMode === "grid") {
     return (
-      <PageShell title="La Convención">
+      <PageShell title="Asociación de Egresados UTP">
         <p className="!text-center !text-white/60">
           No hay entradas disponibles
         </p>
@@ -82,7 +82,7 @@ export function TicketPurchaseClient() {
   return (
     <PageShell
       eyebrow="Compra tus entradas"
-      title="La Convención"
+      title="Asociación de Egresados UTP"
       subtitle="Selecciona el tipo de entrada que deseas adquirir. Las unidades son limitadas."
     >
       <div className="!mb-6 !flex !flex-wrap !items-center !justify-between !gap-3">
@@ -134,7 +134,13 @@ export function TicketPurchaseClient() {
         </div>
       </div>
 
-      <div className={viewMode === "grid" ? "!grid !grid-cols-1 !gap-6 lg:!grid-cols-[2fr_1fr] lg:!items-start" : undefined}>
+      <div
+        className={
+          viewMode === "grid"
+            ? "!grid !grid-cols-1 !gap-6 lg:!grid-cols-[2fr_1fr] lg:!items-start"
+            : undefined
+        }
+      >
         <div>
           {viewMode === "grid" ? (
             <TicketTypeGrid

@@ -79,7 +79,7 @@ export function TicketSection() {
                 color: "transparent",
               }}
             >
-              para la Convención
+              para la Asociación de Egresados UTP
             </span>
           </h2>
 

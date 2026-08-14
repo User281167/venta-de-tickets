@@ -20,7 +20,7 @@ const REACH: Metric[] = [
 const IMPACT: Metric[] = [
   {
     value: "+5.000",
-    label: "Personas impactadas Convención 2024",
+    label: "Personas impactadas Asociación de Egresados UTP 2024",
     accent: "violet",
   },
   {
@@ -58,12 +58,12 @@ export function ImpactSection() {
             </span>
             <h2 className="!mt-6 !max-w-2xl !text-4xl !font-semibold !tracking-tight !text-white sm:!text-5xl">
               Alcance e impacto de la{" "}
-              <GradientText>Convención</GradientText>.
+              <GradientText>Asociación de Egresados UTP</GradientText>.
             </h2>
           </div>
           <p className="!max-w-sm !text-white/60">
             Cifras que muestran la magnitud de la comunidad UTP y el impacto
-            real de la XXIV Convención.
+            real de la XXIV Asociación de Egresados UTP.
           </p>
         </div>
 
@@ -86,7 +86,8 @@ export function ImpactSection() {
 
         <div className="reveal !mt-12" data-reveal-index="6">
           <h3 className="!mb-6 !text-lg !font-medium !text-white/90">
-            Impactos de la <GradientText>Convención</GradientText>
+            Impactos de la{" "}
+            <GradientText>Asociación de Egresados UTP</GradientText>
           </h3>
           <div className="!grid !grid-cols-2 !gap-px !overflow-hidden !rounded-3xl !bg-white/10 md:!grid-cols-4">
             {IMPACT.map((m) => (

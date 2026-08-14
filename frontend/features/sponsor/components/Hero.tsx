@@ -105,14 +105,16 @@ export function SponsorHero() {
             src={LOGO}
             alt="La U del Futuro"
             className="!mx-auto !h-44 !w-auto sm:!h-52 md:!h-60 animate-float-slow"
-            style={{ filter: "drop-shadow(0 0 60px oklch(0.6 0.24 300 / 0.4))" }}
+            style={{
+              filter: "drop-shadow(0 0 60px oklch(0.6 0.24 300 / 0.4))",
+            }}
           />
         </div>
 
         <div className="reveal !max-w-md" data-reveal-index="1">
           <span className="!inline-flex !items-center !gap-2 !rounded-2xl glass !px-4 !py-1.5 !text-xs !font-medium !uppercase !tracking-[0.2em] !text-white/80">
             <span className="!h-1.5 !w-1.5 !rounded-full !bg-cyan-neon !shadow-[0_0_10px_var(--color-cyan-neon)]" />
-            XXIV Convención de Egresados · UTP 2026 · 22, 23 y 24 de octubre
+            XXIV Asociación de Egresados · UTP 2026 · 22, 23 y 24 de octubre
           </span>
         </div>
 
@@ -128,7 +130,7 @@ export function SponsorHero() {
           className="reveal !mx-auto !mt-2 !max-w-2xl !text-pretty !text-base !leading-relaxed !text-white/70 sm:!text-lg"
           data-reveal-index="3"
         >
-          La XXIV Convención de Egresados de la Universidad Tecnológica de
+          La XXIV Asociación de Egresados de la Universidad Tecnológica de
           Pereira reunirá a empresarios, líderes, egresados, gobierno, academia
           e innovadores para construir y vivir juntos la Universidad del futuro.
         </p>
@@ -149,7 +151,9 @@ export function SponsorHero() {
                 "0 0 40px oklch(0.65 0.22 300 / 0.35), 0 0 80px oklch(0.7 0.22 200 / 0.25)",
             }}
           >
-            <span className="!relative !z-10">Quiero ser Aliado Estratégico</span>
+            <span className="!relative !z-10">
+              Quiero ser Aliado Estratégico
+            </span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"

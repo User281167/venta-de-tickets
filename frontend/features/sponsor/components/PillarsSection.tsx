@@ -1,6 +1,14 @@
 "use client";
 
-import { Box, Container, Heading, HStack, SimpleGrid, Stack, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Container,
+  Heading,
+  HStack,
+  SimpleGrid,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import { IconHeart, IconRocket, IconStars } from "@tabler/icons-react";
 
 type Pillar = {
@@ -14,7 +22,7 @@ const PILLARS: Pillar[] = [
   {
     title: "Pertenencia",
     description:
-      "La convención habla desde la comunidad UTP: egresados, estudiantes, docentes, aliados y ciudad.",
+      "La Asociación de Egresados habla desde la comunidad UTP: egresados, estudiantes, docentes, aliados y ciudad.",
     icon: IconHeart,
     accent: "utp.magenta",
   },
@@ -51,12 +59,21 @@ export function PillarsSection() {
             <Text textStyle="eyebrow" color="utp.azul">
               Sistema de marca
             </Text>
-            <Heading as="h2" textStyle="sectionTitle" style={{ textWrap: "balance" }}>
+            <Heading
+              as="h2"
+              textStyle="sectionTitle"
+              style={{ textWrap: "balance" }}
+            >
               Una identidad que reúne generaciones
             </Heading>
-            <Text color="utp.artico" opacity={0.75} fontSize={{ base: "md", md: "lg" }}>
-              Tres principios guían cada aplicación visual. La marca debe expresar
-              pertenencia, futuro y celebración, sin perder cercanía institucional.
+            <Text
+              color="utp.artico"
+              opacity={0.75}
+              fontSize={{ base: "md", md: "lg" }}
+            >
+              Tres principios guían cada aplicación visual. La marca debe
+              expresar pertenencia, futuro y celebración, sin perder cercanía
+              institucional.
             </Text>
           </Stack>
 
@@ -72,7 +89,10 @@ export function PillarsSection() {
                   borderWidth="1px"
                   borderColor="whiteAlpha.100"
                   bg="whiteAlpha.50"
-                  _hover={{ borderColor: pillar.accent, transform: "translateY(-4px)" }}
+                  _hover={{
+                    borderColor: pillar.accent,
+                    transform: "translateY(-4px)",
+                  }}
                   transition="all 0.25s"
                 >
                   <HStack

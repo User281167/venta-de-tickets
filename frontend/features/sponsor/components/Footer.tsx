@@ -1,7 +1,11 @@
 "use client";
 
 import { FooterColumn } from "@/shared/components/FooterColumn";
-import { IconMail, IconMessageCircle, IconBrandInstagram } from "@tabler/icons-react";
+import {
+  IconMail,
+  IconMessageCircle,
+  IconBrandInstagram,
+} from "@tabler/icons-react";
 
 const ICON = { size: 16, stroke: 2 } as const;
 
@@ -33,7 +37,7 @@ const LINKS_CLASS =
 const ENTITIES = [
   "Universidad Tecnológica de Pereira",
   "Asociación de Egresados UTP",
-  "XXIV Convención de Egresados · 2026",
+  "XXIV Asociación de Egresados UTP · 2026",
 ];
 
 export function SponsorFooter() {
@@ -49,7 +53,7 @@ export function SponsorFooter() {
               loading="lazy"
             />
             <div className="!mt-4 !text-xs !uppercase !tracking-[0.25em] !text-white/50">
-              XXIV Convención de Egresados · UTP 2026
+              XXIV Asociación de Egresados · UTP 2026
             </div>
           </div>
 
@@ -81,7 +85,9 @@ export function SponsorFooter() {
         </div>
 
         <div className="!mt-12 !flex !flex-col !items-start !justify-between !gap-4 !border-t !border-white/10 !pt-8 !text-xs !text-white/40 sm:!flex-row sm:!items-center">
-          <div>© 2026 Asociación de Egresados UTP. Todos los derechos reservados.</div>
+          <div>
+            © 2026 Asociación de Egresados UTP. Todos los derechos reservados.
+          </div>
           <div>Pereira · Colombia</div>
         </div>
       </div>

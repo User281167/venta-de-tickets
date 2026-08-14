@@ -14,7 +14,7 @@ const montserratAlternates = Montserrat_Alternates({
 });
 
 export const metadata: Metadata = {
-  title: "La Convención 2026",
+  title: "Asociación de Egresados UTP 2026",
   description:
     "Una experiencia única con expertos en tecnología, emprendimiento e innovación dentro del campus universitario.",
   icons: [
@@ -29,7 +29,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" suppressHydrationWarning className={montserratAlternates.variable}>
+    <html
+      lang="es"
+      suppressHydrationWarning
+      className={montserratAlternates.variable}
+    >
       <body>
         <Provider>
           <AuthProvider>

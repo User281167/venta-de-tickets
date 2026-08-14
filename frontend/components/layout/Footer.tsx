@@ -13,7 +13,7 @@ import {
 } from "@tabler/icons-react";
 
 const QUICK_LINKS = [
-  { label: "La Convención", href: "/#convencion" },
+  { label: "Asociación de Egresados UTP", href: "/#convencion" },
   { label: "Agenda", href: "/agenda" },
   { label: "Actividades", href: "/#actividades" },
   { label: "Invitados", href: "/#invitados" },
@@ -97,8 +97,6 @@ export function Footer() {
 
       <div className="!relative !z-10 !mx-auto !max-w-7xl !px-4 sm:!px-6">
         <div className="!grid !grid-cols-1 !gap-10 sm:!grid-cols-2 lg:!grid-cols-4">
-
-
           <div className="!flex !flex-col !items-start !gap-4">
             <Eyebrow>Organiza</Eyebrow>
             <div className="!flex !items-start !gap-3">
@@ -254,8 +252,8 @@ export function Footer() {
 
         <div className="!flex !flex-col !items-center !justify-between !gap-4 sm:!flex-row">
           <span className="!text-xs !text-white/50">
-            &copy; {new Date().getFullYear()} Universidad Tecnológica de
-            Pereira - ASE UTP.
+            &copy; {new Date().getFullYear()} Universidad Tecnológica de Pereira
+            - ASE UTP.
           </span>
           <div className="!flex !gap-5 !text-xs !text-white/50">
             <NextLink

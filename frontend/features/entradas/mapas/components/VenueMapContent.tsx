@@ -96,7 +96,8 @@ export function VenueMapContent({
         </div>
 
         <Text className="!text-white">
-           Todas las entradas tienen acceso completo a todos los espacios de la convención, la variación es en la ubicación.
+          Todas las entradas tienen acceso completo a todos los espacios de la
+          Asociación de Egresados UTP, la variación es en la ubicación.
         </Text>
 
         <VenueMap

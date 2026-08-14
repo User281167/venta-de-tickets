@@ -34,7 +34,7 @@ const FAQ_ITEMS: Faq[] = [
     value: "fechas",
     question: "¿Cuándo será La U del Futuro?",
     answer:
-      "La convención se realizará el 22, 23 y 24 de octubre de 2026 en la Universidad Tecnológica de Pereira.",
+      "La Asociación de Egresados UTP se realizará el 22, 23 y 24 de octubre de 2026 en la Universidad Tecnológica de Pereira.",
   },
   {
     value: "entradas",

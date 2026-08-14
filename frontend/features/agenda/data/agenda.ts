@@ -63,7 +63,7 @@ export const AGENDA_DAYS: AgendaDay[] = [
         time: "Jornada Mañana",
         title: "Apertura Institucional",
         description:
-          "Acto de bienvenida a cargo de las directivas de la UTP y la ASE que da inicio oficial a la XXIV Convención de Egresados en el campus inteligente.",
+          "Acto de bienvenida a cargo de las directivas de la UTP y la ASE que da inicio oficial a la XXIV Asociación de Egresados UTP en el campus inteligente.",
         track: "Keynote",
         icon: IconMicrophone2,
         image:
@@ -132,7 +132,7 @@ export const AGENDA_DAYS: AgendaDay[] = [
         time: "Jornada Mañana",
         title: "Conferencia Magistral",
         description:
-          "Conferencia central con un invitado de alto nivel que marca la conversación sobre el futuro de la educación, la innovación y la región en el marco de la XXIV Convención.",
+          "Conferencia central con un invitado de alto nivel que marca la conversación sobre el futuro de la educación, la innovación y la región en el marco de la XXIV de la Asociación de Egresados UTP.",
         track: "Keynote",
         icon: IconMicrophone2,
         image:
@@ -191,7 +191,7 @@ export const AGENDA_DAYS: AgendaDay[] = [
         time: "Jornada Mañana",
         title: "Actividades de Bienestar",
         description:
-          "Espacios de bienestar físico y mental para egresados y asistentes: activación, autocuidado y conexión con la naturaleza, alineados con la dimensión de bienestar de la convención.",
+          "Espacios de bienestar físico y mental para egresados y asistentes: activación, autocuidado y conexión con la naturaleza, alineados con la dimensión de bienestar de la Asociación de Egresados UTP.",
         track: "Networking",
         icon: IconDeviceLaptop,
         image:
@@ -231,7 +231,7 @@ export const AGENDA_DAYS: AgendaDay[] = [
         time: "Jornada Noche",
         title: "Gran Concierto y Cierre del Evento",
         description:
-          "Cierre oficial de la XXIV Convención con un gran concierto que reúne a la comunidad UTP para celebrar tres días de inspiración, alianzas y reencuentro.",
+          "Cierre oficial de la XXIV de la Asociación de Egresados UTP con un gran concierto que reúne a la comunidad UTP para celebrar tres días de inspiración, alianzas y reencuentro.",
         track: "Cierre",
         icon: IconTrophy,
         image:

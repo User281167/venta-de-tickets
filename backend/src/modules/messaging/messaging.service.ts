@@ -3,7 +3,7 @@ import { renderTemplate } from './templates/render-template.js';
 import { logger } from '../../utils/logger.js';
 import { env } from '../../shared/config/env.js';
 
-const EVENT_NAME = 'La Convención De Egresados UTP 2026';
+const EVENT_NAME = 'Asociación de Egresados UTP - 2026';
 
 function formatCop(cents: number): string {
   return new Intl.NumberFormat('es-CO', {
@@ -53,7 +53,8 @@ export async function sendPaymentFailed(input: {
   failedAt: Date;
   reason?: string;
 }): Promise<void> {
-  const reason = input.reason ?? 'El proveedor de pagos rechazó la transacción.';
+  const reason =
+    input.reason ?? 'El proveedor de pagos rechazó la transacción.';
 
   const html = renderTemplate('payment-failed', {
     frontendUrl: env.CONFIRMATION_LINK_BASE_URL,
@@ -194,7 +195,9 @@ export async function sendTicketCancellation(input: {
 }
 
 function donationAccountName(account: string): string {
-  return account === 'LA_CONVENCION' ? 'La Convención' : 'Barranqueros UTP';
+  return account === 'LA_CONVENCION'
+    ? 'Asociación de Egresados UTP'
+    : 'Barranqueros UTP';
 }
 
 export async function sendDonationConfirmation(input: {

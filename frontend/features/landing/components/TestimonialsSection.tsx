@@ -29,20 +29,21 @@ type Testimonial = {
 
 const TESTIMONIALS: Testimonial[] = [
   {
-    quote: "Volver a la U con esta energía cambia la forma de imaginar el futuro.",
+    quote:
+      "Volver a la U con esta energía cambia la forma de imaginar el futuro.",
     author: "Egresada UTP",
     color: "magenta",
     icon: <IconQuote {...ICON} />,
   },
   {
-    quote:
-      "El networking conectó generaciones, empresas y proyectos reales.",
+    quote: "El networking conectó generaciones, empresas y proyectos reales.",
     author: "Participante 2025",
     color: "cyan",
     icon: <IconUsers {...ICON} />,
   },
   {
-    quote: "Una convención con mirada global y raíz universitaria.",
+    quote:
+      "Una Asociación de Egresados con mirada global y raíz universitaria.",
     author: "Aliado institucional",
     color: "violet",
     icon: <IconWorld {...ICON} />,

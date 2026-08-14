@@ -40,7 +40,7 @@ export function HeroSection() {
               data-reveal-index="0"
             >
               <span className="!h-1.5 !w-1.5 !rounded-full !bg-cyan-neon !shadow-[0_0_10px_var(--color-cyan-neon)]" />
-              XXIV Convención de Egresados · UTP 2026
+              XXIV Asociación de Egresados UTP de Egresados · UTP 2026
             </span>
 
             <div
@@ -50,13 +50,12 @@ export function HeroSection() {
               <div
                 className="animate-float-large will-change-transform"
                 style={{
-                  filter:
-                    "drop-shadow(0 0 50px oklch(0.6 0.24 300 / 0.45))",
+                  filter: "drop-shadow(0 0 50px oklch(0.6 0.24 300 / 0.45))",
                 }}
               >
                 <img
                   src={LOGO}
-                  alt="La U del Futuro — XXIV Convención de Egresados UTP 2026"
+                  alt="La U del Futuro — XXIV Asociación de Egresados UTP 2026"
                   className="!h-44 !w-auto sm:!h-52 md:!h-60"
                   loading="eager"
                 />
@@ -79,8 +78,8 @@ export function HeroSection() {
               className="reveal !max-w-xl !text-base !leading-relaxed !text-white/75 sm:!text-lg"
               data-reveal-index="2"
             >
-              La XXIV Convención de Egresados de la Universidad Tecnológica
-              de Pereira reúne a empresarios, líderes, egresados, gobierno,
+              La XXIV Asociación de Egresados de la Universidad Tecnológica de
+              Pereira reúne a empresarios, líderes, egresados, gobierno,
               academia e innovadores para construir y vivir juntos la
               Universidad del futuro.
             </p>
@@ -127,13 +126,12 @@ export function HeroSection() {
               <div
                 className="animate-float-large will-change-transform"
                 style={{
-                  filter:
-                    "drop-shadow(0 0 50px oklch(0.6 0.24 300 / 0.45))",
+                  filter: "drop-shadow(0 0 50px oklch(0.6 0.24 300 / 0.45))",
                 }}
               >
                 <img
                   src={LOGO}
-                  alt="La U del Futuro — XXIV Convención de Egresados UTP 2026"
+                  alt="La U del Futuro — XXIV Asociación de Egresados UTP 2026"
                   className="!h-44 !w-auto sm:!h-52 md:!h-60"
                   loading="eager"
                 />

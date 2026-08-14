@@ -1,8 +1,20 @@
 "use client";
 
-import { Box, Container, Heading, HStack, SimpleGrid, Stack, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Container,
+  Heading,
+  HStack,
+  SimpleGrid,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 
-const SAMPLES_HEADING = ["FUTURO", "CONVENCIÓN", "EGRESADOS UTP 2026"];
+const SAMPLES_HEADING = [
+  "FUTURO",
+  "Asociación de Egresados UTP",
+  "EGRESADOS UTP 2026",
+];
 const SAMPLES_BODY = [
   "La U del futuro funciona como cierre emocional, visual y sonoro de la marca.",
   "Portadas, cierres, invitaciones, videos, banners, cuñas radiales y menciones institucionales.",
@@ -25,10 +37,18 @@ export function TypographySection() {
             <Text textStyle="eyebrow" color="utp.azul">
               Sistema tipográfico
             </Text>
-            <Heading as="h2" textStyle="sectionTitle" style={{ textWrap: "balance" }}>
+            <Heading
+              as="h2"
+              textStyle="sectionTitle"
+              style={{ textWrap: "balance" }}
+            >
               Dos familias, una voz
             </Heading>
-            <Text color="utp.artico" opacity={0.75} fontSize={{ base: "md", md: "lg" }}>
+            <Text
+              color="utp.artico"
+              opacity={0.75}
+              fontSize={{ base: "md", md: "lg" }}
+            >
               Títulos, fechas y rótulos de escenario en Good Times. Subtítulos,
               entradillas, etiquetas y bloques de información prioritaria en
               Montserrat Alternates.
@@ -107,7 +127,8 @@ export function TypographySection() {
                 ))}
               </Stack>
               <Text fontFamily="body" fontSize="sm" opacity={0.6}>
-                Montserrat Alternates · 400–900 · uso en subtítulos, etiquetas y bloques.
+                Montserrat Alternates · 400–900 · uso en subtítulos, etiquetas y
+                bloques.
               </Text>
             </Stack>
           </SimpleGrid>

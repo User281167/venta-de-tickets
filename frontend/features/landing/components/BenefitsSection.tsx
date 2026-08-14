@@ -69,13 +69,15 @@ const ACTIVITIES: Activity[] = [
     title: "Barranqueros UTP",
     description: "El Ecosistema de Emprendimiento Barranqueros UTP",
     color: "verde",
-    icon: <Image
-      src="/assets/barranqueros-logo.png"
-      m="auto"
-      w="auto"
-      h="full"
-      style={{ objectFit: "cover" }}
-    />,
+    icon: (
+      <Image
+        src="/assets/barranqueros-logo.png"
+        m="auto"
+        w="auto"
+        h="full"
+        style={{ objectFit: "cover" }}
+      />
+    ),
   },
 ];
 
@@ -134,7 +136,8 @@ export function BenefitsSection() {
           </span>
 
           <h2 className="!text-4xl !font-black !uppercase !leading-[1.05] !tracking-tight !text-white sm:!text-5xl md:!text-6xl">
-            6 dimensiones para <GradientText>vivir la convención</GradientText>
+            6 dimensiones para{" "}
+            <GradientText>vivir la Asociación de Egresados UTP</GradientText>
           </h2>
 
           <p className="!max-w-2xl !text-base !leading-relaxed !text-white/70 sm:!text-lg">

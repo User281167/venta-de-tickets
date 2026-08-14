@@ -1,8 +1,4 @@
-export type DonationState =
-  | "pending"
-  | "confirmed"
-  | "rejected"
-  | "cancelled";
+export type DonationState = "pending" | "confirmed" | "rejected" | "cancelled";
 
 export const DONATION_STATE_VALUES: readonly DonationState[] = [
   "pending",
@@ -39,9 +35,9 @@ export const DONATION_STATE_FILTER_OPTIONS: ReadonlyArray<{
 export type DonationAccount = "LA_CONVENCION" | "BARRANQUEROS_UTP" | "VICTIMAS";
 
 export const DONATION_ACCOUNT_LABELS: Record<DonationAccount, string> = {
-  LA_CONVENCION: "La Convención",
+  LA_CONVENCION: "Asociación de Egresados UTP",
   BARRANQUEROS_UTP: "Barranqueros UTP",
-  VICTIMAS: "Víctimas y damnificados"
+  VICTIMAS: "Víctimas y damnificados",
 };
 
 export const DONATION_ACCOUNT_FILTER_OPTIONS: ReadonlyArray<{
@@ -49,7 +45,7 @@ export const DONATION_ACCOUNT_FILTER_OPTIONS: ReadonlyArray<{
   label: string;
 }> = [
   { value: "", label: "Todas las cuentas" },
-  { value: "LA_CONVENCION", label: "La Convención" },
+  { value: "LA_CONVENCION", label: "Asociación de Egresados UTP" },
   { value: "BARRANQUEROS_UTP", label: "Barranqueros UTP" },
   { value: "VICTIMAS", label: "Víctimas y damnificados" },
 ];

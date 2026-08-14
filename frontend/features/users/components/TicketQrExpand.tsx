@@ -38,7 +38,7 @@ export function TicketQrExpand({ ticket }: { ticket: TicketItem }) {
         {ticket.qrToken ? (
           <>
             <Text color="gray.600" fontSize="xs" fontWeight="bold" mb={2}>
-              La Convención 2026
+              La Asociación de Egresados UTP 2026
             </Text>
             <QRCodeCanvas value={ticket.qrToken} size={200} level="M" />
             <Text color="gray.600" fontSize="xs" fontFamily="monospace" mt={2}>

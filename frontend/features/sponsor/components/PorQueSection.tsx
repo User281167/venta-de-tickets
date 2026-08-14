@@ -82,7 +82,7 @@ const FEATURES: Feature[] = [
     icon: <IconRadar {...ICON_SIZE} />,
     title: "Visibilidad",
     description:
-      "Tu marca estará presente durante toda la experiencia de la Convención.",
+      "Tu marca estará presente durante toda la experiencia de la Asociación de Egresados UTP.",
     color: "blue",
   },
 ];
