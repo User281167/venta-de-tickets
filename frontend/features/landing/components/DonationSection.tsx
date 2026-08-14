@@ -21,29 +21,31 @@ export function DonationSection() {
 
       <Stack align="center" gap={6} px={4}>
         <IconHeartFilled size={32} color="#ff0f7b" />
-        <Text
-          fontSize="3xl"
-          fontWeight="bold"
-          color="white"
-          textAlign="center"
-        >
+
+        <Text fontSize="3xl" fontWeight="bold" color="white" textAlign="center">
           Haz tu donación
         </Text>
+
         <Text
+          id="donaciones-comunidad-utp"
           fontSize="xl"
           color="brand.muted"
           textAlign="center"
           maxW="500px"
         >
-          Apoya a La Convención, Barranqueros UTP o a los Víctimas y Damnificados por el sismo en Colombia con tu donación.
-          Cada aporte cuenta.
+          Apoya a La Convención, Barranqueros UTP o a los Víctimas y
+          Damnificados por el sismo en Colombia con tu donación. Cada aporte
+          cuenta.
         </Text>
+
         <HStack gap={4} wrap="wrap" justify="center">
           <DonationButton account="LA_CONVENCION" />
+
           <DonationButton
             account="BARRANQUEROS_UTP"
             socialMedia="https://www.instagram.com/barranqueros_utp"
           />
+
           <DonationButton
             account="VICTIMAS"
             label="Víctimas/Damnificados por el Sismo"
