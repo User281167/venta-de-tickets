@@ -79,13 +79,15 @@ Endpoints agrupados bajo `/api/me`. Actúa como **agregador usuario autenticado*
     "address": "Calle 123",
     "dateOfBirth": "1990-01-15"
   },
-  "consentStatus": {
-    "required": true,
-    "acceptedAt": "2025-01-15T10:00:00.000Z",
-    "policyVersion": "v1"
+  "policyStatus": {
+    "policies": [
+      { "type": "privacy_policy",  "currentVersion": "1.0.0", "accepted": true,  "acceptedAt": "2026-08-13T12:00:00.000Z" },
+      { "type": "terms_of_service", "currentVersion": "1.0.0", "accepted": false, "acceptedAt": null }
+    ]
   }
 }
 ```
+`policyStatus` lo resuelve `me.controller` llamando a `usersService.getPolicyStatus(userId)`. Documentación detallada en `modules/users/README.md`.
 
 ### Personal Info — 200
 ```json
@@ -189,3 +191,4 @@ graph LR
     C -->|getPrivacyStatus| US
     C -->|getPersonalInfo / setPersonalInfo| S
     S -->|findByUserId / upsert| Repo
+```

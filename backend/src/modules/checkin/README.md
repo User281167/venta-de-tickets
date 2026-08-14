@@ -12,14 +12,14 @@ Cada ticket se procesa individualmente — un comprador con N tickets = N escane
 | `checkin.service.ts` | Service | 4 métodos: `scanTicket`, `confirmEntryDirect`, `requestConfirmation`, `allowEntry` |
 | `checkin.repository.ts` | Repository | Transiciones con `$transaction` + `FOR UPDATE` + `WHERE status = X` (idempotencia) |
 | `checkin.validators.ts` | Validator | Schemas Zod: `scanSchema`, `ticketActionSchema` |
-| `checkin.types.ts` | Types | `CheckerAction`, `TicketStatus`, `TicketSummary`, `getAllowedActions()` |
+| `checkin.types.ts` | Types | `CheckerAction`, `TicketStatus`, `TicketSummary { ticketId, status, attendeeName, attendeeCedula, ticketTypeName, ticketTypeDescription, ticketTypeZona, checkedInAt, allowedActions }`, `getAllowedActions()` |
 | `index.ts` | Barrel | Re-exporta `checkinRouter` |
 
 ### Capa Service
 
 | Método | Input | Output | Dependencias |
 |--------|-------|--------|-------------|
-| `scanTicket` | qrToken | `TicketSummary` con `allowedActions` calculadas | `jwt.verify` (QR_JWT_SECRET) + `checkinRepo.findTicketForScan` + `getAllowedActions` |
+| `scanTicket` | qrToken | `TicketSummary` con `allowedActions` calculadas + metadatos del `ticketType` (`name`, `description`, `zona`) | `jwt.verify` (QR_JWT_SECRET) + `checkinRepo.findTicketForScan` + `getAllowedActions` |
 | `confirmEntryDirect` | ticketId, checkerId | void o `ConflictError` | `checkinRepo.confirmEntryDirect` |
 | `requestConfirmation` | ticketId, checkerId | void o `NotFoundError`/`ConflictError` | `checkinRepo.requestConfirmation` (tx con `FOR UPDATE`) + `jwt.sign` (CONFIRMATION_JWT_SECRET) + `messagingService.sendTicketConfirmation` (solo cuando `buyer.channel === 'email'`) |
 | `allowEntry` | ticketId, checkerId | void o `ConflictError` | `checkinRepo.allowEntry` |
@@ -28,7 +28,7 @@ Cada ticket se procesa individualmente — un comprador con N tickets = N escane
 
 | Método | Transacción | Locks | Transición |
 |--------|-------------|-------|-----------|
-| `findTicketForScan` | ninguna (read-only) | — | — |
+| `findTicketForScan` | ninguna (read-only) | — | SELECT ticket + `user { fullName, cedula }` + `ticketType { name, description, zona }`. Devuelve `TicketSummary` con esos campos aplanados en `ticketTypeName`, `ticketTypeDescription`, `ticketTypeZona` |
 | `confirmEntryDirect` | `$transaction` | `WHERE status = 'paid'` | `paid → used` (setea `checkedInAt` + `checkedInBy`) |
 | `requestConfirmation` | `$transaction` | `FOR UPDATE` + `WHERE status = 'paid'` | `paid → pending_confirmation` (setea `confirmationRequestedAt`) |
 | `allowEntry` | `$transaction` | `WHERE status = 'confirmed'` | `confirmed → used` |
