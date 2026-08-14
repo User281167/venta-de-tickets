@@ -1,12 +1,29 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { HStack, Stack, Text } from "@chakra-ui/react";
 import { IconHeartFilled } from "@tabler/icons-react";
 import { DonationButton } from "@/features/donaciones/components/DonationButton";
 import { DefaultWaves } from "@/shared/components/Waves";
 import { Particles } from "@/shared/components/Particles";
 
+const VICTIMAS_HASH = "#donaciones-comunidad-utp";
+
 export function DonationSection() {
+  const [victimasOpen, setVictimasOpen] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const check = () => {
+      if (window.location.hash === VICTIMAS_HASH) {
+        setVictimasOpen(true);
+      }
+    };
+    check();
+    window.addEventListener("hashchange", check);
+    return () => window.removeEventListener("hashchange", check);
+  }, []);
+
   return (
     <section
       id="donaciones"
@@ -49,6 +66,8 @@ export function DonationSection() {
           <DonationButton
             account="VICTIMAS"
             label="Víctimas/Damnificados por el Sismo"
+            open={victimasOpen}
+            onOpenChange={setVictimasOpen}
           />
         </HStack>
       </Stack>

@@ -9,12 +9,20 @@ interface Props {
   account: DonationAccount;
   label?: string;
   socialMedia?: string;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
-export function DonationButton({ account, label, socialMedia }: Props) {
-  const [open, setOpen] = useState(false);
+export function DonationButton({ account, label, socialMedia, open: controlledOpen, onOpenChange }: Props) {
+  const [internalOpen, setInternalOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const buttonLabel = label ?? ("Donar a " + DONATION_ACCOUNT_LABELS[account]);
+  const isControlled = controlledOpen !== undefined;
+  const open = isControlled ? controlledOpen : internalOpen;
+  const setOpen = (value: boolean) => {
+    if (isControlled) onOpenChange?.(value);
+    else setInternalOpen(value);
+  };
 
   return (
     <>
