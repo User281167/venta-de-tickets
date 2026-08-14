@@ -195,6 +195,7 @@ model Donation {
   id                String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   full_name         String?         @map("full_name") @db.VarChar(150)
   email             String?         @db.VarChar(255)
+  company           String?         @map("company") @db.VarChar(150)
   amountCents       Int             @map("amount_cents")
   state             DonationStatus  @default(pending) @map("state")
   account           DonationAccount @map("account")
