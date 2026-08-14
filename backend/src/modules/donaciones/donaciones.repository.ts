@@ -5,6 +5,7 @@ import { prisma } from '../../shared/database/prisma.client.js';
 export interface CreateDonationData {
   fullName?: string | null;
   email?: string | null;
+  company?: string | null;
   amountCents: number;
   account: DonationAccount;
   externalReference: string;
@@ -41,6 +42,7 @@ export const donationRepository = {
       data: {
         full_name: data.fullName,
         email: data.email,
+        company: data.company,
         amountCents: data.amountCents,
         account: data.account,
         externalReference: data.externalReference,

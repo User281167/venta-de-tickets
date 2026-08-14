@@ -49,6 +49,7 @@ export async function listDonations(req: Request, res: Response): Promise<void> 
         id: donation.id,
         fullName: donation.full_name,
         email: donation.email,
+        company: donation.company,
         amountCents: Number(donation.amountCents),
         state: donation.state,
         account: donation.account,

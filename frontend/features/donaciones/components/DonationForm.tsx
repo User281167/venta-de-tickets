@@ -51,6 +51,11 @@ declare const ePayco: {
 const formSchema = z.object({
   fullName: z.string().optional(),
   email: z.string().email("Correo inválido").optional().or(z.literal("")),
+  company: z
+    .string()
+    .max(150, "Máximo 150 caracteres")
+    .optional()
+    .or(z.literal("")),
   amount: z
     .number({ message: "Ingresa un monto válido" })
     .int()
@@ -76,6 +81,7 @@ export function DonationForm({
   const router = useRouter();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
+  const [company, setCompany] = useState("");
   const [amount, setAmount] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [scriptReady, setScriptReady] = useState(false);
@@ -108,6 +114,7 @@ export function DonationForm({
     const parsed = formSchema.safeParse({
       fullName: fullName || undefined,
       email: email || undefined,
+      company: company || undefined,
       amount: amount ? Number(amount) : undefined,
     });
 
@@ -137,6 +144,7 @@ export function DonationForm({
       {
         fullName: parsed.data.fullName || null,
         email: parsed.data.email || null,
+        company: parsed.data.company || null,
         amountCents: parsed.data.amount,
         account,
         provider: "epayco",
@@ -253,6 +261,21 @@ export function DonationForm({
                 />
 
                 <Field.ErrorText>{errors.email}</Field.ErrorText>
+              </Field.Root>
+
+              <Field.Root invalid={!!errors.company}>
+                <Field.Label>Empresa/Organización (opcional)</Field.Label>
+
+                <Input
+                  value={company}
+                  onChange={(e) => setCompany(e.target.value)}
+                  placeholder="Nombre de tu empresa u organización"
+                  bg="whiteAlpha.100"
+                  border="1px solid"
+                  borderColor="whiteAlpha.200"
+                />
+
+                <Field.ErrorText>{errors.company}</Field.ErrorText>
               </Field.Root>
 
               <Field.Root invalid={!!errors.amount} required>

@@ -10,6 +10,7 @@ export interface DonationListRow {
   id: string;
   fullName: string | null;
   email: string | null;
+  company: string | null;
   amountCents: number;
   state: DonationState;
   account: DonationAccount;

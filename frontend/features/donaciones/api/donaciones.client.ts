@@ -37,6 +37,7 @@ async function publicFetch<T>(
 export type CreateDonationInput = {
   fullName?: string | null;
   email?: string | null;
+  company?: string | null;
   amountCents: number;
   account: DonationAccount;
   backUrl: string;

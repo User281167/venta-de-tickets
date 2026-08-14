@@ -21,15 +21,16 @@ export function DonationsTable({ donations }: { donations: DonationListRow[] }) 
       overflowX="auto"
       className="scrollbar-thin"
     >
-      <Table.Root css={tableCss} minW="900px">
+      <Table.Root css={tableCss} minW="1000px">
         <Table.Header>
           <Table.Row>
-            <Table.ColumnHeader w="16%">Fecha</Table.ColumnHeader>
-            <Table.ColumnHeader w="18%">Donante</Table.ColumnHeader>
-            <Table.ColumnHeader w="22%">Correo</Table.ColumnHeader>
-            <Table.ColumnHeader w="14%">Monto</Table.ColumnHeader>
-            <Table.ColumnHeader w="14%">Cuenta</Table.ColumnHeader>
-            <Table.ColumnHeader w="16%">Estado</Table.ColumnHeader>
+            <Table.ColumnHeader w="14%">Fecha</Table.ColumnHeader>
+            <Table.ColumnHeader w="16%">Donante</Table.ColumnHeader>
+            <Table.ColumnHeader w="14%">Empresa</Table.ColumnHeader>
+            <Table.ColumnHeader w="20%">Correo</Table.ColumnHeader>
+            <Table.ColumnHeader w="12%">Monto</Table.ColumnHeader>
+            <Table.ColumnHeader w="12%">Cuenta</Table.ColumnHeader>
+            <Table.ColumnHeader w="12%">Estado</Table.ColumnHeader>
           </Table.Row>
         </Table.Header>
 
@@ -60,6 +61,11 @@ export function DonationsTable({ donations }: { donations: DonationListRow[] }) 
                 <Table.Cell>
                   <Text color="white" fontWeight="bold" fontSize="sm">
                     {donation.fullName ?? "Anónimo"}
+                  </Text>
+                </Table.Cell>
+                <Table.Cell>
+                  <Text color="brand.muted" fontSize="sm">
+                    {donation.company ?? "—"}
                   </Text>
                 </Table.Cell>
                 <Table.Cell>
