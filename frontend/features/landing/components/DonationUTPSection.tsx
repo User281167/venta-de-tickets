@@ -14,9 +14,9 @@ const fadeUp: Variants = {
   }),
 };
 
-export function SismoSection() {
+export function DonationUTPSection() {
   return (
-    <>
+    <div className="!bg-blue-900 !pt-20">
       <Image
         asChild
         className="!hidden md:!block"
@@ -101,6 +101,6 @@ export function SismoSection() {
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 }

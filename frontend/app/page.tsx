@@ -16,7 +16,7 @@ import { AsociacionSection } from "@/features/sponsor/components/AsociacionSecti
 import { ImpactoSocialSection } from "@/features/sponsor/components/ImpactoSocialSection";
 import { TicketPurchaseClient } from "@/features/ticket-purchase/components/TicketPurchaseClient";
 import { DonationFloat } from "@/features/donaciones/components/DonationFloat";
-import { SismoSection } from "@/features/landing/components/sismoSection";
+import { DonationUTPSection } from "@/features/landing/components/DonationUTPSection";
 
 export default function LandingPage() {
   return (
@@ -24,9 +24,9 @@ export default function LandingPage() {
       <AuthErrorToast />
       <Navbar />
       <main>
+        <DonationUTPSection />
         <DonationFloat />
         <HeroSection />
-        <SismoSection />
         <TicketPurchaseClient />
         {/*<TicketSection />*/}
         <DonationSection />
