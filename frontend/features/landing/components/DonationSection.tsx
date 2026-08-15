@@ -58,10 +58,10 @@ export function DonationSection() {
         <HStack gap={4} wrap="wrap" justify="center">
           <DonationButton account="LA_CONVENCION" />
 
-          <DonationButton
+          {/*<DonationButton
             account="BARRANQUEROS_UTP"
             socialMedia="https://www.instagram.com/barranqueros_utp"
-          />
+          />*/}
 
           <DonationButton
             account="VICTIMAS"

@@ -17,6 +17,7 @@ import {
   DialogTitle,
   Field,
   HStack,
+  Image,
   Input,
   Link,
   Stack,
@@ -225,9 +226,7 @@ export function DonationForm({
                 Donar a {accountLabel}
               </DialogTitle>
 
-              <Text fontSize="sm" color="brand.muted" textAlign="center">
-                Tu donación apoya {DONATION_ACCOUNT_LABELS[account]}
-              </Text>
+              <Image src="/assets/todos-somo-u.jpg" maxW="32" />
             </Stack>
           </DialogHeader>
 
@@ -284,7 +283,7 @@ export function DonationForm({
                 <Input
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
-                  placeholder="50000"
+                  placeholder="Mínimo $5.000 COP"
                   type="number"
                   min="2000"
                   bg="whiteAlpha.100"

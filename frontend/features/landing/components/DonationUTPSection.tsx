@@ -2,7 +2,11 @@
 
 import { motion, type Variants } from "framer-motion";
 import { Image } from "@chakra-ui/react";
+import { Link as ChakraLink } from "@chakra-ui/react";
+
 import NextImage from "next/image";
+import NextLink from "next/link";
+
 const VIEWPORT = { once: true, margin: "-10% 0px -10% 0px" } as const;
 
 const fadeUp: Variants = {
@@ -19,7 +23,7 @@ export function DonationUTPSection() {
     <div className="!bg-blue-900 !pt-20">
       <Image
         asChild
-        className="!hidden md:!block"
+        className="!hidden md:!block !w-full"
         alt="Donaciones para los afectados del sismo ahorros 127270147292 llave bre-be 8914082399 punto de entrega Cra 26 #12-24 Alamos enseguida de NASE"
       >
         <NextImage
@@ -99,6 +103,59 @@ export function DonationUTPSection() {
               </div>
             </motion.div>
           </div>
+        </div>
+      </section>
+
+      <section className="!relative !overflow-hidden">
+        <div
+          className="!pointer-events-none !absolute !inset-0 !opacity-20"
+          style={{
+            backgroundImage: "url(/assets/bg-donaciones.jpg)",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+          aria-hidden="true"
+        />
+
+        <div
+          className="!pointer-events-none !absolute !inset-0"
+          style={{
+            background:
+              "linear-gradient(90deg, rgba(2,4,20,0.45) 0%, rgba(2,4,20,0.1) 60%, rgba(2,4,20,0.35) 100%)",
+          }}
+          aria-hidden="true"
+        />
+
+        <div className="!relative !z-10 !mx-auto !w-full !max-w-7xl !py-10">
+          <motion.div
+            initial="hidden"
+            whileInView="show"
+            viewport={VIEWPORT}
+            variants={fadeUp}
+            custom={0}
+            className="flex flex-wrap !items-center !gap-10 !justify-center"
+          >
+            <Image
+              asChild
+              className="!h-auto !max-w-md w-full"
+              alt="Donaciones para los afectados del sismo ahorros 127270147292 llave bre-be 8914082399 punto de entrega Cra 26 #12-24 Alamos enseguida de NASE"
+            >
+              <NextImage
+                width={1080}
+                height={1920}
+                src="/assets/UTP_CONVOCATORIA.jpeg"
+                alt="Donaciones para los afectados del sismo ahorros 127270147292 llave bre-be 8914082399 punto de entrega Cra 26 #12-24 Alamos enseguida de NASE"
+              />
+            </Image>
+
+            <NextLink href="#donaciones-comunidad-utp" className="!w-fit !h-fit">
+              <Image
+                src="/assets/como-ayudar.jpg"
+                className="!h-auto !max-w-md"
+                alt="Donaciones para los afectados del sismo ahorros 127270147292 llave bre-be 8914082399 punto de entrega Cra 26 #12-24 Alamos enseguida de NASE"
+              />
+            </NextLink>
+          </motion.div>
         </div>
       </section>
     </div>
