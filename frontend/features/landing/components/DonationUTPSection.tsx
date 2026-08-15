@@ -20,7 +20,7 @@ const fadeUp: Variants = {
 
 export function DonationUTPSection() {
   return (
-    <div className="!bg-blue-900 !pt-20">
+    <div className="!bg-blue-900">
       <Image
         asChild
         className="!hidden md:!block !w-full"
