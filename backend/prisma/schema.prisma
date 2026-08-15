@@ -209,6 +209,16 @@ model Donation {
   @@map("donations")
 }
 
+model DonationCounter {
+  id           Int       @id @default(1)
+  currentValue Int       @default(0) @map("current_value")
+  metaValue    Int       @default(0) @map("meta_value")
+  updatedAt    DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+  updatedBy    String?   @map("updated_by") @db.Uuid
+
+  @@map("donation_counter")
+}
+
 model AuditLog {
   id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   eventId     String

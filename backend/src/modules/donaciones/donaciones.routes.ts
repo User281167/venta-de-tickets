@@ -16,6 +16,11 @@ donacionesRouter.post(
   ctrl.handleWebhook,
 );
 donacionesRouter.get(
+  '/counter',
+  rateLimit(POLICIES.publicRead),
+  ctrl.getCounter,
+);
+donacionesRouter.get(
   '/:externalReference/status',
   rateLimit(POLICIES.publicRead),
   ctrl.getStatus,

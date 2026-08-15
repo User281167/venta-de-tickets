@@ -5,6 +5,7 @@ import * as donacionesService from './donaciones.service.js';
 import {
   createDonationSchema,
   adminListDonationsQuerySchema,
+  updateDonationCounterSchema,
 } from './donaciones.schema.js';
 
 export async function createDonation(req: Request, res: Response): Promise<void> {
@@ -36,6 +37,56 @@ export async function getStatus(req: Request, res: Response): Promise<void> {
     amountCents: Number(donation.amountCents),
     createdAt: donation.createdAt.toISOString(),
   });
+}
+
+export async function getCounter(_req: Request, res: Response): Promise<void> {
+  const counter = await donacionesService.getCounter();
+
+  if (!counter) {
+    res.status(404).json({
+      error: {
+        code: 'NOT_FOUND',
+        message: 'El contador de donaciones aún no está inicializado',
+      },
+    });
+
+    return;
+  }
+
+  res.status(200).json({
+    currentValue: counter.currentValue,
+    metaValue: counter.metaValue,
+    updatedAt: counter.updatedAt.toISOString(),
+  });
+}
+
+export async function updateCounter(req: Request, res: Response): Promise<void> {
+  try {
+    const input = updateDonationCounterSchema.parse(req.body);
+
+    const counter = await donacionesService.updateCounter(input, {
+      id: req.user!.id,
+    });
+
+    res.status(200).json({
+      currentValue: counter.currentValue,
+      metaValue: counter.metaValue,
+      updatedAt: counter.updatedAt.toISOString(),
+    });
+  } catch (err) {
+    if (err instanceof ZodError) {
+      res.status(422).json({
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: err.issues.map((i) => i.message).join(', '),
+        },
+      });
+
+      return;
+    }
+
+    throw err;
+  }
 }
 
 export async function listDonations(req: Request, res: Response): Promise<void> {

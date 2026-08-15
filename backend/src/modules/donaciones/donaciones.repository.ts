@@ -1,6 +1,7 @@
-import { Donation, DonationAccount, DonationStatus } from '@prisma/client';
+import { Donation, DonationAccount, DonationCounter, DonationStatus } from '@prisma/client';
 import type { Prisma } from '@prisma/client';
 import { prisma } from '../../shared/database/prisma.client.js';
+import { DONATION_COUNTER_ID } from './donaciones.types.js';
 
 export interface CreateDonationData {
   fullName?: string | null;
@@ -30,6 +31,12 @@ export interface PaginatedDonations {
   total: number;
   page: number;
   limit: number;
+}
+
+export interface UpdateCounterData {
+  currentValue?: number;
+  metaValue?: number;
+  updatedBy: string;
 }
 
 export function createDonationUUID() {
@@ -157,5 +164,56 @@ export const donationRepository = {
     });
 
     return expired;
+  },
+
+  findCounter: async (): Promise<DonationCounter | null> => {
+    return prisma.donationCounter.findUnique({
+      where: { id: DONATION_COUNTER_ID },
+    });
+  },
+
+  ensureCounterRow: async (): Promise<DonationCounter> => {
+    return prisma.donationCounter.upsert({
+      where: { id: DONATION_COUNTER_ID },
+      update: {},
+      create: { id: DONATION_COUNTER_ID, currentValue: 0, metaValue: 0 },
+    });
+  },
+
+  incrementCounterBy: async (
+    amountWhole: number,
+  ): Promise<DonationCounter> => {
+    return prisma.donationCounter.upsert({
+      where: { id: DONATION_COUNTER_ID },
+      update: { currentValue: { increment: amountWhole } },
+      create: { id: DONATION_COUNTER_ID, currentValue: amountWhole },
+    });
+  },
+
+  updateCounter: async (
+    data: UpdateCounterData,
+  ): Promise<DonationCounter> => {
+    const update: Prisma.DonationCounterUpdateInput = {
+      updatedBy: data.updatedBy,
+    };
+
+    if (data.currentValue !== undefined) {
+      update.currentValue = data.currentValue;
+    }
+
+    if (data.metaValue !== undefined) {
+      update.metaValue = data.metaValue;
+    }
+
+    return prisma.donationCounter.upsert({
+      where: { id: DONATION_COUNTER_ID },
+      update,
+      create: {
+        id: DONATION_COUNTER_ID,
+        currentValue: data.currentValue ?? 0,
+        metaValue: data.metaValue ?? 0,
+        updatedBy: data.updatedBy,
+      },
+    });
   },
 };

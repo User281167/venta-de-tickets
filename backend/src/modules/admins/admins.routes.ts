@@ -68,4 +68,11 @@ adminsRouter.get(
   donacionesController.listDonations,
 );
 
+adminsRouter.put(
+  '/donations/counter',
+  requireRole('admin', 'super_admin'),
+  rateLimit(POLICIES.admin),
+  donacionesController.updateCounter,
+);
+
 export { adminsRouter };

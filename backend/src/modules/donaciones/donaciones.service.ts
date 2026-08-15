@@ -7,9 +7,12 @@ import {
   donationRepository,
   createDonationUUID,
 } from './donaciones.repository.js';
-import type { CreateDonationInput } from './donaciones.schema.js';
-import type { AdminListDonationsQuery } from './donaciones.schema.js';
-import type { Donation } from '@prisma/client';
+import type {
+  CreateDonationInput,
+  AdminListDonationsQuery,
+  UpdateDonationCounterInput,
+} from './donaciones.schema.js';
+import type { Donation, DonationCounter } from '@prisma/client';
 import { DONATION_EXPIRY_INTERVAL_MILLIS } from '../../shared/config/constants.js';
 import {
   notifyDonationConfirmed,
@@ -17,6 +20,13 @@ import {
   notifyDonationCancelled,
 } from '../messaging/index.js';
 import { DONATION_ACCOUNT_LABELS } from './donaciones.types.js';
+
+import * as auditService from '../audit/audit.service.js';
+import {
+  EVENT_ID,
+  AUDIT_ACTIONS,
+  AUDIT_ENTITY_TYPES,
+} from '../audit/audit.constants.js';
 
 function generateExternalReference(account: string): string {
   return `DON-${account}-${createDonationUUID()}`;
@@ -95,6 +105,18 @@ export async function handleWebhook(
   }
 
   if (newState === 'confirmed') {
+    if (donation.amountCents > 0) {
+      // ponytail: counter is auxiliary; failure must not block donation state or notification.
+      void donationRepository
+        .incrementCounterBy(donation.amountCents)
+        .catch((err) =>
+          logger.error(
+            { err, donationId: donation.id, amountCents: donation.amountCents },
+            'donation counter increment failed; donation state already confirmed',
+          ),
+        );
+    }
+
     void notifyDonationConfirmed(donation.id);
   } else if (newState === 'rejected') {
     void notifyDonationRejected(donation.id);
@@ -141,4 +163,48 @@ export async function sweepExpiredDonations(): Promise<number> {
   }
 
   return expired.length;
+}
+
+export async function getCounter(): Promise<DonationCounter | null> {
+  return donationRepository.findCounter();
+}
+
+export async function seedDonationCounter(): Promise<void> {
+  try {
+    await donationRepository.ensureCounterRow();
+  } catch (err) {
+    logger.error({ err }, 'donation counter seed failed');
+  }
+}
+
+export async function updateCounter(
+  input: UpdateDonationCounterInput,
+  actor: { id: string },
+): Promise<DonationCounter> {
+  const before = await donationRepository.findCounter();
+  const updated = await donationRepository.updateCounter({
+    currentValue: input.currentValue,
+    metaValue: input.metaValue,
+    updatedBy: actor.id,
+  });
+
+  await auditService.log({
+    eventId: EVENT_ID,
+    actorId: actor.id,
+    action: AUDIT_ACTIONS.DONATION_COUNTER_ACTUALIZADO,
+    entityType: AUDIT_ENTITY_TYPES.CONTADOR_DONACIONES,
+    entityId: '1',
+    metadata: {
+      valorAnterior: {
+        currentValue: before?.currentValue ?? 0,
+        metaValue: before?.metaValue ?? 0,
+      },
+      valorNuevo: {
+        currentValue: updated.currentValue,
+        metaValue: updated.metaValue,
+      },
+    },
+  });
+
+  return updated;
 }

@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { env } from './shared/config/env.js';
 import { app } from './app.js';
 import { startSweepJob, startDonationExpiryJob } from './shared/jobs.js';
+import { seedDonationCounter } from './modules/donaciones/donaciones.service.js';
 
 app.listen(env.PORT, () => {
   console.log(`Server listening on port ${env.PORT}`);
@@ -9,3 +10,4 @@ app.listen(env.PORT, () => {
 
 startSweepJob();
 startDonationExpiryJob();
+void seedDonationCounter();

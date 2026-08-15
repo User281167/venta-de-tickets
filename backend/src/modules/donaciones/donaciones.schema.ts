@@ -40,3 +40,24 @@ export const adminListDonationsQuerySchema = z.object({
 });
 
 export type AdminListDonationsQuery = z.infer<typeof adminListDonationsQuerySchema>;
+
+export const donationCounterResponseSchema = z.object({
+  currentValue: z.number().int(),
+  metaValue: z.number().int(),
+  updatedAt: z.string().datetime(),
+});
+
+export const updateDonationCounterSchema = z
+  .object({
+    currentValue: z.number().int().nonnegative().optional(),
+    metaValue: z.number().int().nonnegative().optional(),
+  })
+  .refine(
+    (d) => d.currentValue !== undefined || d.metaValue !== undefined,
+    {
+      message: 'Debe proporcionar currentValue o metaValue',
+    },
+  );
+
+export type DonationCounterResponse = z.infer<typeof donationCounterResponseSchema>;
+export type UpdateDonationCounterInput = z.infer<typeof updateDonationCounterSchema>;

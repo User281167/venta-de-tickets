@@ -5,3 +5,5 @@ export const DONATION_ACCOUNT_LABELS: Record<DonationAccount, string> = {
   BARRANQUEROS_UTP: 'Barranqueros UTP',
   VICTIMAS: 'Víctimas y damnificados',
 };
+
+export const DONATION_COUNTER_ID = 1;

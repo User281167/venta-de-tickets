@@ -20,6 +20,7 @@ export const AUDIT_ACTIONS = {
   USUARIO_ACTUALIZADO: 'Usuario actualizado',
   USUARIO_ESTADO_CAMBIADO: 'Usuario estado cambiado',
   USUARIO_ROL_CAMBIADO: 'Usuario rol cambiado',
+  DONATION_COUNTER_ACTUALIZADO: 'Contador de donaciones actualizado',
 } as const;
 
 export const AUDIT_ENTITY_TYPES = {
@@ -27,6 +28,7 @@ export const AUDIT_ENTITY_TYPES = {
   ENTRADA: 'Entrada',
   PAGOS: 'Pagos',
   USUARIOS: 'Usuarios',
+  CONTADOR_DONACIONES: 'Contador de donaciones',
 } as const;
 
 export const AUDIT_FIELD_BEFORE = 'valorAnterior';
