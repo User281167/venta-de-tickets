@@ -26,7 +26,7 @@ export default function LandingPage() {
       <main>
         <DonationUTPSection />
         <DonationFloat />
-        <HeroSection />
+        {/*<HeroSection />*/}
         <TicketPurchaseClient />
         {/*<TicketSection />*/}
         <DonationSection />
