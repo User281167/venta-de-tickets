@@ -56,7 +56,7 @@ export function DonationSection() {
         </Text>
 
         <HStack gap={4} wrap="wrap" justify="center">
-          <DonationButton account="LA_CONVENCION" />
+          {/*<DonationButton account="LA_CONVENCION" />*/}
 
           {/*<DonationButton
             account="BARRANQUEROS_UTP"

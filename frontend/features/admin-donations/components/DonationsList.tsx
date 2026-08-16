@@ -10,7 +10,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { IconRotate } from "@tabler/icons-react";
+import { IconRotate, IconSettings } from "@tabler/icons-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useState, useEffect, useCallback } from "react";
 import { useDonations } from "../api/admin-donations.queries";
@@ -18,6 +18,7 @@ import { DonationsTable } from "./DonationsTable";
 import { DonationsTableSkeleton } from "./DonationsTableSkeleton";
 import { DonationsEmpty } from "./DonationsEmpty";
 import { DonationsFilters } from "./DonationsFilters";
+import { MetaDonationModal } from "./MetaDonationModal";
 
 const LIMIT = 25;
 
@@ -27,6 +28,7 @@ export function DonationsList() {
   const [searchInput, setSearchInput] = useState("");
   const [state, setState] = useState("");
   const [account, setAccount] = useState("");
+  const [metaModalOpen, setMetaModalOpen] = useState(false);
   const reduced = useReducedMotion();
 
   useEffect(() => {
@@ -85,24 +87,42 @@ export function DonationsList() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <Stack gap={1}>
-          <Text
-            color="utp.azul"
-            fontSize="sm"
-            fontWeight="black"
-            textTransform="uppercase"
-            letterSpacing="0.15em"
+        <Flex justify="space-between" align="flex-end" gap={4} wrap="wrap">
+          <Stack gap={1}>
+            <Text
+              color="utp.azul"
+              fontSize="sm"
+              fontWeight="black"
+              textTransform="uppercase"
+              letterSpacing="0.15em"
+            >
+              Administración
+            </Text>
+
+            <Heading as="h1" size="2xl" color="white" lineHeight="1.1">
+              Donaciones
+            </Heading>
+
+            <Text color="brand.muted" maxW="600px">
+              Revisa el historial de donaciones, filtra por estado o cuenta y
+              consulta los detalles de cada aporte.
+            </Text>
+          </Stack>
+
+          <Button
+            variant="outline"
+            color="white"
+            borderColor="rgba(255,255,255,0.16)"
+            borderRadius="xl"
+            _hover={{ bg: "rgba(255,255,255,0.06)" }}
+            onClick={() => setMetaModalOpen(true)}
           >
-            Administración
-          </Text>
-          <Heading as="h1" size="2xl" color="white" lineHeight="1.1">
-            Donaciones
-          </Heading>
-          <Text color="brand.muted" maxW="600px">
-            Revisa el historial de donaciones, filtra por estado o cuenta y
-            consulta los detalles de cada aporte.
-          </Text>
-        </Stack>
+            <HStack gap={2}>
+              <IconSettings size={16} />
+              <Text>Configurar meta</Text>
+            </HStack>
+          </Button>
+        </Flex>
       </motion.div>
 
       <DonationsFilters
@@ -200,6 +220,11 @@ export function DonationsList() {
           </Flex>
         </VStack>
       )}
+
+      <MetaDonationModal
+        open={metaModalOpen}
+        onClose={() => setMetaModalOpen(false)}
+      />
     </VStack>
   );
 }

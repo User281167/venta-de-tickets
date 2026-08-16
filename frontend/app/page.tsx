@@ -41,7 +41,7 @@ export default function LandingPage() {
         {/*<FaqSection />*/}
         {/*<CtaSection />*/}
       </main>
-      {/*<Footer />*/}
+      <Footer />
     </>
   );
 }

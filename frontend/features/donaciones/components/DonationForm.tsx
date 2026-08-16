@@ -31,6 +31,7 @@ import {
   DONATION_ACCOUNT_LABELS,
   DonationAccount,
 } from "@/shared/utils/donation-status";
+import { DonationCounter } from "./DonationCounter";
 
 declare const ePayco: {
   checkout: {
@@ -293,6 +294,8 @@ export function DonationForm({
 
                 <Field.HelperText>Mínimo $5.000 COP</Field.HelperText>
                 <Field.ErrorText>{errors.amount}</Field.ErrorText>
+
+                <DonationCounter />
 
                 <Field.Root invalid={!!errors.consentGiven}>
                   <HStack gap={3} align="flex-start">
