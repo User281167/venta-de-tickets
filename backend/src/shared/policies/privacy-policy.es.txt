@@ -2,7 +2,7 @@ POLÍTICA DE PRIVACIDAD, SEGURIDAD Y TRATAMIENTO DE DATOS PERSONALES
 ========================================================================
 
 Plataforma Web Institucional: Asociación de Egresados UTP 2026 (ASE UTP)
-Vigencia: Versión 2.0 (Actualizado a Agosto de 2026)
+Vigencia: Versión 3.0 (Actualizado a Agosto de 2026)
 
 Entidades Responsables:
   - Universidad Tecnológica de Pereira (UTP)
@@ -22,26 +22,17 @@ Contacto de Privacidad:
 1. OBJETIVO Y ALCANCE GENERAL
 ------------------------------------------------------------------------
 
-El presente documento establece los Términos, Condiciones de Uso y
-Políticas de Seguridad, Privacidad y Tratamiento de Datos Personales
-aplicables a la plataforma web oficial de la Asociación de Egresados
-de la Universidad Tecnológica de Pereira (ASE UTP). La plataforma
-ofrece servicios de autenticación, verificación de estatus de egresado,
-adquisición de paquetes de entradas (conciertos, charlas de IA,
-networking y coworking), emisión de boletos digitales con código QR,
-módulo de donaciones y panel de auditoría.
+El presente documento establece la Política de Privacidad, Seguridad y
+Tratamiento de Datos Personales aplicable a la plataforma web oficial
+de la Asociación de Egresados de la Universidad Tecnológica de Pereira
+(ASE UTP). La aceptación de estas políticas es obligatoria para todo
+usuario registrado, egresado, comprador, donante, administrador o
+tercero que interactúe con la plataforma.
 
-La aceptación de estos términos es obligatoria para todo usuario
-registrado, egresado, comprador, donante, administrador o tercero que
-interactúe con la plataforma.
-
-Declaración de Transparencia de Donaciones:
-En cumplimiento de los marcos legales vigentes en Colombia, todo módulo
-de donaciones (destinado a la Asociación de Egresados, Barranqueros UTP
-o afectados por sismos) permite la participación anónima o registrada,
-exigiendo de manera obligatoria la declaración del origen lícito de
-fondos mediante el checkbox: "Declaro que los recursos entregados en
-donación provienen de una fuente lícita".
+Las condiciones comerciales de compra, las reglas del módulo de
+donaciones, los controles de seguridad (ISO 27001) y los aspectos de
+propiedad intelectual se rigen por los Términos y Condiciones del
+Servicio, disponibles en /terminos.
 
 ------------------------------------------------------------------------
 2. TRATAMIENTO DE DATOS Y ROL DE USUARIOS
@@ -141,76 +132,13 @@ Condiciones de la Transmisión Internacional:
   Superintendencia de Industria y Comercio (SIC).
 
 ------------------------------------------------------------------------
-6. TÉRMINOS Y CONDICIONES DE COMPRA
-------------------------------------------------------------------------
-
-De acuerdo con la Ley 1480 de 2011 (Estatuto del Consumidor), las
-compras realizadas dentro de la plataforma se rigen bajo las
-siguientes condiciones comerciales:
-
-- Denominación Comercial: La adquisición de accesos al evento se
-  denomina formalmente "Paquete de Entradas", el cual otorga acceso a
-  las jornadas académicas, networking y conciertos programados para
-  los días 22, 23 y 24 de Octubre de 2026.
-- Pasarelas de Pago: Las transacciones se realizan a través de
-  pasarelas certificadas PCI-DSS (ePayco y Mercado Pago). La
-  plataforma no almacena datos de tarjetas débito o crédito.
-- Derecho de Retracto: El comprador podrá ejercer su derecho de
-  retracto dentro de los cinco (5) días hábiles siguientes a la
-  fecha de compra del paquete de entradas, siempre y cuando el
-  evento no haya tenido lugar dentro de dicho término.
-- Reprogramación o Cancelación: En caso de modificación substancial en
-  la agenda del evento por fuerza mayor o caso fortuito, la
-  organización notificará por correo electrónico y WhatsApp oficial
-  las opciones de reasignación o devolución aplicables.
-
-------------------------------------------------------------------------
-7. LAS 12 POLÍTICAS DE SEGURIDAD Y CUMPLIMIENTO TÉCNICO (ISO 27001)
-------------------------------------------------------------------------
-
-La plataforma integra 12 controles de seguridad alineados con el
-estándar ISO 27001 y los lineamientos de Gobierno Digital:
-
- 1. Sistema de Gestión de Seguridad (SGSI): Operación sobre
-    arquitectura redundante en la nube con revisiones continuas antes
-    y durante el evento del 22 al 24 de octubre.
- 2. Control de Acceso Basado en Roles (RBAC): Perfil Usuario, Perfil
-    Admin y Perfil Observador (auditoría exclusiva sin permisos de
-    escritura).
- 3. Protección de Pasarelas: Integración vía Webhooks firmados
-    criptográficamente con ePayco y Mercado Pago.
- 4. Tratamiento de Datos Sensibles: Inmutabilidad del campo Cédula
-    desde el cliente tras el registro para prevenir la suplantación
-    de tarifas de egresado.
- 5. Gestión del Factor Humano: Capacitación formal de los operadores
-    de Check-in en lectura de códigos QR e integridad de información.
- 6. Protección de Infraestructura: Cortafuegos WAF, mitigación
-    anti-DDoS y redes cifradas privadas en los puntos de lectura del
-    evento.
- 7. Cifrado en Transmisión: HTTPS (TLS 1.3) obligatorio y enlaces
-    tokenizados para envíos transaccionales por Email y API de
-    WhatsApp.
- 8. Gestión de Credenciales: Hashing seguro de contraseñas con
-    algoritmos BCrypt / PBKDF2.
- 9. Ciclo de Vida del Software: Pruebas continuas contra
-    vulnerabilidades del OWASP Top 10 en ambientes de desarrollo
-    aislados.
-10. Auditoría e Inalterabilidad (Audit Log): Registro inalterable de
-    acciones administrativas con marca de tiempo, ID e IP.
-11. Continuidad y Contingencia Offline: Servidores con autoescalado y
-    sistema de caché offline en puertas para garantizar la lectura QR
-    aun con intermitencias de red.
-12. Habeas Data y Denominación Comercial: Pleno cumplimiento del
-    marco normativo colombiano (Leyes 1581, 1266 y 1480).
-
-------------------------------------------------------------------------
 ACEPTACIÓN FORMAL
 ------------------------------------------------------------------------
 
 El usuario declara haber leído, comprendido y aceptado en su totalidad
-los presentes Términos, Condiciones y Políticas de Privacidad al
-registrarse o realizar transacciones en la plataforma oficial de la
-Asociación de Egresados UTP 2026 (ASE UTP).
+la presente Política de Privacidad al registrarse o realizar
+transacciones en la plataforma oficial de la Asociación de Egresados
+UTP 2026 (ASE UTP).
 
 © 2026 Universidad Tecnológica de Pereira (UTP) & Asociación de
 Egresados UTP (ASE UTP). Todos los derechos reservados.

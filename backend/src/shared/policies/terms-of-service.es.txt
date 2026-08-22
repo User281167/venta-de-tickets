@@ -1,22 +1,223 @@
-Términos y Condiciones
-Última actualización: Junio 2026
+TÉRMINOS Y CONDICIONES DEL SERVICIO
+========================================================================
 
-Bienvenido a La Convención 2026. Al registrarte y utilizar nuestros servicios, aceptas los siguientes términos y condiciones. Te recomendamos leerlos detenidamente antes de completar tu registro.
+Plataforma Web Institucional: Asociación de Egresados UTP 2026 (ASE UTP)
+Vigencia: Versión 2.0 (Actualizado a Agosto de 2026)
 
-1. Descripción del Servicio
-La Convención 2026 es un evento de innovación y tecnología. Nuestra plataforma permite a los asistentes registrarse, adquirir entradas, gestionar su agenda personal y recibir comunicaciones relacionadas con el evento.
+Entidades Responsables:
+  - Universidad Tecnológica de Pereira (UTP)
+  - Asociación de Egresados UTP (ASE UTP)
 
-2. Registro y Cuenta
-Para acceder a los servicios, debes crear una cuenta proporcionando tu correo electrónico y una contraseña. Eres responsable de mantener la confidencialidad de tus credenciales y de todas las actividades realizadas desde tu cuenta.
+Marco Normativo:
+  Ley 1581 de 2012, Ley 1266 de 2008, Ley 1480 de 2011, Modelo ISO 27001 / MinTIC.
 
-3. Uso de Datos Personales
-Los datos personales proporcionados serán utilizados exclusivamente para los fines del registro, comunicación y organización del evento. No compartiremos tus datos con terceros sin tu consentimiento explícito, salvo obligación legal. Para más información, consulta nuestra política de privacidad.
+Contacto para Términos:
+  Correo: egresados@utp.edu.co | aseutp@utp.edu.co
+  Dirección: Carrera 27 #10-02 Barrio Álamos, Edificio 15 C - 304, Pereira, Risaralda.
+  Teléfono: +57 606 313 7110 / 313 7533.
+  Celular: 3126539194.
+  Conmutador: (+57) (606) 313 7300.
 
-4. Propiedad Intelectual
-Todo el contenido disponible en la plataforma (marcas, logos, textos, imágenes) es propiedad de La Convención 2026 o de sus licenciantes. No está permitida su reproducción sin autorización.
+------------------------------------------------------------------------
+1. ACEPTACIÓN VINCULANTE Y DESCRIPCIÓN DEL SERVICIO
+------------------------------------------------------------------------
 
-5. Modificaciones
-Nos reservamos el derecho de modificar estos términos en cualquier momento. Los cambios serán notificados a través de la plataforma y, si continúas utilizando el servicio después de dichas modificaciones, aceptas los nuevos términos.
+Los presentes Términos y Condiciones regulan el acceso, registro y uso
+de la plataforma web oficial de la Asociación de Egresados de la
+Universidad Tecnológica de Pereira (ASE UTP). La plataforma ofrece
+servicios de autenticación, verificación de estatus de egresado,
+adquisición de paquetes de entradas (conciertos, charlas de IA,
+networking y coworking), emisión de entradas digitales con código QR,
+módulo de donaciones y panel de auditoría.
 
-6. Contacto
-Si tienes preguntas sobre estos términos, puedes contactarnos a través de nuestro correo electrónico de soporte.
+La aceptación de estos términos es obligatoria para todo usuario
+registrado, egresado, comprador, donante, administrador o tercero que
+interactúe con la plataforma. El uso continuo del servicio implica
+aceptación implicita de la versión vigente publicada en /terminos.
+
+------------------------------------------------------------------------
+2. REGISTRO DE CUENTA Y ROLES DE USUARIO
+------------------------------------------------------------------------
+
+Para acceder al servicio, el usuario debe crear una cuenta con correo
+electrónico válido y contraseña. La veracidad de la información
+suministrada es responsabilidad del titular.
+
+Roles habilitados en la plataforma:
+- Perfil Usuario: lectura y edición de datos propios, historial de
+  compras y emisión de boletos QR.
+- Perfil Admin: gestión operativa de precios, cortesías,
+  integraciones de pagos y soporte de Check-in.
+- Perfil Observador: auditoría exclusiva con permisos de lectura
+  sobre el log inalterable de acciones administrativas.
+
+Inmutabilidad de Identidad:
+El campo Cédula de Ciudadanía es de carácter obligatorio y se torna
+inmutable desde el cliente tras completar el registro. Esta medida
+previene la suplantación de tarifas preferenciales de egresado y
+garantiza la trazabilidad del Check-in en puerta.
+
+------------------------------------------------------------------------
+3. COMPRAS, PAQUETES DE ENTRADAS Y PASARELAS DE PAGO
+------------------------------------------------------------------------
+
+Denominación Comercial:
+La adquisición de accesos al evento se denomina formalmente "Paquete de
+Entradas", el cual otorga acceso a las jornadas académicas, networking
+y conciertos programados para los días 22, 23 y 24 de Octubre de 2026.
+
+Pasarelas de Pago:
+Las transacciones se realizan a través de pasarelas certificadas
+PCI-DSS (ePayco y Mercado Pago). La plataforma no almacena datos
+sensibles de tarjetas débito o crédito. Toda operación es procesada y
+tokenizada por el proveedor de pagos, quien notifica la transacción a
+la plataforma mediante Webhooks firmados criptográficamente para su
+contabilización.
+
+Confirma tu transacción solo a través del correo oficial y del portal
+autenticado. La organización no solicita claves, códigos de seguridad
+ni comprobantes de pago por canales no institucionales.
+
+------------------------------------------------------------------------
+4. DERECHO DE RETRACTO, REEMBOLSOS Y CANCELACIÓN
+------------------------------------------------------------------------
+
+De conformidad con la Ley 1480 de 2011 (Estatuto del Consumidor), el
+comprador podrá ejercer su derecho de retracto dentro de los cinco (5)
+días hábiles siguientes a la fecha de la compra del paquete de
+entradas, siempre y cuando el evento no haya tenido lugar dentro de
+dicho término. La solicitud de reembolso debe tramitarse formalmente al
+correo institucional.
+
+Procedimiento de Retracto:
+- Solicitud escrita a egresados@utp.edu.co o aseutp@utp.edu.co.
+- Acreditación de identidad con documento válido.
+- Reversión del pago por el mismo medio utilizado en un plazo
+  máximo de treinta (30) días calendario una vez aprobada la
+  solicitud.
+- Cancelación del paquete en la plataforma y desactivación del
+  código QR asociado.
+
+Reprogramación o Cancelación por Fuerza Mayor:
+En caso de modificación substancial en la agenda del evento por fuerza
+mayor o caso fortuito, la organización notificará por correo
+electrónico y WhatsApp oficial las opciones de reasignación o
+devolución aplicables, conforme al equilibrio contractual previsto en
+el Estatuto del Consumidor.
+
+------------------------------------------------------------------------
+5. MÓDULO DE DONACIONES Y TRANSPARENCIA
+------------------------------------------------------------------------
+
+El módulo de donaciones (destinado a la Asociación de Egresados,
+Barranqueros UTP o afectados por sismos) permite la participación
+anónima o registrada, exigiendo de manera obligatoria la declaración
+del origen lícito de fondos mediante el checkbox:
+"Declaro que los recursos entregados en donación provienen de una
+fuente lícita".
+
+La donación no confiere derecho a deducciones tributarias automáticas
+salvo que la normativa vigente aplíquela y el donante cumpla con los
+requisitos formales requeridos por la DIAN. La organización no
+interviene en la trazabilidad contable ni fiscal de las donaciones.
+
+------------------------------------------------------------------------
+6. PROPIEDAD INTELECTUAL, CONDUCTAS PROHIBIDAS Y SANCIONES
+------------------------------------------------------------------------
+
+Propiedad Intelectual:
+Todo el contenido disponible en la plataforma (marcas, logos, textos,
+imágenes, códigos QR, diseños y archivos multimedia) es propiedad de la
+Universidad Tecnológica de Pereira (UTP) y la Asociación de Egresados
+(ASE UTP), o de sus licenciantes. No está permitida su reproducción,
+distribución o modificación sin autorización escrita.
+
+Conductas Prohibidas:
+- Suplantación de identidad de egresados para acceder a tarifas
+  preferenciales.
+- Manipulación, falsificación o duplicación de códigos QR.
+- Realizar ingeniería inversa sobre la plataforma o sus integraciones.
+- Difusión de contenido malicioso, fraudulento o que afecte la
+  integridad de otros usuarios.
+- Uso de la plataforma con fines distintos a los expresamente
+  autorizados.
+
+Sanciones:
+La organización podrá suspender o cancelar cuentas que incurran en
+conductas prohibidas, sin perjuicio de las acciones legales que
+correspondan conforme a la legislación colombiana.
+
+------------------------------------------------------------------------
+7. LIMITACIONES DE RESPONSABILIDAD, MODIFICACIONES Y LEY APLICABLE
+------------------------------------------------------------------------
+
+Limitaciones:
+La organización no será responsable por daños derivados de caso
+fortuito, fuerza mayor, interrupciones del servicio por mantenimiento,
+fallos atribuibles a los proveedores de infraestructura (Render,
+Supabase, Vercel, AWS) ni por uso indebido de las credenciales de
+acceso por parte del titular.
+
+Modificaciones:
+La organización se reserva el derecho de modificar los presentes
+términos en cualquier momento. Los cambios serán notificados a través
+del portal y, si continúas utilizando el servicio después de dichas
+modificaciones, aceptas los nuevos términos. La versión vigente estará
+siempre publicada en /terminos.
+
+Ley Aplicable y Jurisdicción:
+Los presentes términos se rigen por las leyes de la República de
+Colombia. Cualquier controversia será resuelta por los jueces
+competentes de la ciudad de Pereira (Risaralda), salvo normas de
+protección al consumidor que establezcan fuero distinto.
+
+------------------------------------------------------------------------
+8. LOS 12 CONTROLES DE SEGURIDAD Y CUMPLIMIENTO (ISO 27001)
+------------------------------------------------------------------------
+
+La plataforma integra 12 controles de seguridad alineados con el
+estándar ISO 27001 y los lineamientos de Gobierno Digital:
+
+ 1. Sistema de Gestión de Seguridad (SGSI): Operación sobre
+    arquitectura redundante en la nube con revisiones continuas antes
+    y durante el evento del 22 al 24 de octubre.
+ 2. Control de Acceso Basado en Roles (RBAC): Perfiles Usuario, Admin
+    y Observador con permisos diferenciados.
+ 3. Protección de Pasarelas: Integración vía Webhooks firmados
+    criptográficamente con ePayco y Mercado Pago.
+ 4. Tratamiento de Datos Sensibles: Inmutabilidad del campo Cédula
+    desde el cliente tras el registro para prevenir la suplantación
+    de tarifas de egresado.
+ 5. Gestión del Factor Humano: Capacitación formal de los operadores
+    de Check-in en lectura de códigos QR e integridad de información.
+ 6. Protección de Infraestructura: Cortafuegos WAF, mitigación
+    anti-DDoS y redes cifradas privadas en los puntos de lectura del
+    evento.
+ 7. Cifrado en Transmisión: HTTPS (TLS 1.3) obligatorio y enlaces
+    tokenizados para envíos transaccionales por Email y API de
+    WhatsApp.
+ 8. Gestión de Credenciales: Hashing seguro de contraseñas con
+    algoritmos BCrypt / PBKDF2.
+ 9. Ciclo de Vida del Software: Pruebas continuas contra
+    vulnerabilidades del OWASP Top 10 en ambientes de desarrollo
+    aislados.
+10. Auditoría e Inalterabilidad (Audit Log): Registro inalterable de
+    acciones administrativas con marca de tiempo, ID e IP.
+11. Continuidad y Contingencia Offline: Servidores con autoescalado y
+    sistema de caché offline en puertas para garantizar la lectura QR
+    aun con intermitencias de red.
+12. Habeas Data y Compliance Integral: Pleno cumplimiento del marco
+    normativo colombiano (Leyes 1581, 1266 y 1480) y de los presentes
+    Términos y Condiciones.
+
+------------------------------------------------------------------------
+ACEPTACIÓN FORMAL
+------------------------------------------------------------------------
+
+El usuario declara haber leído, comprendido y aceptado en su totalidad
+los presentes Términos y Condiciones al registrarse o realizar
+transacciones en la plataforma oficial de la Asociación de Egresados
+UTP 2026 (ASE UTP).
+
+© 2026 Universidad Tecnológica de Pereira (UTP) & Asociación de
+Egresados UTP (ASE UTP). Todos los derechos reservados.
