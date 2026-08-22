@@ -13,7 +13,7 @@ export type PolicyConfig = {
 export const POLICY_CONFIGS: readonly PolicyConfig[] = [
   {
     type: 'privacy_policy',
-    version: '1.0.0',
+    version: '2.0.0',
     file: 'privacy-policy.es.txt',
   },
   {

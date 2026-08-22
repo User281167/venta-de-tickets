@@ -1,76 +1,559 @@
-"use client";
+import { Box, Container, Heading, List, Table, Text } from "@chakra-ui/react";
 
-import { useQuery } from "@tanstack/react-query";
-import {
-  Box,
-  Container,
-  Heading,
-  Skeleton,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
-import { fetchPolicyContent } from "@/features/users/api/users.client";
-
-const PRIVACY_KEY = ["policy", "privacy_policy"] as const;
+export const metadata = {
+  title: "Política de Privacidad — ASE UTP 2026",
+  description:
+    "Términos, Condiciones y Políticas de Privacidad de la Asociación de Egresados UTP 2026 (ASE UTP).",
+};
 
 export default function PrivacidadPage() {
-  const { data, isLoading, error } = useQuery({
-    queryKey: PRIVACY_KEY,
-    queryFn: () => fetchPolicyContent("privacy_policy"),
-    staleTime: 1000 * 60 * 30,
-  });
-
-  if (isLoading) {
-    return (
-      <Container maxW="3xl" py={10} pt="20">
-        <Stack gap={4}>
-          <Skeleton height="32px" width="60%" />
-          <Skeleton height="20px" />
-          <Skeleton height="20px" />
-          <Skeleton height="20px" width="90%" />
-        </Stack>
-      </Container>
-    );
-  }
-
-  if (error || !data) {
-    return (
-      <Container maxW="3xl" py={10} pt="20">
-        <Heading size="lg" mb={4}>
-          Política de privacidad
-        </Heading>
-        <Text color="gray.400">
-          No se pudo cargar el contenido. Intenta de nuevo más tarde.
-        </Text>
-      </Container>
-    );
-  }
-
   return (
-    <Container maxW="3xl" py={10} pt="20">
-      <Box mb={6}>
-        <Heading as="h1" size="xl" mb={2}>
-          Política de privacidad
-        </Heading>
-        <Text color="gray.500" fontSize="sm">
-          Versión {data.version} · Publicada el{" "}
-          {new Date(data.publishedAt).toLocaleDateString("es-CO", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
-        </Text>
-      </Box>
+    <Container
+      maxW="4xl"
+      py={10}
+      pt="20"
+      color="brand.light"
+      lineHeight="1.7"
+      fontFamily="body"
+    >
       <Box
-        as="pre"
-        whiteSpace="pre-wrap"
-        fontFamily="body"
-        fontSize="md"
-        lineHeight="1.7"
-        color="gray.200"
+        as="header"
+        bgGradient="linear(to-br, brand.blue-dark, brand.blue-panel)"
+        borderRadius="lg"
+        borderLeft="4px solid"
+        borderColor="utp.azul"
+        p={6}
+        mb={6}
       >
-        {data.content}
+        <Heading
+          as="h1"
+          fontSize={{ base: "lg", md: "xl" }}
+          fontWeight="bold"
+          textTransform="uppercase"
+          color="brand.light"
+          mb={2}
+        >
+          Términos, Condiciones y Política de Privacidad
+        </Heading>
+
+        <Text color="utp.azul" fontSize="0.95rem" mb={4}>
+          Plataforma Web Institucional: Asociación de Egresados UTP 2026 (ASE
+          UTP)
+        </Text>
+
+        <Box
+          fontSize="0.85rem"
+          color="brand.muted"
+          borderTop="1px solid"
+          borderColor="whiteAlpha.300"
+          pt={3}
+          display="grid"
+          gridTemplateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
+          gap={3}
+        >
+          <Box>
+            <strong style={{ color: "white" }}>Entidades Responsables:</strong>{" "}
+            Universidad Tecnológica de Pereira (UTP) & Asociación de Egresados
+            UTP (ASE UTP)
+            <br />
+            <strong style={{ color: "white" }}>Marco Normativo:</strong> Ley
+            1581 de 2012, Ley 1266 de 2008, Ley 1480 de 2011, Modelo ISO 27001 /
+            MinTIC
+          </Box>
+
+          <Box>
+            <strong style={{ color: "white" }}>Vigencia y Versión:</strong>{" "}
+            Versión 2.0 (Actualizado a Agosto de 2026)
+            <br />
+            <strong style={{ color: "white" }}>
+              Contacto de Privacidad:
+            </strong>{" "}
+            egresados@utp.edu.co | aseutp@utp.edu.co | Conmutador (+57) (606)
+            313 7300
+          </Box>
+        </Box>
+      </Box>
+
+      <Section
+        title="1. Objetivo y Alcance General"
+        body={
+          <>
+            <Text mb={3}>
+              El presente documento establece los{" "}
+              <strong>
+                Términos, Condiciones de Uso y Políticas de Seguridad,
+                Privacidad y Tratamiento de Datos Personales
+              </strong>{" "}
+              aplicables a la plataforma web oficial de la Asociación de
+              Egresados de la Universidad Tecnológica de Pereira (ASE UTP). La
+              plataforma ofrece servicios de autenticación, verificación de
+              estatus de egresado, adquisición de paquetes de entradas
+              (conciertos, charlas de IA, networking y coworking), emisión de
+              boletos digitales con código QR, módulo de donaciones y panel de
+              auditoría.
+            </Text>
+
+            <Text mb={3}>
+              La aceptación de estos términos es obligatoria para todo usuario
+              registrado, egresado, comprador, donante, administrador o tercero
+              que interactúe con la plataforma.
+            </Text>
+          </>
+        }
+        highlight={
+          <Text fontSize="0.9rem">
+            <strong style={{ color: "brand.light" }}>
+              Declaración de Transparencia de Donaciones:
+            </strong>{" "}
+            En cumplimiento de los marcos legales vigentes en Colombia, todo
+            módulo de donaciones (destinado a la Asociación de Egresados,
+            Barranqueros UTP o afectados por sismos) permite la participación
+            anónima o registrada, exigiendo de manera obligatoria la declaración
+            del origen lícito de fondos mediante el checkbox:{" "}
+            <em>
+              "Declaro que los recursos entregados en donación provienen de una
+              fuente lícita"
+            </em>
+            .
+          </Text>
+        }
+      />
+
+      <Section
+        title="2. Tratamiento de Datos y Rol de Usuarios"
+        body={
+          <Text>
+            La plataforma recopila y procesa datos estrictamente necesarios bajo
+            el principio de minimización de datos (Artículo 4, Ley 1581 de
+            2012):
+          </Text>
+        }
+        table={
+          <Table.Root size="sm" variant="line" mt={3} bg="brand.panel">
+            <Table.Header>
+              <Table.Row bg="brand.blue-dark">
+                <Table.ColumnHeader color="brand.light">
+                  Dato Recolectado
+                </Table.ColumnHeader>
+
+                <Table.ColumnHeader color="brand.light">
+                  Carácter
+                </Table.ColumnHeader>
+
+                <Table.ColumnHeader color="brand.light">
+                  Finalidad Específica
+                </Table.ColumnHeader>
+              </Table.Row>
+            </Table.Header>
+
+            <Table.Body>
+              <PolicyRow
+                dato="Correo Electrónico y Contraseña"
+                caracter="Obligatorio"
+                finalidad="Autenticación de usuario, envío transaccional de accesos, recibos de pago y links de confirmación/rechazo."
+              />
+              <PolicyRow
+                dato="Cédula de Ciudadanía / Documento"
+                caracter="Obligatorio"
+                finalidad="Verificación automática frente a la base de egresados UTP para aplicación de descuentos y control de identidad. Inmutable vía cliente."
+                stripe
+              />
+              <PolicyRow
+                dato="Nombre Completo"
+                caracter="Obligatorio"
+                finalidad="Personalización de compra, titulación del paquete de entradas y registro en lista oficial de asistentes."
+              />
+              <PolicyRow
+                dato="Dirección y Teléfono"
+                caracter="Opcional"
+                finalidad="Facturación, soporte de entrega transaccional por WhatsApp y contacto de emergencia durante el evento."
+                stripe
+              />
+              <PolicyRow
+                dato="Historial y Estado de Compras / QR"
+                caracter="Generado"
+                finalidad="Validación en puerta (Check-in), prevención de fraudes, trazabilidad de accesos y control de aforo."
+              />
+            </Table.Body>
+          </Table.Root>
+        }
+      />
+
+      <Section
+        title="3. Política de Cookies y Tecnologías de Seguimiento"
+        body={
+          <Text mb={3}>
+            Nuestra plataforma web opera utilizando cookies técnicas y de sesión
+            estrictamente necesarias para garantizar el funcionamiento seguro y
+            la persistencia de autenticación de los usuarios.
+          </Text>
+        }
+        highlight={
+          <Box>
+            <Text
+              color="utp.azul"
+              fontSize="0.85rem"
+              textTransform="uppercase"
+              fontWeight="bold"
+              mb={2}
+            >
+              Notificación de Cookies en Plataforma
+            </Text>
+
+            <Text fontSize="0.85rem" color="brand.muted">
+              <em>
+                "Esta plataforma utiliza cookies técnicas estrictamente
+                necesarias para mantener tu sesión activa y garantizar la
+                seguridad de las transacciones (gestionadas de manera interna).
+                Al navegar e iniciar sesión en el portal, aceptas su uso. No
+                empleamos cookies para rastreo publicitario ni almacenamiento de
+                datos de terceros."
+              </em>
+            </Text>
+          </Box>
+        }
+        trailing={
+          <Text mt={3}>
+            Estas cookies no almacenan información de identificación personal en
+            texto plano ni se comparten con redes de anuncios o analítica de
+            terceros no autorizados.
+          </Text>
+        }
+      />
+
+      <Section
+        title="4. Procedimiento para el Ejercicio de Derechos de Habeas Data (PQRS)"
+        body={
+          <>
+            <Text mb={3}>
+              De conformidad con los Artículos 14 y 15 de la Ley 1581 de 2012,
+              los titulares de la información o sus causahabientes podrán
+              ejercer sus derechos de conocer, actualizar, rectificar y suprimir
+              sus datos personales o revocar la autorización otorgada a través
+              de los canales institucionales dispuestos.
+            </Text>
+
+            <Box
+              bg="brand.blue-panel"
+              borderLeft="4px solid"
+              borderColor="utp.azul"
+              borderRadius="md"
+              p={4}
+              fontSize="0.9rem"
+            >
+              <strong style={{ color: "brand.light" }}>
+                Tiempos Legalmente Estipulados para Respuestas (PQRS):
+              </strong>
+
+              <List.Root mt={2} pl={5} color="brand.muted">
+                <List.Item mb={2}>
+                  <strong>
+                    Consultas (Información sobre datos almacenados):
+                  </strong>{" "}
+                  Se atenderán en un término máximo de{" "}
+                  <strong>diez (10) días hábiles</strong> contados a partir de
+                  la fecha de recibo de la solicitud. Cuando no fuere posible
+                  atender la consulta dentro de dicho término, se informará al
+                  interesado antes del vencimiento, expresando los motivos de la
+                  demora y señalando la fecha en que se atenderá, la cual no
+                  podrá superar los cinco (5) días hábiles siguientes.
+                </List.Item>
+
+                <List.Item>
+                  <strong>
+                    Reclamos (Actualización, corrección, supresión o
+                    revocatoria):
+                  </strong>{" "}
+                  Se atenderán en un término máximo de{" "}
+                  <strong>quince (15) días hábiles</strong> contados a partir
+                  del día siguiente a la fecha de su recibo. Si el reclamo
+                  resulta incompleto, se requerirá al interesado dentro de los
+                  cinco (5) días siguientes a la recepción para que subsane las
+                  fallas. Transcurridos dos (2) meses sin respuesta del
+                  solicitante, se entenderá desistido el reclamo.
+                </List.Item>
+              </List.Root>
+            </Box>
+          </>
+        }
+        trailing={
+          <Box mt={4}>
+            <Heading as="h3" fontSize="1rem" color="brand.light" mb={2}>
+              Canales Oficiales de Atención de Habeas Data
+            </Heading>
+
+            <List.Root pl={5} color="brand.muted">
+              <List.Item>
+                <strong>Correo:</strong> egresados@utp.edu.co |
+                aseutp@utp.edu.co
+              </List.Item>
+
+              <List.Item>
+                <strong>Dirección:</strong> Carrera 27 #10-02 Barrio Álamos,
+                Edificio 15 C - 304, Pereira, Risaralda.
+              </List.Item>
+
+              <List.Item>
+                <strong>Teléfonos:</strong> +57 606 313 7110 / 313 7533 ·
+                Celular 3126539194 · Conmutador (+57) (606) 313 7300.
+              </List.Item>
+            </List.Root>
+          </Box>
+        }
+      />
+
+      <Section
+        title="5. Transmisión y Traslado Internacional de Datos en la Nube"
+        body={
+          <>
+            <Text mb={3}>
+              Para la prestación eficiente de los servicios web, el
+              procesamiento de autenticación y el almacenamiento resiliente de
+              datos, la plataforma hace uso de infraestructura tecnológica
+              proporcionada por proveedores internacionales especializados que
+              actúan en calidad de{" "}
+              <strong>Encargados del Tratamiento de Datos</strong> (incluyendo
+              plataformas como{" "}
+              <em>
+                Render, Supabase, Next.js Hosting / Vercel, Unsplash y servicios
+                cloud respaldados por Amazon Web Services - AWS
+              </em>
+              ).
+            </Text>
+
+            <Text mb={2}>
+              <strong>Condiciones de la Transmisión Internacional:</strong>
+            </Text>
+
+            <List.Root pl={5}>
+              <List.Item mb={2}>
+                <strong>Estándares Equivalentes de Seguridad:</strong> Los
+                centros de datos de dichos proveedores cuentan con
+                certificaciones internacionales de seguridad (ISO 27001, SOC 2
+                Type II) y garantizan esquemas de cifrado en reposo y en
+                tránsito (TLS 1.3 / AES-256).
+              </List.Item>
+
+              <List.Item mb={2}>
+                <strong>Limitación de Uso:</strong> Los Encargados tienen
+                prohibido de manera explícita procesar, divulgar, comercializar
+                o utilizar la información de los usuarios para fines distintos
+                al alojamiento de la base de datos y la ejecución lógica de la
+                aplicación web.
+              </List.Item>
+
+              <List.Item>
+                <strong>Gestión de Incidentes:</strong> Ante cualquier
+                eventualidad o brecha de seguridad reportada en la
+                infraestructura subyacente de nuestros proveedores cloud, la UTP
+                y ASE UTP activarán el protocolo de notificación a los usuarios
+                afectados y a la Delegatura de Protección de Datos Personales de
+                la Superintendencia de Industria y Comercio (SIC).
+              </List.Item>
+            </List.Root>
+          </>
+        }
+      />
+
+      <Section
+        title="6. Términos y Condiciones de Compra (Derecho de Retracto y Comercio Electrónico)"
+        body={
+          <>
+            <Text mb={3}>
+              De acuerdo con lo establecido en la Ley 1480 de 2011 (Estatuto del
+              Consumidor), las compras realizadas dentro de la plataforma se
+              rigen bajo las siguientes condiciones comerciales:
+            </Text>
+
+            <List.Root pl={5}>
+              <List.Item mb={2}>
+                <strong>Denominación Comercial:</strong> La adquisición de
+                accesos al evento se denomina formalmente{" "}
+                <em>"Paquete de Entradas"</em>, el cual otorga acceso a las
+                jornadas académicas, networking y conciertos programados para
+                los días 22, 23 y 24 de Octubre de 2026.
+              </List.Item>
+
+              <List.Item mb={2}>
+                <strong>Pasarelas de Pago:</strong> Las transacciones se
+                realizan a través de pasarelas certificadas PCI-DSS (ePayco y
+                Mercado Pago). La plataforma no almacena datos de tarjetas
+                débito o crédito.
+              </List.Item>
+
+              <List.Item mb={2}>
+                <strong>Derecho de Retracto:</strong> El comprador podrá ejercer
+                su derecho de retracto dentro de los{" "}
+                <strong>cinco (5) días hábiles</strong> siguientes a la fecha de
+                la compra del paquete de entradas, siempre y cuando el evento no
+                haya tenido lugar dentro de dicho término. La solicitud de
+                reembolso debe tramitarse formalmente al correo institucional.
+              </List.Item>
+
+              <List.Item>
+                <strong>Reprogramación o Cancelación:</strong> En caso de
+                modificación substancial en la agenda del evento por fuerza
+                mayor o caso fortuito, la organización notificará por correo
+                electrónico y WhatsApp oficial las opciones de reasignación o
+                devolución aplicables.
+              </List.Item>
+            </List.Root>
+          </>
+        }
+      />
+
+      <Section
+        title="7. Las 12 Políticas de Seguridad y Cumplimiento Técnico (ISO 27001 / MinTIC)"
+        body={
+          <>
+            <Text mb={3}>
+              La plataforma integra 12 controles de seguridad alineados con el
+              estándar ISO 27001 y los lineamientos de Gobierno Digital:
+            </Text>
+
+            <List.Root pl={5} as="ol">
+              {[
+                "Sistema de Gestión de Seguridad (SGSI): Operación sobre arquitectura redundante en la nube con revisiones continuas antes y durante el evento del 22 al 24 de octubre.",
+                "Control de Acceso Basado en Roles (RBAC): Perfil Usuario (perfil/historial), Perfil Admin (gestión de precios y asignaciones) y Perfil Observador (auditoría exclusiva sin permisos de escritura).",
+                "Protección de Pasarelas: Integración vía Webhooks firmados criptográficamente con ePayco y Mercado Pago.",
+                "Tratamiento de Datos Sensibles: Inmutabilidad del campo Cédula desde el cliente tras el registro para prevenir la suplantación de tarifas de egresado.",
+                "Gestión del Factor Humano: Capacitación formal de los operadores de Check-in en lectura de códigos QR e integridad de información.",
+                "Protección de Infraestructura: Cortafuegos WAF, mitigación anti-DDoS y redes cifradas privadas en los puntos de lectura del evento.",
+                "Cifrado en Transmisión: HTTPS (TLS 1.3) obligatorio y enlaces tokenizados para envíos transaccionales por Email y API de WhatsApp.",
+                "Gestión de Credenciales: Hashing seguro de contraseñas con algoritmos BCrypt / PBKDF2.",
+                "Ciclo de Vida del Software: Pruebas continuas contra vulnerabilidades del OWASP Top 10 en ambientes de desarrollo aislados.",
+                "Auditoría e Inalterabilidad (Audit Log): Registro inalterable de acciones administrativas (cortesías, precios, ediciones) con marca de tiempo, ID e IP.",
+                "Continuidad y Contingencia Offline: Servidores con autoescalado y sistema de caché offline en puertas para garantizar la lectura QR aun con intermitencias de red.",
+                "Habeas Data y Denominación Comercial: Pleno cumplimiento del marco normativo colombiano (Leyes 1581, 1266 y 1480).",
+              ].map((item, i) => (
+                <List.Item key={i} mb={1}>
+                  {item}
+                </List.Item>
+              ))}
+            </List.Root>
+          </>
+        }
+      />
+
+      <Box
+        as="footer"
+        borderTop="1px solid"
+        borderColor="whiteAlpha.300"
+        pt={4}
+        mt={6}
+        fontSize="0.85rem"
+        color="brand.muted"
+      >
+        <Text mb={2}>
+          <strong style={{ color: "brand.light" }}>Aceptación Formal:</strong>{" "}
+          El usuario declara haber leído, comprendido y aceptado en su totalidad
+          los presentes Términos, Condiciones y Políticas de Privacidad al
+          registrarse o realizar transacciones en la plataforma oficial de la
+          Asociación de Egresados UTP 2026 (ASE UTP).
+        </Text>
+
+        <Text>
+          © 2026 Universidad Tecnológica de Pereira (UTP) & Asociación de
+          Egresados UTP (ASE UTP). Todos los derechos reservados.
+        </Text>
       </Box>
     </Container>
+  );
+}
+
+function Section({
+  title,
+  body,
+  highlight,
+  table,
+  trailing,
+}: {
+  title: string;
+  body: React.ReactNode;
+  highlight?: React.ReactNode;
+  table?: React.ReactNode;
+  trailing?: React.ReactNode;
+}) {
+  return (
+    <Box as="section" mb={6}>
+      <Heading
+        as="h2"
+        fontSize="1.2rem"
+        color="brand.light"
+        borderLeft="4px solid"
+        borderColor="utp.azul"
+        pl={3}
+        mb={3}
+        textTransform="uppercase"
+      >
+        {title}
+      </Heading>
+
+      {body}
+
+      {highlight ? (
+        <Box
+          bg="brand.blue-panel"
+          border="1px solid"
+          borderColor="whiteAlpha.200"
+          borderLeft="4px solid"
+          borderLeftColor="utp.azul"
+          borderRadius="md"
+          p={3}
+          mt={3}
+          fontSize="0.9rem"
+          color="brand.light"
+        >
+          {highlight}
+        </Box>
+      ) : null}
+      {table}
+      {trailing}
+    </Box>
+  );
+}
+
+function PolicyRow({
+  dato,
+  caracter,
+  finalidad,
+  stripe,
+}: {
+  dato: string;
+  caracter: string;
+  finalidad: string;
+  stripe?: boolean;
+}) {
+  const chipStyle =
+    caracter === "Obligatorio"
+      ? { bg: "utp.azul", color: "brand.blue-dark" }
+      : caracter === "Opcional"
+        ? { bg: "utp.naranja", color: "brand.blue-dark" }
+        : { bg: "brand.blue-panel", color: "brand.light" };
+
+  return (
+    <Table.Row bg={stripe ? "brand.panel" : "transparent"}>
+      <Table.Cell color="brand.light" fontWeight="bold">
+        {dato}
+      </Table.Cell>
+
+      <Table.Cell>
+        <Box
+          as="span"
+          bg={chipStyle.bg}
+          color={chipStyle.color}
+          px={2}
+          py={1}
+          borderRadius="sm"
+          fontSize="0.75rem"
+          fontWeight="bold"
+        >
+          {caracter}
+        </Box>
+
+      </Table.Cell>
+
+      <Table.Cell color="brand.muted">{finalidad}</Table.Cell>
+    </Table.Row>
   );
 }

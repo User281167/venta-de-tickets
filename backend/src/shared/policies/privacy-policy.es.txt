@@ -1,46 +1,216 @@
-Política de Privacidad
-Última actualización: Junio 2026
+POLÍTICA DE PRIVACIDAD, SEGURIDAD Y TRATAMIENTO DE DATOS PERSONALES
+========================================================================
 
-En cumplimiento de la Ley 1581 de 2012 de Protección de Datos Personales en Colombia y sus decretos reglamentarios, presentamos nuestra política de privacidad para el evento Future Minds 2026.
+Plataforma Web Institucional: Asociación de Egresados UTP 2026 (ASE UTP)
+Vigencia: Versión 2.0 (Actualizado a Agosto de 2026)
 
-1. Responsable del Tratamiento
-La Convención 2026 es el responsable del tratamiento de tus datos personales. Al registrarte, autorizas el tratamiento de tu información conforme a lo descrito en esta política.
+Entidades Responsables:
+  - Universidad Tecnológica de Pereira (UTP)
+  - Asociación de Egresados UTP (ASE UTP)
 
-2. Datos Recolectados
-Recolectamos los siguientes datos personales: nombre completo, correo electrónico, número de teléfono, e información relacionada con tu participación en el evento (entradas adquiridas, agenda, preferencias).
+Marco Normativo:
+  Ley 1581 de 2012, Ley 1266 de 2008, Ley 1480 de 2011, Modelo ISO 27001 / MinTIC.
 
-3. Finalidades del Tratamiento
-Tus datos serán utilizados para las siguientes finalidades:
+Contacto de Privacidad:
+  Correo: egresados@utp.edu.co | aseutp@utp.edu.co
+  Dirección: Carrera 27 #10-02 Barrio Álamos, Edificio 15 C - 304, Pereira, Risaralda.
+  Teléfono: +57 606 313 7110 / 313 7533.
+  Celular: 3126539194.
+  Conmutador: (+57) (606) 313 7300.
 
-- Registro y autenticación en la plataforma
+------------------------------------------------------------------------
+1. OBJETIVO Y ALCANCE GENERAL
+------------------------------------------------------------------------
 
-- Compra y gestión de entradas
+El presente documento establece los Términos, Condiciones de Uso y
+Políticas de Seguridad, Privacidad y Tratamiento de Datos Personales
+aplicables a la plataforma web oficial de la Asociación de Egresados
+de la Universidad Tecnológica de Pereira (ASE UTP). La plataforma
+ofrece servicios de autenticación, verificación de estatus de egresado,
+adquisición de paquetes de entradas (conciertos, charlas de IA,
+networking y coworking), emisión de boletos digitales con código QR,
+módulo de donaciones y panel de auditoría.
 
-- Comunicaciones relacionadas con el evento
+La aceptación de estos términos es obligatoria para todo usuario
+registrado, egresado, comprador, donante, administrador o tercero que
+interactúe con la plataforma.
 
-- Personalización de la experiencia del asistente
+Declaración de Transparencia de Donaciones:
+En cumplimiento de los marcos legales vigentes en Colombia, todo módulo
+de donaciones (destinado a la Asociación de Egresados, Barranqueros UTP
+o afectados por sismos) permite la participación anónima o registrada,
+exigiendo de manera obligatoria la declaración del origen lícito de
+fondos mediante el checkbox: "Declaro que los recursos entregados en
+donación provienen de una fuente lícita".
 
-- Mejora continua de nuestros servicios
+------------------------------------------------------------------------
+2. TRATAMIENTO DE DATOS Y ROL DE USUARIOS
+------------------------------------------------------------------------
 
-4. Derechos del Titular (ARCO)
-De acuerdo con la Ley 1581, tienes los siguientes derechos sobre tus datos personales:
+La plataforma recopila y procesa datos estrictamente necesarios bajo el
+principio de minimización de datos (Artículo 4, Ley 1581 de 2012):
 
-Acceder: Conocer qué datos tuyos tenemos almacenados
+Dato Recolectado                       | Carácter    | Finalidad Específica
+---------------------------------------|-------------|---------------------
+Correo Electrónico y Contraseña        | Obligatorio | Autenticación, envíos
+                                       |             | transaccionales y links.
+Cédula de Ciudadanía / Documento       | Obligatorio | Verificación de egresado
+                                       |             | UTP y descuentos.
+Nombre Completo                        | Obligatorio | Personalización del
+                                       |             | paquete y registro.
+Dirección y Teléfono                   | Opcional    | Facturación, soporte
+                                       |             | transaccional.
+Historial y Estado de Compras / QR     | Generado    | Validación en puerta
+                                       |             | (Check-in) y trazabilidad.
 
-Rectificar: Solicitar la corrección de datos inexactos
+------------------------------------------------------------------------
+3. POLÍTICA DE COOKIES Y TECNOLOGÍAS DE SEGUIMIENTO
+------------------------------------------------------------------------
 
-Cancelar: Solicitar la eliminación de tus datos
+Nuestra plataforma web opera utilizando cookies técnicas y de sesión
+estrictamente necesarias para garantizar el funcionamiento seguro y la
+persistencia de autenticación de los usuarios.
 
-Oponerse: Solicitar que no se usen tus datos para ciertos fines
+Notificación de Cookies en Plataforma:
+"Esta plataforma utiliza cookies técnicas estrictamente necesarias para
+mantener tu sesión activa y garantizar la seguridad de las transacciones
+(gestionadas internamente). Al navegar e
+iniciar sesión en el portal, aceptas su uso. No empleamos cookies para
+rastreo publicitario ni almacenamiento de datos de terceros."
 
-5. Almacenamiento y Seguridad
-Tus datos personales serán almacenados de forma segura utilizando medidas técnicas y organizativas adecuadas para protegerlos contra accesos no autorizados, pérdida o alteración. Los datos se conservarán durante el tiempo necesario para cumplir con las finalidades descritas y durante los plazos legales aplicables.
+Estas cookies no almacenan información de identificación personal en
+texto plano ni se comparten con redes de anuncios o analítica de
+terceros no autorizados.
 
-6. Transferencia de Datos
-No compartiremos tus datos personales con terceros sin tu consentimiento explícito, salvo cuando sea requerido por ley o para proveedores de servicios esenciales para el evento (procesamiento de pagos, envío de correos electrónicos), quienes están sujetos a acuerdos de confidencialidad.
+------------------------------------------------------------------------
+4. PROCEDIMIENTO PARA EL EJERCICIO DE DERECHOS DE HABEAS DATA (PQRS)
+------------------------------------------------------------------------
 
-7. Ejercicio de Derechos
-Para ejercer tus derechos ARCO, puedes contactarnos a través de nuestro correo electrónico. Responderemos a tu solicitud en un plazo máximo de 15 días hábiles, conforme a la normativa colombiana.
+De conformidad con los Artículos 14 y 15 de la Ley 1581 de 2012, los
+titulares de la información o sus causahabientes podrán ejercer sus
+derechos de conocer, actualizar, rectificar y suprimir sus datos
+personales o revocar la autorización otorgada a través de los canales
+institucionales dispuestos.
 
-8. Cambios a esta Política
-Nos reservamos el derecho de actualizar esta política de privacidad en cualquier momento. Los cambios serán notificados a través de la plataforma y, si continúas utilizando el servicio después de dichas modificaciones, aceptas la política actualizada.
+Tiempos Legalmente Estipulados para Respuestas (PQRS):
+- Consultas: máximo diez (10) días hábiles contados a partir de la
+  fecha de recibo de la solicitud. Cuando no fuere posible atender la
+  consulta dentro de dicho término, se informará al interesado antes
+  del vencimiento, expresando los motivos de la demora y señalando la
+  fecha en que se atenderá, la cual no podrá superar los cinco (5)
+  días hábiles siguientes.
+- Reclamos (Actualización, corrección, supresión o revocatoria):
+  máximo quince (15) días hábiles contados a partir del día siguiente
+  a la fecha de su recibo. Si el reclamo resulta incompleto, se
+  requerirá al interesado dentro de los cinco (5) días siguientes a
+  la recepción para que subsane las fallas. Transcurridos dos (2)
+  meses sin respuesta del solicitante, se entenderá desistido el
+  reclamo.
+
+Canales Oficiales de Atención de Habeas Data:
+  Correo: egresados@utp.edu.co | aseutp@utp.edu.co
+  Dirección: Carrera 27 #10-02 Barrio Álamos, Edificio 15 C - 304,
+             Pereira, Risaralda.
+  Teléfono: +57 606 313 7110 / 313 7533 | Celular: 3126539194
+  Conmutador: (+57) (606) 313 7300.
+
+------------------------------------------------------------------------
+5. TRANSMISIÓN Y TRASLADO INTERNACIONAL DE DATOS EN LA NUBE
+------------------------------------------------------------------------
+
+Para la prestación eficiente de los servicios web, el procesamiento de
+autenticación y el almacenamiento resiliente de datos, la plataforma
+hace uso de infraestructura tecnológica proporcionada por proveedores
+internacionales especializados que actúan en calidad de Encargados del
+Tratamiento de Datos (incluyendo plataformas como Render, Supabase,
+Next.js Hosting / Vercel, Unsplash y servicios cloud respaldados por
+Amazon Web Services - AWS).
+
+Condiciones de la Transmisión Internacional:
+- Estándares Equivalentes de Seguridad: Los centros de datos cuentan
+  con certificaciones internacionales (ISO 27001, SOC 2 Type II) y
+  garantizan cifrado en reposo y en tránsito (TLS 1.3 / AES-256).
+- Limitación de Uso: Los Encargados tienen prohibido de manera
+  explícita procesar, divulgar, comercializar o utilizar la
+  información de los usuarios para fines distintos al alojamiento de
+  la base de datos y la ejecución lógica de la aplicación web.
+- Gestión de Incidentes: Ante cualquier eventualidad o brecha de
+  seguridad reportada en la infraestructura subyacente, la UTP y
+  ASE UTP activarán el protocolo de notificación a los usuarios
+  afectados y a la Delegatura de Protección de Datos Personales de la
+  Superintendencia de Industria y Comercio (SIC).
+
+------------------------------------------------------------------------
+6. TÉRMINOS Y CONDICIONES DE COMPRA
+------------------------------------------------------------------------
+
+De acuerdo con la Ley 1480 de 2011 (Estatuto del Consumidor), las
+compras realizadas dentro de la plataforma se rigen bajo las
+siguientes condiciones comerciales:
+
+- Denominación Comercial: La adquisición de accesos al evento se
+  denomina formalmente "Paquete de Entradas", el cual otorga acceso a
+  las jornadas académicas, networking y conciertos programados para
+  los días 22, 23 y 24 de Octubre de 2026.
+- Pasarelas de Pago: Las transacciones se realizan a través de
+  pasarelas certificadas PCI-DSS (ePayco y Mercado Pago). La
+  plataforma no almacena datos de tarjetas débito o crédito.
+- Derecho de Retracto: El comprador podrá ejercer su derecho de
+  retracto dentro de los cinco (5) días hábiles siguientes a la
+  fecha de compra del paquete de entradas, siempre y cuando el
+  evento no haya tenido lugar dentro de dicho término.
+- Reprogramación o Cancelación: En caso de modificación substancial en
+  la agenda del evento por fuerza mayor o caso fortuito, la
+  organización notificará por correo electrónico y WhatsApp oficial
+  las opciones de reasignación o devolución aplicables.
+
+------------------------------------------------------------------------
+7. LAS 12 POLÍTICAS DE SEGURIDAD Y CUMPLIMIENTO TÉCNICO (ISO 27001)
+------------------------------------------------------------------------
+
+La plataforma integra 12 controles de seguridad alineados con el
+estándar ISO 27001 y los lineamientos de Gobierno Digital:
+
+ 1. Sistema de Gestión de Seguridad (SGSI): Operación sobre
+    arquitectura redundante en la nube con revisiones continuas antes
+    y durante el evento del 22 al 24 de octubre.
+ 2. Control de Acceso Basado en Roles (RBAC): Perfil Usuario, Perfil
+    Admin y Perfil Observador (auditoría exclusiva sin permisos de
+    escritura).
+ 3. Protección de Pasarelas: Integración vía Webhooks firmados
+    criptográficamente con ePayco y Mercado Pago.
+ 4. Tratamiento de Datos Sensibles: Inmutabilidad del campo Cédula
+    desde el cliente tras el registro para prevenir la suplantación
+    de tarifas de egresado.
+ 5. Gestión del Factor Humano: Capacitación formal de los operadores
+    de Check-in en lectura de códigos QR e integridad de información.
+ 6. Protección de Infraestructura: Cortafuegos WAF, mitigación
+    anti-DDoS y redes cifradas privadas en los puntos de lectura del
+    evento.
+ 7. Cifrado en Transmisión: HTTPS (TLS 1.3) obligatorio y enlaces
+    tokenizados para envíos transaccionales por Email y API de
+    WhatsApp.
+ 8. Gestión de Credenciales: Hashing seguro de contraseñas con
+    algoritmos BCrypt / PBKDF2.
+ 9. Ciclo de Vida del Software: Pruebas continuas contra
+    vulnerabilidades del OWASP Top 10 en ambientes de desarrollo
+    aislados.
+10. Auditoría e Inalterabilidad (Audit Log): Registro inalterable de
+    acciones administrativas con marca de tiempo, ID e IP.
+11. Continuidad y Contingencia Offline: Servidores con autoescalado y
+    sistema de caché offline en puertas para garantizar la lectura QR
+    aun con intermitencias de red.
+12. Habeas Data y Denominación Comercial: Pleno cumplimiento del
+    marco normativo colombiano (Leyes 1581, 1266 y 1480).
+
+------------------------------------------------------------------------
+ACEPTACIÓN FORMAL
+------------------------------------------------------------------------
+
+El usuario declara haber leído, comprendido y aceptado en su totalidad
+los presentes Términos, Condiciones y Políticas de Privacidad al
+registrarse o realizar transacciones en la plataforma oficial de la
+Asociación de Egresados UTP 2026 (ASE UTP).
+
+© 2026 Universidad Tecnológica de Pereira (UTP) & Asociación de
+Egresados UTP (ASE UTP). Todos los derechos reservados.
