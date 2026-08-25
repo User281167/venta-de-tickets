@@ -1,7 +1,8 @@
 import { z } from 'zod';
-import { DonationAccount } from '@prisma/client';
 
 const envSchema = z.object({
+  // prisma
+  // Supabase
   DATABASE_URL: z.string().min(1, 'DATABASE_URL is required'),
   DIRECT_URL: z.string().min(1, 'DIRECT_URL is required'),
   SUPABASE_URL: z.string().url('SUPABASE_URL must be a valid URL'),
@@ -9,10 +10,14 @@ const envSchema = z.object({
   SUPABASE_SERVICE_ROLE_KEY: z
     .string()
     .min(1, 'SUPABASE_SERVICE_ROLE_KEY is required'),
+
   PORT: z.coerce.number().int().positive().default(3001),
+
   NODE_ENV: z
     .enum(['development', 'production', 'test'])
     .default('development'),
+
+  // internal ingresos
   QR_JWT_SECRET: z
     .string()
     .min(32, 'QR_JWT_SECRET must be at least 32 characters'),
@@ -23,26 +28,32 @@ const envSchema = z.object({
   CONFIRMATION_LINK_BASE_URL: z
     .string()
     .url('CONFIRMATION_LINK_BASE_URL must be a valid URL'),
+
+  // internal client, api
   API_URL: z.string().url('API_URL must be a valid URL'),
   CORS_ORIGIN: z.string().default('http://localhost:3000'),
+
+  // mercadopago
   MERCADOPAGO_ACCESS_TOKEN: z
     .string()
     .min(1, 'MERCADOPAGO_ACCESS_TOKEN is required'),
   MERCADOPAGO_WEBHOOK_SECRET: z
     .string()
     .min(1, 'MERCADOPAGO_WEBHOOK_SECRET is required'),
-  EPAYCO_PUBLIC_KEY: z
-    .string()
-    .min(1, 'EPAYCO_PUBLIC_KEY is required'),
-  EPAYCO_PRIVATE_KEY: z
-    .string()
-    .min(1, 'EPAYCO_PRIVATE_KEY is required'),
+
+  // ePayco Checkout
+  EPAYCO_PUBLIC_KEY: z.string().min(1, 'EPAYCO_PUBLIC_KEY is required'),
+  EPAYCO_PRIVATE_KEY: z.string().min(1, 'EPAYCO_PRIVATE_KEY is required'),
   EPAYCO_P_KEY: z.string().min(1, 'EPAYCO_P_KEY is required'),
   EPAYCO_CUST_ID_CLIENTE: z
     .string()
     .min(1, 'EPAYCO_CUST_ID_CLIENTE is required'),
+
+  // resend
   RESEND_API_KEY: z.string().min(1, 'RESEND_API_KEY is required'),
   EMAIL_FROM: z.string().min(1, 'EMAIL_FROM is required'),
+
+  // upstash
   UPSTASH_REDIS_REST_URL: z.string().url().optional(),
   UPSTASH_REDIS_REST_TOKEN: z.string().min(1).optional(),
   RATE_LIMIT_FAIL_OPEN: z
@@ -53,39 +64,11 @@ const envSchema = z.object({
     .enum(['true', 'false'])
     .default('false')
     .transform((v) => v === 'true'),
-});
 
-const dbURL = new URL(process.env.DATABASE_URL ?? '');
-
-console.log({
-  DATABASE_URL: !!process.env.DATABASE_URL,
-  DIRECT_URL: !!process.env.DIRECT_URL,
-  SUPABASE_URL: !!process.env.SUPABASE_URL,
-  SUPABASE_ANON_KEY: !!process.env.SUPABASE_ANON_KEY,
-  SUPABASE_SERVICE_ROLE_KEY: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
-  PORT: !!process.env.PORT,
-  NODE_ENV: !!process.env.NODE_ENV,
-  QR_JWT_SECRET: !!process.env.QR_JWT_SECRET,
-  CONFIRMATION_JWT_SECRET: !!process.env.CONFIRMATION_JWT_SECRET,
-  CONFIRMATION_TOKEN_TTL: !!process.env.CONFIRMATION_TOKEN_TTL,
-  CONFIRMATION_LINK_BASE_URL: !!process.env.CONFIRMATION_LINK_BASE_URL,
-  API_URL: !!process.env.API_URL,
-  CORS_ORIGIN: !!process.env.CORS_ORIGIN,
-  MERCADOPAGO_ACCESS_TOKEN: !!process.env.MERCADOPAGO_ACCESS_TOKEN,
-  MERCADOPAGO_WEBHOOK_SECRET: !!process.env.MERCADOPAGO_WEBHOOK_SECRET,
-  EPAYCO_PUBLIC_KEY: !!process.env.EPAYCO_PUBLIC_KEY,
-  EPAYCO_PRIVATE_KEY: !!process.env.EPAYCO_PRIVATE_KEY,
-  EPAYCO_P_KEY: !!process.env.EPAYCO_P_KEY,
-  EPAYCO_CUST_ID_CLIENTE: !!process.env.EPAYCO_CUST_ID_CLIENTE,
-  RESEND_API_KEY: !!process.env.RESEND_API_KEY,
-  EMAIL_FROM: !!process.env.EMAIL_FROM,
-  UPSTASH_REDIS_REST_URL: !!process.env.UPSTASH_REDIS_REST_URL,
-  UPSTASH_REDIS_REST_TOKEN: !!process.env.UPSTASH_REDIS_REST_TOKEN,
-  RATE_LIMIT_FAIL_OPEN: process.env.RATE_LIMIT_FAIL_OPEN ?? 'true',
-  RATE_LIMIT_DISABLED: process.env.RATE_LIMIT_DISABLED ?? 'false',
-  host: dbURL.hostname,
-  port: dbURL.port,
-  database: dbURL.pathname,
+  // infobip
+  INFOBIP_API_KEY: z.string().min(1, 'INFOBIP_API_KEY is required'),
+  INFOBIP_BASE_URL: z.string().url('INFOBIP_BASE_URL must be a valid URL'),
+  INFOBIP_SENDER_ID: z.string().min(1, 'INFOBIP_SENDER_ID is required'),
 });
 
 const parsed = envSchema.safeParse(process.env);
