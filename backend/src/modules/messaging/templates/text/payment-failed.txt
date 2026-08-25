@@ -1,0 +1,14 @@
+Hola {{customerName}} 👋
+
+❌ *Pago no procesado* — {{eventName}}
+
+Tu pago no pudo completarse. *No se realizó ningún cargo* a tu método de pago.
+
+📝 *Motivo:* {{reason}}
+💰 *Monto:* {{amount}}
+📅 *Fecha:* {{paymentDate}}
+🎟️ *Evento:* {{eventName}}
+
+Si el problema persiste, contáctanos para recibir asistencia personalizada.
+
+— Asociación de Egresados UTP

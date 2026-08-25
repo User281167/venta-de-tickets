@@ -1,0 +1,14 @@
+Hola {{donorName}} 👋
+
+❌ *No pudimos procesar tu donación* — {{eventName}}
+
+El proveedor de pagos rechazó la transacción. *No se realizó ningún cargo* a tu tarjeta.
+
+💰 *Monto intentado:* {{amount}}
+🏦 *Cuenta destino:* {{accountName}}
+📅 *Fecha:* {{donationDate}}
+
+Si el problema persiste, prueba con otro método de pago o comunícate con tu banco:
+🔗 {{frontendUrl}}/donaciones
+
+— Asociación de Egresados UTP

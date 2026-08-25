@@ -1,0 +1,13 @@
+Hola {{donorName}} 👋
+
+✅ *Donación confirmada* — {{eventName}}
+
+Tu donación se procesó correctamente. Aquí tienes el resumen de tu aporte:
+
+💰 *Monto donado:* {{amount}}
+🏦 *Cuenta destino:* {{accountName}}
+📅 *Fecha de donación:* {{donationDate}}
+
+Gracias por apoyar este evento. Tu aporte ayuda a que más personas vivan la experiencia de la Asociación de Egresados UTP.
+
+— Asociación de Egresados UTP

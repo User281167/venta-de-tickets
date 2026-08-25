@@ -1,0 +1,16 @@
+Hola {{customerName}} 👋
+
+⚠️ *Reembolso en proceso* — {{eventName}}
+
+Recibimos tu pago correctamente, pero las entradas ya no estaban disponibles al momento de asignarlas. Vamos a reembolsarte el dinero.
+
+💰 *Monto a reembolsar:* {{amount}}
+🆔 *ID de pago:* {{paymentId}}
+📅 *Fecha:* {{paymentDate}}
+
+*Qué sigue:*
+1. Nuestro equipo de administración está gestionando el reembolso.
+2. Te enviaremos un correo de confirmación cuando se procese al método de pago original.
+3. El tiempo de procesamiento depende de tu entidad bancaria.
+
+— Asociación de Egresados UTP

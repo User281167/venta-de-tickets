@@ -1,0 +1,16 @@
+Hola {{customerName}} 👋
+
+🎫 *Confirma tu entrada* — {{eventName}}
+
+En la puerta del evento te pedimos confirmar que estás presente.
+
+🆔 *ID del ticket:* {{ticketId}}
+
+Confirma tu entrada directamente abriendo el siguiente enlace. *No necesitas iniciar sesión*, el link es de un solo uso:
+
+🔗 {{confirmationUrl}}
+
+También puedes revisar el detalle y el código QR desde tu cuenta:
+🔗 {{qrImageUrl}}
+
+— Asociación de Egresados UTP

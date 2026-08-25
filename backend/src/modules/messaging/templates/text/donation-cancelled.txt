@@ -1,0 +1,14 @@
+Hola {{donorName}} 👋
+
+⏰ *Tu donación expiró* — {{eventName}}
+
+El proceso de pago no se completó en el tiempo disponible y fue cancelada. *No se realizó ningún cargo.*
+
+💰 *Monto:* {{amount}}
+🏦 *Cuenta destino:* {{accountName}}
+📅 *Fecha:* {{donationDate}}
+
+Si cambiaste de opinión, puedes iniciar una nueva donación cuando quieras:
+🔗 {{frontendUrl}}/donaciones
+
+— Asociación de Egresados UTP

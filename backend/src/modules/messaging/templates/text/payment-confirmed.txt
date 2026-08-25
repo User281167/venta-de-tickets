@@ -1,0 +1,13 @@
+Hola {{customerName}} 👋
+
+✅ *Pago confirmado* — {{eventName}}
+
+Tu pago se procesó correctamente. Aquí tienes el resumen:
+
+💰 *Monto pagado:* {{amount}}
+📅 *Fecha de pago:* {{paymentDate}}
+🎟️ *Evento:* {{eventName}}
+
+Recibirás un correo adicional con el código QR de cada entrada una vez sean confirmadas por la organización.
+
+— Asociación de Egresados UTP

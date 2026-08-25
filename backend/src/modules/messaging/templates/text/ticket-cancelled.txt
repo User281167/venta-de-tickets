@@ -1,0 +1,11 @@
+Hola {{customerName}} 👋
+
+❌ *Entrada cancelada* — {{eventName}}
+
+Tu entrada fue cancelada. El QR asociado ya no es válido para el ingreso al evento.
+
+🆔 *ID del ticket:* {{ticketId}}
+
+Si fue un error o tienes dudas, contáctanos indicando el ID del ticket.
+
+— Asociación de Egresados UTP

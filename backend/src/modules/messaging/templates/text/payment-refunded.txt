@@ -1,0 +1,14 @@
+Hola {{customerName}} 👋
+
+✅ *Reembolso confirmado* — {{eventName}}
+
+El equipo de administración procesó un reembolso para tu compra. Las entradas asociadas fueron canceladas.
+
+💰 *Monto reembolsado:* {{amount}}
+🆔 *ID de pago:* {{paymentId}}
+📝 *Motivo:* {{reason}}
+📅 *Fecha:* {{refundDate}}
+
+Si no recibes el dinero en los próximos días hábiles, contáctanos indicando tu ID de pago.
+
+— Asociación de Egresados UTP

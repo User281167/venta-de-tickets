@@ -15,7 +15,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier . --write",
-    "copy-templates": "copyfiles -u 2 \"src/modules/messaging/templates/**/*.html\" dist/modules",
+    "copy-templates": "copyfiles -u 2 \"src/modules/messaging/templates/**/*.html\" dist/modules && copyfiles -u 2 \"src/modules/messaging/templates/**/*.txt\" dist/modules",
     "copy-policies": "copyfiles -u 2 \"src/shared/policies/*.txt\" dist/shared"
   },
   "prisma": {
@@ -26,6 +26,7 @@
   "license": "ISC",
   "packageManager": "pnpm@10.33.0",
   "dependencies": {
+    "@infobip-api/sdk": "^0.3.2",
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
     "@supabase/supabase-js": "^2.110.0",

@@ -1,0 +1,16 @@
+Hola {{customerName}} 👋
+
+🎟️ *Tu entrada está lista* — {{eventName}}
+
+Aquí está el detalle de tu entrada. Preséntala en la puerta del evento.
+
+🆔 *ID del ticket:* {{ticketId}}
+🔢 *Código:* {{ticketCode}}
+🎫 *Tipo:* {{ticketName}}
+
+Te enviamos un correo aparte con el código QR. Si no puedes escanearlo, también puedes presentar el ID del ticket o el código en la entrada del evento.
+
+Ver todas tus entradas:
+🔗 {{frontendUrl}}/mi-cuenta/entradas
+
+— Asociación de Egresados UTP
