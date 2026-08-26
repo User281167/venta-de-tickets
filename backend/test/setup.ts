@@ -19,4 +19,7 @@ process.env.EPAYCO_P_KEY = 'test-epayco-p-key';
 process.env.EPAYCO_CUST_ID_CLIENTE = 'test-epayco-cust-id';
 process.env.RESEND_API_KEY = 'test-resend-api-key';
 process.env.EMAIL_FROM = 'noreply@test.local';
+process.env.INFOBIP_API_KEY = 'test-infobip-api-key';
+process.env.INFOBIP_BASE_URL = 'https://api.infobip.com';
+process.env.INFOBIP_SENDER_ID = 'TestSender';
 process.env.RATE_LIMIT_DISABLED = 'true';

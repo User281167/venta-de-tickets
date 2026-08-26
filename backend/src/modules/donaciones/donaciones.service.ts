@@ -106,7 +106,7 @@ export async function handleWebhook(
 
   if (newState === 'confirmed') {
     if (donation.amountCents > 0) {
-      // ponytail: counter is auxiliary; failure must not block donation state or notification.
+      // El contador es auxiliar; su fallo no debe bloquear el estado de la donación ni la notificación..
       void donationRepository
         .incrementCounterBy(donation.amountCents)
         .catch((err) =>

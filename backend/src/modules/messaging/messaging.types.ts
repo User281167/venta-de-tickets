@@ -1,11 +1,10 @@
-export type MessagingChannel = 'email' | 'whatsapp';
-
 export interface ConfirmationLinkPayload {
   ticketId: string;
   buyerName: string;
-  channel: MessagingChannel;
-  buyerContact: string;
+  email: string | null;
+  phone: string | null;
   confirmationUrl: string;
+  qrImageUrl: string;
 }
 
 export interface MessagingClient {

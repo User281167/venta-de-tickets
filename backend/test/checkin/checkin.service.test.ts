@@ -22,13 +22,11 @@ vi.mock('../../src/modules/checkin/checkin.repository.js', () => ({
 }));
 
 const mockSendConfirmationLink = vi.hoisted(() => vi.fn());
-const mockNotifyTicketConfirmation = vi.hoisted(() => vi.fn());
 
 vi.mock('../../src/modules/messaging/index.js', () => ({
   messagingClient: {
     sendConfirmationLink: mockSendConfirmationLink,
   },
-  notifyTicketConfirmation: mockNotifyTicketConfirmation,
 }));
 
 vi.mock('../../src/modules/audit/audit.service.js', () => ({
@@ -194,11 +192,15 @@ describe('checkin.service', () => {
 
       expect(mockSendConfirmationLink).toHaveBeenCalledTimes(1);
       const payload = mockSendConfirmationLink.mock.calls[0][0];
-      expect(payload.channel).toBe('email');
-      expect(payload.buyerContact).toBe('maria@example.com');
+      expect(payload.email).toBe('maria@example.com');
+      expect(payload.phone).toBeNull();
+      expect(payload.buyerName).toBe('Maria Garcia');
       expect(payload.ticketId).toBe('ticket-1');
       expect(payload.confirmationUrl).toMatch(
         /^https:\/\/frontend\.test\/confirmaciones\?token=/,
+      );
+      expect(payload.qrImageUrl).toMatch(
+        /^https:\/\/frontend\.test\/mi-cuenta\/entradas\/ticket-1$/,
       );
     });
 
@@ -251,7 +253,7 @@ describe('checkin.service', () => {
       expect(calls).toHaveLength(0);
     });
 
-    it('uses whatsapp when buyer has no email but has phone', async () => {
+    it('passes phone to client when buyer has no email but has phone', async () => {
       mockRequestConfirmation.mockResolvedValue({
         ok: true,
         buyer: {
@@ -264,12 +266,28 @@ describe('checkin.service', () => {
 
       await checkinService.requestConfirmation('ticket-1', 'checker-1');
 
-      expect(mockSendConfirmationLink.mock.calls[0][0].channel).toBe(
-        'whatsapp',
-      );
-      expect(mockSendConfirmationLink.mock.calls[0][0].buyerContact).toBe(
+      expect(mockSendConfirmationLink.mock.calls[0][0].email).toBeNull();
+      expect(mockSendConfirmationLink.mock.calls[0][0].phone).toBe(
         '+573001234567',
       );
+    });
+
+    it('passes both email and phone when buyer has both', async () => {
+      mockRequestConfirmation.mockResolvedValue({
+        ok: true,
+        buyer: {
+          fullName: 'Maria',
+          email: 'maria@example.com',
+          phone: '+573001234567',
+        },
+      });
+      mockSendConfirmationLink.mockResolvedValue(undefined);
+
+      await checkinService.requestConfirmation('ticket-1', 'checker-1');
+
+      const payload = mockSendConfirmationLink.mock.calls[0][0];
+      expect(payload.email).toBe('maria@example.com');
+      expect(payload.phone).toBe('+573001234567');
     });
 
     it('does not send link when buyer has no contact info', async () => {

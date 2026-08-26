@@ -14,7 +14,6 @@ export {
   notifyDonationCancelled,
 } from './notifications/donation-notifications.js';
 export type {
-  MessagingChannel,
   MessagingClient,
   ConfirmationLinkPayload,
 } from './messaging.types.js';

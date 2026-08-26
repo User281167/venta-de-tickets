@@ -9,7 +9,12 @@ vi.hoisted(() => {
 });
 
 vi.mock('../../src/shared/config/env.js', () => ({
-  env: { QR_JWT_SECRET: 'test-secret-min-32-chars-long-for-jwt!!' },
+  env: {
+    QR_JWT_SECRET: 'test-secret-min-32-chars-long-for-jwt!!',
+    INFOBIP_API_KEY: 'test-infobip-api-key',
+    INFOBIP_BASE_URL: 'https://api.infobip.com',
+    INFOBIP_SENDER_ID: 'TestSender',
+  },
 }));
 
 vi.mock('../../src/modules/tickets/tickets.service.js', () => ({

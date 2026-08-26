@@ -13,11 +13,7 @@ import {
 } from '../audit/audit.constants.js';
 
 import * as checkinRepo from './checkin.repository.js';
-import {
-  messagingClient,
-  notifyTicketConfirmation,
-  type MessagingChannel,
-} from '../messaging/index.js';
+import { messagingClient } from '../messaging/index.js';
 import { getAllowedActions, type TicketSummary } from './checkin.types.js';
 
 function decodeQrToken(qrToken: string): string {
@@ -43,15 +39,6 @@ function signConfirmationToken(ticketId: string): string {
     env.CONFIRMATION_JWT_SECRET,
     { expiresIn: env.CONFIRMATION_TOKEN_TTL as jwt.SignOptions['expiresIn'] },
   );
-}
-
-function pickBuyerContact(
-  email: string | null,
-  phone: string | null,
-): { channel: MessagingChannel; contact: string } | null {
-  if (email) return { channel: 'email', contact: email };
-  if (phone) return { channel: 'whatsapp', contact: phone };
-  return null;
 }
 
 export async function scanTicket(qrToken: string): Promise<TicketSummary> {
@@ -120,9 +107,7 @@ export async function requestConfirmation(
     throw new ConflictError('Ticket not available for confirmation request');
   }
 
-  const buyer = pickBuyerContact(result.buyer.email, result.buyer.phone);
-
-  if (!buyer) {
+  if (!result.buyer.email && !result.buyer.phone) {
     logger.warn(
       `Checkin request-confirmation: buyer has no contact: ticketId=${ticketId}`,
     );
@@ -150,20 +135,11 @@ export async function requestConfirmation(
   await messagingClient.sendConfirmationLink({
     ticketId,
     buyerName: result.buyer.fullName,
-    channel: buyer.channel,
-    buyerContact: buyer.contact,
+    email: result.buyer.email,
+    phone: result.buyer.phone,
     confirmationUrl,
+    qrImageUrl,
   });
-
-  if (buyer.channel === 'email') {
-    void notifyTicketConfirmation({
-      ticketId,
-      customerName: result.buyer.fullName,
-      customerEmail: buyer.contact,
-      qrImageUrl,
-      confirmationUrl,
-    });
-  }
 
   logger.info(
     `Checkin request-confirmation: ticketId=${ticketId} checkerId=${checkerId}`,

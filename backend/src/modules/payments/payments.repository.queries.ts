@@ -73,7 +73,7 @@ export function findByIdWithUserAndTickets(id: string) {
   return prisma.payment.findUnique({
     where: { id },
     include: {
-      user: { select: { id: true, email: true, fullName: true } },
+      user: { select: { id: true, email: true, fullName: true, phone: true } },
       tickets: {
         select: {
           id: true,

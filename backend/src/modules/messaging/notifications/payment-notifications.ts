@@ -20,6 +20,7 @@ export async function notifyPaymentConfirmed(paymentId: string): Promise<void> {
     await messagingService.sendPaymentConfirmation({
       customerName: payment.user.fullName,
       customerEmail: payment.user.email,
+      customerPhone: payment.user.phone ?? null,
       totalCents: payment.totalCents,
       paidAt: payment.updatedAt,
     });
@@ -38,6 +39,7 @@ export async function notifyPaymentConfirmed(paymentId: string): Promise<void> {
         await messagingService.sendTicketPaid({
           customerName: payment.user.fullName,
           customerEmail: payment.user.email,
+          customerPhone: payment.user.phone ?? null,
           ticketId: ticket.id,
           ticketCode: ticket.ticketCode,
           ticketName: ticket.ticketType.name,
@@ -78,6 +80,7 @@ export async function notifyPaymentFailed(
     await messagingService.sendPaymentFailed({
       customerName: payment.user.fullName,
       customerEmail: payment.user.email,
+      customerPhone: payment.user.phone ?? null,
       totalCents: payment.totalCents,
       failedAt: payment.updatedAt,
       reason,
@@ -105,6 +108,7 @@ export async function notifyPaymentUnfulfillable(
     await messagingService.sendPaymentUnfulfillable({
       customerName: payment.user.fullName,
       customerEmail: payment.user.email,
+      customerPhone: payment.user.phone ?? null,
       totalCents: payment.totalCents,
       paymentId: payment.id,
       occurredAt: payment.updatedAt,
@@ -133,6 +137,7 @@ export async function notifyPaymentRefunded(input: {
     await messagingService.sendPaymentRefunded({
       customerName: payment.user.fullName,
       customerEmail: payment.user.email,
+      customerPhone: payment.user.phone ?? null,
       totalCents: payment.totalCents,
       paymentId: payment.id,
       reason: input.reason,
@@ -144,6 +149,7 @@ export async function notifyPaymentRefunded(input: {
         ticketId: ticket.id,
         customerName: payment.user.fullName,
         customerEmail: payment.user.email,
+        customerPhone: payment.user.phone ?? null,
       });
     }
   } catch (err) {
@@ -158,6 +164,7 @@ export async function notifyTicketConfirmation(input: {
   ticketId: string;
   customerName: string;
   customerEmail: string;
+  customerPhone?: string | null;
   qrImageUrl: string;
   confirmationUrl: string;
 }): Promise<void> {
@@ -175,6 +182,7 @@ export async function notifyTicketCancellation(input: {
   ticketId: string;
   customerName: string;
   customerEmail: string;
+  customerPhone?: string | null;
 }): Promise<void> {
   try {
     await messagingService.sendTicketCancellation(input);
