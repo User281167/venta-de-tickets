@@ -6,6 +6,7 @@ import {
 } from './templates/render-template.js';
 import { logger } from '../../utils/logger.js';
 import { env } from '../../shared/config/env.js';
+import { normalizePhoneNumber } from './utils/normalize-phone.js';
 
 const EVENT_NAME = 'Asociación de Egresados UTP - 2026';
 
@@ -37,10 +38,22 @@ function fireWhatsApp(
   externalId: string,
 ): void {
   if (!to) return;
+
+  let normalized: string;
+  try {
+    normalized = normalizePhoneNumber(to);
+  } catch (err) {
+    logger.warn(
+      { err: (err as Error).message, to, template },
+      '[messaging:whatsapp] invalid phone, skipped',
+    );
+    return;
+  }
+
   const text = renderTextTemplate(template, vars);
 
   void getWhatsAppProvider()
-    .send({ to, text, externalId })
+    .send({ to: normalized, text, externalId })
     .catch((err) =>
       logger.error(
         { err: (err as Error).message, template, externalId },

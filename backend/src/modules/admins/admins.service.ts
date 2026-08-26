@@ -135,7 +135,7 @@ export async function createUser(
         nombre: user.fullName,
         correo: user.email,
         rol: user.role,
-        cédula: user.cedula,
+        cedula: user.cedula,
         teléfono: user.phone,
         activo: user.isActive,
       },
@@ -382,7 +382,7 @@ export async function updateUser(
       entityType: AUDIT_ENTITY_TYPES.USUARIOS,
       entityId: id,
       metadata: {
-        'Usuario': existing.fullName,
+        Usuario: existing.fullName,
         'Estado Anterior': existing.isActive ? 'activo' : 'inactivo',
         'Estado Nuevo': data.isActive ? 'activo' : 'inactivo',
       },
@@ -397,7 +397,7 @@ export async function updateUser(
       entityType: AUDIT_ENTITY_TYPES.USUARIOS,
       entityId: id,
       metadata: {
-        'Usuario': existing.fullName,
+        Usuario: existing.fullName,
         'Rol Anterior': existing.role,
         'Rol Nuevo': data.role,
       },

@@ -77,6 +77,32 @@ describe('messaging.service WhatsApp dispatch', () => {
     expect(mockWhatsAppSend).not.toHaveBeenCalled();
   });
 
+  it('normalizes unprefixed Colombian numbers before sending WhatsApp', async () => {
+    await service.sendPaymentConfirmation({
+      customerName: 'Ana',
+      customerEmail: 'ana@test.com',
+      customerPhone: '(300) 123-4567',
+      totalCents: 50000,
+      paidAt: new Date('2026-07-30T12:00:00.000Z'),
+    });
+
+    expect(mockWhatsAppSend).toHaveBeenCalledTimes(1);
+    expect(mockWhatsAppSend.mock.calls[0][0].to).toBe('+573001234567');
+  });
+
+  it('skips WhatsApp when phone cannot be normalized', async () => {
+    await service.sendPaymentConfirmation({
+      customerName: 'Ana',
+      customerEmail: 'ana@test.com',
+      customerPhone: 'not-a-number',
+      totalCents: 50000,
+      paidAt: new Date('2026-07-30T12:00:00.000Z'),
+    });
+
+    expect(mockEmailSend).toHaveBeenCalledTimes(1);
+    expect(mockWhatsAppSend).not.toHaveBeenCalled();
+  });
+
   it('does not propagate WhatsApp errors (fire-and-forget)', async () => {
     mockWhatsAppSend.mockRejectedValue(new Error('Infobip down'));
 
