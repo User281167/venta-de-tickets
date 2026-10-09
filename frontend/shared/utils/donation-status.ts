@@ -37,7 +37,7 @@ export type DonationAccount = "LA_CONVENCION" | "BARRANQUEROS_UTP" | "VICTIMAS";
 export const DONATION_ACCOUNT_LABELS: Record<DonationAccount, string> = {
   LA_CONVENCION: "Asociación de Egresados UTP",
   BARRANQUEROS_UTP: "Barranqueros UTP",
-  VICTIMAS: "Víctimas y damnificados",
+  VICTIMAS: "UTPton",
 };
 
 export const DONATION_ACCOUNT_FILTER_OPTIONS: ReadonlyArray<{
@@ -47,5 +47,5 @@ export const DONATION_ACCOUNT_FILTER_OPTIONS: ReadonlyArray<{
   { value: "", label: "Todas las cuentas" },
   { value: "LA_CONVENCION", label: "Asociación de Egresados UTP" },
   { value: "BARRANQUEROS_UTP", label: "Barranqueros UTP" },
-  { value: "VICTIMAS", label: "Víctimas y damnificados" },
+  { value: "VICTIMAS", label: "UTPton" },
 ];

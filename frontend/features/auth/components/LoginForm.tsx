@@ -4,18 +4,15 @@ import {
   Box,
   Button,
   Field,
-  HStack,
   Input,
   InputGroup,
   Stack,
   Text,
   Heading,
   VStack,
-  Separator,
   IconButton,
 } from "@chakra-ui/react";
 import {
-  IconBrandGoogle,
   IconEye,
   IconEyeOff,
   IconMail,
@@ -36,9 +33,7 @@ export function LoginForm() {
     status,
     fieldErrors,
     generalError,
-    googleStatus,
     handleSubmit,
-    handleGoogleSignIn,
   } = useLogin();
 
   return (
@@ -134,30 +129,6 @@ export function LoginForm() {
             ¿Olvidaste tu contraseña?
           </Link>
         </form>
-
-        <HStack gap={4}>
-          <Separator flex={1} />
-
-          <Text fontSize="xs" color="gray.400" flexShrink={0}>
-            o continúa con
-          </Text>
-
-          <Separator flex={1} />
-        </HStack>
-
-        <Button
-          variant="outline"
-          w="full"
-          size="lg"
-          loading={googleStatus === "loading"}
-          onClick={handleGoogleSignIn}
-          color="white"
-          borderColor="rgba(255,255,255,0.4)"
-          _hover={{ bg: "rgba(255,255,255,0.1)" }}
-        >
-          <IconBrandGoogle size={20} />
-          Google
-        </Button>
 
       </VStack>
     </Box>

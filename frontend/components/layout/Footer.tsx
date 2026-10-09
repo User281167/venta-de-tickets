@@ -13,13 +13,10 @@ import {
 } from "@tabler/icons-react";
 
 const QUICK_LINKS = [
-  { label: "Asociación de Egresados UTP", href: "/#convencion" },
+  { label: "Inicio", href: "/#hero" },
   { label: "Agenda", href: "/agenda" },
-  { label: "Actividades", href: "/#actividades" },
-  { label: "Invitados", href: "/#invitados" },
-  { label: "Entradas", href: "/#entradas" },
-  { label: "Contacto", href: "/#contacto" },
-  { label: "Aliados", href: "/aliados" },
+  { label: "Donar a UTPton", href: "/#donaciones" },
+  { label: "Contacto", href: "mailto:egresados@utp.edu.co" },
 ];
 
 const GRADIENT_TEXT = {

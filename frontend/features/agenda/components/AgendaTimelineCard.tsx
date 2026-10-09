@@ -4,7 +4,6 @@ import {
   Grid,
   Heading,
   HStack,
-  Image,
   Stack,
   Text,
 } from "@chakra-ui/react";
@@ -48,52 +47,8 @@ export function EventCard({ event, index, side }: EventCardProps) {
           borderColor: trackColor,
         }}
       >
-        <Grid templateColumns={{ base: "1fr", md: "180px 1fr" }} gap={0}>
-          <Box
-            position="relative"
-            h={{ base: "180px", md: "full" }}
-            minH={{ md: "220px" }}
-            overflow="hidden"
-          >
-            <Image
-              src={event.image}
-              alt={event.title}
-              w="full"
-              h="full"
-              objectFit="cover"
-              transition="transform 0.6s ease"
-              _groupHover={{ transform: "scale(1.08)" }}
-            />
-
-            <Box
-              position="absolute"
-              inset={0}
-              bg="linear-gradient(to top, rgba(2,4,20,0.7) 0%, transparent 60%)"
-            />
-
-              <Badge
-                position="absolute"
-                bottom={3}
-                left={3}
-                colorPalette="neutral"
-                bg="rgba(2,4,20,0.7)"
-                color="white"
-                border="1px solid rgba(255,255,255,0.12)"
-                px={2.5}
-                py={1}
-                borderRadius="full"
-                fontSize="xs"
-                fontWeight="bold"
-                backdropFilter="blur(6px)"
-              >
-                <HStack gap={1}>
-                  <StatusIcon size={14} color="#00e5ff" />
-                  <Text as="span">{event.track}</Text>
-                </HStack>
-              </Badge>
-          </Box>
-
-            <Stack p={{ base: 5, md: 6 }} gap={4} justify="center">
+        <Grid templateColumns="1fr" gap={0}>
+          <Stack p={{ base: 5, md: 6 }} gap={4} justify="center">
               <HStack gap={3} flexWrap="wrap">
                 <Badge
                   bg={`${trackColor}18`}
@@ -107,6 +62,20 @@ export function EventCard({ event, index, side }: EventCardProps) {
                 >
                   {event.time}
                 </Badge>
+                <Badge
+                  bg="rgba(255,255,255,.06)"
+                  color="white"
+                  border="1px solid rgba(255,255,255,.12)"
+                  px={3}
+                  py={1}
+                  borderRadius="full"
+                  fontSize="xs"
+                >
+                  <HStack gap={1}>
+                    <StatusIcon size={13} color="#f5bd35" />
+                    <Text as="span">{event.track}</Text>
+                  </HStack>
+                </Badge>
                 {event.speakers && event.speakers.length > 0 && (
                   <Text color="brand.muted" fontSize="sm">
                     {event.speakers.join(" · ")}
@@ -118,9 +87,14 @@ export function EventCard({ event, index, side }: EventCardProps) {
                 {event.title}
               </Heading>
 
-              {/*<Text color="brand.muted" fontSize="md" lineHeight="1.7">
+              <Text color="brand.muted" fontSize="md" lineHeight="1.7">
                 {event.description}
-              </Text>*/}
+              </Text>
+              {event.note && (
+                <Text color="#f5bd35" fontSize="sm" lineHeight="1.6">
+                  {event.note}
+                </Text>
+              )}
             </Stack>
         </Grid>
       </Box>

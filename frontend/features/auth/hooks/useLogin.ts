@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { loginSchema } from "@/features/auth/schemas/auth.schema";
 import {
   signInWithPassword,
-  signInWithGoogle,
+  signOut,
 } from "@/features/auth/api/auth.client";
 
 import { createClient } from "@/shared/lib/supabase/client";
@@ -23,7 +23,6 @@ export function useLogin() {
   const [status, setStatus] = useState<
     "idle" | "submitting" | "error" | "success"
   >("idle");
-  const [googleStatus, setGoogleStatus] = useState<"idle" | "loading">("idle");
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -75,32 +74,26 @@ export function useLogin() {
         }
       }
 
-      if (role === "client") {
-        router.push("/mi-cuenta");
+      if (role !== "admin" && role !== "super_admin") {
+        await signOut();
+        router.replace("/");
       } else {
-        router.push("/admin");
+        router.replace("/admin");
       }
     },
-    [email, password],
+    [email, password, router],
   );
-
-  const handleGoogleSignIn = useCallback(async () => {
-    setGoogleStatus("loading");
-    await signInWithGoogle();
-  }, []);
 
   return {
     fieldErrors,
     showPassword,
     setShowPassword,
     generalError,
-    googleStatus,
     setPassword,
     email,
     setEmail,
     password,
     status,
     handleSubmit,
-    handleGoogleSignIn,
   };
 }

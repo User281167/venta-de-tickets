@@ -7,21 +7,6 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, type ReactNode } from "react";
 
-// Paths inside /admin/* that are restricted to a subset of ADMIN_ROLES.
-// `/admin/checkin` is intentionally NOT listed — it must be reachable by
-// `checker` (and `admin` for support) so the door-staff
-// scan flow works. Add an entry here only if a new sub-page needs to be
-// hidden from `checker`.
-const ROLE_RESTRICTED_PATHS: Record<string, string[]> = {
-  "/admin/ticket-types": ["admin", "super_admin"],
-  "/admin/usuarios": ["admin", "super_admin"],
-  "/admin/usuarios/carga-masiva": ["admin", "super_admin"],
-  "/admin/pagos": ["admin", "super_admin"],
-  "/admin/donaciones": ["admin", "super_admin"],
-  "/admin/analiticas": ["admin", "super_admin"],
-  "/admin/auditoria": ["super_admin"],
-};
-
 function AdminLayoutInner({ children }: { children: ReactNode }) {
   const { role, isLoading } = useAuth();
   const router = useRouter();
@@ -45,14 +30,13 @@ function AdminLayoutInner({ children }: { children: ReactNode }) {
     return null;
   }
 
-  const ADMIN_ROLES = new Set(["super_admin", "admin", "checker"]);
+  const ADMIN_ROLES = new Set(["super_admin", "admin"]);
   if (!ADMIN_ROLES.has(role)) {
     router.replace("/");
     return null;
   }
 
-  const requiredRoles = ROLE_RESTRICTED_PATHS[pathname];
-  if (requiredRoles && !requiredRoles.includes(role)) {
+  if (pathname.startsWith("/admin/") && pathname !== "/admin/donaciones") {
     return (
       <Flex bg="brand.dark">
         <Flex flex={1} p={8} minH="100vh">

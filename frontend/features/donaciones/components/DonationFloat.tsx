@@ -12,6 +12,8 @@ export function DonationFloat() {
   return (
     <section className="!fixed !bottom-0 !left-0 !z-50 !bg-utp-noche !text-white !w-full !p-6 !border !border-utp-azul !rounded-base !shadow-xs !flex !flex-col !items-center !justify-center">
       <button
+        type="button"
+        aria-label="Cerrar invitación a donar"
         className="!absolute !top-3 !right-3 cursor-pointer"
         onClick={() => setShow(false)}
       >
@@ -19,15 +21,14 @@ export function DonationFloat() {
       </button>
 
       <h5 className="!mb-3 !text-3xl !font-semibold !tracking-tight !leading-8">
-        Hoy podemos ayudar y hacer una diferencia
+        Súmate a UTPton
       </h5>
 
       <p className="!text-body !mb-6">
-        Apoya a las víctimas y damnificados por el sismo en Colombia con tu
-        donación.
+        Tu aporte voluntario apoya a la comunidad UTP afectada por el sismo.
       </p>
 
-      <DonationButton account="VICTIMAS" label="Quiero ayudar" />
+      <DonationButton account="VICTIMAS" label="Donar a UTPton" />
     </section>
   );
 }

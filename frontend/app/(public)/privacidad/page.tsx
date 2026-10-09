@@ -84,17 +84,15 @@ export default function PrivacidadPage() {
                 Política de Privacidad, Seguridad y Tratamiento de Datos
                 Personales
               </strong>{" "}
-              aplicable a la plataforma web oficial de la Asociación de
-              Egresados de la Universidad Tecnológica de Pereira (ASE UTP). La
-              aceptación de estas políticas es obligatoria para todo usuario
-              registrado, egresado, comprador, donante, administrador o tercero
-              que interactúe con la plataforma.
+              aplicable al sitio de La U del Futuro 2026, a las donaciones
+              UTPton y al acceso del personal administrativo autorizado. Las
+              personas pueden consultar el programa y realizar un aporte sin
+              crear una cuenta.
             </Text>
 
             <Text mb={3}>
-              Las condiciones comerciales de compra, las reglas del módulo de
-              donaciones, los controles de seguridad (ISO 27001) y los
-              aspectos de propiedad intelectual se rigen por los Términos y
+              Las condiciones del módulo de donaciones y los aspectos de
+              propiedad intelectual se rigen por los Términos y
               Condiciones del Servicio, disponibles en{" "}
               <a
                 href="/terminos"
@@ -124,9 +122,9 @@ export default function PrivacidadPage() {
         title="2. Tratamiento de Datos y Rol de Usuarios"
         body={
           <Text>
-            La plataforma recopila y procesa datos estrictamente necesarios bajo
-            el principio de minimización de datos (Artículo 4, Ley 1581 de
-            2012):
+            El módulo de donaciones y las funciones administrativas procesan
+            únicamente los datos necesarios para registrar aportes y gestionar
+            el servicio, conforme a la Ley 1581 de 2012:
           </Text>
         }
         table={
@@ -149,31 +147,19 @@ export default function PrivacidadPage() {
 
             <Table.Body>
               <PolicyRow
-                dato="Correo Electrónico y Contraseña"
-                caracter="Obligatorio"
-                finalidad="Autenticación de usuario, envío transaccional de accesos, recibos de pago y links de confirmación/rechazo."
-              />
-              <PolicyRow
-                dato="Cédula de Ciudadanía / Documento"
-                caracter="Obligatorio"
-                finalidad="Verificación automática frente a la base de egresados UTP para aplicación de descuentos y control de identidad. Inmutable vía cliente."
-                stripe
-              />
-              <PolicyRow
-                dato="Nombre Completo"
-                caracter="Obligatorio"
-                finalidad="Personalización de compra, titulación del paquete de entradas y registro en lista oficial de asistentes."
-              />
-              <PolicyRow
-                dato="Dirección y Teléfono"
+                dato="Nombre, correo y empresa/organización"
                 caracter="Opcional"
-                finalidad="Facturación, soporte de entrega transaccional por WhatsApp y contacto de emergencia durante el evento."
-                stripe
+                finalidad="Asociar el aporte con un donante y facilitar comunicaciones de la transacción cuando se comparte el correo."
               />
               <PolicyRow
-                dato="Historial y Estado de Compras / QR"
-                caracter="Generado"
-                finalidad="Validación en puerta (Check-in), prevención de fraudes, trazabilidad de accesos y control de aforo."
+                dato="Valor, referencia y estado del aporte"
+                caracter="Obligatorio"
+                finalidad="Procesar la donación, consultar su resultado y actualizar el contador solidario."
+              />
+              <PolicyRow
+                dato="Credenciales y rol del personal"
+                caracter="Solo usuarios autorizados"
+                finalidad="Proteger el acceso administrativo y la gestión de donaciones y de la meta."
               />
             </Table.Body>
           </Table.Root>
@@ -203,11 +189,11 @@ export default function PrivacidadPage() {
 
             <Text fontSize="0.85rem" color="brand.muted">
               <em>
-                "Esta plataforma utiliza cookies técnicas estrictamente
+                &quot;Esta plataforma utiliza cookies técnicas estrictamente
                 necesarias para mantener tu sesión activa y garantizar la
                 seguridad de las transacciones (gestionadas de manera interna). Al navegar e iniciar sesión en el
                 portal, aceptas su uso. No empleamos cookies para rastreo
-                publicitario ni almacenamiento de datos de terceros."
+                publicitario ni almacenamiento de datos de terceros.&quot;
               </em>
             </Text>
           </Box>
@@ -367,10 +353,8 @@ export default function PrivacidadPage() {
       >
         <Text mb={2}>
           <strong style={{ color: "brand.light" }}>Aceptación Formal:</strong>{" "}
-          El usuario declara haber leído, comprendido y aceptado en su
-          totalidad la presente Política de Privacidad al registrarse o
-          realizar transacciones en la plataforma oficial de la Asociación
-          de Egresados UTP 2026 (ASE UTP).
+          Esta política aplica al tratamiento de datos personales del aporte
+          y al acceso administrativo autorizado.
         </Text>
 
         <Text>

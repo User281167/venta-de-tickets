@@ -18,7 +18,7 @@ export function AgendaHero() {
       <Box
         position="absolute"
         inset={0}
-        backgroundImage="url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1600&q=80')"
+        backgroundImage="url('/assets/utpton/UTPton Portada Reel-.png')"
         backgroundSize="cover"
         backgroundPosition="center"
         transform="scale(1.05)"
@@ -69,7 +69,7 @@ export function AgendaHero() {
               textTransform="uppercase"
               letterSpacing="0.2em"
             >
-              22 — 24 de Octubre 2026
+              Sábado 24 de octubre de 2026
             </Text>
           </motion.div>
 
@@ -84,9 +84,8 @@ export function AgendaHero() {
               lineHeight="1.05"
               color="white"
             >
-              Agenda de{" "}
-              <Box as="span" className="gradient-text">
-                Asociación de Egresados UTP
+              {"La U del Futuro "}<Box as="span" className="gradient-text">
+                2026
               </Box>
             </Heading>
           </motion.div>
@@ -102,8 +101,8 @@ export function AgendaHero() {
               maxW="720px"
               lineHeight="1.7"
             >
-              Tres días de conferencias, talleres, networking y demostraciones
-              con los líderes que están transformando el futuro de Colombia.
+              Encuentro, reactivación y solidaridad. Una jornada para pensar el
+              futuro, generar oportunidades, reencontrarnos y ayudar a reconstruir.
             </Text>
           </motion.div>
 
@@ -121,13 +120,13 @@ export function AgendaHero() {
               <HStack gap={2} color="brand.muted">
                 <IconCalendar size={22} color="#00e5ff" />
                 <Text fontSize="md" fontWeight="medium">
-                  22, 23 y 24 de Octubre
+                  Sábado 24 de octubre
                 </Text>
               </HStack>
               <HStack gap={2} color="brand.muted">
                 <IconMapPin size={22} color="#ff0f7b" />
                 <Text fontSize="md" fontWeight="medium">
-                  Centro UTP
+                  ExpoFuturo · Pereira
                 </Text>
               </HStack>
             </HStack>

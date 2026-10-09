@@ -4,7 +4,6 @@ import { Montserrat_Alternates } from "next/font/google";
 import Provider from "@/components/ui/provider";
 import { AuthProvider } from "@/providers/AuthProvider";
 import "./globals.css";
-import { CartProvider } from "@/providers/CartProvider";
 
 const montserratAlternates = Montserrat_Alternates({
   subsets: ["latin"],
@@ -14,9 +13,9 @@ const montserratAlternates = Montserrat_Alternates({
 });
 
 export const metadata: Metadata = {
-  title: "Asociación de Egresados UTP 2026",
+  title: "La U del Futuro 2026 · UTPton",
   description:
-    "Una experiencia única con expertos en tecnología, emprendimiento e innovación dentro del campus universitario.",
+    "Encuentro, reactivación y solidaridad. Conoce la programación de La U del Futuro 2026 y apoya a la comunidad UTP con una donación voluntaria a UTPton.",
   icons: [
     { url: "/favicon.ico", media: "(prefers-color-scheme: light)" },
     { url: "/favicon.ico", media: "(prefers-color-scheme: dark)" },
@@ -37,7 +36,7 @@ export default function RootLayout({
       <body>
         <Provider>
           <AuthProvider>
-            <CartProvider>{children}</CartProvider>
+            {children}
           </AuthProvider>
 
           <Toaster richColors />

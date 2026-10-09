@@ -106,7 +106,7 @@ export default function AuthLayout({
         justify="space-around"
       >
         <Flex gap="4" align="center" hideBelow="xl">
-          <Image src="/assets/logos-la-u/Horizontal - letras blancas.png" w="2xl" />
+          <Image src="/assets/utpton/Logos/Horizontal blanco.png" alt="La U del Futuro 2026 · UTPton" w="2xl" />
         </Flex>
 
         {children}

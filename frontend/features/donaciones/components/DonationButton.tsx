@@ -31,9 +31,9 @@ export function DonationButton({ account, label, socialMedia, open: controlledOp
         className="!group !inline-flex !h-14 !w-full !items-center !justify-center !gap-3 !rounded-full !border !px-7 !text-sm  !font-semibold !text-white !transition !duration-300 hover:!translate-y-[-2px] sm:!w-[360px]"
         style={{
           background:
-            "linear-gradient(#020414, #020414) padding-box, linear-gradient(90deg, #ff0f7b, #00e5ff) border-box",
+            "linear-gradient(#07152b, #07152b) padding-box, linear-gradient(90deg, #f5bd35, #58baff) border-box",
           border: "1px solid transparent",
-          boxShadow: "0 0 24px rgba(0,229,255,0.18)",
+          boxShadow: "0 0 24px rgba(88,186,255,0.18)",
         }}
         disabled={submitting}
       >

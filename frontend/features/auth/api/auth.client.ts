@@ -7,11 +7,6 @@ const ERROR_MESSAGES: Record<string, string> = {
   "Email not confirmed": "Debes confirmar tu correo electrónico",
 };
 
-const redirectTo =
-  typeof window !== "undefined"
-    ? `${window.location.origin}/auth/callback`
-    : undefined;
-
 function mapError(error: unknown): string {
   const message =
     typeof error === "object" && error !== null && "message" in error
@@ -36,40 +31,14 @@ export async function signInWithPassword(email: string, password: string) {
   return { success: true as const, error: null };
 }
 
-export async function signUp(email: string, password: string) {
-  const supabase = createClient();
-
-  const { error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      emailRedirectTo: redirectTo,
-    },
-  });
-
-  if (error) {
-    console.error("Supabase signUp error:", error);
-    return { success: false as const, error: mapError(error) };
-  }
-
-  return { success: true as const, error: null };
+export async function signUp(_email: string, _password: string) {
+  void _email;
+  void _password;
+  return { success: false as const, error: "El registro público está deshabilitado." };
 }
 
 export async function signInWithGoogle() {
-  const supabase = createClient();
-
-  const { error } = await supabase.auth.signInWithOAuth({
-    provider: "google",
-    options: {
-      redirectTo,
-    },
-  });
-
-  if (error) {
-    return { success: false as const, error: mapError(error) };
-  }
-
-  return { success: true as const, error: null };
+  return { success: false as const, error: "El acceso de personal requiere una cuenta autorizada." };
 }
 
 export async function signOut() {

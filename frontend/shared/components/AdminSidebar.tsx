@@ -19,16 +19,9 @@ import {
   IconDashboard,
   IconLogout,
   IconMenu2,
-  IconUpload,
-  IconUsers,
-  IconTicket,
-  IconQrcode,
   IconX,
   IconHome,
-  IconCurrencyDollar,
   IconHeart,
-  IconHistory,
-  IconChartBar,
 } from "@tabler/icons-react";
 import { useState, type ReactNode } from "react";
 
@@ -40,56 +33,9 @@ type SidebarLink = {
 };
 
 const ALL_LINKS: SidebarLink[] = [
-  { href: "/", label: "Home", icon: <IconHome size={20} /> },
-  { href: "/admin", label: "Panel", icon: <IconDashboard size={20} /> },
-  {
-    href: "/admin/ticket-types",
-    label: "Tipos de entrada",
-    icon: <IconTicket size={20} />,
-    roles: ["super_admin", "admin"] as const,
-  },
-  {
-    href: "/admin/usuarios",
-    label: "Usuarios",
-    icon: <IconUsers size={20} />,
-    roles: ["super_admin", "admin"] as const,
-  },
-  {
-    href: "/admin/usuarios/carga-masiva",
-    label: "Carga masiva",
-    icon: <IconUpload size={20} />,
-    roles: ["super_admin", "admin"] as const,
-  },
-  {
-    href: "/admin/pagos",
-    label: "Pagos",
-    icon: <IconCurrencyDollar size={20} />,
-    roles: ["super_admin", "admin"] as const,
-  },
-  {
-    href: "/admin/donaciones",
-    label: "Donaciones",
-    icon: <IconHeart size={20} />,
-    roles: ["super_admin", "admin"] as const,
-  },
-  {
-    href: "/admin/auditoria",
-    label: "Auditoría",
-    icon: <IconHistory size={20} />,
-    roles: ["super_admin"] as const,
-  },
-  {
-    href: "/admin/analiticas",
-    label: "Analíticas",
-    icon: <IconChartBar size={20} />,
-    roles: ["super_admin", "admin"] as const,
-  },
-  {
-    href: "/admin/checkin",
-    label: "Check-in",
-    icon: <IconQrcode size={20} />,
-    roles: ["super_admin", "admin", "checker"] as const,
-  },
+  { href: "/", label: "Ver sitio público", icon: <IconHome size={20} /> },
+  { href: "/admin", label: "Panel UTPton", icon: <IconDashboard size={20} /> },
+  { href: "/admin/donaciones", label: "Donaciones y meta", icon: <IconHeart size={20} />, roles: ["super_admin", "admin"] },
 ];
 
 export function AdminSidebar() {

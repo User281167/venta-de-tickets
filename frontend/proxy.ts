@@ -1,12 +1,43 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-// Roles that can reach any /admin/* route (including checker-specific
-// pages like /admin/checkin). `checker` must be present so door staff can
-// access the scan flow; `client` is denied and redirected to "/".
-const ADMIN_ROLES = new Set(["super_admin", "admin", "checker"]);
+const ADMIN_ROLES = new Set(["super_admin", "admin"]);
+
+const ACTIVE_PAGES = [
+  "/",
+  "/agenda",
+  "/donaciones",
+  "/terminos",
+  "/privacidad",
+  "/login",
+  "/reset-password",
+  "/update-password",
+];
+
+export function isRetiredPage(pathname: string) {
+  if (
+    pathname.startsWith("/api/") ||
+    pathname.startsWith("/assets/") ||
+    pathname === "/auth/callback"
+  ) {
+    return false;
+  }
+
+  return !(
+    ACTIVE_PAGES.includes(pathname) ||
+    pathname === "/admin" ||
+    pathname === "/admin/donaciones" ||
+    pathname.startsWith("/donaciones/")
+  );
+}
 
 export async function proxy(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+
+  if (isRetiredPage(pathname)) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -34,12 +65,7 @@ export async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const pathname = request.nextUrl.pathname;
-
-  if (
-    user &&
-    (pathname.startsWith("/login") || pathname.startsWith("/registro"))
-  ) {
+  if (user && pathname === "/login") {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
@@ -47,12 +73,8 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (!user && pathname.startsWith("/mi-cuenta")) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
   if (user && pathname.startsWith("/admin")) {
-    const role = user?.app_metadata?.role as string | null;
+    const role = user.app_metadata?.role as string | null;
 
     if (role && !ADMIN_ROLES.has(role)) {
       return NextResponse.redirect(new URL("/", request.url));
