@@ -86,27 +86,18 @@ export function DonationForm({
   const [company, setCompany] = useState("");
   const [amount, setAmount] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [scriptReady, setScriptReady] = useState(false);
   const [consentGiven, setConsentGiven] = useState(false);
 
   const mutation = useCreateDonation();
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (typeof ePayco !== "undefined") {
-      setScriptReady(true);
-      return;
-    }
+    if (typeof ePayco !== "undefined") return;
 
     const script = document.createElement("script");
     script.src = "https://checkout.epayco.co/checkout-v2.js";
     script.async = true;
 
-    script.onload = () => {
-      if (typeof ePayco !== "undefined") {
-        setScriptReady(true);
-      }
-    };
     document.body.appendChild(script);
   }, []);
 
@@ -135,7 +126,7 @@ export function DonationForm({
 
     setErrors({});
 
-    if (!scriptReady) {
+    if (typeof ePayco === "undefined") {
       toast.error("Medio de pago no disponible.");
       return;
     }
@@ -180,7 +171,6 @@ export function DonationForm({
               },
               onClosed: () => {
                 mutation.reset();
-                setScriptReady(true);
               },
             });
 
@@ -227,7 +217,11 @@ export function DonationForm({
                 Donar a {accountLabel}
               </DialogTitle>
 
-              <Image src="/assets/todos-somo-u.jpg" maxW="32" />
+              <Image
+                src="/assets/utpton/Logos/Horizontal blanco.png"
+                alt="UTPton, XXIV Convención de Egresados UTP 2026"
+                maxW="56"
+              />
             </Stack>
           </DialogHeader>
 
@@ -286,7 +280,7 @@ export function DonationForm({
                   onChange={(e) => setAmount(e.target.value)}
                   placeholder="Mínimo $5.000 COP"
                   type="number"
-                  min="2000"
+                  min="5000"
                   bg="whiteAlpha.100"
                   border="1px solid"
                   borderColor="whiteAlpha.200"
