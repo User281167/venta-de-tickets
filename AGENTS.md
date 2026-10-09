@@ -1,5 +1,5 @@
 <!-- SPECKIT START -->
-Current plan: specs/022-audit-log/plan.md
+Current plan: specs/023-solidarity-donation-event/plan.md
 <!-- SPECKIT END -->
 
 # AGENTS.md

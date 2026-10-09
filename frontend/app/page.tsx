@@ -22,24 +22,24 @@ export default function LandingPage() {
   return (
     <>
       <AuthErrorToast />
-      {/*<Navbar />*/}
+      <Navbar />
       <main>
         <DonationUTPSection />
         <DonationFloat />
-        {/*<HeroSection />*/}
-        {/*<TicketPurchaseClient />*/}
-        {/*<TicketSection />*/}
+        <HeroSection />
+        <TicketPurchaseClient />
+        <TicketSection />
         <DonationSection />
-        {/*<AboutSection />*/}
-        {/*<FullWidthSlider />*/}
-        {/*<BenefitsSection />*/}
-        {/*<SpeakersSection />*/}
-        {/*<TestimonialsSection />*/}
-        {/*<AsociacionSection />*/}
-        {/*<ImpactoSocialSection />*/}
-        {/*<PartnersSection />*/}
-        {/*<FaqSection />*/}
-        {/*<CtaSection />*/}
+        <AboutSection />
+        <FullWidthSlider />
+        <BenefitsSection />
+        <SpeakersSection />
+        <TestimonialsSection />
+        <AsociacionSection />
+        <ImpactoSocialSection />
+        <PartnersSection />
+        <FaqSection />
+        <CtaSection />
       </main>
       <Footer />
     </>
