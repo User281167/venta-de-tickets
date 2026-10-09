@@ -14,7 +14,6 @@ export function DefaultWaves() {
         h="35%"
         opacity={0.40}
         pointerEvents="none"
-        className="!opacity-5"
       >
         <Wave
           fill="url(#authWaveFront)"
@@ -41,7 +40,6 @@ export function DefaultWaves() {
         h="30%"
         opacity={0.30}
         pointerEvents="none"
-        className="!opacity-5"
       >
         <Wave
           fill="url(#authWaveBack)"
@@ -67,7 +65,6 @@ export function DefaultWaves() {
         h="25%"
         opacity={0.30}
         pointerEvents="none"
-        className="!opacity-5"
       >
         <Wave
           fill="url(#authWaveBack)"

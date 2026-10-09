@@ -1,14 +1,22 @@
 import NextImage from "next/image";
 import NextLink from "next/link";
 import { IconArrowDown, IconCalendar, IconMapPin } from "@tabler/icons-react";
+import { AuroraBackground } from "@/shared/components/AuroraBackground";
+import { Particles } from "@/shared/components/Particles";
+import { DefaultWaves } from "@/shared/components/Waves";
 
 export function HeroSection() {
   return (
     <section
       id="hero"
-      className="!relative !isolate !overflow-hidden !bg-[#030817] !px-4 !pb-20 !pt-32 text-white sm:!px-6 sm:!pt-36 lg:!min-h-[780px] lg:!pt-28"
+      className="!relative !isolate !flex !items-center !overflow-hidden !bg-[#030817] !px-4 !pb-20 !pt-32 text-white sm:!px-6 sm:!pt-36 lg:!min-h-[780px] lg:!pt-28"
     >
-      <div className="!pointer-events-none !absolute !inset-0 !bg-[radial-gradient(ellipse_at_18%_30%,rgba(20,111,255,0.25),transparent_40%),radial-gradient(ellipse_at_88%_40%,rgba(149,28,128,0.2),transparent_38%),linear-gradient(180deg,rgba(2,8,23,0.14),#030817_95%)]" />
+      <AuroraBackground imageOpacity={38} particleCount={0} />
+      <div className="!pointer-events-none !absolute !inset-0 !z-[1] !bg-[radial-gradient(ellipse_at_18%_30%,rgba(20,111,255,0.25),transparent_40%),radial-gradient(ellipse_at_88%_40%,rgba(149,28,128,0.2),transparent_38%),linear-gradient(180deg,rgba(2,8,23,0.14),#030817_95%)]" />
+      <div className="!pointer-events-none !absolute !inset-0 !z-[2]">
+        <Particles count={40} />
+      </div>
+      <DefaultWaves />
 
       <div className="!relative !z-10 !mx-auto !grid !w-full !max-w-7xl !items-center !gap-10 lg:!grid-cols-[1.1fr_0.9fr] lg:!gap-16">
         <div className="!flex !flex-col !items-start !gap-6">
@@ -58,7 +66,7 @@ export function HeroSection() {
         </div>
 
         <div className="!relative !mx-auto !w-full !max-w-[330px] lg:!mr-6">
-          <div className="!absolute !-inset-6 !rounded-[2.5rem] !bg-gradient-to-br !from-[#1687ff]/30 !via-[#6c58ff]/15 !to-[#f5bd35]/20 !blur-2xl" />
+          <div className="animate-float-large !absolute !-inset-6 !rounded-[2.5rem] !bg-gradient-to-br !from-[#1687ff]/30 !via-[#6c58ff]/15 !to-[#f5bd35]/20 !blur-2xl" />
           <div className="!relative !overflow-hidden !rounded-[1.5rem] !border !border-white/20 !bg-white/[0.07] !p-2 !shadow-[0_30px_100px_rgba(0,0,0,.45)] !backdrop-blur-xl">
             <NextImage
               src="/assets/utpton/UTPton Portada Reel-.png"
