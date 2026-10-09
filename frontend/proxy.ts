@@ -3,10 +3,13 @@ import { NextResponse, type NextRequest } from "next/server";
 
 const ADMIN_ROLES = new Set(["super_admin", "admin"]);
 
+export function canAccessDonationAdmin(role: string | null | undefined) {
+  return role != null && ADMIN_ROLES.has(role);
+}
+
 const ACTIVE_PAGES = [
   "/",
   "/agenda",
-  "/donaciones",
   "/terminos",
   "/privacidad",
   "/login",
@@ -74,9 +77,9 @@ export async function proxy(request: NextRequest) {
   }
 
   if (user && pathname.startsWith("/admin")) {
-    const role = user.app_metadata?.role as string | null;
+    const role = user.app_metadata?.role;
 
-    if (role && !ADMIN_ROLES.has(role)) {
+    if (!canAccessDonationAdmin(role)) {
       return NextResponse.redirect(new URL("/", request.url));
     }
   }

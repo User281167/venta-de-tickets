@@ -36,7 +36,10 @@ describe("UTPton public campaign content", () => {
     expect(axes).toContain("Empleo y reactivación");
     expect(axes).toContain("Encuentro de egresados");
     expect(axes).toContain("Solidaridad y memoria");
+    expect(axes).toContain("Tras el sismo del 10 de agosto de 2026");
+    expect(axes).toContain("video-publicidad.mp4");
     expect(donation).toContain('data-account="VICTIMAS"');
+    expect(donation).toContain("fondo de solidaridad");
     expect(donation).toContain("UTPton");
     expect(donation).toContain("donation-counter");
   });

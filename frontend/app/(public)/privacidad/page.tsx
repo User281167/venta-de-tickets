@@ -1,9 +1,9 @@
 import { Box, Container, Heading, List, Table, Text } from "@chakra-ui/react";
 
 export const metadata = {
-  title: "Política de Privacidad — ASE UTP 2026",
+  title: "Privacidad — La U del Futuro 2026 · UTPton",
   description:
-    "Política de Privacidad, Seguridad y Tratamiento de Datos Personales de la Asociación de Egresados UTP 2026 (ASE UTP).",
+    "Tratamiento de datos personales para donaciones UTPton y acceso administrativo de La U del Futuro 2026.",
 };
 
 export default function PrivacidadPage() {
@@ -37,8 +37,7 @@ export default function PrivacidadPage() {
         </Heading>
 
         <Text color="utp.azul" fontSize="0.95rem" mb={4}>
-          Plataforma Web Institucional: Asociación de Egresados UTP 2026 (ASE
-          UTP)
+          Plataforma Web Institucional: La U del Futuro 2026 · UTPton
         </Text>
 
         <Box
@@ -189,11 +188,9 @@ export default function PrivacidadPage() {
 
             <Text fontSize="0.85rem" color="brand.muted">
               <em>
-                &quot;Esta plataforma utiliza cookies técnicas estrictamente
-                necesarias para mantener tu sesión activa y garantizar la
-                seguridad de las transacciones (gestionadas de manera interna). Al navegar e iniciar sesión en el
-                portal, aceptas su uso. No empleamos cookies para rastreo
-                publicitario ni almacenamiento de datos de terceros.&quot;
+                &quot;Este portal utiliza cookies técnicas necesarias para el
+                acceso del personal autorizado y el funcionamiento del sitio.
+                No las usamos para rastreo publicitario.&quot;
               </em>
             </Text>
           </Box>

@@ -1,10 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { isRetiredPage } from "../proxy";
+import { canAccessDonationAdmin, isRetiredPage } from "../proxy";
 
 describe("public route availability", () => {
   it.each([
     "/registro",
     "/entradas",
+    "/donaciones",
     "/checkout",
     "/carrito",
     "/mi-cuenta/entradas",
@@ -18,7 +19,6 @@ describe("public route availability", () => {
   it.each([
     "/",
     "/agenda",
-    "/donaciones",
     "/donaciones/retorno/state/success",
     "/login",
     "/reset-password",
@@ -30,5 +30,16 @@ describe("public route availability", () => {
     "/auth/callback",
   ])("keeps required route %s available", (pathname) => {
     expect(isRetiredPage(pathname)).toBe(false);
+  });
+
+  it.each([
+    ["admin", true],
+    ["super_admin", true],
+    ["checker", false],
+    ["client", false],
+    [null, false],
+    [undefined, false],
+  ] as const)("allows donation administration for role %s: %s", (role, allowed) => {
+    expect(canAccessDonationAdmin(role)).toBe(allowed);
   });
 });

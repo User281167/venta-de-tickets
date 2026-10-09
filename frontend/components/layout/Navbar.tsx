@@ -8,7 +8,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { IconLogout, IconMenu2, IconX } from "@tabler/icons-react";
 import { signOut } from "@/features/auth/api/auth.client";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { isAdminRole } from "@/providers/AuthProvider";
+import { isAdminRole, isCheckerRole } from "@/providers/AuthProvider";
 
 const LINKS = [
   { label: "Inicio", href: "/#hero" },
@@ -22,7 +22,8 @@ export function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const staff = Boolean(user && isAdminRole(role));
+  const staff = Boolean(user && (isAdminRole(role) || isCheckerRole(role)));
+  const canManageDonations = Boolean(user && isAdminRole(role));
 
   async function handleLogout() {
     await signOut();
@@ -67,9 +68,11 @@ export function Navbar() {
           ))}
           {staff && (
             <>
-              <NextLink href="/admin" className="!rounded-full !px-4 !py-2 !text-sm !text-white/80 hover:!bg-white/10 hover:!text-white">
-                Admin
-              </NextLink>
+              {canManageDonations && (
+                <NextLink href="/admin" className="!rounded-full !px-4 !py-2 !text-sm !text-white/80 hover:!bg-white/10 hover:!text-white">
+                  Admin
+                </NextLink>
+              )}
               <button type="button" onClick={handleLogout} aria-label="Cerrar sesión" className="!rounded-full !p-2 !text-white/70 hover:!bg-white/10 hover:!text-white">
                 <IconLogout size={18} />
               </button>
@@ -98,7 +101,7 @@ export function Navbar() {
           ))}
           {staff && (
             <>
-              <NextLink href="/admin" onClick={() => setOpen(false)} className="!block !rounded-xl !px-4 !py-3 !text-sm !text-white/85 hover:!bg-white/10">Administración</NextLink>
+              {canManageDonations && <NextLink href="/admin" onClick={() => setOpen(false)} className="!block !rounded-xl !px-4 !py-3 !text-sm !text-white/85 hover:!bg-white/10">Administración</NextLink>}
               <button type="button" onClick={handleLogout} className="!flex !w-full !items-center !gap-2 !rounded-xl !px-4 !py-3 !text-left !text-sm !text-white/85 hover:!bg-white/10">
                 <IconLogout size={17} /> Cerrar sesión
               </button>

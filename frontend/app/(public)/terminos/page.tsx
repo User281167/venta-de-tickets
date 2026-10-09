@@ -1,9 +1,9 @@
 import { Box, Container, Heading, List, Text } from "@chakra-ui/react";
 
 export const metadata = {
-  title: "Términos y Condiciones — ASE UTP 2026",
+  title: "Términos y Condiciones — La U del Futuro 2026 · UTPton",
   description:
-    "Términos y Condiciones del Servicio de la Asociación de Egresados UTP 2026 (ASE UTP).",
+    "Términos para consultar el programa y realizar donaciones voluntarias a UTPton.",
 };
 
 export default function TerminosPage() {
@@ -37,8 +37,7 @@ export default function TerminosPage() {
         </Heading>
 
         <Text color="utp.azul" fontSize="0.95rem" mb={4}>
-          Plataforma Web Institucional: Asociación de Egresados UTP 2026 (ASE
-          UTP)
+          Plataforma Web Institucional: La U del Futuro 2026 · UTPton
         </Text>
 
         <Box

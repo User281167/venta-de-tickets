@@ -32,9 +32,9 @@ export function DonationSection() {
           textAlign="center"
           maxW="500px"
         >
-          Tu aporte voluntario fortalece la solidaridad con la comunidad UTP
-          afectada por el sismo. La participación en el evento no requiere compra
-          de entradas.
+          Tu aporte voluntario fortalece el fondo de solidaridad para apoyar a
+          la comunidad UTP afectada por el sismo. La participación en la jornada
+          no requiere comprar una entrada.
         </Text>
 
         <HStack gap={4} wrap="wrap" justify="center">

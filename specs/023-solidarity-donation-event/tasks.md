@@ -106,7 +106,7 @@
 - [X] T025 [US3] Update `frontend/app/(auth)/login/page.tsx` so authorized admin staff can sign in but a `client` role cannot complete sign-in and is returned to `/`.
 - [X] T026 [US3] Disable public self-registration in `frontend/app/(auth)/registro/page.tsx` while retaining page/component source.
 - [X] T027 [P] [US3] Update `frontend/components/layout/Navbar.tsx`, `frontend/shared/components/AdminSidebar.tsx`, and `frontend/app/admin/page.tsx` to remove public purchase/account links and no-longer-active admin modules; retain admin entry and donation management/meta link for authorized roles.
-- [X] T028 [P] [US3] Add/update route tests for `frontend/proxy.ts` covering retired public routes and the staff login, admin, agenda, API, assets, and donation-return allowlist.
+- [X] T028 [P] [US3] Add/update route tests for `frontend/proxy.ts` covering retired public routes, the staff login/admin role boundary, agenda, API, assets, and donation-return allowlist.
 
 **Checkpoint**: Only the UTPton donation public API and the staff/admin donation operations remain active; old pages and modules are retained but inaccessible.
 
@@ -120,10 +120,10 @@
 
 ### Implementation
 
-- [X] T029 [P] [US4] Add/update a purpose section under `frontend/features/landing/components/` describing IA/future, employment/reactivation, alumni encounter, and solidarity/memory/reconstruction.
+- [X] T029 [P] [US4] Add/update a purpose section under `frontend/features/landing/components/` describing why the three-day proposal became one day after the earthquake and the four programmatic axes.
 - [X] T030 [P] [US4] Update `frontend/app/(public)/terminos/page.tsx` to remove superseded event entry/QR/registration claims and retain accurate UTPton donation terms.
 - [X] T031 [P] [US4] Update `frontend/app/(public)/privacidad/page.tsx` to remove obsolete ticket/account purposes from the current public journey and preserve required donation/data-protection disclosures.
-- [X] T032 [US4] Add/update content tests under `frontend/features/landing/components/__tests__/` for event date, purpose axes, tentative modalities/artists, memorial agenda item, absence of ticket/signup calls to action, and the UTPton donation destination.
+- [X] T032 [US4] Add/update content tests under `frontend/features/landing/components/__tests__/` for event date, earthquake rationale, purpose axes, campaign video, tentative modalities/artists, memorial agenda item, absence of ticket/signup calls to action, and the UTPton donation destination.
 
 **Checkpoint**: Public copy, event schedule, donation destination, and legal content agree.
 
@@ -185,6 +185,7 @@
 ### Validation Notes
 
 - Check a task only after its described work is implemented and verified.
-- Focused backend and frontend tests passed. Full backend tests report 98 failures in integration tests that expect retired ticket/account/payment APIs; donation tests pass. Full frontend tests report 7 failures in legacy checkout component tests and a registration form test; 289 passed. Frontend lint reports 18 errors across the wider codebase, while lint on changed files has no errors (three `<img>` warnings). Backend lint cannot parse the repository's legacy config with installed ESLint 10.
+- Focused backend verification passed: 4 files / 33 tests across route availability, UTPton account validation, donation counter, and donation API. Focused frontend verification passed: 3 files / 30 tests across proxy routes, agenda data, and campaign content. ESLint on the changed frontend files passed with no errors or warnings.
+- Full backend tests report 98 failures in integration tests that expect retired ticket/account/payment APIs; donation tests pass. Full frontend tests report 7 failures in legacy checkout component tests and a registration form test; 289 passed. Frontend lint reports 18 errors across the wider codebase. Backend lint cannot parse the repository's legacy config with installed ESLint 10.
 - Full suites therefore remain unchecked until their legacy expectations/configuration are addressed. Frontend TypeScript checking also reports errors in untouched legacy test files. No build, payment sandbox, or staff/admin sign-in was verified; browser testing ran without the backend, so the live counter could not load.
 - Preserve supplied files in `frontend/public/assets/utpton/`; `frontend/app/page.tsx` had no local edits when implementation began.

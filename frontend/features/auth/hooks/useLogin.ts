@@ -6,6 +6,7 @@ import {
   signInWithPassword,
   signOut,
 } from "@/features/auth/api/auth.client";
+import { isAdminRole, isCheckerRole } from "@/providers/AuthProvider";
 
 import { createClient } from "@/shared/lib/supabase/client";
 import { authFetch } from "@/shared/api/admin-fetch";
@@ -74,11 +75,13 @@ export function useLogin() {
         }
       }
 
-      if (role !== "admin" && role !== "super_admin") {
-        await signOut();
+      if (isAdminRole(role)) {
+        router.replace("/admin");
+      } else if (isCheckerRole(role)) {
         router.replace("/");
       } else {
-        router.replace("/admin");
+        await signOut();
+        router.replace("/");
       }
     },
     [email, password, router],
