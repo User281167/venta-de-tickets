@@ -13,6 +13,7 @@ export function DefaultWaves() {
         zIndex={3}
         h="35%"
         opacity={0.40}
+        className="!opacity-5"
         pointerEvents="none"
       >
         <Wave
@@ -39,6 +40,7 @@ export function DefaultWaves() {
         zIndex={3}
         h="30%"
         opacity={0.30}
+        className="!opacity-5"
         pointerEvents="none"
       >
         <Wave
@@ -64,6 +66,7 @@ export function DefaultWaves() {
         zIndex={3}
         h="25%"
         opacity={0.30}
+        className="!opacity-5"
         pointerEvents="none"
       >
         <Wave

@@ -43,6 +43,7 @@ export function ProgrammaticAxes() {
             <video
               controls
               preload="none"
+              poster="/assets/utpton/video-publicidad-poster.jpg"
               className="!mx-auto !max-h-[70vh] !w-full !rounded-xl !bg-black"
               aria-label="Video promocional de La U del Futuro 2026 y UTPton"
             >
