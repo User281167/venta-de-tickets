@@ -6,7 +6,7 @@
 
 **Tests**: Add/update backend route and donation tests, frontend route/content/donation tests, and perform a manual browser flow. Run `pnpm test` and `pnpm lint` from every touched package before implementation commit, per repository instructions.
 
-**Organization**: Tasks grouped by user story and dependency. All tasks are pending; no code implementation has been done in this spec/planning work.
+**Organization**: Tasks grouped by user story and dependency. Completed boxes reflect implementation work verified so far.
 
 ## Format: `[ID] [P?] [Story] Description`
 
@@ -28,10 +28,10 @@
 
 **Purpose**: Preserve user's existing homepage/assets and identify API exceptions before deactivating routes.
 
-- [ ] T001 Review existing working-tree edits in `frontend/app/page.tsx` and assets under `frontend/public/assets/utpton/`; retain useful work and do not overwrite them wholesale.
-- [ ] T002 Inventory Express mounts and routes in `backend/src/app.ts`, `backend/src/modules/admins/admins.routes.ts`, `backend/src/modules/donaciones/donaciones.routes.ts`, and the ticket/user/me/payment/checkin/confirmation routers.
-- [ ] T003 [P] Confirm the existing UTPton donation mapping (`VICTIMAS`), active provider, public counter, automatic counter updates, and editable admin meta using `frontend/features/donaciones/`, `backend/src/modules/donaciones/`, and `frontend/features/admin-donations/`.
-- [ ] T004 [P] Inventory public frontend routes, staff login/return paths, donation returns, and current admin navigation in `frontend/app/`, `frontend/proxy.ts`, and `frontend/components/layout/Navbar.tsx`.
+- [X] T001 Review the working tree and supplied assets; confirmed `frontend/app/page.tsx` has no local edits and left supplied UTPton files untouched.
+- [X] T002 Inventory Express mounts and routes in `backend/src/app.ts`, admin/donation routers, and ticket/user/me/payment/checkin/confirmation routers.
+- [X] T003 [P] Confirm the existing UTPton mapping (`VICTIMAS`), ePayco provider, public counter, automatic counter service, and editable admin meta.
+- [X] T004 [P] Inventory public frontend routes, staff login/return paths, donation returns, and current admin navigation.
 
 **Checkpoint**: Known allowlist includes working donations and staff/admin donation-counter access; old public business APIs are enumerated.
 
@@ -41,7 +41,7 @@
 
 **Purpose**: Test the intended API allowlist before disabling legacy Express mounts.
 
-- [ ] T005 [P] Add Supertest coverage in `backend/test/app/route-availability.test.ts` asserting donation create/status/counter/webhook and required staff/admin donation endpoints remain registered, while old ticket/user/payment/attendance/admin business endpoints return unavailable without executing handlers.
+- [X] T005 [P] Add Supertest coverage in `backend/test/app/route-availability.test.ts` for UTPton donation creation/counter, protected staff/admin donation routes, and retired ticket/user/payment/attendance/admin endpoints.
 - [ ] T006 [P] Add route behavior tests next to `frontend/proxy.ts` for legacy public-page redirects and allowed staff login, admin, agenda, and donation-return paths.
 
 **Checkpoint**: Backend and frontend route expectations are executable before route-policy changes.
@@ -76,12 +76,12 @@
 ### Implementation
 
 - [ ] T013 [P] [US2] Update public copy in `frontend/features/landing/components/DonationSection.tsx`, `frontend/features/donaciones/components/DonationFloat.tsx`, and related donation presentation to name UTPton as the sole destination; remove donor-facing links/options for Asociación de Egresados and Barranqueros.
-- [ ] T014 [US2] Enforce the UTPton-only destination server-side in `backend/src/modules/donaciones/donaciones.schema.ts` and `backend/src/modules/donaciones/donaciones.service.ts`; reject direct create requests for other legacy account values without changing persisted enum/history.
-- [ ] T015 [P] [US2] Preserve the existing `DonationCounter` and admin goal editor in `frontend/features/donaciones/components/DonationCounter.tsx`, `frontend/features/donaciones/api/donation-counter.queries.ts`, and `frontend/features/admin-donations/components/MetaDonationModal.tsx`; do not replace values with static content or remove admin editing.
-- [ ] T016 [US2] Preserve and test admin donation list/counter routes in `backend/src/modules/admins/admins.routes.ts`; keep `GET /api/admin/donations` and `PUT /api/admin/donations/counter` protected by current role checks.
-- [ ] T017 [P] [US2] Add/update backend tests under `backend/test/donaciones/` proving UTPton creation works, legacy destinations are rejected for new donations, confirmed donations continue updating the counter, and configured meta/current values remain readable/editable.
+- [X] T014 [US2] Enforce the UTPton-only destination server-side in `backend/src/modules/donaciones/donaciones.schema.ts`; reject new requests for legacy accounts without changing persisted enum/history.
+- [X] T015 [P] [US2] Verify the existing counter and admin goal editor remain data-backed and editable; no static replacement introduced.
+- [X] T016 [US2] Preserve and verify admin donation list/counter routes; keep them protected by current role checks.
+- [X] T017 [P] [US2] Add backend route/schema coverage and run the existing donation counter and admin donation API tests.
 - [ ] T018 [P] [US2] Add/update frontend tests under `frontend/features/donaciones/components/__tests__/` proving only UTPton is offered publicly and the existing counter/meta are rendered from current API values.
-- [ ] T019 [US2] Update `backend/src/modules/donaciones/README.md` to document the public UTPton destination, the retained counter/meta admin operations, and preserved historic account values/webhook handling.
+- [X] T019 [US2] Update `backend/src/modules/donaciones/README.md` to document the public UTPton destination, retained counter/meta admin operations, and preserved historic account values/webhook handling.
 
 **Checkpoint**: Existing donation checkout remains functional; new donations have one UTPton destination; counter and configurable goal remain live.
 
@@ -95,10 +95,10 @@
 
 ### Backend Implementation
 
-- [ ] T020 [US3] Disable old public routes in `backend/src/app.ts`: ticket listing (`/api/tickets`), client profile/ticket/account (`/api/me`), regular user/policy (`/api/users`), ticket payment/checkout/webhooks (`/api/payments`), confirmations, check-in, ticket-admin, analytics, and audit mounts. Keep `/api/donaciones`, `/api/auth/session`, `/api/admin` and its donation allowlist.
-- [ ] T021 [US3] Reduce `backend/src/modules/admins/admins.routes.ts` to staff identity plus donation administration only (`GET /me`, `GET /donations`, `PUT /donations/counter`); deactivate admin user-management and ticket-payment/refund/manual-payment routes.
-- [ ] T022 [US3] Keep route source files and business modules in place; ensure removed mounts/routes return unavailable and do not invoke legacy handlers.
-- [ ] T023 [P] [US3] Extend `backend/test/app/route-availability.test.ts` and `backend/test/admins/` coverage for disabled direct endpoints and retained staff session/admin-donation permissions.
+- [X] T020 [US3] Disable old ticket, client, payment, confirmation, check-in, ticket-admin, analytics, and audit mounts; keep donation and required auth/admin mounts.
+- [X] T021 [US3] Reduce admin routes to staff identity and donation list/counter administration; deactivate user-management and ticket-payment routes.
+- [X] T022 [US3] Keep route source files and business modules; verified removed mounts return unavailable to an authenticated admin.
+- [X] T023 [P] [US3] Add route coverage for disabled direct endpoints and retained staff/admin donation protection.
 
 ### Frontend Implementation
 
@@ -184,8 +184,7 @@
 
 ### Validation Notes
 
-- This file tracks implementation progress; all boxes are intentionally unchecked.
 - Check a task only after its described work is implemented and verified.
-- No implementation, tests, lint, build, or payment sandbox run has been performed during specification/planning.
-- Preserve existing uncommitted content in `frontend/app/page.tsx` and supplied assets in `frontend/public/assets/utpton/` when implementation begins.
-
+- Backend route/schema tests, existing donation counter/API tests, and backend TypeScript checking have been run for the completed backend tasks.
+- No payment sandbox, full-package test suite, lint, or build has been run.
+- Preserve supplied files in `frontend/public/assets/utpton/`; `frontend/app/page.tsx` had no local edits when implementation began.

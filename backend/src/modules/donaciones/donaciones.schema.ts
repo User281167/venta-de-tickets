@@ -6,7 +6,7 @@ export const createDonationSchema = z.object({
   email: z.string().email().max(255).optional().nullable(),
   company: z.string().max(150).optional().nullable(),
   amountCents: z.number().int().min(5000, 'El monto mínimo es 5000 COP'),
-  account: z.nativeEnum(DonationAccount),
+  account: z.literal(DonationAccount.VICTIMAS),
   backUrl: z.string().url(),
   provider: z.enum(['epayco']).default('epayco'),
 });

@@ -10,55 +10,11 @@ const adminsRouter = Router();
 
 adminsRouter.use(authMiddleware);
 
-adminsRouter.get('/me', rateLimit(POLICIES.admin), adminsController.getMe);
 adminsRouter.get(
-  '/users',
+  '/me',
   requireRole('admin', 'super_admin'),
   rateLimit(POLICIES.admin),
-  adminsController.listUsers,
-);
-adminsRouter.post(
-  '/users',
-  requireRole('admin'),
-  rateLimit(POLICIES.admin),
-  adminsController.createUser,
-);
-adminsRouter.post(
-  '/users/batch',
-  requireRole('admin'),
-  rateLimit(POLICIES.admin),
-  adminsController.batchCreateUsers,
-);
-adminsRouter.patch(
-  '/users/:id',
-  requireRole('admin'),
-  rateLimit(POLICIES.admin),
-  adminsController.updateUser,
-);
-
-adminsRouter.get(
-  '/payments',
-  requireRole('admin', 'super_admin'),
-  rateLimit(POLICIES.admin),
-  adminsController.listPaymentsHandler,
-);
-adminsRouter.get(
-  '/payments/:id',
-  requireRole('admin', 'super_admin'),
-  rateLimit(POLICIES.admin),
-  adminsController.getPaymentDetailHandler,
-);
-adminsRouter.post(
-  '/payments/:id/refund',
-  requireRole('admin'),
-  rateLimit(POLICIES.admin),
-  adminsController.refundPaymentHandler,
-);
-adminsRouter.post(
-  '/payments/manual',
-  requireRole('admin'),
-  rateLimit(POLICIES.admin),
-  adminsController.createAdminPaymentHandler,
+  adminsController.getMe,
 );
 
 adminsRouter.get(

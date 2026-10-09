@@ -1,8 +1,8 @@
 # Módulo Donaciones — Recaudo Solidario
 
-Donaciones puntuales por cuenta (`LA_CONVENCION`, `BARRANQUEROS_UTP`, `VICTIMAS`) vía proveedores de pago. Público: crear y consultar estado. Admin: listado paginado.
+La campaña pública recibe donaciones únicamente para UTPton, usando el valor interno `VICTIMAS` y el proveedor ePayco ya configurado. No se agrega otra pasarela ni se alteran los registros históricos. Admin: listado paginado y edición del contador/meta.
 
-Cuentas (`DonationAccount`): `LA_CONVENCION` (La Convención), `BARRANQUEROS_UTP` (Barranqueros UTP), `VICTIMAS` (Víctimas y damnificados — campaña sismos Colombia).
+Las cuentas históricas `LA_CONVENCION` y `BARRANQUEROS_UTP` permanecen en el enum y pueden seguir apareciendo en registros y callbacks existentes. No son destinos aceptados para nuevas donaciones públicas.
 
 ## Rutas
 
@@ -15,7 +15,9 @@ Cuentas (`DonationAccount`): `LA_CONVENCION` (La Convención), `BARRANQUEROS_UTP
 | POST | `/api/donaciones/webhook/epayco-barranqueros-utp` | Webhook | Notificación ePayco (Barranqueros UTP) |
 | POST | `/api/donaciones/webhook/epayco-victimas` | Webhook | Notificación ePayco (Víctimas y damnificados) |
 | GET | `/api/donaciones/:externalReference/status` | Público | Estado de una donación |
+| GET | `/api/donaciones/counter` | Público | Contador y meta guardados actualmente |
 | GET | `/api/admin/donations` | admin/super_admin | Listado paginado (filtros `state`, `account`, `search`) — ruta definida en `admins.routes.ts`, manejada por este controller |
+| PUT | `/api/admin/donations/counter` | admin/super_admin | Editar contador y meta guardados |
 
 Webhooks verificados por firma (`verifyDonationsWebhookSignature`, instalado en `donaciones.routes.ts` antes del controller) y limitados por rate limit (`POLICIES.webhookGlobal`). El body llega crudo (sin `express.json`) para que el proveedor pueda verificar su HMAC.
 
@@ -49,7 +51,7 @@ Transiciones idempotentes ejecutadas en `$transaction`: se verifica estado actua
   "email":    "string|null",        // optional, email válido
   "company":  "string|null",        // optional, máx 150 chars (donante empresa/razón social)
   "amountCents": 5000,              // entero ≥ 5000
-  "account":  "LA_CONVENCION|BARRANQUEROS_UTP|VICTIMAS",
+  "account":  "VICTIMAS",
   "backUrl":  "https://...",        // URL de retorno
   "provider": "epayco"              // default
 }
@@ -90,7 +92,7 @@ sequenceDiagram
     participant DB as PostgreSQL
 
     U->>API: { fullName, email, company, amountCents, account, backUrl, provider }
-    API->>API: validar monto >= 5000, cuenta, provider
+API->>API: validar monto >= 5000, cuenta, provider
     S->>S: generateExternalReference (DON-{account}-uuid)
     S->>P: createPreference(externalReference, amount, backUrl)
     P-->>S: { initPoint }
@@ -98,6 +100,8 @@ sequenceDiagram
     S-->>API: { initPoint }
     API-->>U: 201
 ```
+
+Para la campaña UTPton, el backend solo acepta `account: "VICTIMAS"` en nuevas creaciones. El cliente muestra el destino como UTPton. El contador público y su meta leen el registro existente; las donaciones confirmadas continúan incrementándolo y el personal autorizado puede ajustar ambos valores.
 
 ## Flujo: Webhook de Confirmación
 
