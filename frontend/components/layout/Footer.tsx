@@ -15,7 +15,7 @@ import {
 const QUICK_LINKS = [
   { label: "Inicio", href: "/#hero" },
   { label: "Agenda", href: "/agenda" },
-  { label: "Donar a UTPton", href: "/#donaciones" },
+  { label: "Donar a UTPtón", href: "/#donaciones" },
   { label: "Contacto", href: "mailto:egresados@utp.edu.co" },
 ];
 

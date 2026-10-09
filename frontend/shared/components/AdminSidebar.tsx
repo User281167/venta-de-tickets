@@ -34,8 +34,13 @@ type SidebarLink = {
 
 const ALL_LINKS: SidebarLink[] = [
   { href: "/", label: "Ver sitio público", icon: <IconHome size={20} /> },
-  { href: "/admin", label: "Panel UTPton", icon: <IconDashboard size={20} /> },
-  { href: "/admin/donaciones", label: "Donaciones y meta", icon: <IconHeart size={20} />, roles: ["super_admin", "admin"] },
+  { href: "/admin", label: "Panel UTPtón", icon: <IconDashboard size={20} /> },
+  {
+    href: "/admin/donaciones",
+    label: "Donaciones y meta",
+    icon: <IconHeart size={20} />,
+    roles: ["super_admin", "admin"],
+  },
 ];
 
 export function AdminSidebar() {
@@ -70,7 +75,11 @@ export function AdminSidebar() {
 
       <VStack align="stretch" gap={1} flex={1}>
         {visibleLinks.map((link) => {
-          const isActive = pathname === link.href || (link.href.startsWith("/admin/") && link.href !== "/admin" && pathname.startsWith(link.href + "/"));
+          const isActive =
+            pathname === link.href ||
+            (link.href.startsWith("/admin/") &&
+              link.href !== "/admin" &&
+              pathname.startsWith(link.href + "/"));
 
           return (
             <ChakraLink

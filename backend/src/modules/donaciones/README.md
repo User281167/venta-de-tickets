@@ -1,6 +1,6 @@
 # Módulo Donaciones — Recaudo Solidario
 
-La campaña pública recibe donaciones únicamente para UTPton, usando el valor interno `VICTIMAS` y el proveedor ePayco ya configurado. No se agrega otra pasarela ni se alteran los registros históricos. Admin: listado paginado y edición del contador/meta.
+La campaña pública recibe donaciones únicamente para UTPtón, usando el valor interno `VICTIMAS` y el proveedor ePayco ya configurado. No se agrega otra pasarela ni se alteran los registros históricos. Admin: listado paginado y edición del contador/meta.
 
 Las cuentas históricas `LA_CONVENCION` y `BARRANQUEROS_UTP` permanecen en el enum y pueden seguir apareciendo en registros y callbacks existentes. No son destinos aceptados para nuevas donaciones públicas.
 
@@ -101,7 +101,7 @@ API->>API: validar monto >= 5000, cuenta, provider
     API-->>U: 201
 ```
 
-Para la campaña UTPton, el backend solo acepta `account: "VICTIMAS"` en nuevas creaciones. El cliente muestra el destino como UTPton. El contador público y su meta leen el registro existente; las donaciones confirmadas continúan incrementándolo y el personal autorizado puede ajustar ambos valores.
+Para la campaña UTPtón, el backend solo acepta `account: "VICTIMAS"` en nuevas creaciones. El cliente muestra el destino como UTPtón. El contador público y su meta leen el registro existente; las donaciones confirmadas continúan incrementándolo y el personal autorizado puede ajustar ambos valores.
 
 ## Flujo: Webhook de Confirmación
 

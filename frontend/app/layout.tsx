@@ -13,9 +13,9 @@ const montserratAlternates = Montserrat_Alternates({
 });
 
 export const metadata: Metadata = {
-  title: "La U del Futuro 2026 · UTPton",
+  title: "La U del Futuro 2026 · UTPtón",
   description:
-    "Encuentro, reactivación y solidaridad. Conoce la programación de La U del Futuro 2026 y apoya a la comunidad UTP con una donación voluntaria a UTPton.",
+    "Encuentro, reactivación y solidaridad. Conoce la programación de La U del Futuro 2026 y apoya a la comunidad UTP con una donación voluntaria a UTPtón.",
   icons: [
     { url: "/favicon.ico", media: "(prefers-color-scheme: light)" },
     { url: "/favicon.ico", media: "(prefers-color-scheme: dark)" },
@@ -35,9 +35,7 @@ export default function RootLayout({
     >
       <body>
         <Provider>
-          <AuthProvider>
-            {children}
-          </AuthProvider>
+          <AuthProvider>{children}</AuthProvider>
 
           <Toaster richColors />
         </Provider>

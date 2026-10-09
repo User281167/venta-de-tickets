@@ -37,7 +37,8 @@ export function HeroSection() {
 
           <p className="!max-w-2xl !text-base !leading-8 !text-[#c5cee0] sm:!text-lg">
             Encuentro, reactivación y solidaridad. Una jornada para pensar el
-            futuro, generar oportunidades, reencontrarnos y ayudar a reconstruir.
+            futuro, generar oportunidades, reencontrarnos y ayudar a
+            reconstruir.
           </p>
 
           <div className="!flex !flex-wrap !gap-3 !pt-1">
@@ -57,7 +58,8 @@ export function HeroSection() {
 
           <div className="!mt-2 !flex !flex-wrap !gap-x-8 !gap-y-3 !text-sm !text-white/75">
             <span className="!inline-flex !items-center !gap-2">
-              <IconCalendar size={19} color="#f5bd35" /> Sábado 24 de octubre de 2026
+              <IconCalendar size={19} color="#f5bd35" /> Sábado 24 de octubre de
+              2026
             </span>
             <span className="!inline-flex !items-center !gap-2">
               <IconMapPin size={19} color="#6bc7ff" /> ExpoFuturo · Pereira
@@ -70,7 +72,7 @@ export function HeroSection() {
           <div className="!relative !overflow-hidden !rounded-[1.5rem] !border !border-white/20 !bg-white/[0.07] !p-2 !shadow-[0_30px_100px_rgba(0,0,0,.45)] !backdrop-blur-xl">
             <NextImage
               src="/assets/utpton/UTPton Portada Reel-.png"
-              alt="La Convención se transforma: UTPton, XXIV Convención de Egresados UTP 2026"
+              alt="La Convención se transforma: UTPtón, XXIV Convención de Egresados UTP 2026"
               width={720}
               height={1280}
               priority

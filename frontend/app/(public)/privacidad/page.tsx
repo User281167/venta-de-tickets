@@ -1,9 +1,9 @@
 import { Box, Container, Heading, List, Table, Text } from "@chakra-ui/react";
 
 export const metadata = {
-  title: "Privacidad — La U del Futuro 2026 · UTPton",
+  title: "Privacidad — La U del Futuro 2026 · UTPtón",
   description:
-    "Tratamiento de datos personales para donaciones UTPton y acceso administrativo de La U del Futuro 2026.",
+    "Tratamiento de datos personales para donaciones UTPtón y acceso administrativo de La U del Futuro 2026.",
 };
 
 export default function PrivacidadPage() {
@@ -37,7 +37,7 @@ export default function PrivacidadPage() {
         </Heading>
 
         <Text color="utp.azul" fontSize="0.95rem" mb={4}>
-          Plataforma Web Institucional: La U del Futuro 2026 · UTPton
+          Plataforma Web Institucional: La U del Futuro 2026 · UTPtón
         </Text>
 
         <Box
@@ -84,18 +84,21 @@ export default function PrivacidadPage() {
                 Personales
               </strong>{" "}
               aplicable al sitio de La U del Futuro 2026, a las donaciones
-              UTPton y al acceso del personal administrativo autorizado. Las
+              UTPtón y al acceso del personal administrativo autorizado. Las
               personas pueden consultar el programa y realizar un aporte sin
               crear una cuenta.
             </Text>
 
             <Text mb={3}>
               Las condiciones del módulo de donaciones y los aspectos de
-              propiedad intelectual se rigen por los Términos y
-              Condiciones del Servicio, disponibles en{" "}
+              propiedad intelectual se rigen por los Términos y Condiciones del
+              Servicio, disponibles en{" "}
               <a
                 href="/terminos"
-                style={{ color: "var(--chakra-colors-utp-azul)", textDecoration: "underline" }}
+                style={{
+                  color: "var(--chakra-colors-utp-azul)",
+                  textDecoration: "underline",
+                }}
               >
                 /terminos
               </a>
@@ -170,8 +173,8 @@ export default function PrivacidadPage() {
         body={
           <Text mb={3}>
             Nuestra plataforma web opera utilizando cookies técnicas y de sesión
-            estrictamente necesarias para garantizar el funcionamiento seguro
-            y la persistencia de autenticación de los usuarios.
+            estrictamente necesarias para garantizar el funcionamiento seguro y
+            la persistencia de autenticación de los usuarios.
           </Text>
         }
         highlight={
@@ -189,17 +192,17 @@ export default function PrivacidadPage() {
             <Text fontSize="0.85rem" color="brand.muted">
               <em>
                 &quot;Este portal utiliza cookies técnicas necesarias para el
-                acceso del personal autorizado y el funcionamiento del sitio.
-                No las usamos para rastreo publicitario.&quot;
+                acceso del personal autorizado y el funcionamiento del sitio. No
+                las usamos para rastreo publicitario.&quot;
               </em>
             </Text>
           </Box>
         }
         trailing={
           <Text mt={3}>
-            Estas cookies no almacenan información de identificación personal
-            en texto plano ni se comparten con redes de anuncios o analítica
-            de terceros no autorizados.
+            Estas cookies no almacenan información de identificación personal en
+            texto plano ni se comparten con redes de anuncios o analítica de
+            terceros no autorizados.
           </Text>
         }
       />
@@ -211,9 +214,9 @@ export default function PrivacidadPage() {
             <Text mb={3}>
               De conformidad con los Artículos 14 y 15 de la Ley 1581 de 2012,
               los titulares de la información o sus causahabientes podrán
-              ejercer sus derechos de conocer, actualizar, rectificar y
-              suprimir sus datos personales o revocar la autorización otorgada
-              a través de los canales institucionales dispuestos.
+              ejercer sus derechos de conocer, actualizar, rectificar y suprimir
+              sus datos personales o revocar la autorización otorgada a través
+              de los canales institucionales dispuestos.
             </Text>
 
             <Box
@@ -237,9 +240,9 @@ export default function PrivacidadPage() {
                   <strong>diez (10) días hábiles</strong> contados a partir de
                   la fecha de recibo de la solicitud. Cuando no fuere posible
                   atender la consulta dentro de dicho término, se informará al
-                  interesado antes del vencimiento, expresando los motivos de
-                  la demora y señalando la fecha en que se atenderá, la cual
-                  no podrá superar los cinco (5) días hábiles siguientes.
+                  interesado antes del vencimiento, expresando los motivos de la
+                  demora y señalando la fecha en que se atenderá, la cual no
+                  podrá superar los cinco (5) días hábiles siguientes.
                 </List.Item>
 
                 <List.Item>
@@ -251,8 +254,8 @@ export default function PrivacidadPage() {
                   <strong>quince (15) días hábiles</strong> contados a partir
                   del día siguiente a la fecha de su recibo. Si el reclamo
                   resulta incompleto, se requerirá al interesado dentro de los
-                  cinco (5) días siguientes a la recepción para que subsane
-                  las fallas. Transcurridos dos (2) meses sin respuesta del
+                  cinco (5) días siguientes a la recepción para que subsane las
+                  fallas. Transcurridos dos (2) meses sin respuesta del
                   solicitante, se entenderá desistido el reclamo.
                 </List.Item>
               </List.Root>
@@ -293,13 +296,13 @@ export default function PrivacidadPage() {
               Para la prestación eficiente de los servicios web, el
               procesamiento de autenticación y el almacenamiento resiliente de
               datos, la plataforma hace uso de infraestructura tecnológica
-              proporcionada por proveedores internacionales especializados
-              que actúan en calidad de{" "}
+              proporcionada por proveedores internacionales especializados que
+              actúan en calidad de{" "}
               <strong>Encargados del Tratamiento de Datos</strong> (incluyendo
               plataformas como{" "}
               <em>
-                Render, Supabase, Next.js Hosting / Vercel, Unsplash y
-                servicios cloud respaldados por Amazon Web Services - AWS
+                Render, Supabase, Next.js Hosting / Vercel, Unsplash y servicios
+                cloud respaldados por Amazon Web Services - AWS
               </em>
               ).
             </Text>
@@ -328,11 +331,10 @@ export default function PrivacidadPage() {
               <List.Item>
                 <strong>Gestión de Incidentes:</strong> Ante cualquier
                 eventualidad o brecha de seguridad reportada en la
-                infraestructura subyacente de nuestros proveedores cloud, la
-                UTP y ASE UTP activarán el protocolo de notificación a los
-                usuarios afectados y a la Delegatura de Protección de Datos
-                Personales de la Superintendencia de Industria y Comercio
-                (SIC).
+                infraestructura subyacente de nuestros proveedores cloud, la UTP
+                y ASE UTP activarán el protocolo de notificación a los usuarios
+                afectados y a la Delegatura de Protección de Datos Personales de
+                la Superintendencia de Industria y Comercio (SIC).
               </List.Item>
             </List.Root>
           </>
@@ -350,8 +352,8 @@ export default function PrivacidadPage() {
       >
         <Text mb={2}>
           <strong style={{ color: "brand.light" }}>Aceptación Formal:</strong>{" "}
-          Esta política aplica al tratamiento de datos personales del aporte
-          y al acceso administrativo autorizado.
+          Esta política aplica al tratamiento de datos personales del aporte y
+          al acceso administrativo autorizado.
         </Text>
 
         <Text>

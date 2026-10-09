@@ -7,7 +7,7 @@ export function InstagramUpdates() {
       <div className="!relative !mx-auto !grid !max-w-6xl !items-center !gap-10 md:!grid-cols-[minmax(0,1fr)_minmax(280px,380px)] md:!gap-16">
         <div>
           <p className="!mb-4 !text-xs !font-bold !uppercase !tracking-[.24em] !text-[#f5bd35]">
-            La U del Futuro 2026 · UTPton
+            La U del Futuro 2026 · UTPtón
           </p>
           <h2 className="!mb-5 !text-3xl !font-semibold !leading-tight !tracking-tight sm:!text-5xl">
             Sigue las <span className="!text-[#8fcaff]">actualizaciones</span>

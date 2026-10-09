@@ -219,7 +219,7 @@ export function DonationForm({
 
               <Image
                 src="/assets/utpton/Logos/Horizontal blanco.png"
-                alt="UTPton, XXIV Convención de Egresados UTP 2026"
+                alt="UTPtón, XXIV Convención de Egresados UTP 2026"
                 maxW="56"
               />
             </Stack>

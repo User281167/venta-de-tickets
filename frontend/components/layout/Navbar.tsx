@@ -31,10 +31,13 @@ export function Navbar() {
     router.push("/");
   }
 
-  const links = pathname === "/" ? LINKS : LINKS.map((link) => ({
-    ...link,
-    href: link.href === "/#hero" ? "/" : link.href,
-  }));
+  const links =
+    pathname === "/"
+      ? LINKS
+      : LINKS.map((link) => ({
+          ...link,
+          href: link.href === "/#hero" ? "/" : link.href,
+        }));
 
   return (
     <header className="!fixed !inset-x-0 !top-0 !z-[200] !px-3 !pt-3 sm:!px-6">
@@ -45,7 +48,7 @@ export function Navbar() {
         <NextLink href="/" aria-label="UTPton, inicio" className="!shrink-0">
           <NextImage
             src="/assets/utpton/Logos/Horizontal blanco.png"
-            alt="La U del Futuro 2026 · UTPton"
+            alt="La U del Futuro 2026 · UTPtón"
             width={320}
             height={110}
             className="!h-10 !w-auto sm:!h-12"
@@ -69,11 +72,19 @@ export function Navbar() {
           {staff && (
             <>
               {canManageDonations && (
-                <NextLink href="/admin" className="!rounded-full !px-4 !py-2 !text-sm !text-white/80 hover:!bg-white/10 hover:!text-white">
+                <NextLink
+                  href="/admin"
+                  className="!rounded-full !px-4 !py-2 !text-sm !text-white/80 hover:!bg-white/10 hover:!text-white"
+                >
                   Admin
                 </NextLink>
               )}
-              <button type="button" onClick={handleLogout} aria-label="Cerrar sesión" className="!rounded-full !p-2 !text-white/70 hover:!bg-white/10 hover:!text-white">
+              <button
+                type="button"
+                onClick={handleLogout}
+                aria-label="Cerrar sesión"
+                className="!rounded-full !p-2 !text-white/70 hover:!bg-white/10 hover:!text-white"
+              >
                 <IconLogout size={18} />
               </button>
             </>
@@ -93,16 +104,36 @@ export function Navbar() {
       </nav>
 
       {open && (
-        <div id="mobile-navigation" className="!mx-3 !mt-2 !rounded-2xl !border !border-white/15 !bg-[#07152b]/95 !p-2 !backdrop-blur-2xl sm:!mx-6 md:!hidden">
+        <div
+          id="mobile-navigation"
+          className="!mx-3 !mt-2 !rounded-2xl !border !border-white/15 !bg-[#07152b]/95 !p-2 !backdrop-blur-2xl sm:!mx-6 md:!hidden"
+        >
           {links.map((link) => (
-            <NextLink key={link.label} href={link.href} onClick={() => setOpen(false)} className="!block !rounded-xl !px-4 !py-3 !text-sm !font-medium !text-white/85 hover:!bg-white/10">
+            <NextLink
+              key={link.label}
+              href={link.href}
+              onClick={() => setOpen(false)}
+              className="!block !rounded-xl !px-4 !py-3 !text-sm !font-medium !text-white/85 hover:!bg-white/10"
+            >
               {link.label}
             </NextLink>
           ))}
           {staff && (
             <>
-              {canManageDonations && <NextLink href="/admin" onClick={() => setOpen(false)} className="!block !rounded-xl !px-4 !py-3 !text-sm !text-white/85 hover:!bg-white/10">Administración</NextLink>}
-              <button type="button" onClick={handleLogout} className="!flex !w-full !items-center !gap-2 !rounded-xl !px-4 !py-3 !text-left !text-sm !text-white/85 hover:!bg-white/10">
+              {canManageDonations && (
+                <NextLink
+                  href="/admin"
+                  onClick={() => setOpen(false)}
+                  className="!block !rounded-xl !px-4 !py-3 !text-sm !text-white/85 hover:!bg-white/10"
+                >
+                  Administración
+                </NextLink>
+              )}
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="!flex !w-full !items-center !gap-2 !rounded-xl !px-4 !py-3 !text-left !text-sm !text-white/85 hover:!bg-white/10"
+              >
                 <IconLogout size={17} /> Cerrar sesión
               </button>
             </>

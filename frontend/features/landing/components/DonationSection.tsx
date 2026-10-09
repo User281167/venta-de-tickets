@@ -22,7 +22,7 @@ export function DonationSection() {
         <IconHeartFilled size={32} color="#f5bd35" />
 
         <Text fontSize="3xl" fontWeight="bold" color="white" textAlign="center">
-          Súmate a UTPton
+          Súmate a UTPtón
         </Text>
 
         <Text
@@ -38,10 +38,7 @@ export function DonationSection() {
         </Text>
 
         <HStack gap={4} wrap="wrap" justify="center">
-          <DonationButton
-            account="VICTIMAS"
-            label="Donar a UTPton"
-          />
+          <DonationButton account="VICTIMAS" label="Donar a UTPtón" />
         </HStack>
         <DonationCounter />
       </Stack>

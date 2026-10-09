@@ -21,14 +21,14 @@ export function DonationFloat() {
       </button>
 
       <h5 className="!mb-3 !text-3xl !font-semibold !tracking-tight !leading-8">
-        Súmate a UTPton
+        Súmate a UTPtón
       </h5>
 
       <p className="!text-body !mb-6">
         Tu aporte voluntario apoya a la comunidad UTP afectada por el sismo.
       </p>
 
-      <DonationButton account="VICTIMAS" label="Donar a UTPton" />
+      <DonationButton account="VICTIMAS" label="Donar a UTPtón" />
     </section>
   );
 }
