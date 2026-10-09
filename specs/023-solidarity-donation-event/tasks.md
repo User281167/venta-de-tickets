@@ -133,7 +133,7 @@
 
 **Purpose**: Validate the integrated experience and package quality gates.
 
-- [ ] T033 [P] Run the manual acceptance steps in `specs/023-solidarity-donation-event/quickstart.md`, including staff, legacy routes, and sandbox donation/counter flow.
+- [ ] T033 [P] Complete staff sign-in and sandbox donation/counter acceptance in `specs/023-solidarity-donation-event/quickstart.md`.
 - [X] T034 [P] Review resources used by `frontend/` from `frontend/public/assets/utpton/` for correct variant, readability, broken paths, and accessible text alternatives.
 - [X] T035 Verify focused backend coverage for retired routes, UTPton validation, donation counter, and donation API (33/33); unrelated legacy suite failures are recorded below.
 - [X] T036 Run `pnpm lint` from `backend/`; all changed backend source/test files pass focused ESLint.
@@ -187,5 +187,5 @@
 - Check a task only after its described work is implemented and verified.
 - Focused backend verification passed: 4 files / 33 tests across route availability, UTPton account validation, donation counter, and donation API. Focused frontend verification passed: 3 files / 30 tests across proxy routes, agenda data, and campaign content. ESLint on the changed frontend files passed with no errors or warnings.
   - The wider backend suite reports 98 failures in integration tests expecting ticket/account/payment endpoints intentionally retired here; 248 passed. The frontend suite reports 7 failures in old checkout/register tests; 289 passed. These paths are outside the new public journey and were not restored or rewritten. Full frontend lint has 18 errors outside the changed-file check. The backend ESLint config uses flat config so ESLint 10 can run; full `pnpm lint` reports 27 errors across the repository, while the changed backend source/test files pass focused ESLint (T036).
-- T033 remains open: the anonymous UTPton donation dialog opens without login and exposes the existing donor fields, but no payment was submitted and no authenticated staff/admin walkthrough was performed. Frontend TypeScript checking also reports errors in untouched legacy test files. The browser run had no backend attached, so the live counter could not load.
+- T033 remains open: local browser walkthrough confirmed the event homepage, retired-page redirect, unauthenticated admin redirect to `/login`, and live counter/meta fetched from the development backend. The UTPton dialog exposes the existing optional donor fields and legal-source checkbox without login. No payment was submitted and no authenticated staff/admin walkthrough was performed. Frontend TypeScript checking also reports errors in untouched legacy test files. Dev server output showed a React hydration-attribute mismatch on `/login`; its source has not been isolated.
 - Preserve supplied files in `frontend/public/assets/utpton/`; `frontend/app/page.tsx` had no local edits when implementation began.
