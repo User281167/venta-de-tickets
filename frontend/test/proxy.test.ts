@@ -12,6 +12,8 @@ describe("public route availability", () => {
     "/aliados",
     "/admin/usuarios",
     "/admin/pagos",
+    "/donaciones/retorno/unknown",
+    "/donaciones/nueva-campana",
   ])("redirects retired route %s to the public home", (pathname) => {
     expect(isRetiredPage(pathname)).toBe(true);
   });
@@ -20,6 +22,7 @@ describe("public route availability", () => {
     "/",
     "/agenda",
     "/donaciones/retorno/state/success",
+    "/donaciones/retorno/epayco-result",
     "/login",
     "/reset-password",
     "/admin",

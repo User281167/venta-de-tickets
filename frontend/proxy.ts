@@ -17,6 +17,14 @@ const ACTIVE_PAGES = [
   "/update-password",
 ];
 
+const DONATION_RETURN_PAGES = new Set([
+  "/donaciones/retorno",
+  "/donaciones/retorno/epayco-result",
+  "/donaciones/retorno/state/success",
+  "/donaciones/retorno/state/pending",
+  "/donaciones/retorno/state/failure",
+]);
+
 export function isRetiredPage(pathname: string) {
   if (
     pathname.startsWith("/api/") ||
@@ -30,7 +38,7 @@ export function isRetiredPage(pathname: string) {
     ACTIVE_PAGES.includes(pathname) ||
     pathname === "/admin" ||
     pathname === "/admin/donaciones" ||
-    pathname.startsWith("/donaciones/")
+    DONATION_RETURN_PAGES.has(pathname)
   );
 }
 
