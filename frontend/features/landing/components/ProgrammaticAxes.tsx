@@ -2,7 +2,6 @@ import {
   IconBrain,
   IconHeartHandshake,
   IconNetwork,
-  IconPlayerPlay,
   IconTrendingUp,
 } from "@tabler/icons-react";
 
@@ -74,15 +73,11 @@ export function ProgrammaticAxes() {
             </article>
           ))}
         </div>
-        <details className="!mt-12 !overflow-hidden !rounded-2xl !border !border-white/10 !bg-white/[.045]">
-          <summary className="!flex !cursor-pointer !list-none !flex-wrap !items-center !justify-between !gap-4 !px-5 !py-4 !text-sm !font-semibold !text-white sm:!px-7">
-            <span>La U del Futuro 2026 · UTPtón</span>
-            <span className="!inline-flex !items-center !gap-2 !text-[#f5bd35]">
-              <IconPlayerPlay size={18} aria-hidden="true" /> Ver video de la
-              campaña
-            </span>
-          </summary>
-          <div className="!border-t !border-white/10 !p-3 sm:!p-5">
+        <div className="!mt-12 !overflow-hidden !rounded-2xl !border !border-white/10 !bg-white/[.045]">
+          <div className="!border-b !border-white/10 !px-5 !py-4 !text-sm !font-semibold !text-white sm:!px-7">
+            La U del Futuro 2026 · UTPtón
+          </div>
+          <div className="!p-3 sm:!p-5">
             <p className="!mb-3 !text-sm !leading-6 !text-[#b9c4d8]">
               Video de presentación de UTPtón y de la jornada del sábado 24 de
               octubre en ExpoFuturo.
@@ -100,7 +95,7 @@ export function ProgrammaticAxes() {
               />
             </video>
           </div>
-        </details>
+        </div>
       </div>
     </section>
   );
