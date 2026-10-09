@@ -15,15 +15,16 @@ de sesión para que el frontend consulte el rol del usuario autenticado.
 
 | Método | Ruta | Middleware | Descripción |
 |--------|------|-----------|-------------|
-| GET | `/api/auth/session` | `authMiddleware` | Devuelve `{ role }` del token. `401 { role: null }` si no hay sesión |
+| GET | `/api/auth/session` | `authMiddleware`, `requireRole` | Devuelve `{ role }` solo para `admin`, `super_admin` y `checker` |
 
 ## Códigos de Error
 
 | Código | Status | Causa |
 |--------|--------|-------|
-| `UNAUTHORIZED` | 401 | Sin sesión — el controller responde `{ role: null }` |
+| `UNAUTHORIZED` | 401 | Falta una sesión válida |
+| `FORBIDDEN` | 403 | El rol no es de personal autorizado |
 
 ## Dependencias externas
 
 - `shared/middlewares/auth.middleware.ts` — verifica y decodifica JWT de Supabase
-- `shared/middlewares/require-role.middleware.ts` — guard opcional para rutas que necesitan rol específico
+- `shared/middlewares/require-role.middleware.ts` — limita la sesión a roles de personal

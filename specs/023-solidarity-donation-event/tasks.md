@@ -135,7 +135,7 @@
 
 - [ ] T033 [P] Complete staff sign-in and sandbox donation/counter acceptance in `specs/023-solidarity-donation-event/quickstart.md`.
 - [X] T034 [P] Review resources used by `frontend/` from `frontend/public/assets/utpton/` for correct variant, readability, broken paths, and accessible text alternatives.
-- [X] T035 Verify focused backend coverage for retired routes, UTPton validation, donation counter, and donation API (33/33); unrelated legacy suite failures are recorded below.
+- [X] T035 Verify focused backend coverage for retired routes, UTPton validation, donation counter, and donation API (33/33); staff session role boundary also passes in `route-availability.test.ts` (20/20).
 - [X] T036 Run `pnpm lint` from `backend/`; all changed backend source/test files pass focused ESLint.
 - [X] T037 Verify focused frontend coverage for route policy, agenda, and campaign content (30/30); unrelated legacy suite failures are recorded below.
 - [X] T038 Run ESLint against changed frontend files; no errors or warnings.

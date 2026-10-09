@@ -84,6 +84,37 @@ describe('API routes for the UTPton campaign', () => {
     expect(response.status).toBe(401);
   });
 
+  it('denies the staff session endpoint to regular client accounts', async () => {
+    mockVerifyToken.mockResolvedValue({
+      id: 'client-1',
+      email: 'client@test.com',
+      role: 'client',
+    });
+    mockGetUserAuthInfo.mockResolvedValue({ role: 'client', isActive: true });
+
+    const response = await request(app)
+      .get('/api/auth/session')
+      .set('Authorization', 'Bearer client.jwt');
+
+    expect(response.status).toBe(403);
+  });
+
+  it('keeps the session endpoint available to checker staff', async () => {
+    mockVerifyToken.mockResolvedValue({
+      id: 'checker-1',
+      email: 'checker@test.com',
+      role: 'checker',
+    });
+    mockGetUserAuthInfo.mockResolvedValue({ role: 'checker', isActive: true });
+
+    const response = await request(app)
+      .get('/api/auth/session')
+      .set('Authorization', 'Bearer checker.jwt');
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({ role: 'checker' });
+  });
+
   it('keeps counter updates behind authentication', async () => {
     const response = await request(app)
       .put('/api/admin/donations/counter')
