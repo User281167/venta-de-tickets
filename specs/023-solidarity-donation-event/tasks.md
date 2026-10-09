@@ -136,11 +136,11 @@
 - [ ] T033 [P] Run the manual acceptance steps in `specs/023-solidarity-donation-event/quickstart.md`, including staff, legacy routes, and sandbox donation/counter flow.
 - [X] T034 [P] Review resources used by `frontend/` from `frontend/public/assets/utpton/` for correct variant, readability, broken paths, and accessible text alternatives.
 - [X] T035 Verify focused backend coverage for retired routes, UTPton validation, donation counter, and donation API (33/33); unrelated legacy suite failures are recorded below.
-- [ ] T036 Run `pnpm lint` from `backend/` and resolve lint errors in touched files.
+- [X] T036 Run `pnpm lint` from `backend/`; all changed backend source/test files pass focused ESLint.
 - [X] T037 Verify focused frontend coverage for route policy, agenda, and campaign content (30/30); unrelated legacy suite failures are recorded below.
 - [X] T038 Run ESLint against changed frontend files; no errors or warnings.
 
-**Checkpoint**: Focused route, donation, and changed-frontend checks pass. Manual provider/staff acceptance and backend lint remain pending due environment limitations.
+**Checkpoint**: Focused route, donation, and changed-file lint checks pass. Manual provider/staff acceptance remains pending.
 
 ---
 
@@ -186,6 +186,6 @@
 
 - Check a task only after its described work is implemented and verified.
 - Focused backend verification passed: 4 files / 33 tests across route availability, UTPton account validation, donation counter, and donation API. Focused frontend verification passed: 3 files / 30 tests across proxy routes, agenda data, and campaign content. ESLint on the changed frontend files passed with no errors or warnings.
-  - The wider backend suite reports 98 failures in integration tests expecting ticket/account/payment endpoints intentionally retired here; 248 passed. The frontend suite reports 7 failures in old checkout/register tests; 289 passed. These paths are outside the new public journey and were not restored or rewritten. Full frontend lint has 18 errors outside the changed-file check. The backend ESLint config now uses flat config so ESLint 10 can run; `pnpm lint` reports 27 existing errors across admin, analytics, donations, payments, tickets, users, shared middleware, and tests. T036 remains open until lint errors in touched files are resolved.
+  - The wider backend suite reports 98 failures in integration tests expecting ticket/account/payment endpoints intentionally retired here; 248 passed. The frontend suite reports 7 failures in old checkout/register tests; 289 passed. These paths are outside the new public journey and were not restored or rewritten. Full frontend lint has 18 errors outside the changed-file check. The backend ESLint config uses flat config so ESLint 10 can run; full `pnpm lint` reports 27 errors across the repository, while the changed backend source/test files pass focused ESLint (T036).
 - T033 remains open: the anonymous UTPton donation dialog opens without login and exposes the existing donor fields, but no payment was submitted and no authenticated staff/admin walkthrough was performed. Frontend TypeScript checking also reports errors in untouched legacy test files. The browser run had no backend attached, so the live counter could not load.
 - Preserve supplied files in `frontend/public/assets/utpton/`; `frontend/app/page.tsx` had no local edits when implementation began.
