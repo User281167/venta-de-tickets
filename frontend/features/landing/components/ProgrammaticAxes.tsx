@@ -4,6 +4,7 @@ import {
   IconNetwork,
   IconTrendingUp,
 } from "@tabler/icons-react";
+import { CampaignVideo } from "./CampaignVideo";
 
 const AXES = [
   {
@@ -82,18 +83,7 @@ export function ProgrammaticAxes() {
               Video de presentación de UTPtón y de la jornada del sábado 24 de
               octubre en ExpoFuturo.
             </p>
-            <video
-              controls
-              preload="none"
-              poster="/assets/utpton/video-publicidad-poster.jpg"
-              className="!mx-auto !max-h-[70vh] !w-full !rounded-xl !bg-black"
-              aria-label="Video promocional de La U del Futuro 2026 y UTPton"
-            >
-              <source
-                src="/assets/utpton/video-publicidad.mp4"
-                type="video/mp4"
-              />
-            </video>
+            <CampaignVideo />
           </div>
         </div>
       </div>
