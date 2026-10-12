@@ -120,7 +120,6 @@ export const AGENDA_DAYS: AgendaDay[] = [
         title: "Asamblea de la ASEUTP",
         description:
           "Espacio estatutario e institucional para la participación de los egresados.",
-        note: "Se recomienda realizarla solo presencial para estimular la participación.",
         track: "Institucional",
         icon: IconBuildingCommunity,
       },
@@ -152,7 +151,6 @@ export const AGENDA_DAYS: AgendaDay[] = [
         title: "Noche cultural",
         description:
           "Presentación de la orquesta sinfónica con artista invitado.",
-        note: "El artista invitado está sujeto a confirmación.",
         track: "Cultura",
         icon: IconMusic,
       },
