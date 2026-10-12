@@ -10,7 +10,13 @@ import {
 } from "@tabler/icons-react";
 import type { ComponentType } from "react";
 
-export type Track = "Feria" | "Institucional" | "Futuro" | "Encuentro" | "Solidaridad" | "Cultura";
+export type Track =
+  | "Feria"
+  | "Institucional"
+  | "Futuro"
+  | "Encuentro"
+  | "Solidaridad"
+  | "Cultura";
 
 export type AgendaEvent = {
   time: string;
@@ -54,7 +60,8 @@ export const AGENDA_DAYS: AgendaDay[] = [
     events: [
       {
         time: "Durante todo el día",
-        title: "Feria de empleabilidad, emprendimiento y reactivación empresarial",
+        title:
+          "Feria de empleabilidad, emprendimiento y reactivación empresarial",
         description:
           "Espacio para conectar egresados, empresas, emprendedores, oportunidades laborales, productos y servicios. Participan egresados emprendedores o pymes y emprendedores barranqueros.",
         track: "Feria",
@@ -65,7 +72,6 @@ export const AGENDA_DAYS: AgendaDay[] = [
         title: "Apertura de la Convención",
         description:
           "Instalación institucional de La U del Futuro 2026 y presentación del propósito académico, empresarial y solidario de la jornada.",
-        note: "Intervienen el rector, la representante de egresados ante el CSU y el presidente de ASEUTP.",
         track: "Institucional",
         icon: IconMicrophone2,
       },
@@ -98,7 +104,6 @@ export const AGENDA_DAYS: AgendaDay[] = [
         title: "Conferencias temáticas por facultades",
         description:
           "Conversaciones virtuales sobre temas de interés de las facultades.",
-        note: "Se evalúa la presencialidad de dos conferencias: Ambiegresados y Salud.",
         track: "Futuro",
         icon: IconBuildingCommunity,
       },
@@ -123,15 +128,14 @@ export const AGENDA_DAYS: AgendaDay[] = [
         time: "4:30–6:30 p. m.",
         title: "Networking de egresados",
         description:
-          "Encuentro de relacionamiento acompañado por muestras y agrupaciones culturales universitarias, entre ellas vallenato, Tríneas, Ritmo Latino y otras expresiones de la UTP.",
+          "Encuentro de relacionamiento entre nuestra comunidad universitaria.",
         track: "Encuentro",
         icon: IconNetwork,
       },
       {
         time: "6:30–7:00 p. m.",
         title: "Memoria y conmemoración",
-        description:
-          "Homenaje a las víctimas del terremoto del 10 de agosto, en especial a los tres estudiantes y el egresado fallecidos pertenecientes a la comunidad universitaria.",
+        description: "Homenaje a las víctimas del terremoto del 10 de agosto.",
         track: "Solidaridad",
         icon: IconHeartHandshake,
       },
@@ -147,7 +151,7 @@ export const AGENDA_DAYS: AgendaDay[] = [
         time: "Cierre",
         title: "Noche cultural",
         description:
-          "Presentación especial de artista invitado, Orquesta Sinfónica de la UTP y Grupo de Salsa de la UTP.",
+          "Presentación de la orquesta sinfónica con artista invitado.",
         note: "El artista invitado está sujeto a confirmación.",
         track: "Cultura",
         icon: IconMusic,

@@ -16,7 +16,7 @@ const AXES = [
   {
     number: "02",
     title: "Empleo y reactivación",
-    text: "Conexiones entre egresados, empresas, emprendimientos y nuevas oportunidades.",
+    text: "Conexiones entre toda la comunidad, empresas, emprendimientos y nuevas oportunidades.",
     icon: IconTrendingUp,
     color: "#f5bd35",
   },

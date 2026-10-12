@@ -13,7 +13,7 @@ import { isAdminRole, isCheckerRole } from "@/providers/AuthProvider";
 const LINKS = [
   { label: "Inicio", href: "/#hero" },
   { label: "Programa", href: "/agenda" },
-  { label: "Donar", href: "/#donaciones" },
+  { label: "Sumate a la UTPtón", href: "/#donaciones" },
 ];
 
 export function Navbar() {
@@ -55,18 +55,33 @@ export function Navbar() {
           />
         </NextLink>
 
+        <NextImage
+          src="/assets/todos_somo_utp_transparent.png"
+          alt="La U del Futuro 2026 · UTPtón"
+          width={320}
+          height={110}
+          className="!h-10 !w-auto sm:!h-12 !hidden md:!block"
+        />
+
         <div className="!ml-auto !hidden !items-center !gap-1 md:!flex">
           {links.map((link) => (
             <NextLink
               key={link.label}
               href={link.href}
               className={`!rounded-full !px-4 !py-2 !text-sm !transition ${
-                link.label === "Donar"
+                link.href === "/#donaciones"
                   ? "!bg-[#f5bd35] !font-bold !text-[#08142b] hover:!bg-[#ffd46d]"
                   : "!text-white/80 hover:!bg-white/10 hover:!text-white"
               }`}
             >
-              {link.label}
+              {link.href === "/#donaciones" ? (
+                <>
+                  <span className="lg:!hidden">{link.label.split(" ")[0]}</span>
+                  <span className="!hidden lg:!block">{link.label}</span>
+                </>
+              ) : (
+                <span>{link.label}</span>
+              )}
             </NextLink>
           ))}
           {staff && (

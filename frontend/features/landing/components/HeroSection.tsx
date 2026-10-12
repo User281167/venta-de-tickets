@@ -36,9 +36,9 @@ export function HeroSection() {
           </h1>
 
           <p className="!max-w-2xl !text-base !leading-8 !text-[#c5cee0] sm:!text-lg">
-            Encuentro, reactivación y solidaridad. Una jornada para pensar el
-            futuro, generar oportunidades, reencontrarnos y ayudar a
-            reconstruir.
+            Encuentro, reactivación y solidaridad. Un evento para toda la
+            comunidad con jornadas para pensar el futuro, generar oportunidades,
+            reencontrarnos y ayudar a reconstruir.
           </p>
 
           <div className="!flex !flex-wrap !gap-3 !pt-1">
@@ -56,7 +56,7 @@ export function HeroSection() {
             </NextLink>
           </div>
 
-          <div className="!mt-2 !flex !flex-wrap !gap-x-8 !gap-y-3 !text-sm !text-white/75">
+          <div className="!mt-2 !flex !flex-wrap !gap-x-8 !gap-y-3 !text-white/75">
             <span className="!inline-flex !items-center !gap-2">
               <IconCalendar size={19} color="#f5bd35" /> Sábado 24 de octubre de
               2026

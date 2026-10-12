@@ -1,7 +1,7 @@
 "use client";
 
-import { HStack, Stack, Text } from "@chakra-ui/react";
-import { IconHeartFilled } from "@tabler/icons-react";
+import { Flex, HStack, Stack, Text } from "@chakra-ui/react";
+import NextImage from "next/image";
 import { DonationButton } from "@/features/donaciones/components/DonationButton";
 import { DonationCounter } from "@/features/donaciones/components/DonationCounter";
 import { DefaultWaves } from "@/shared/components/Waves";
@@ -18,30 +18,44 @@ export function DonationSection() {
     >
       <DefaultWaves />
 
-      <Stack align="center" gap={6} px={4}>
-        <IconHeartFilled size={32} color="#f5bd35" />
+      <Flex align="center" justify="center" wrap="wrap" gap={6} px={4}>
+        <Stack align="center" gap={6} px={4}>
+          <NextImage
+            src="/assets/todos_somo_utp_transparent.png"
+            alt="La U del Futuro 2026 · UTPtón"
+            width={320}
+            height={110}
+            className="!h-10 !w-auto sm:!h-12"
+          />
 
-        <Text fontSize="3xl" fontWeight="bold" color="white" textAlign="center">
-          Súmate a UTPtón
-        </Text>
+          <Text
+            fontSize="3xl"
+            fontWeight="bold"
+            color="white"
+            textAlign="center"
+          >
+            Súmate a UTPtón
+          </Text>
 
-        <Text
-          id="donaciones-comunidad-utp"
-          fontSize="xl"
-          color="brand.muted"
-          textAlign="center"
-          maxW="500px"
-        >
-          Tu aporte voluntario fortalece el fondo de solidaridad para apoyar a
-          la comunidad UTP afectada por el sismo. La participación en la jornada
-          no requiere comprar una entrada.
-        </Text>
+          <Text
+            id="donaciones-comunidad-utp"
+            fontSize="xl"
+            color="brand.muted"
+            textAlign="center"
+            maxW="500px"
+          >
+            Tu aporte voluntario fortalece el fondo de solidaridad para apoyar a
+            la comunidad UTP afectada por el sismo. La participación en la
+            jornada no requiere comprar una entrada.
+          </Text>
 
-        <HStack gap={4} wrap="wrap" justify="center">
-          <DonationButton account="VICTIMAS" label="Donar a UTPtón" />
-        </HStack>
+          <HStack gap={4} wrap="wrap" justify="center">
+            <DonationButton account="VICTIMAS" label="Donar a UTPtón" />
+          </HStack>
+        </Stack>
+
         <DonationCounter />
-      </Stack>
+      </Flex>
     </section>
   );
 }
