@@ -5,6 +5,7 @@ import { DonationSection } from "@/features/landing/components/DonationSection";
 import { ProgrammaticAxes } from "@/features/landing/components/ProgrammaticAxes";
 import { AgendaTimeline } from "@/features/agenda/components/AgendaTimeline";
 import { InstagramUpdates } from "@/features/landing/components/InstagramUpdates";
+import { PartnersSection } from "../features/landing/components/PartnersSection";
 
 export default function LandingPage() {
   return (
@@ -15,6 +16,7 @@ export default function LandingPage() {
         <DonationSection />
         <ProgrammaticAxes />
         <AgendaTimeline />
+        <PartnersSection />
         <InstagramUpdates />
       </main>
       <Footer />

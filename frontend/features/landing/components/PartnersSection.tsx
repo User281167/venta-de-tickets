@@ -4,14 +4,40 @@ import NextImage from "next/image";
 import { Particles } from "@/shared/components/Particles";
 
 const PARTNERS = [
-  { name: "GHL - Hoteles Sonesta", image: "/assets/aliados/sonesta - GHL holetes - logo.webp" },
-  { name: "Publik", image: "/assets/aliados/publik.png" },
-  { name: "Sueje", image: "/assets/aliados/sueje.png" },
-  { name: "Tecnodiesel", image: "/assets/aliados/tecnodiesel.svg" },
-  { name: "GHL - Hoteles Sonesta", image: "/assets/aliados/sonesta - GHL holetes - logo.webp" },
-  { name: "Publik", image: "/assets/aliados/publik.png" },
-  { name: "Sueje", image: "/assets/aliados/sueje.png" },
-  { name: "Tecnodiesel", image: "/assets/aliados/tecnodiesel.svg" },
+  { name: "Cabrebra", image: "/assets/nuevos-aliados/CEL_logo.jpg" },
+  {
+    name: "GL Ingenieros S.A",
+    image: "/assets/nuevos-aliados/Logo Empresa GL Ingenieros S.A.jpeg",
+  },
+  {
+    name: "Pentagrama",
+    image: "/assets/nuevos-aliados/Logo Pentagrama Negro.jpg",
+  },
+  {
+    name: "Tecnodiesel",
+    image: "/assets/nuevos-aliados/Tecnodiesel Original.png",
+  },
+  {
+    name: "Estatal de Seguridad",
+    image: "/assets/nuevos-aliados/Logo_ESTATAL+DE+SEGURIDAD.png",
+  },
+  { name: "Cabrebra", image: "/assets/nuevos-aliados/CEL_logo.jpg" },
+  {
+    name: "GL Ingenieros S.A",
+    image: "/assets/nuevos-aliados/Logo Empresa GL Ingenieros S.A.jpeg",
+  },
+  {
+    name: "Pentagrama",
+    image: "/assets/nuevos-aliados/Logo Pentagrama Negro.jpg",
+  },
+  {
+    name: "Tecnodiesel",
+    image: "/assets/nuevos-aliados/Tecnodiesel Original.png",
+  },
+  {
+    name: "Estatal de Seguridad",
+    image: "/assets/nuevos-aliados/Logo_ESTATAL+DE+SEGURIDAD.png",
+  },
 ];
 
 const GRADIENT_TEXT = {
