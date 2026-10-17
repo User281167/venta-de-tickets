@@ -74,18 +74,6 @@ export function ProgrammaticAxes() {
             </article>
           ))}
         </div>
-        <div className="!mt-12 !overflow-hidden !rounded-2xl !border !border-white/10 !bg-white/[.045]">
-          <div className="!border-b !border-white/10 !px-5 !py-4 !text-sm !font-semibold !text-white sm:!px-7">
-            La U del Futuro 2026 · UTPtón
-          </div>
-          <div className="!p-3 sm:!p-5">
-            <p className="!mb-3 !text-sm !leading-6 !text-[#b9c4d8]">
-              Video de presentación de UTPtón y de la jornada del sábado 24 de
-              octubre en ExpoFuturo.
-            </p>
-            <CampaignVideo />
-          </div>
-        </div>
       </div>
     </section>
   );

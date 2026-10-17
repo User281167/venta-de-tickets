@@ -21,22 +21,13 @@ const PARTNERS = [
     name: "Estatal de Seguridad",
     image: "/assets/nuevos-aliados/Logo_ESTATAL+DE+SEGURIDAD.png",
   },
-  { name: "Cabrebra", image: "/assets/nuevos-aliados/CEL_logo.jpg" },
   {
-    name: "GL Ingenieros S.A",
-    image: "/assets/nuevos-aliados/Logo Empresa GL Ingenieros S.A.jpeg",
+    name: "Cooperativa FAVI UTP",
+    image: "/assets/nuevos-aliados/LogoFAVI.png",
   },
   {
-    name: "Pentagrama",
-    image: "/assets/nuevos-aliados/Logo Pentagrama Negro.jpg",
-  },
-  {
-    name: "Tecnodiesel",
-    image: "/assets/nuevos-aliados/Tecnodiesel Original.png",
-  },
-  {
-    name: "Estatal de Seguridad",
-    image: "/assets/nuevos-aliados/Logo_ESTATAL+DE+SEGURIDAD.png",
+    name: "Sueje",
+    image: "/assets/nuevos-aliados/logo-sueje.png",
   },
 ];
 

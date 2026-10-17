@@ -25,7 +25,7 @@ export function DonationSection() {
             alt="La U del Futuro 2026 · UTPtón"
             width={320}
             height={110}
-            className="!h-10 !w-auto sm:!h-12"
+            className="!h-32 !w-auto"
           />
 
           <Text
