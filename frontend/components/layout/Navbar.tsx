@@ -13,12 +13,13 @@ import { isAdminRole, isCheckerRole } from "@/providers/AuthProvider";
 const LINKS = [
   { label: "Inicio", href: "/#hero" },
   { label: "Programa", href: "/agenda" },
+  { label: "Iniciar sesión", href: "/login" },
   { label: "Sumate a la UTPtón", href: "/#donaciones" },
 ];
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
-  const { user, role } = useAuth();
+  const { user, role, isLoading } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -43,15 +44,19 @@ export function Navbar() {
     <header className="!fixed !inset-x-0 !top-0 !z-[200] !px-3 !pt-3 sm:!px-6">
       <nav
         aria-label="Navegación principal"
-        className="!mx-auto !flex !max-w-7xl !items-center !gap-3 !rounded-full !border !border-white/15 !bg-[#07152b]/75 !px-4 !py-2 !shadow-[0_12px_48px_rgba(0,0,0,.2)] !backdrop-blur-2xl sm:!px-5"
+        className="!mx-auto !flex !min-w-0 !max-w-7xl !items-center !gap-3 !rounded-full !border !border-white/15 !bg-[#07152b]/75 !px-3 !py-2 !shadow-[0_12px_48px_rgba(0,0,0,.2)] !backdrop-blur-2xl sm:!px-5"
       >
-        <NextLink href="/" aria-label="UTPton, inicio" className="!shrink-0">
+        <NextLink
+          href="/"
+          aria-label="UTPton, inicio"
+          className="!min-w-0 !shrink"
+        >
           <NextImage
             src="/assets/utpton/Logos/Horizontal blanco.png"
             alt="La U del Futuro 2026 · UTPtón"
             width={320}
             height={110}
-            className="!h-10 !w-auto sm:!h-12"
+            className="!h-auto !w-[min(58vw,16rem)] !max-w-full !object-contain md:!h-12 md:!w-auto"
           />
         </NextLink>
 
@@ -84,6 +89,7 @@ export function Navbar() {
               )}
             </NextLink>
           ))}
+
           {staff && (
             <>
               {canManageDonations && (
@@ -133,6 +139,7 @@ export function Navbar() {
               {link.label}
             </NextLink>
           ))}
+
           {staff && (
             <>
               {canManageDonations && (
