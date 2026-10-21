@@ -31,12 +31,18 @@ function AdminLayoutInner({ children }: { children: ReactNode }) {
   }
 
   const ADMIN_ROLES = new Set(["super_admin", "admin"]);
-  if (!ADMIN_ROLES.has(role)) {
+  const registrationRoles = new Set(["super_admin", "admin", "checker"]);
+  const registrationPage = pathname === "/admin/registro";
+  if (!(registrationPage ? registrationRoles : ADMIN_ROLES).has(role)) {
     router.replace("/");
     return null;
   }
 
-  if (pathname.startsWith("/admin/") && pathname !== "/admin/donaciones") {
+  if (
+    pathname.startsWith("/admin/") &&
+    pathname !== "/admin/donaciones" &&
+    !registrationPage
+  ) {
     return (
       <Flex bg="brand.dark">
         <Flex flex={1} p={8} minH="100vh">
@@ -57,7 +63,5 @@ function AdminLayoutInner({ children }: { children: ReactNode }) {
 }
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
-  return (
-    <AdminLayoutInner>{children}</AdminLayoutInner>
-  );
+  return <AdminLayoutInner>{children}</AdminLayoutInner>;
 }

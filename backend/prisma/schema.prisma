@@ -236,3 +236,16 @@ model AuditLog {
   @@index([entityType, entityId])
   @@map("audit_log")
 }
+
+model Register {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  cedula      String    @unique @db.VarChar(20)
+  name        String    @map("full_name") @db.VarChar(150)
+  email       String    @db.VarChar(255)
+  phone       String    @db.VarChar(20)
+  profesion   String    @db.VarChar(100)
+  isEgresado  Boolean   @default(false) @map("is_egresado")
+  confirmed   Boolean   @default(false)
+
+  @@map("register")
+}

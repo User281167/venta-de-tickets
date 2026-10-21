@@ -22,7 +22,7 @@ const ICON = { size: 18, stroke: 2 } as const;
 
 export function CtaSection() {
   const { user } = useAuth();
-  const ctaHref = user ? "/mi-cuenta" : "/registro";
+  const ctaHref = user ? "/mi-cuenta" : "/registrate";
   const ctaLabel = user ? "IR A MI CUENTA" : "INSCRÍBETE AHORA";
   const CtaIcon = user ? IconUser : IconArrowRight;
   const subline = user
@@ -72,8 +72,7 @@ export function CtaSection() {
             className="!flex !max-w-2xl !flex-col !gap-4 !text-center lg:!text-left"
           >
             <h2 className="!font-display !text-4xl !font-black !uppercase !leading-[1.02] !tracking-tight !text-white sm:!text-5xl md:!text-6xl">
-              Sé parte del{" "}
-              <GradientText>futuro</GradientText>,
+              Sé parte del <GradientText>futuro</GradientText>,
               <br />
               sé parte de la <GradientText>U</GradientText>.
             </h2>

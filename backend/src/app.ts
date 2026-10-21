@@ -5,6 +5,10 @@ import { errorHandler } from './shared/middlewares/error-handler.middleware.js';
 import { adminsRouter } from './modules/admins/admins.routes.js';
 import { authRouter } from './modules/auth/index.js';
 import { donacionesRouter } from './modules/donaciones/donaciones.routes.js';
+import {
+  registerRouter,
+  verifyRegisterRoute,
+} from './modules/register/register.routes.js';
 
 import { logger } from './utils/logger.js';
 
@@ -31,5 +35,7 @@ app.use((req, res, next) => {
 app.use('/api/auth', authRouter);
 app.use('/api/admin', adminsRouter);
 app.use('/api/donaciones', donacionesRouter);
+app.use('/api/register', registerRouter);
+app.use('/api/admin/register', verifyRegisterRoute);
 
 app.use(errorHandler);

@@ -31,6 +31,7 @@ import { formatApiError } from "@/shared/lib/format-api-error";
 const SKIP_PATHS = [
   "/login",
   "/registro",
+  "/registrate",
   "/olvidar-contrasena",
   "/actualizar-contrasena",
   "/mi-cuenta/perfil",

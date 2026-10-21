@@ -22,6 +22,7 @@ import {
   IconX,
   IconHome,
   IconHeart,
+  IconId,
 } from "@tabler/icons-react";
 import { useState, type ReactNode } from "react";
 
@@ -35,6 +36,12 @@ type SidebarLink = {
 const ALL_LINKS: SidebarLink[] = [
   { href: "/", label: "Ver sitio público", icon: <IconHome size={20} /> },
   { href: "/admin", label: "Panel UTPtón", icon: <IconDashboard size={20} /> },
+  {
+    href: "/admin/registro",
+    label: "Validar registro",
+    icon: <IconId size={20} />,
+    roles: ["super_admin", "admin", "checker"],
+  },
   {
     href: "/admin/donaciones",
     label: "Donaciones y meta",

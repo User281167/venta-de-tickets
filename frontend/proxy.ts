@@ -15,6 +15,9 @@ const ACTIVE_PAGES = [
   "/login",
   "/reset-password",
   "/update-password",
+  "/registro",
+  "/registrate",
+  "/donar",
 ];
 
 const DONATION_RETURN_PAGES = new Set([
@@ -37,6 +40,7 @@ export function isRetiredPage(pathname: string) {
   return !(
     ACTIVE_PAGES.includes(pathname) ||
     pathname === "/admin" ||
+    pathname === "/admin/registro" ||
     pathname === "/admin/donaciones" ||
     DONATION_RETURN_PAGES.has(pathname)
   );
@@ -87,7 +91,8 @@ export async function proxy(request: NextRequest) {
   if (user && pathname.startsWith("/admin")) {
     const role = user.app_metadata?.role;
 
-    if (!canAccessDonationAdmin(role)) {
+    const registrationPath = pathname === "/admin/registro";
+    if (registrationPath ? !["admin", "super_admin", "checker"].includes(role) : !canAccessDonationAdmin(role)) {
       return NextResponse.redirect(new URL("/", request.url));
     }
   }
