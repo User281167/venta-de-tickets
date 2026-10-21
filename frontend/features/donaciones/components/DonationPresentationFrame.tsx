@@ -15,6 +15,10 @@ export function DonationPresentationFrame() {
     : data
       ? formatCurrency(data.currentValue)
       : "...";
+  const percent =
+    data && data.metaValue > 0
+      ? Math.min(100, Math.round((data.currentValue / data.metaValue) * 100))
+      : 0;
 
   useEffect(() => {
     setDonationUrl(`${window.location.origin}/donar`);
@@ -64,6 +68,32 @@ export function DonationPresentationFrame() {
           <p className="!mt-3 !text-sm !font-semibold !uppercase !tracking-[.16em] !text-white/60 sm:!text-base">
             Pesos colombianos recaudados
           </p>
+
+          {data && data.metaValue > 0 && (
+            <div className="!mt-7 !w-full !max-w-3xl">
+              <div className="!mb-2 !flex !items-center !justify-between !gap-4 !text-sm !font-semibold sm:!text-base">
+                <span className="!text-white/70">
+                  Meta: {formatCurrency(data.metaValue)}
+                </span>
+                <span className="!text-[#80eaff]">{percent}% de la meta</span>
+              </div>
+
+              <div
+                role="progressbar"
+                aria-label="Avance de la meta de donaciones"
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={percent}
+                aria-valuetext={`${percent}% de la meta`}
+                className="!h-3 !w-full !overflow-hidden !rounded-full !bg-white/10 !shadow-[0_0_24px_rgba(0,229,255,.12)]"
+              >
+                <div
+                  className="!h-full !rounded-full !bg-gradient-to-r !from-[#ff0f7b] !to-[#00e5ff] !transition-[width] !duration-700"
+                  style={{ width: `${percent}%` }}
+                />
+              </div>
+            </div>
+          )}
 
           <a
             href={donationUrl || "/donar"}

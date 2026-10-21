@@ -125,9 +125,9 @@ export function AdminRegisterPage() {
             <Button
               onClick={toggleConfirmation}
               loading={busy}
-              bg="brand.violet"
+              bg={record.confirmed ? "red.600" : "green.600"}
               color="white"
-              _hover={{ bg: "#6a2be2" }}
+              _hover={{ bg: record.confirmed ? "red.700" : "green.700" }}
             >
               {record.confirmed ? "Quitar confirmación" : "Confirmar ingreso"}
             </Button>
