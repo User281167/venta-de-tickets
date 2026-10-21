@@ -3,7 +3,10 @@
 import { useState } from "react";
 import { Button } from "@chakra-ui/react";
 import { DonationForm } from "./DonationForm";
-import { DONATION_ACCOUNT_LABELS, DonationAccount } from "@/shared/utils/donation-status";
+import {
+  DONATION_ACCOUNT_LABELS,
+  DonationAccount,
+} from "@/shared/utils/donation-status";
 
 interface Props {
   account: DonationAccount;
@@ -13,12 +16,19 @@ interface Props {
   onOpenChange?: (open: boolean) => void;
 }
 
-export function DonationButton({ account, label, socialMedia, open: controlledOpen, onOpenChange }: Props) {
+export function DonationButton({
+  account,
+  label,
+  socialMedia,
+  open: controlledOpen,
+  onOpenChange,
+}: Props) {
   const [internalOpen, setInternalOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const buttonLabel = label ?? ("Donar a " + DONATION_ACCOUNT_LABELS[account]);
+  const buttonLabel = label ?? "Donar a " + DONATION_ACCOUNT_LABELS[account];
   const isControlled = controlledOpen !== undefined;
   const open = isControlled ? controlledOpen : internalOpen;
+
   const setOpen = (value: boolean) => {
     if (isControlled) onOpenChange?.(value);
     else setInternalOpen(value);
@@ -47,7 +57,14 @@ export function DonationButton({ account, label, socialMedia, open: controlledOp
 
         <span>{buttonLabel}</span>
       </Button>
-      <DonationForm account={account} socialMedia={socialMedia} open={open} onClose={() => setOpen(false)} onSubmitting={setSubmitting} />
+
+      <DonationForm
+        account={account}
+        socialMedia={socialMedia}
+        open={open}
+        onClose={() => setOpen(false)}
+        onSubmitting={setSubmitting}
+      />
     </>
   );
 }

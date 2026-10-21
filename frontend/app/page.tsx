@@ -7,6 +7,7 @@ import { AgendaTimeline } from "@/features/agenda/components/AgendaTimeline";
 import { InstagramUpdates } from "@/features/landing/components/InstagramUpdates";
 import { PartnersSection } from "../features/landing/components/PartnersSection";
 import { CulturalEventsCarousel } from "@/features/landing/components/CulturalEventsCarousel";
+import { RegistrationFloat } from "@/features/landing/components/RegistrationFloat";
 
 export default function LandingPage() {
   return (
@@ -22,6 +23,7 @@ export default function LandingPage() {
         <InstagramUpdates />
       </main>
       <Footer />
+      <RegistrationFloat />
     </>
   );
 }

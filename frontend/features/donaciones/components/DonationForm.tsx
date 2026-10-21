@@ -20,6 +20,7 @@ import {
   Image,
   Input,
   Link,
+  Portal,
   Stack,
   Text,
 } from "@chakra-ui/react";
@@ -200,168 +201,173 @@ export function DonationForm({
       placement="center"
       size="md"
     >
-      <DialogBackdrop bg="rgba(2,4,20,0.85)" backdropFilter="blur(6px)" />
-      <DialogPositioner>
-        <DialogContent
-          bg="brand.panel"
-          color="brand.light"
-          border="1px solid"
-          borderRadius="2xl"
-          maxW="440px"
-        >
-          <DialogHeader pt={6} m="auto">
-            <Stack align="center" gap={2}>
-              <IconHeart size={32} color="#ff0f7b" />
+      <Portal>
+        <DialogBackdrop bg="rgba(2,4,20,0.85)" backdropFilter="blur(6px)" />
+        <DialogPositioner>
+          <DialogContent
+            bg="brand.panel"
+            color="brand.light"
+            border="1px solid"
+            borderRadius="2xl"
+            maxW="440px"
+          >
+            <DialogHeader pt={6} m="auto">
+              <Stack align="center" gap={2}>
+                <IconHeart size={32} color="#ff0f7b" />
 
-              <DialogTitle fontSize="xl" fontWeight="bold" textAlign="center">
-                Donar a {accountLabel}
-              </DialogTitle>
+                <DialogTitle fontSize="xl" fontWeight="bold" textAlign="center">
+                  Donar a {accountLabel}
+                </DialogTitle>
 
-              <Image
-                src="/assets/utpton/Logos/Horizontal blanco.png"
-                alt="UTPtón, XXIV Convención de Egresados UTP 2026"
-                maxW="56"
-              />
-            </Stack>
-          </DialogHeader>
-
-          <DialogBody>
-            <Stack gap={4}>
-              <Field.Root invalid={!!errors.fullName}>
-                <Field.Label>Nombre (opcional)</Field.Label>
-
-                <Input
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  placeholder="Tu nombre"
-                  bg="whiteAlpha.100"
-                  border="1px solid"
-                  borderColor="whiteAlpha.200"
+                <Image
+                  src="/assets/utpton/Logos/Horizontal blanco.png"
+                  alt="UTPtón, XXIV Convención de Egresados UTP 2026"
+                  maxW="56"
                 />
+              </Stack>
+            </DialogHeader>
 
-                <Field.ErrorText>{errors.fullName}</Field.ErrorText>
-              </Field.Root>
+            <DialogBody>
+              <Stack gap={4}>
+                <Field.Root invalid={!!errors.fullName}>
+                  <Field.Label>Nombre (opcional)</Field.Label>
 
-              <Field.Root invalid={!!errors.email}>
-                <Field.Label>Correo (opcional)</Field.Label>
+                  <Input
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    placeholder="Tu nombre"
+                    bg="whiteAlpha.100"
+                    border="1px solid"
+                    borderColor="whiteAlpha.200"
+                  />
 
-                <Input
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="correo@ejemplo.com"
-                  bg="whiteAlpha.100"
-                  border="1px solid"
-                  borderColor="whiteAlpha.200"
-                />
-
-                <Field.ErrorText>{errors.email}</Field.ErrorText>
-              </Field.Root>
-
-              <Field.Root invalid={!!errors.company}>
-                <Field.Label>Empresa/Organización (opcional)</Field.Label>
-
-                <Input
-                  value={company}
-                  onChange={(e) => setCompany(e.target.value)}
-                  placeholder="Nombre de tu empresa u organización"
-                  bg="whiteAlpha.100"
-                  border="1px solid"
-                  borderColor="whiteAlpha.200"
-                />
-
-                <Field.ErrorText>{errors.company}</Field.ErrorText>
-              </Field.Root>
-
-              <Field.Root invalid={!!errors.amount} required>
-                <Field.Label>Monto</Field.Label>
-
-                <Input
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  placeholder="Mínimo $5.000 COP"
-                  type="number"
-                  min="5000"
-                  bg="whiteAlpha.100"
-                  border="1px solid"
-                  borderColor="whiteAlpha.200"
-                />
-
-                <Field.HelperText>Mínimo $5.000 COP</Field.HelperText>
-                <Field.ErrorText>{errors.amount}</Field.ErrorText>
-
-                <DonationCounter />
-
-                <Field.Root invalid={!!errors.consentGiven}>
-                  <HStack gap={3} align="flex-start">
-                    <Checkbox.Root
-                      checked={consentGiven}
-                      onCheckedChange={(details) =>
-                        setConsentGiven(!!details.checked)
-                      }
-                    >
-                      <Checkbox.HiddenInput />
-
-                      <Checkbox.Control
-                        borderColor="rgba(255,255,255,0.5)"
-                        _checked={{ bg: "teal.500", borderColor: "teal.500" }}
-                      />
-                    </Checkbox.Root>
-
-                    <Text
-                      as="span"
-                      color="white"
-                      fontSize="sm"
-                      lineHeight="1.5"
-                    >
-                      Declaro que los recursos entregados en donación provienen
-                      de una fuente lícita.
-                    </Text>
-                  </HStack>
-
-                  <Field.ErrorText>{errors.consentGiven}</Field.ErrorText>
+                  <Field.ErrorText>{errors.fullName}</Field.ErrorText>
                 </Field.Root>
-              </Field.Root>
 
-              {socialMedia && (
-                <Link
-                  href={socialMedia}
-                  target="_blank"
-                  color="white"
-                  variant="underline"
-                >
-                  <IconNetwork />
-                  Conoce más sobre {accountLabel}
-                </Link>
-              )}
-            </Stack>
-          </DialogBody>
+                <Field.Root invalid={!!errors.email}>
+                  <Field.Label>Correo (opcional)</Field.Label>
 
-          <DialogFooter gap={2}>
-            <Button
-              variant="ghost"
+                  <Input
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="correo@ejemplo.com"
+                    bg="whiteAlpha.100"
+                    border="1px solid"
+                    borderColor="whiteAlpha.200"
+                  />
+
+                  <Field.ErrorText>{errors.email}</Field.ErrorText>
+                </Field.Root>
+
+                <Field.Root invalid={!!errors.company}>
+                  <Field.Label>Empresa/Organización (opcional)</Field.Label>
+
+                  <Input
+                    value={company}
+                    onChange={(e) => setCompany(e.target.value)}
+                    placeholder="Nombre de tu empresa u organización"
+                    bg="whiteAlpha.100"
+                    border="1px solid"
+                    borderColor="whiteAlpha.200"
+                  />
+
+                  <Field.ErrorText>{errors.company}</Field.ErrorText>
+                </Field.Root>
+
+                <Field.Root invalid={!!errors.amount} required>
+                  <Field.Label>Monto</Field.Label>
+
+                  <Input
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    placeholder="Mínimo $5.000 COP"
+                    type="number"
+                    min="5000"
+                    bg="whiteAlpha.100"
+                    border="1px solid"
+                    borderColor="whiteAlpha.200"
+                  />
+
+                  <Field.HelperText>Mínimo $5.000 COP</Field.HelperText>
+                  <Field.ErrorText>{errors.amount}</Field.ErrorText>
+
+                  <DonationCounter />
+
+                  <Field.Root invalid={!!errors.consentGiven}>
+                    <HStack gap={3} align="flex-start">
+                      <Checkbox.Root
+                        checked={consentGiven}
+                        onCheckedChange={(details) =>
+                          setConsentGiven(!!details.checked)
+                        }
+                      >
+                        <Checkbox.HiddenInput />
+
+                        <Checkbox.Control
+                          borderColor="rgba(255,255,255,0.5)"
+                          _checked={{ bg: "teal.500", borderColor: "teal.500" }}
+                        />
+                      </Checkbox.Root>
+
+                      <Text
+                        as="span"
+                        color="white"
+                        fontSize="sm"
+                        lineHeight="1.5"
+                      >
+                        Declaro que los recursos entregados en donación
+                        provienen de una fuente lícita.
+                      </Text>
+                    </HStack>
+
+                    <Field.ErrorText>{errors.consentGiven}</Field.ErrorText>
+                  </Field.Root>
+                </Field.Root>
+
+                {socialMedia && (
+                  <Link
+                    href={socialMedia}
+                    target="_blank"
+                    color="white"
+                    variant="underline"
+                  >
+                    <IconNetwork />
+                    Conoce más sobre {accountLabel}
+                  </Link>
+                )}
+              </Stack>
+            </DialogBody>
+
+            <DialogFooter gap={2}>
+              <Button
+                variant="ghost"
+                color="brand.muted"
+                _hover={{ color: "black" }}
+                onClick={onClose}
+                disabled={mutation.isPending}
+              >
+                Cancelar
+              </Button>
+
+              <Button
+                onClick={handleSubmit}
+                loading={mutation.isPending}
+                bgGradient="linear(100deg, #ff0f7b, #7c3cff)"
+                color="white"
+                _hover={{ opacity: 0.9 }}
+                disabled={!consentGiven || mutation.isPending}
+              >
+                Donar {amount ? formatCurrency(Number(amount)) : "0"} COP
+              </Button>
+            </DialogFooter>
+
+            <DialogCloseTrigger
               color="brand.muted"
-              _hover={{ color: "black" }}
-              onClick={onClose}
-              disabled={mutation.isPending}
-            >
-              Cancelar
-            </Button>
-
-            <Button
-              onClick={handleSubmit}
-              loading={mutation.isPending}
-              bgGradient="linear(100deg, #ff0f7b, #7c3cff)"
-              color="white"
-              _hover={{ opacity: 0.9 }}
-              disabled={!consentGiven || mutation.isPending}
-            >
-              Donar {amount ? formatCurrency(Number(amount)) : "0"} COP
-            </Button>
-          </DialogFooter>
-
-          <DialogCloseTrigger color="brand.muted" _hover={{ color: "white" }} />
-        </DialogContent>
-      </DialogPositioner>
+              _hover={{ color: "white" }}
+            />
+          </DialogContent>
+        </DialogPositioner>
+      </Portal>
     </DialogRoot>
   );
 }
