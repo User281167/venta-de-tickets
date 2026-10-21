@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { DonationCounter } from "../donation.types";
 
-async function fetchDonationCounter(): Promise<DonationCounter> {
+export async function fetchDonationCounter(): Promise<DonationCounter> {
   const response = await fetch("/api/donaciones/counter", {
     cache: "no-store",
   });

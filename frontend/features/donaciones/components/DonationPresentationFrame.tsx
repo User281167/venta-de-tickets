@@ -4,12 +4,12 @@ import { useEffect, useState, type CSSProperties } from "react";
 import { QrCode } from "@chakra-ui/react";
 import { IconHeart } from "@tabler/icons-react";
 import Image from "next/image";
-import { useDonationCounter } from "../api/donation-counter.queries";
+import { useDonationCounterRealtime } from "@/features/donation-counter-realtime/hooks/useDonationCounterRealtime";
 import { formatCurrency } from "@/shared/utils/formats";
 
 export function DonationPresentationFrame() {
   const [donationUrl, setDonationUrl] = useState("");
-  const { data, isError } = useDonationCounter();
+  const { data, isError } = useDonationCounterRealtime();
   const amount = isError
     ? "—"
     : data
