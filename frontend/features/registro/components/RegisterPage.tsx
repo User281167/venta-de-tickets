@@ -167,6 +167,7 @@ export function RegisterPage() {
                     variant="outline"
                     color="white"
                     borderColor="whiteAlpha.400"
+                    _hover={{ color: "black" }}
                   >
                     <NextLink href="/">
                       <IconHome size={17} aria-hidden="true" /> Volver al inicio

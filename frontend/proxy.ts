@@ -18,6 +18,7 @@ const ACTIVE_PAGES = [
   "/registro",
   "/registrate",
   "/donar",
+  "/donar/frame",
 ];
 
 const DONATION_RETURN_PAGES = new Set([
