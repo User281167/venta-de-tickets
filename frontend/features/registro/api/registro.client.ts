@@ -18,21 +18,34 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const {
     data: { session },
   } = await createClient().auth.getSession();
-  const response = await fetch(`${BASE_URL}${path}`, {
-    ...init,
-    headers: {
-      "Content-Type": "application/json",
-      ...(session?.access_token
-        ? { Authorization: `Bearer ${session.access_token}` }
-        : {}),
-      ...init?.headers,
-    },
-    credentials: "include",
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${BASE_URL}${path}`, {
+      ...init,
+      headers: {
+        "Content-Type": "application/json",
+        ...(session?.access_token
+          ? { Authorization: `Bearer ${session.access_token}` }
+          : {}),
+        ...init?.headers,
+      },
+      credentials: "include",
+    });
+  } catch {
+    throw new Error(
+      "No fue posible conectar con el servidor. Verifica tu conexión e inténtalo de nuevo.",
+    );
+  }
 
-  const body = await response.json();
+  const body = await response.json().catch(() => null);
 
   if (!response.ok) {
+    if (response.status >= 500) {
+      throw new Error(
+        "Ocurrió un error al procesar la solicitud. Inténtalo de nuevo más tarde.",
+      );
+    }
+
     throw new Error(
       body?.error?.message ?? "No fue posible completar la solicitud.",
     );

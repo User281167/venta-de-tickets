@@ -58,23 +58,24 @@ export function AdminRegisterPage() {
     }
   }
   return (
-    <Container maxW="2xl" py={10}>
-      <Box className="glass-card" p={7}>
-        <Heading color="white" mb={6}>
+    <Container maxW="2xl" py={{ base: 16, md: 20 }}>
+      <Box className="glass-card" p={{ base: 7, md: 9 }}>
+        <Heading color="white" mb={8}>
           Validar registro
         </Heading>
 
         <form onSubmit={search}>
-          <Stack direction={{ base: "column", sm: "row" }}>
+          <Stack direction={{ base: "column", sm: "row" }} gap={4}>
             <Input
               value={cedula}
               onChange={(e) => setCedula(e.target.value)}
               placeholder="Número de cédula"
               color="white"
               required
+              className="!h-14"
             />
 
-            <Button type="submit" loading={busy} colorPalette="teal">
+            <Button type="submit" loading={busy} colorPalette="teal" className="!h-14">
               Consultar
             </Button>
           </Stack>
