@@ -72,10 +72,15 @@ export function AdminRegisterPage() {
               placeholder="Número de cédula"
               color="white"
               required
-              className="!h-14"
             />
 
-            <Button type="submit" loading={busy} colorPalette="teal" className="!h-14">
+            <Button
+              type="submit"
+              loading={busy}
+              bg="brand.violet"
+              color="white"
+              _hover={{ bg: "#6a2be2" }}
+            >
               Consultar
             </Button>
           </Stack>
@@ -116,10 +121,13 @@ export function AdminRegisterPage() {
             <Text>
               <b>Ingreso:</b> {record.confirmed ? "Confirmado" : "Pendiente"}
             </Text>
+
             <Button
               onClick={toggleConfirmation}
               loading={busy}
-              colorPalette={record.confirmed ? "orange" : "green"}
+              bg="brand.violet"
+              color="white"
+              _hover={{ bg: "#6a2be2" }}
             >
               {record.confirmed ? "Quitar confirmación" : "Confirmar ingreso"}
             </Button>
