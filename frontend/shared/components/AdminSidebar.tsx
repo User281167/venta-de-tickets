@@ -23,32 +23,23 @@ import {
   IconHome,
   IconHeart,
   IconId,
+  IconUsers,
 } from "@tabler/icons-react";
 import { useState, type ReactNode } from "react";
+import { getAdminNavRoutes } from "@/shared/lib/admin-routes";
 
 type SidebarLink = {
   readonly href: string;
   readonly label: string;
   readonly icon: ReactNode;
-  readonly roles?: readonly string[];
 };
 
-const ALL_LINKS: SidebarLink[] = [
-  { href: "/", label: "Ver sitio público", icon: <IconHome size={20} /> },
-  { href: "/admin", label: "Panel UTPtón", icon: <IconDashboard size={20} /> },
-  {
-    href: "/admin/registro",
-    label: "Validar registro",
-    icon: <IconId size={20} />,
-    roles: ["super_admin", "admin", "checker"],
-  },
-  {
-    href: "/admin/donaciones",
-    label: "Donaciones y meta",
-    icon: <IconHeart size={20} />,
-    roles: ["super_admin", "admin"],
-  },
-];
+const ADMIN_ICONS: Record<string, ReactNode> = {
+  "/admin": <IconDashboard size={20} />,
+  "/admin/usuarios": <IconUsers size={20} />,
+  "/admin/registro": <IconId size={20} />,
+  "/admin/donaciones": <IconHeart size={20} />,
+};
 
 export function AdminSidebar() {
   const pathname = usePathname();
@@ -57,9 +48,14 @@ export function AdminSidebar() {
   const { role } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const visibleLinks = ALL_LINKS.filter(
-    (link) => !link.roles || link.roles.includes(role ?? ""),
-  );
+  const visibleLinks: SidebarLink[] = [
+    { href: "/", label: "Ver sitio público", icon: <IconHome size={20} /> },
+    ...getAdminNavRoutes(role).map((route) => ({
+      href: route.href,
+      label: route.label,
+      icon: ADMIN_ICONS[route.href],
+    })),
+  ];
 
   async function handleLogout() {
     await signOut();

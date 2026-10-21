@@ -11,6 +11,34 @@ const adminsRouter = Router();
 adminsRouter.use(authMiddleware);
 
 adminsRouter.get(
+  '/users',
+  requireRole('admin', 'super_admin'),
+  rateLimit(POLICIES.admin),
+  adminsController.listUsers,
+);
+
+adminsRouter.post(
+  '/users',
+  requireRole('admin', 'super_admin'),
+  rateLimit(POLICIES.admin),
+  adminsController.createUser,
+);
+
+adminsRouter.post(
+  '/users/batch',
+  requireRole('admin', 'super_admin'),
+  rateLimit(POLICIES.admin),
+  adminsController.batchCreateUsers,
+);
+
+adminsRouter.patch(
+  '/users/:id',
+  requireRole('admin', 'super_admin'),
+  rateLimit(POLICIES.admin),
+  adminsController.updateUser,
+);
+
+adminsRouter.get(
   '/me',
   requireRole('admin', 'super_admin'),
   rateLimit(POLICIES.admin),

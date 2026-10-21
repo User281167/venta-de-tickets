@@ -13,7 +13,6 @@ import { isAdminRole, isCheckerRole } from "@/providers/AuthProvider";
 const LINKS = [
   { label: "Inicio", href: "/#hero" },
   { label: "Programa", href: "/agenda" },
-  { label: "Iniciar sesión", href: "/login" },
   { label: "Sumate a la UTPtón", href: "/#donaciones" },
 ];
 
@@ -24,7 +23,7 @@ export function Navbar() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const staff = Boolean(user && (isAdminRole(role) || isCheckerRole(role)));
-  const canManageDonations = Boolean(user && isAdminRole(role));
+  const showLoginLink = !isLoading && !user && pathname !== "/login";
 
   async function handleLogout() {
     await signOut();
@@ -90,16 +89,23 @@ export function Navbar() {
             </NextLink>
           ))}
 
+          {showLoginLink && (
+            <NextLink
+              href="/login"
+              className="!rounded-full !px-4 !py-2 !text-sm !text-white/80 hover:!bg-white/10 hover:!text-white"
+            >
+              Iniciar sesión
+            </NextLink>
+          )}
+
           {staff && (
             <>
-              {canManageDonations && (
-                <NextLink
-                  href="/admin"
-                  className="!rounded-full !px-4 !py-2 !text-sm !text-white/80 hover:!bg-white/10 hover:!text-white"
-                >
-                  Admin
-                </NextLink>
-              )}
+              <NextLink
+                href="/admin"
+                className="!rounded-full !px-4 !py-2 !text-sm !text-white/80 hover:!bg-white/10 hover:!text-white"
+              >
+                Admin
+              </NextLink>
               <button
                 type="button"
                 onClick={handleLogout}
@@ -140,17 +146,25 @@ export function Navbar() {
             </NextLink>
           ))}
 
+          {showLoginLink && (
+            <NextLink
+              href="/login"
+              onClick={() => setOpen(false)}
+              className="!block !rounded-xl !px-4 !py-3 !text-sm !font-medium !text-white/85 hover:!bg-white/10"
+            >
+              Iniciar sesión
+            </NextLink>
+          )}
+
           {staff && (
             <>
-              {canManageDonations && (
-                <NextLink
-                  href="/admin"
-                  onClick={() => setOpen(false)}
-                  className="!block !rounded-xl !px-4 !py-3 !text-sm !text-white/85 hover:!bg-white/10"
-                >
-                  Administración
-                </NextLink>
-              )}
+              <NextLink
+                href="/admin"
+                onClick={() => setOpen(false)}
+                className="!block !rounded-xl !px-4 !py-3 !text-sm !text-white/85 hover:!bg-white/10"
+              >
+                Administración
+              </NextLink>
               <button
                 type="button"
                 onClick={handleLogout}

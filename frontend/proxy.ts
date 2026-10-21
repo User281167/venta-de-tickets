@@ -1,10 +1,13 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-
-const ADMIN_ROLES = new Set(["super_admin", "admin"]);
+import {
+  canAccessAdminRoute,
+  getAdminRoute,
+  shouldRedirectAdminPath,
+} from "@/shared/lib/admin-routes";
 
 export function canAccessDonationAdmin(role: string | null | undefined) {
-  return role != null && ADMIN_ROLES.has(role);
+  return canAccessAdminRoute("/admin/donaciones", role);
 }
 
 const ACTIVE_PAGES = [
@@ -40,9 +43,7 @@ export function isRetiredPage(pathname: string) {
 
   return !(
     ACTIVE_PAGES.includes(pathname) ||
-    pathname === "/admin" ||
-    pathname === "/admin/registro" ||
-    pathname === "/admin/donaciones" ||
+    getAdminRoute(pathname) !== undefined ||
     DONATION_RETURN_PAGES.has(pathname)
   );
 }
@@ -85,16 +86,22 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  if (!user && pathname.startsWith("/admin")) {
+  const adminRoute = getAdminRoute(pathname);
+
+  if (!user && adminRoute) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (user && pathname.startsWith("/admin")) {
+  if (user && adminRoute) {
     const role = user.app_metadata?.role;
 
-    const registrationPath = pathname === "/admin/registro";
-    if (registrationPath ? !["admin", "super_admin", "checker"].includes(role) : !canAccessDonationAdmin(role)) {
+    if (!canAccessAdminRoute(pathname, role)) {
       return NextResponse.redirect(new URL("/", request.url));
+    }
+
+    const redirectPath = shouldRedirectAdminPath(pathname, role);
+    if (redirectPath) {
+      return NextResponse.redirect(new URL(redirectPath, request.url));
     }
   }
 

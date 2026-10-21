@@ -2,7 +2,7 @@
 
 import { Flex, Text } from "@chakra-ui/react";
 import { AdminSidebar } from "@/shared/components/AdminSidebar";
-import { AccessDenied } from "@/shared/components/AccessDenied";
+import { canAccessAdminRoute } from "@/shared/lib/admin-routes";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, type ReactNode } from "react";
@@ -30,26 +30,9 @@ function AdminLayoutInner({ children }: { children: ReactNode }) {
     return null;
   }
 
-  const ADMIN_ROLES = new Set(["super_admin", "admin"]);
-  const registrationRoles = new Set(["super_admin", "admin", "checker"]);
-  const registrationPage = pathname === "/admin/registro";
-  if (!(registrationPage ? registrationRoles : ADMIN_ROLES).has(role)) {
+  if (!canAccessAdminRoute(pathname, role)) {
     router.replace("/");
     return null;
-  }
-
-  if (
-    pathname.startsWith("/admin/") &&
-    pathname !== "/admin/donaciones" &&
-    !registrationPage
-  ) {
-    return (
-      <Flex bg="brand.dark">
-        <Flex flex={1} p={8} minH="100vh">
-          <AccessDenied />
-        </Flex>
-      </Flex>
-    );
   }
 
   return (
