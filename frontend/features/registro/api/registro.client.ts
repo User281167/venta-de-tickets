@@ -40,6 +40,13 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const body = await response.json().catch(() => null);
 
   if (!response.ok) {
+    if (
+      body?.error?.code === "CEDULA_ALREADY_REGISTERED" ||
+      (path === "/api/register" && response.status === 409)
+    ) {
+      throw new Error("Esta cédula ya se encuentra registrada.");
+    }
+
     if (response.status >= 500) {
       throw new Error(
         "Ocurrió un error al procesar la solicitud. Inténtalo de nuevo más tarde.",
