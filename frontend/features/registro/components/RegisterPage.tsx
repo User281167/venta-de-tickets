@@ -56,7 +56,7 @@ export function RegisterPage() {
     setError("");
 
     if (!/^\d{5,20}$/.test(values.cedula)) {
-      setError("Ingresa una cédula de 8 a 15 dígitos.");
+      setError("Ingresa una cédula de 5 a 20 dígitos.");
       return;
     }
 
