@@ -175,6 +175,7 @@ export function DonationForm({
               },
             });
 
+            onClose();
             checkout.open();
           } else if (data.initPoint) {
             window.location.href = data.initPoint;
