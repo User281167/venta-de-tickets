@@ -30,8 +30,8 @@ const PARTNERS = [
     image: "/assets/nuevos-aliados/logo-sueje.png",
   },
   {
-    name: "Sonesta - GHL holetes",
-    image: "/assets/aliados/sonesta - GHL holetes - logo.webp",
+    name: "Sonesta",
+    image: "/assets/aliados/sonesta.png",
   },
 ];
 
