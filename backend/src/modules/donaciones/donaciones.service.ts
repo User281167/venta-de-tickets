@@ -51,14 +51,6 @@ export async function createDonation(
   const providerName = `${input.provider}-${input.account.toLowerCase().replace(/_/g, '-')}`;
   const provider = getDonationProvider(providerName);
 
-  const result = await provider.createPreference({
-    externalReference,
-    amountCents: input.amountCents,
-    description: `Donación para ${DONATION_ACCOUNT_LABELS[input.account]}`,
-    backUrl: input.backUrl,
-    payerEmail: input.email ?? undefined,
-  });
-
   await donationRepository.create({
     fullName: input.fullName,
     email: input.email,
@@ -66,6 +58,14 @@ export async function createDonation(
     amountCents: input.amountCents,
     account: input.account,
     externalReference,
+  });
+
+  const result = await provider.createPreference({
+    externalReference,
+    amountCents: input.amountCents,
+    description: `Donación para ${DONATION_ACCOUNT_LABELS[input.account]}`,
+    backUrl: input.backUrl,
+    payerEmail: input.email ?? undefined,
   });
 
   return {
@@ -105,18 +105,6 @@ export async function handleWebhook(
   }
 
   if (newState === 'confirmed') {
-    if (donation.amountCents > 0) {
-      // ponytail: counter is auxiliary; failure must not block donation state or notification.
-      void donationRepository
-        .incrementCounterBy(donation.amountCents)
-        .catch((err) =>
-          logger.error(
-            { err, donationId: donation.id, amountCents: donation.amountCents },
-            'donation counter increment failed; donation state already confirmed',
-          ),
-        );
-    }
-
     void notifyDonationConfirmed(donation.id);
   } else if (newState === 'rejected') {
     void notifyDonationRejected(donation.id);

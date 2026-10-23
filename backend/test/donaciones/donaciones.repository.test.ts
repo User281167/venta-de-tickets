@@ -2,12 +2,20 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { DonationStatus } from '@prisma/client';
 
 const mockPrisma = vi.hoisted(() => ({
+  $transaction: vi.fn(),
   donation: {
     findUnique: vi.fn(),
     findMany: vi.fn(),
     count: vi.fn(),
     updateMany: vi.fn(),
   },
+}));
+const mockTransaction = vi.hoisted(() => ({
+  donation: {
+    findUnique: vi.fn(),
+    updateMany: vi.fn(),
+  },
+  donationCounter: { upsert: vi.fn() },
 }));
 
 vi.mock('../../src/shared/database/prisma.client.js', () => ({
@@ -19,6 +27,9 @@ import { donationRepository } from '../../src/modules/donaciones/donaciones.repo
 describe('donaciones.repository', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockPrisma.$transaction.mockImplementation((callback) =>
+      callback(mockTransaction),
+    );
   });
 
   describe('findById', () => {
@@ -154,6 +165,73 @@ describe('donaciones.repository', () => {
 
       expect(result).toEqual([]);
       expect(mockPrisma.donation.updateMany).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('updateStateByExternalReference', () => {
+    it('atomically confirms once and increments the counter in the same transaction', async () => {
+      const donation = {
+        id: 'don-1',
+        externalReference: 'DON-VICTIMAS-1',
+        state: 'confirmed',
+        amountCents: 50000,
+      };
+      mockTransaction.donation.updateMany.mockResolvedValue({ count: 1 });
+      mockTransaction.donation.findUnique.mockResolvedValue(donation);
+
+      await donationRepository.updateStateByExternalReference(
+        'DON-VICTIMAS-1',
+        { state: DonationStatus.confirmed, paymentId: 'epayco-1' },
+      );
+
+      expect(mockTransaction.donation.updateMany).toHaveBeenCalledWith({
+        where: {
+          externalReference: 'DON-VICTIMAS-1',
+          state: { in: ['pending', 'rejected'] },
+        },
+        data: {
+          state: DonationStatus.confirmed,
+          paymentId: 'epayco-1',
+          metadata: undefined,
+        },
+      });
+      expect(mockTransaction.donationCounter.upsert).toHaveBeenCalledWith({
+        where: { id: 1 },
+        update: { currentValue: { increment: 50000 } },
+        create: { id: 1, currentValue: 50000 },
+      });
+      expect(mockPrisma.$transaction).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not count a repeated terminal webhook', async () => {
+      mockTransaction.donation.updateMany.mockResolvedValue({ count: 0 });
+
+      const result = await donationRepository.updateStateByExternalReference(
+        'DON-VICTIMAS-1',
+        { state: DonationStatus.confirmed, paymentId: 'epayco-1' },
+      );
+
+      expect(result).toBeNull();
+      expect(mockTransaction.donation.findUnique).not.toHaveBeenCalled();
+      expect(mockTransaction.donationCounter.upsert).not.toHaveBeenCalled();
+    });
+
+    it('propagates counter write failures so the transaction can roll back confirmation', async () => {
+      mockTransaction.donation.updateMany.mockResolvedValue({ count: 1 });
+      mockTransaction.donation.findUnique.mockResolvedValue({
+        id: 'don-1',
+        amountCents: 50000,
+      });
+      mockTransaction.donationCounter.upsert.mockRejectedValue(
+        new Error('counter write failed'),
+      );
+
+      await expect(
+        donationRepository.updateStateByExternalReference('DON-VICTIMAS-1', {
+          state: DonationStatus.confirmed,
+          paymentId: 'epayco-1',
+        }),
+      ).rejects.toThrow('counter write failed');
     });
   });
 });

@@ -1,4 +1,9 @@
-import { Donation, DonationAccount, DonationCounter, DonationStatus } from '@prisma/client';
+import {
+  Donation,
+  DonationAccount,
+  DonationCounter,
+  DonationStatus,
+} from '@prisma/client';
 import type { Prisma } from '@prisma/client';
 import { prisma } from '../../shared/database/prisma.client.js';
 import { DONATION_COUNTER_ID } from './donaciones.types.js';
@@ -70,29 +75,46 @@ export const donationRepository = {
     data: UpdateDonationData,
   ): Promise<Donation | null> => {
     return prisma.$transaction(async (tx) => {
-      const existing = await tx.donation.findUnique({
-        where: { externalReference: externalReference },
-      });
-
-      if (!existing) {
-        return null;
-      }
-
       const allowedStates =
-        data.state === 'confirmed' ? ['pending', 'rejected'] : ['pending'];
-
-      if (!allowedStates.includes(existing.state)) {
-        return null;
-      }
-
-      return tx.donation.update({
-        where: { externalReference: externalReference },
+        data.state === 'confirmed'
+          ? (['pending', 'rejected'] as DonationStatus[])
+          : (['pending'] as DonationStatus[]);
+      const transition = await tx.donation.updateMany({
+        where: {
+          externalReference,
+          state: { in: allowedStates },
+        },
         data: {
           state: data.state,
           paymentId: data.paymentId,
           metadata: data.metadata,
         },
       });
+
+      if (transition.count === 0) {
+        return null;
+      }
+
+      const donation = await tx.donation.findUnique({
+        where: { externalReference: externalReference },
+      });
+
+      if (!donation) {
+        throw new Error('Donation missing after webhook state transition');
+      }
+
+      if (data.state === 'confirmed' && donation.amountCents > 0) {
+        await tx.donationCounter.upsert({
+          where: { id: DONATION_COUNTER_ID },
+          update: { currentValue: { increment: donation.amountCents } },
+          create: {
+            id: DONATION_COUNTER_ID,
+            currentValue: donation.amountCents,
+          },
+        });
+      }
+
+      return donation;
     });
   },
 
@@ -140,9 +162,7 @@ export const donationRepository = {
     return { data, total, page: filters.page, limit: filters.limit };
   },
 
-  expirePending: async (
-    olderThan: Date,
-  ): Promise<{ id: string }[]> => {
+  expirePending: async (olderThan: Date): Promise<{ id: string }[]> => {
     const expired = await prisma.donation.findMany({
       where: {
         state: 'pending',
@@ -180,19 +200,7 @@ export const donationRepository = {
     });
   },
 
-  incrementCounterBy: async (
-    amountWhole: number,
-  ): Promise<DonationCounter> => {
-    return prisma.donationCounter.upsert({
-      where: { id: DONATION_COUNTER_ID },
-      update: { currentValue: { increment: amountWhole } },
-      create: { id: DONATION_COUNTER_ID, currentValue: amountWhole },
-    });
-  },
-
-  updateCounter: async (
-    data: UpdateCounterData,
-  ): Promise<DonationCounter> => {
+  updateCounter: async (data: UpdateCounterData): Promise<DonationCounter> => {
     const update: Prisma.DonationCounterUpdateInput = {
       updatedBy: data.updatedBy,
     };

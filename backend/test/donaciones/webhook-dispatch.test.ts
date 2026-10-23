@@ -2,22 +2,25 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mockParseWebhook = vi.hoisted(() => vi.fn());
 const mockUpdateState = vi.hoisted(() => vi.fn());
-const mockIncrementCounter = vi.hoisted(() => vi.fn());
 const mockNotifyConfirmed = vi.hoisted(() => vi.fn());
 const mockNotifyRejected = vi.hoisted(() => vi.fn());
 const mockNotifyCancelled = vi.hoisted(() => vi.fn());
+const mockCreate = vi.hoisted(() => vi.fn());
+const mockCreatePreference = vi.hoisted(() => vi.fn());
+const mockCreateDonationUUID = vi.hoisted(() => vi.fn(() => 'uuid-1'));
 
 vi.mock('../../src/modules/donaciones/providers/donation-provider.registry.js', () => ({
   getDonationProvider: () => ({
+    createPreference: mockCreatePreference,
     parseWebhook: mockParseWebhook,
   }),
 }));
 
 vi.mock('../../src/modules/donaciones/donaciones.repository.js', () => ({
+  createDonationUUID: mockCreateDonationUUID,
   donationRepository: {
     updateStateByExternalReference: mockUpdateState,
-    incrementCounterBy: mockIncrementCounter,
-    create: vi.fn(),
+    create: mockCreate,
     findById: vi.fn(),
     findByExternalReference: vi.fn(),
     findAllAdmin: vi.fn(),
@@ -33,19 +36,16 @@ vi.mock('../../src/modules/messaging/index.js', () => ({
   notifyDonationCancelled: mockNotifyCancelled,
 }));
 
-const { handleWebhook } = await import(
+const { createDonation, handleWebhook } = await import(
   '../../src/modules/donaciones/donaciones.service.js'
 );
 
 describe('donation webhook dispatch', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockIncrementCounter.mockResolvedValue({
-      id: 1,
-      currentValue: 0,
-      metaValue: 0,
-      updatedAt: new Date(),
-      updatedBy: null,
+    mockCreatePreference.mockResolvedValue({
+      initPoint: 'https://checkout.test/session',
+      sessionId: 'session-1',
     });
   });
 
@@ -67,6 +67,24 @@ describe('donation webhook dispatch', () => {
     expect(mockNotifyConfirmed).toHaveBeenCalledWith('don-1');
     expect(mockNotifyRejected).not.toHaveBeenCalled();
     expect(mockNotifyCancelled).not.toHaveBeenCalled();
+  });
+
+  it('persists the pending donation before requesting the payment session', async () => {
+    mockCreate.mockResolvedValue({ id: 'don-1' });
+
+    await createDonation({
+      fullName: 'Ana',
+      email: 'ana@test.com',
+      company: null,
+      amountCents: 50000,
+      account: 'VICTIMAS',
+      provider: 'epayco',
+      backUrl: 'https://frontend.test/donar',
+    });
+
+    expect(mockCreate.mock.invocationCallOrder[0]).toBeLessThan(
+      mockCreatePreference.mock.invocationCallOrder[0]!,
+    );
   });
 
   it('fires rejection email when webhook status is declined', async () => {
@@ -117,7 +135,7 @@ describe('donation webhook dispatch', () => {
     expect(mockNotifyConfirmed).not.toHaveBeenCalled();
   });
 
-  it('increments donation counter by donation amount when donation is confirmed', async () => {
+  it('delegates confirmation accounting to the atomic repository transaction', async () => {
     mockParseWebhook.mockResolvedValue({
       status: 'approved',
       reference: 'DON-LA_CONVENCION-uuid',
@@ -132,9 +150,10 @@ describe('donation webhook dispatch', () => {
 
     await handleWebhook('epayco-la-convencion', { x: 1 }, {});
 
-    // counter runs fire-and-forget; flush microtasks before assertion
-    await new Promise((r) => setImmediate(r));
-    expect(mockIncrementCounter).toHaveBeenCalledWith(150000);
+    expect(mockUpdateState).toHaveBeenCalledWith(
+      'DON-LA_CONVENCION-uuid',
+      expect.objectContaining({ state: 'confirmed' }),
+    );
     expect(mockNotifyConfirmed).toHaveBeenCalledWith('don-3');
   });
 
@@ -153,8 +172,6 @@ describe('donation webhook dispatch', () => {
 
     await handleWebhook('epayco-la-convencion', { x: 1 }, {});
 
-    await new Promise((r) => setImmediate(r));
-    expect(mockIncrementCounter).not.toHaveBeenCalled();
     expect(mockNotifyRejected).toHaveBeenCalledWith('don-4');
   });
 
@@ -168,28 +185,7 @@ describe('donation webhook dispatch', () => {
 
     await handleWebhook('epayco-la-convencion', { x: 1 }, {});
 
-    await new Promise((r) => setImmediate(r));
-    expect(mockIncrementCounter).not.toHaveBeenCalled();
     expect(mockNotifyConfirmed).not.toHaveBeenCalled();
   });
 
-  it('still fires confirmation email even if counter increment fails', async () => {
-    mockParseWebhook.mockResolvedValue({
-      status: 'approved',
-      reference: 'DON-LA_CONVENCION-uuid',
-      externalId: 'mp-1',
-    });
-    mockUpdateState.mockResolvedValue({
-      id: 'don-5',
-      full_name: 'Sofia',
-      email: 'sofia@test.com',
-      amountCents: 50000,
-    });
-    mockIncrementCounter.mockRejectedValue(new Error('counter DB down'));
-
-    await handleWebhook('epayco-la-convencion', { x: 1 }, {});
-
-    await new Promise((r) => setImmediate(r));
-    expect(mockNotifyConfirmed).toHaveBeenCalledWith('don-5');
-  });
 });
