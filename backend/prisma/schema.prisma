@@ -75,10 +75,10 @@ model EgresadosList {
 
 model AsociadosList {
   cedula            String   @id @db.VarChar(20)
-  nombre            String   @db.VarChar(150)
-  email             String   @db.VarChar(255)
-  fechaFinalizacion DateTime @map("fecha_de_finalizacion") @db.Date
-  telefonoCelular   String   @map("telefono_celular") @db.VarChar(20)
+  nombre            String?   @db.VarChar(150)
+  email             String?   @db.VarChar(255)
+  fechaFinalizacion DateTime? @map("fecha_de_finalizacion") @db.Date
+  telefonoCelular   String?   @map("telefono_celular") @db.VarChar(100) // algunos con más números
 
   @@map("asociados_list")
 }
