@@ -20,6 +20,7 @@ const ACTIVE_PAGES = [
   "/update-password",
   "/registro",
   "/registrate",
+  "/asociados",
   "/donar",
   "/donar/frame",
 ];

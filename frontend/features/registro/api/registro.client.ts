@@ -14,6 +14,11 @@ export type RegisterRecord = RegisterInput & {
   confirmed: boolean;
 };
 
+export type AsociadoStatus = {
+  isAsociado: boolean;
+  fechaFinalizacion: string | Date | null;
+};
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const {
     data: { session },
@@ -66,6 +71,14 @@ export function submitRegistration(data: RegisterInput) {
     method: "PUT",
     body: JSON.stringify(data),
   });
+}
+
+export async function checkAsociado(cedula: string) {
+  const result = await request<{ data: AsociadoStatus }>(
+    `/api/register/asociados/${encodeURIComponent(cedula)}`,
+  );
+
+  return result.data;
 }
 
 export async function findRegistration(

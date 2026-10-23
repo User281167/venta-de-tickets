@@ -7,9 +7,26 @@ import {
 } from './register.schema.js';
 import {
   confirmRegister,
+  getAsociadoStatus,
   getRegisterEvent,
   register,
 } from './register.service.js';
+
+export async function checkAsociado(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  const parsedCedula = cedulaSchema.safeParse(req.params.cedula);
+
+  if (!parsedCedula.success) {
+    res.status(422).json({
+      error: { code: 'VALIDATION_ERROR', message: 'cedula is invalid' },
+    });
+    return;
+  }
+
+  res.json({ success: true, data: await getAsociadoStatus(parsedCedula.data) });
+}
 
 export async function registerEvent(
   req: Request,

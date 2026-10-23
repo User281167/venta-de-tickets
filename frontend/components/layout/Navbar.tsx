@@ -13,6 +13,7 @@ import { isAdminRole, isCheckerRole } from "@/providers/AuthProvider";
 const LINKS = [
   { label: "Inicio", href: "/#hero" },
   { label: "Programa", href: "/agenda" },
+  { label: "Asociados", href: "/asociados" },
   { label: "Sumate a la UTPtón", href: "/#donaciones" },
 ];
 

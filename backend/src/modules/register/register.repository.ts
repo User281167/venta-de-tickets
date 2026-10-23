@@ -20,6 +20,15 @@ export function findRegister(cedula: string) {
   });
 }
 
+export function findAsociadoByCedula(cedula: string) {
+  return prisma.$queryRaw<{ fechaFinalizacion: Date; isAsociado: boolean }[]>`
+    SELECT fecha_de_finalizacion AS "fechaFinalizacion",
+      fecha_de_finalizacion >= CURRENT_DATE AS "isAsociado"
+    FROM asociados_list
+    WHERE cedula = ${cedula}
+  `.then((rows) => rows[0] ?? null);
+}
+
 export function updateRegisterConfirmation(cedula: string, confirmed: boolean) {
   return prisma.register.update({
     where: { cedula },

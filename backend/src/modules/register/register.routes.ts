@@ -3,6 +3,7 @@ import { rateLimit } from '../../shared/middlewares/rate-limit.middleware.js';
 import { POLICIES } from '../../shared/middlewares/rate-limit.policies.js';
 import {
   getRegister,
+  checkAsociado,
   registerEvent,
   setRegisterConfirmation,
 } from './register.controller.js';
@@ -11,6 +12,11 @@ import { requireRole } from '../../shared/middlewares/require-role.middleware.js
 
 const registerRoute = Router();
 
+registerRoute.get(
+  '/asociados/:cedula',
+  rateLimit(POLICIES.publicRead),
+  checkAsociado,
+);
 registerRoute.put('/', rateLimit(POLICIES.publicWrite), registerEvent);
 
 const verifyRegisterRoute = Router();

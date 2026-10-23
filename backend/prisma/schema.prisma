@@ -73,6 +73,16 @@ model EgresadosList {
   @@map("egresados_list")
 }
 
+model AsociadosList {
+  cedula            String   @id @db.VarChar(20)
+  nombre            String   @db.VarChar(150)
+  email             String   @db.VarChar(255)
+  fechaFinalizacion DateTime @map("fecha_de_finalizacion") @db.Date
+  telefonoCelular   String   @map("telefono_celular") @db.VarChar(20)
+
+  @@map("asociados_list")
+}
+
 model PolicyVersion {
   id          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   policyType  PolicyType @map("policy_type")
@@ -245,6 +255,7 @@ model Register {
   phone       String    @db.VarChar(20)
   profesion   String    @db.VarChar(100)
   isEgresado  Boolean   @default(false) @map("is_egresado")
+  isAsociado  Boolean   @default(false) @map("is_asociado")
   confirmed   Boolean   @default(false)
 
   @@map("register")

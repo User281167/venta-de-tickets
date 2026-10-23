@@ -1,5 +1,6 @@
 import { Prisma } from '@prisma/client';
 import {
+  findAsociadoByCedula,
   findRegister,
   putRegister,
   updateRegisterConfirmation,
@@ -12,9 +13,9 @@ export async function register(data: RegisterInput): Promise<void> {
   } catch (err) {
     const target =
       err instanceof Prisma.PrismaClientKnownRequestError
-        ? (Array.isArray(err.meta?.target)
-            ? err.meta.target.join(',')
-            : String(err.meta?.target ?? ''))
+        ? Array.isArray(err.meta?.target)
+          ? err.meta.target.join(',')
+          : String(err.meta?.target ?? '')
         : '';
 
     if (
@@ -34,6 +35,16 @@ export async function register(data: RegisterInput): Promise<void> {
 
 export async function getRegisterEvent(cedula: string) {
   return findRegister(cedula);
+}
+
+export async function getAsociadoStatus(cedula: string) {
+  const asociado = await findAsociadoByCedula(cedula);
+  if (!asociado) return { isAsociado: false, fechaFinalizacion: null };
+
+  return {
+    isAsociado: asociado.isAsociado,
+    fechaFinalizacion: asociado.fechaFinalizacion,
+  };
 }
 
 export async function confirmRegister(cedula: string, confirmed: boolean) {
