@@ -2,8 +2,8 @@ import { z } from 'zod';
 
 const cedulaSchema = z
   .string()
-  .min(8, 'Cedula must be at least 8 digits')
-  .max(15, 'Cedula must be at most 15 digits')
+  .min(5, 'Cedula must be at least 5 digits')
+  .max(20, 'Cedula must be at most 20 digits')
   .regex(/^\d+$/, 'Cedula must contain only numbers');
 
 const phoneSchema = z.preprocess(

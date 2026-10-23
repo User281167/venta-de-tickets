@@ -47,8 +47,8 @@ export function AsociadoCheckPage() {
     setStatus(null);
     setError("");
 
-    if (!/^\d{8,15}$/.test(cedula)) {
-      setError("Ingresa una cédula de 8 a 15 dígitos.");
+    if (!/^\d{5,20}$/.test(cedula)) {
+      setError("Ingresa una cédula de 5 a 20 dígitos.");
       return;
     }
 
