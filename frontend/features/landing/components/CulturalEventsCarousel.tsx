@@ -6,7 +6,11 @@ import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
 
 const EVENTS = [
   { src: "/assets/agenda-cultural/0.png", alt: "Agenda cultural, evento 1" },
-  { src: "/assets/agenda-cultural/1.png", alt: "Agenda cultural, evento 2" },
+  { src: "/assets/agenda-cultural/farsas-rusas.jpeg", alt: "Farsas Rusas" },
+  {
+    src: "/assets/agenda-cultural/farsas-rusas-description.jpeg",
+    alt: "Farsas Rusas Descripción",
+  },
   { src: "/assets/agenda-cultural/2.png", alt: "Agenda cultural, evento 3" },
   { src: "/assets/agenda-cultural/3.png", alt: "Agenda cultural, evento 4" },
   { src: "/assets/agenda-cultural/4.png", alt: "Agenda cultural, evento 5" },
