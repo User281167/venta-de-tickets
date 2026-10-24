@@ -1,22 +1,25 @@
-create or replace function sync_register_asociado()
-returns trigger
-language plpgsql
-as $$
-begin
-  NEW.is_asociado := exists (
-    select 1
-    from asociados_list a
-    where a.cedula = NEW.cedula
-      and a.fecha_de_finalizacion >= current_date
+CREATE OR REPLACE FUNCTION sync_register_asociado()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  NEW.is_asociado := COALESCE(
+    (
+      SELECT MAX(a.fecha_de_finalizacion) >= CURRENT_DATE
+      FROM asociados_list a
+      WHERE a.cedula = NEW.cedula
+    ),
+    FALSE
   );
 
-  return NEW;
-end;
+  RETURN NEW;
+END;
 $$;
 
-drop trigger if exists trg_sync_register_asociado on register;
-create trigger trg_sync_register_asociado
-before insert or update of cedula
-on register
-for each row
-execute function sync_register_asociado();
+DROP TRIGGER IF EXISTS trg_sync_register_asociado ON register;
+
+CREATE TRIGGER trg_sync_register_asociado
+BEFORE INSERT OR UPDATE OF cedula
+ON register
+FOR EACH ROW
+EXECUTE FUNCTION sync_register_asociado();

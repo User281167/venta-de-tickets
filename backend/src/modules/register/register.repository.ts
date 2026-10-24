@@ -21,9 +21,15 @@ export function findRegister(cedula: string) {
 }
 
 export function findAsociadoByCedula(cedula: string) {
-  return prisma.$queryRaw<{ fechaFinalizacion: Date; isAsociado: boolean }[]>`
-    SELECT fecha_de_finalizacion AS "fechaFinalizacion",
-      fecha_de_finalizacion >= CURRENT_DATE AS "isAsociado"
+  return prisma.$queryRaw<
+    { fechaFinalizacion: Date | null; isAsociado: boolean }[]
+  >`
+    SELECT
+      MAX(fecha_de_finalizacion) AS "fechaFinalizacion",
+      COALESCE(
+        MAX(fecha_de_finalizacion) >= CURRENT_DATE,
+        FALSE
+      ) AS "isAsociado"
     FROM asociados_list
     WHERE cedula = ${cedula}
   `.then((rows) => rows[0] ?? null);
