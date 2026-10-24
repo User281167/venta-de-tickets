@@ -19,7 +19,10 @@ analyticsRouter.get('/sales/by-ticket-type', ctrl.getSalesByTicketType);
 analyticsRouter.get('/sales/summary', ctrl.getSalesSummary);
 
 analyticsRouter.get('/funnel', ctrl.getFunnel);
-analyticsRouter.get('/tickets/status-breakdown', ctrl.getTicketsStatusBreakdown);
+analyticsRouter.get(
+  '/tickets/status-breakdown',
+  ctrl.getTicketsStatusBreakdown,
+);
 analyticsRouter.get('/tickets/no-shows', ctrl.getNoShows);
 
 analyticsRouter.get('/users/weekly-signups', ctrl.getUsersWeeklySignups);
@@ -33,5 +36,6 @@ analyticsRouter.get('/donations/weekly', ctrl.getDonationsWeekly);
 analyticsRouter.get('/donations/summary', ctrl.getDonationsSummary);
 
 analyticsRouter.get('/checkin/progress', ctrl.getCheckinProgress);
+analyticsRouter.get('/register/summary', ctrl.getRegisterSummary);
 
 analyticsRouter.get('/weekly-report', ctrl.getWeeklyReport);

@@ -3,6 +3,7 @@ import express from 'express';
 import { env } from './shared/config/env.js';
 import { errorHandler } from './shared/middlewares/error-handler.middleware.js';
 import { adminsRouter } from './modules/admins/admins.routes.js';
+import { analyticsRouter } from './modules/analytics/analytics.routes.js';
 import { authRouter } from './modules/auth/index.js';
 import { donacionesRouter } from './modules/donaciones/donaciones.routes.js';
 import {
@@ -34,6 +35,7 @@ app.use((req, res, next) => {
 
 app.use('/api/auth', authRouter);
 app.use('/api/admin', adminsRouter);
+app.use('/api/admin/analytics', analyticsRouter);
 app.use('/api/donaciones', donacionesRouter);
 app.use('/api/register', registerRouter);
 app.use('/api/admin/register', verifyRegisterRoute);

@@ -39,6 +39,7 @@ const ADMIN_ICONS: Record<string, ReactNode> = {
   "/admin/usuarios": <IconUsers size={20} />,
   "/admin/registro": <IconId size={20} />,
   "/admin/donaciones": <IconHeart size={20} />,
+  "/admin/analiticas": <IconDashboard size={20} />,
 };
 
 export function AdminSidebar() {

@@ -1,12 +1,10 @@
-import {
-  keepPreviousData,
-  useQuery,
-} from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { authFetch } from "@/shared/api/admin-fetch";
 import type { AnalyticsDateRange } from "../schemas/analytics.schema";
 import {
   responseSchemas,
   type CheckinProgress,
+  type RegisterSummary,
   type CumulativePoint,
   type DonationSummary,
   type DonationDayPoint,
@@ -254,6 +252,20 @@ export function useCheckinProgress() {
         `/api/admin/analytics/checkin/progress`,
       );
       return parse(responseSchemas.checkinProgress, raw).data;
+    },
+    staleTime: 1000 * 30,
+    gcTime: 1000 * 60 * 10,
+  });
+}
+
+export function useRegisterSummary() {
+  return useQuery<RegisterSummary>({
+    queryKey: ["analytics", "register-summary"],
+    queryFn: async () => {
+      const raw = await authFetch<{ data: RegisterSummary }>(
+        `/api/admin/analytics/register/summary`,
+      );
+      return parse(responseSchemas.registerSummary, raw).data;
     },
     staleTime: 1000 * 30,
     gcTime: 1000 * 60 * 10,

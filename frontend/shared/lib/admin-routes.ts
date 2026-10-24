@@ -30,6 +30,13 @@ export const ADMIN_ROUTES = [
     navRoles: ADMIN_ROLES,
     exact: true,
   },
+  {
+    href: "/admin/analiticas",
+    label: "Analíticas",
+    roles: ADMIN_ROLES,
+    navRoles: ADMIN_ROLES,
+    exact: true,
+  },
 ] as const;
 
 export function getAdminNavRoutes(role: string | null | undefined) {

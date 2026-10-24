@@ -115,6 +115,24 @@ const checkinProgressSchema = z.object({
   }),
 });
 
+const registerSummarySchema = z.object({
+  data: z.object({
+    total: z.number(),
+    confirmedCount: z.number(),
+    confirmedPercent: z.number(),
+    egresadoCount: z.number(),
+    egresadoPercent: z.number(),
+    asociadoCount: z.number(),
+    asociadoPercent: z.number(),
+    byProfession: z.array(
+      z.object({
+        profession: z.string(),
+        count: z.number(),
+      }),
+    ),
+  }),
+});
+
 export const responseSchemas = {
   dayPoint: dayPointSchema,
   dayPointList: z.object({ data: z.array(dayPointSchema) }),
@@ -131,6 +149,7 @@ export const responseSchemas = {
   donationDayList: z.object({ data: z.array(donationDayPointSchema) }),
   donationSummary: donationSummarySchema,
   checkinProgress: checkinProgressSchema,
+  registerSummary: registerSummarySchema,
 };
 
 export type SalesSummary = z.infer<typeof salesSummarySchema>["data"];
@@ -144,6 +163,7 @@ export type RefundRate = z.infer<typeof refundRateSchema>["data"];
 export type DonationDayPoint = z.infer<typeof donationDayPointSchema>;
 export type DonationSummary = z.infer<typeof donationSummarySchema>["data"];
 export type CheckinProgress = z.infer<typeof checkinProgressSchema>["data"];
+export type RegisterSummary = z.infer<typeof registerSummarySchema>["data"];
 export type LoginActivityPoint = z.infer<typeof loginActivityPointSchema>;
 export type StatusBreakdownRow = z.infer<
   typeof statusBreakdownSchema

@@ -15,6 +15,7 @@ import type {
   StatusBreakdown,
   DayPoint,
   WeeklyReport,
+  RegisterSummary,
 } from './analytics.types.js';
 
 const FUNNEL_LABELS: Record<string, string> = {
@@ -25,10 +26,16 @@ const FUNNEL_LABELS: Record<string, string> = {
   used: 'Asistieron',
 };
 
-const STATUS_BREAKDOWN_LABELS: Record<string, { label: string; isPrePurchase: boolean }> = {
+const STATUS_BREAKDOWN_LABELS: Record<
+  string,
+  { label: string; isPrePurchase: boolean }
+> = {
   reserved: { label: 'Reservados (pre-pago)', isPrePurchase: true },
   paid: { label: 'Pagados', isPrePurchase: false },
-  pending_confirmation: { label: 'Por confirmar entrada', isPrePurchase: false },
+  pending_confirmation: {
+    label: 'Por confirmar entrada',
+    isPrePurchase: false,
+  },
   confirmed: { label: 'Confirmados', isPrePurchase: false },
   used: { label: 'Asistieron', isPrePurchase: false },
   cancelled: { label: 'Cancelados', isPrePurchase: false },
@@ -107,7 +114,10 @@ export const analyticsService = {
   async salesByTicketTypeDaily(
     from: Date | undefined,
     to: Date | undefined,
-  ): Promise<{ days: StackedDayPoint[]; ticketTypes: Array<{ id: string; name: string }> }> {
+  ): Promise<{
+    days: StackedDayPoint[];
+    ticketTypes: Array<{ id: string; name: string }>;
+  }> {
     const [rows, catalog] = await Promise.all([
       analyticsRepository.salesByTicketTypeDaily(from, to),
       analyticsRepository.ticketTypeCatalog(),
@@ -136,7 +146,10 @@ export const analyticsService = {
 
     return {
       days: data,
-      ticketTypes: catalog.map((c) => ({ id: c.id, name: nameById.get(c.id) ?? c.id })),
+      ticketTypes: catalog.map((c) => ({
+        id: c.id,
+        name: nameById.get(c.id) ?? c.id,
+      })),
     };
   },
 
@@ -147,9 +160,8 @@ export const analyticsService = {
     const { revenueCents, ticketsSold, totalCapacity } =
       await analyticsRepository.salesSummary(from, to);
 
-    const averageTicketCents = ticketsSold > 0
-      ? Math.trunc(revenueCents / ticketsSold)
-      : 0;
+    const averageTicketCents =
+      ticketsSold > 0 ? Math.trunc(revenueCents / ticketsSold) : 0;
 
     const capacitySoldPercent =
       totalCapacity > 0
@@ -183,9 +195,8 @@ export const analyticsService = {
         status: s,
         label: FUNNEL_LABELS[s],
         count,
-        percentOfFirst: first > 0
-          ? Number(((count / first) * 100).toFixed(2))
-          : 0,
+        percentOfFirst:
+          first > 0 ? Number(((count / first) * 100).toFixed(2)) : 0,
       };
     });
   },
@@ -308,8 +319,26 @@ export const analyticsService = {
     return {
       used,
       confirmed,
-      usedPercent:
-        total > 0 ? Number(((used / total) * 100).toFixed(2)) : 0,
+      usedPercent: total > 0 ? Number(((used / total) * 100).toFixed(2)) : 0,
+    };
+  },
+
+  async registerSummary(): Promise<RegisterSummary> {
+    const raw = await analyticsRepository.registerSummary();
+    const total = raw.total;
+
+    return {
+      total,
+      confirmedCount: raw.confirmedCount,
+      confirmedPercent:
+        total > 0 ? Number(((raw.confirmedCount / total) * 100).toFixed(2)) : 0,
+      egresadoCount: raw.egresadoCount,
+      egresadoPercent:
+        total > 0 ? Number(((raw.egresadoCount / total) * 100).toFixed(2)) : 0,
+      asociadoCount: raw.asociadoCount,
+      asociadoPercent:
+        total > 0 ? Number(((raw.asociadoCount / total) * 100).toFixed(2)) : 0,
+      byProfession: raw.byProfession,
     };
   },
 

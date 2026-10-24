@@ -11,6 +11,7 @@ import { UsersTab } from "./UsersTab";
 import { RefundsTab } from "./RefundsTab";
 import { DonationsTab } from "./DonationsTab";
 import { CheckinTab } from "./CheckinTab";
+import { RegisterTab } from "./RegisterTab";
 import { useDateRange } from "../hooks/useDateRange";
 
 const TABS = [
@@ -19,6 +20,7 @@ const TABS = [
   { key: "users", label: "Usuarios" },
   { key: "refunds", label: "Reembolsos" },
   { key: "donations", label: "Donaciones" },
+  { key: "register", label: "Registros" },
   { key: "checkin", label: "Check-in" },
 ] as const;
 
@@ -98,6 +100,7 @@ export function AnalyticsDashboard() {
         {active === "users" && <UsersTab range={range} />}
         {active === "refunds" && <RefundsTab range={range} />}
         {active === "donations" && <DonationsTab range={range} />}
+        {active === "register" && <RegisterTab />}
         {active === "checkin" && <CheckinTab />}
       </Box>
     </VStack>

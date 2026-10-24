@@ -89,6 +89,17 @@ export type CheckinProgress = {
   usedPercent: number;
 };
 
+export type RegisterSummary = {
+  total: number;
+  confirmedCount: number;
+  confirmedPercent: number;
+  egresadoCount: number;
+  egresadoPercent: number;
+  asociadoCount: number;
+  asociadoPercent: number;
+  byProfession: Array<{ profession: string; count: number }>;
+};
+
 export type WeeklyReport = {
   week: string;
   weekStart: string;

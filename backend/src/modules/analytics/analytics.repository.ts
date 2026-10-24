@@ -233,9 +233,7 @@ export const analyticsRepository = {
     from: Date | undefined,
     to: Date | undefined,
   ): Promise<Array<{ day: string; count: number }>> {
-    const rows = await prisma.$queryRaw<
-      Array<{ day: Date; count: bigint }>
-    >`
+    const rows = await prisma.$queryRaw<Array<{ day: Date; count: bigint }>>`
       SELECT
         date_trunc('day', created_at AT TIME ZONE 'UTC') AS day,
         count(*)::bigint AS count
@@ -258,10 +256,12 @@ export const analyticsRepository = {
       _count: { _all: true },
     });
 
-    return grouped.map((g) => ({
-      role: g.role,
-      count: g._count._all,
-    })).filter((a) => a.role !== 'super_admin');
+    return grouped
+      .map((g) => ({
+        role: g.role,
+        count: g._count._all,
+      }))
+      .filter((a) => a.role !== 'super_admin');
   },
 
   async loginActivityDaily(
@@ -376,7 +376,12 @@ export const analyticsRepository = {
     from: Date | undefined,
     to: Date | undefined,
   ): Promise<
-    Array<{ account: string; state: string; count: number; amountPesos: number }>
+    Array<{
+      account: string;
+      state: string;
+      count: number;
+      amountPesos: number;
+    }>
   > {
     const where: Prisma.DonationWhereInput = {};
 
@@ -419,50 +424,58 @@ export const analyticsRepository = {
     payments: { completed: number; refunded: number; amountCents: number };
     donations: { count: number; amountPesos: number };
   }> {
-    const [ticketsCount, ticketSum, signups, completed, refunded, donationCount, donationSum, activeUsers] =
-      await Promise.all([
-        prisma.ticket.count({
-          where: {
-            purchasedAt: { gte: weekStart, lte: weekEnd },
-            status: { in: soldStatuses },
-          },
-        }),
-        prisma.ticket.aggregate({
-          where: {
-            purchasedAt: { gte: weekStart, lte: weekEnd },
-            status: { in: soldStatuses },
-          },
-          _sum: { unitPriceCents: true },
-        }),
-        prisma.user.count({
-          where: { createdAt: { gte: weekStart, lte: weekEnd } },
-        }),
-        prisma.payment.count({
-          where: {
-            status: 'completed',
-            createdAt: { gte: weekStart, lte: weekEnd },
-          },
-        }),
-        prisma.payment.count({
-          where: {
-            status: 'refunded',
-            updatedAt: { gte: weekStart, lte: weekEnd },
-          },
-        }),
-        prisma.donation.count({
-          where: {
-            createdAt: { gte: weekStart, lte: weekEnd },
-            state: 'confirmed',
-          },
-        }),
-        prisma.donation.aggregate({
-          where: {
-            createdAt: { gte: weekStart, lte: weekEnd },
-            state: 'confirmed',
-          },
-          _sum: { amountCents: true },
-        }),
-        prisma.$queryRaw<Array<{ count: bigint }>>`
+    const [
+      ticketsCount,
+      ticketSum,
+      signups,
+      completed,
+      refunded,
+      donationCount,
+      donationSum,
+      activeUsers,
+    ] = await Promise.all([
+      prisma.ticket.count({
+        where: {
+          purchasedAt: { gte: weekStart, lte: weekEnd },
+          status: { in: soldStatuses },
+        },
+      }),
+      prisma.ticket.aggregate({
+        where: {
+          purchasedAt: { gte: weekStart, lte: weekEnd },
+          status: { in: soldStatuses },
+        },
+        _sum: { unitPriceCents: true },
+      }),
+      prisma.user.count({
+        where: { createdAt: { gte: weekStart, lte: weekEnd } },
+      }),
+      prisma.payment.count({
+        where: {
+          status: 'completed',
+          createdAt: { gte: weekStart, lte: weekEnd },
+        },
+      }),
+      prisma.payment.count({
+        where: {
+          status: 'refunded',
+          updatedAt: { gte: weekStart, lte: weekEnd },
+        },
+      }),
+      prisma.donation.count({
+        where: {
+          createdAt: { gte: weekStart, lte: weekEnd },
+          state: 'confirmed',
+        },
+      }),
+      prisma.donation.aggregate({
+        where: {
+          createdAt: { gte: weekStart, lte: weekEnd },
+          state: 'confirmed',
+        },
+        _sum: { amountCents: true },
+      }),
+      prisma.$queryRaw<Array<{ count: bigint }>>`
           SELECT count(DISTINCT t.user_id)::bigint AS count
           FROM tickets t
           INNER JOIN users u ON u.id = t.user_id
@@ -471,7 +484,7 @@ export const analyticsRepository = {
             AND t.created_at >= ${weekStart}::timestamptz
             AND t.created_at <= ${weekEnd}::timestamptz
         `,
-      ]);
+    ]);
 
     const paymentSum = await prisma.payment.aggregate({
       where: {
@@ -499,6 +512,55 @@ export const analyticsRepository = {
         count: donationCount,
         amountPesos: Number(donationSum._sum.amountCents ?? 0),
       },
+    };
+  },
+
+  async registerSummary(): Promise<{
+    total: number;
+    confirmedCount: number;
+    egresadoCount: number;
+    asociadoCount: number;
+    byProfession: Array<{ profession: string; count: number }>;
+  }> {
+    const allowedProfessions = [
+      'Estudiante',
+      'Docente/profesor',
+      'Administrativo UTP',
+      'Egresado',
+      'Contratista/aliado',
+      'Otro',
+    ];
+
+    const [
+      total,
+      confirmedCount,
+      egresadoCount,
+      asociadoCount,
+      groupedProfession,
+    ] = await Promise.all([
+      prisma.register.count(),
+      prisma.register.count({ where: { confirmed: true } }),
+      prisma.register.count({ where: { isEgresado: true } }),
+      prisma.register.count({ where: { isAsociado: true } }),
+      prisma.register.groupBy({
+        by: ['profesion'],
+        where: {
+          profesion: { in: allowedProfessions },
+        },
+        _count: { _all: true },
+        orderBy: { _count: { profesion: 'desc' } },
+      }),
+    ]);
+
+    return {
+      total,
+      confirmedCount,
+      egresadoCount,
+      asociadoCount,
+      byProfession: groupedProfession.map((g) => ({
+        profession: g.profesion,
+        count: g._count._all,
+      })),
     };
   },
 };

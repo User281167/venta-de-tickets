@@ -10,9 +10,7 @@ import {
 function parseDateRange(
   req: Request,
   res: Response,
-):
-  | { ok: true; from: Date | undefined; to: Date | undefined }
-  | { ok: false } {
+): { ok: true; from: Date | undefined; to: Date | undefined } | { ok: false } {
   try {
     const parsed = dateRangeQuerySchema.parse(req.query);
     return { ok: true, from: parsed.from, to: parsed.to };
@@ -53,7 +51,10 @@ function parseQuery<T>(
   }
 }
 
-export async function getSalesWeekly(req: Request, res: Response): Promise<void> {
+export async function getSalesWeekly(
+  req: Request,
+  res: Response,
+): Promise<void> {
   const range = parseDateRange(req, res);
   if (!range.ok) return;
 
@@ -144,10 +145,7 @@ export async function getLoginActivity(
   const range = parseDateRange(req, res);
   if (!range.ok) return;
 
-  const data = await analyticsService.loginActivityDaily(
-    range.from,
-    range.to,
-  );
+  const data = await analyticsService.loginActivityDaily(range.from, range.to);
   res.json({ data });
 }
 
@@ -204,6 +202,14 @@ export async function getCheckinProgress(
   res: Response,
 ): Promise<void> {
   const data = await analyticsService.checkinProgress();
+  res.json({ data });
+}
+
+export async function getRegisterSummary(
+  _req: Request,
+  res: Response,
+): Promise<void> {
+  const data = await analyticsService.registerSummary();
   res.json({ data });
 }
 
