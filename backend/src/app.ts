@@ -37,7 +37,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/admin', adminsRouter);
 app.use('/api/admin/analytics', analyticsRouter);
 app.use('/api/donaciones', donacionesRouter);
-app.use('/api/register', registerRouter);
-app.use('/api/admin/register', verifyRegisterRoute);
+// app.use('/api/register', registerRouter);
+// app.use('/api/admin/register', verifyRegisterRoute);
 
 app.use(errorHandler);
