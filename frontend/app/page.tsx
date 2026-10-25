@@ -25,7 +25,7 @@ export default function LandingPage() {
         <InstagramUpdates />
       </main>
       <Footer />
-      <RegistrationFloat />
+      {/*<RegistrationFloat />*/}
     </>
   );
 }

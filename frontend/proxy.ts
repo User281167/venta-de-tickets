@@ -19,7 +19,6 @@ const ACTIVE_PAGES = [
   "/reset-password",
   "/update-password",
   "/registro",
-  "/registrate",
   "/asociados",
   "/donar",
   "/donar/frame",
